@@ -5,7 +5,7 @@
                     <img src="assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
                 </div> -->
          <div>
-             <h4 class="logo-text">NoPlan</h4>
+             <h4 class="logo-text">PriceWise</h4>
          </div>
          <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
          </div>
@@ -28,33 +28,35 @@
                  <div class="menu-title">Customers</div>
              </a>
              <ul>
-                 <li> <a href="{{route('admin.customers.index')}}"><i class="bx bx-right-arrow-alt"></i>Pending Customers</a>
+                 <li> <a href="{{route('admin.customers.index')}}"><i class="bx bx-right-arrow-alt"></i>Customers</a>
                  </li>
-                 <li> <a href="{{route('admin.approve-customers')}}"><i class="bx bx-right-arrow-alt"></i>Approved Customers</a>
+                 {{-- <li> <a href="{{route('admin.approve-customers')}}"><i class="bx bx-right-arrow-alt"></i>Approved Customers</a>
                  </li>
                  <li> <a href="{{route('admin.reject-customers')}}"><i class="bx bx-right-arrow-alt"></i>Rejected Customers</a>
-                 </li>
+                 </li> --}}
              </ul>
          </li>
 
          <li>
-             <a href="{{route('admin.drivers.index')}}">
+             <a href="{{route('admin.categories.index')}}">
                  <div class="parent-icon"><i class='bx bx-face'></i>
                  </div>
-                 <div class="menu-title">Drivers</div>
+                 <div class="menu-title">Categories</div>
              </a>
 
          </li>
 
          <li>
-             <a href="{{route('admin.events.index')}}">
-                 <div class="parent-icon"><i class='bx bx-calendar-event
-'></i>
-                 </div>
-                 <div class="menu-title">Events</div>
-             </a>
-
-         </li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-category"></i>
+                </div>
+                <div class="menu-title">Products/Services</div>
+            </a>
+            <ul>
+                <li> <a href="{{route('admin.internet-tv.index')}}"><i class="bx bx-right-arrow-alt"></i>Internet TV</a>
+                </li>                
+            </ul>
+        </li>
          <!-- <li class="menu-label">ADMINISTRATION</li> -->
          <li>
              <a href="javascript:;" class="has-arrow">
