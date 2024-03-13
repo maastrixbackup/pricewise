@@ -44,7 +44,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('editor-test', 'HomeController@editorTest')->name('editortest');
         Route::resource('posts', 'PostController');
         Route::resource('users', 'UserController');
-
+        //Tv Product
+        Route::get('/fetch/internet-tv', 'TvProductController@gettvproducts')->name('get.tv_products');
+        Route::resource('internet-tv', 'TvProductController');
+        Route::post('/tv-product-update/{id}', 'TvProductController@tv_update')->name('tv-product-update');
+        Route::resource('tv-features', 'TvFeatureController');
+        Route::resource('tv-contract-lengths', 'TvContractLengthController');
+        Route::get('/tv-default/{id}', 'TvProductController@default')->name('tv-default');
+        Route::post('/tv-default-update', 'TvProductController@default_update')->name('tv-default-update');
+        Route::get('duplicate-tv/{id}', 'TvProductController@duplicate')->name('duplicate-tv');
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');
@@ -60,7 +68,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('password-update/{id}', 'EditProfileController@passwordUpdate')->name('password-update');
 
         //Drivers
-        Route::resource('drivers', 'DriverController');
+        Route::resource('categories', 'CategoryController');
 
         //Events
         Route::resource('events', 'EventController');
