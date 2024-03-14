@@ -84,7 +84,7 @@ $(function() {
       var myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: ["Jeans", "T-Shirts", "Shoes", "Lingerie"],
+          labels: ["WiFi and Widgets", "Mobile", "Broadband", "Fibre"],
           datasets: [{
             backgroundColor: [
               gradientStroke1,
