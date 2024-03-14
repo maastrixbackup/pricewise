@@ -38,9 +38,9 @@
 
                     </div>
 
-                    <div class=" mb-3">
+                    <div class="">
                         <label for="input35" class=" col-form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description" placeholder="Product Description"></textarea>
+                        <textarea class="form-control" name="description2" id="description23" placeholder="Product Description"></textarea>
                     </div>
 
                     <div class="col-md-6 col-12">
@@ -49,42 +49,49 @@
                             <input type="number" class="form-control" id="price" name="price" placeholder="Price">
                     </div>
                     </div>
+                    <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class=" mb-3">
+                            <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
+                            <input type="text" class="form-control" id="pin_codes" name="pin_codes" placeholder="PIN codes with coma separated">
+                    </div>
+                    </div>
 
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
-                            <label for="input37" class="col-form-label">Total Channels</label>
-                            <input type="number" class="form-control" id="price" name="total_channels" placeholder="Channels">
+                            <label for="valid_till" class="col-form-label">Offer Valid Till</label>
+                            <input type="date" class="form-control" id="valid_till" name="valid_till" placeholder="Valid Till">
                     </div>
                     </div>
 
+                
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
-                            <label for="input37" class="col-form-label">Total HD Channels</label>
-                            <input type="number" class="form-control" id="price" name="hd_channels" placeholder="HD Channels">
-                    </div>
-                    </div>
-
-                <div class="row">
-                    <div class="col-md-6 col-12">
-                        <div class=" mb-3">
-                    <label for="input35" class=" col-form-label">Average Download Speed</label>
-                    <input type="number" class="form-control" id="avg_download_speed" name="avg_download_speed" placeholder="Average Download Speed">
+                    <label for="avg_delivery_time" class=" col-form-label">Average delivery time</label>
+                    <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time">
                         </div>
                     </div>
                 <div class="col-md-6 col-12">
                 <div class=" mb-3">
-                    <label for="input35" class=" col-form-label">Average Upload Speed</label>
+                    <label for="input35" class=" col-form-label">Transfer Service</label>
 
-                    <input type="number" class="form-control" id="avg_upload_speed" name="avg_upload_speed" placeholder="Average Upload Speed">
+                    <div class="mb-3 add-scroll">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="transfer_service" value="1" >
+                            <label class="form-check-label" for="transfer_service">Available</label>
+                        </div>
+                    </div>
 
                 </div>
                 </div>
+
+                
                 
                 <div class="col-md-6 col-12">
                     <div class=" mb-3">
                         <label for="input40" class=" col-form-label">Contract Length
                         </label>
-                        <input type="number" class="form-control" id="commission" name="contract">
+                        <input type="number" class="form-control" id="contract_length" name="contract_length">
                     </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -125,14 +132,37 @@
                         <div class="mb-3 add-scroll">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="is_featured" value="1" >
-                                <label class="form-check-label" for="flexCheckDefault">Feature product</label>
+                                <label class="form-check-label" for="flexCheckDefault">Feature Product</label>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                <div class="row">
+                <div class="col-md-6 col-12">
+                    
+                    <label for="input35" class=" col-form-label">Installation options</label>
+                    <div class="mb-3 add-scroll">
+                    <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="manual_install" value="1" >
+                    <label class="form-check-label" for="manual_install">Manual Installation</label>
+                    </div>
+                    </div>
+                    <div class="mb-3 add-scroll">
+                    <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="mechanic_install" value="1" >
+                    <label class="form-check-label" for="mechanic_charge">Mechanic Installation</label>
+                    </div>
+                    </div>
                 
-
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class=" mb-3">
+                        <label for="mechanic_charge" class=" col-form-label">Mechanic Charge
+                        </label>
+                        <input type="number" class="form-control" id="mechanic_charge" name="mechanic_charge">
+                    </div>
+                </div>
+                </div>
                 
 
 
@@ -153,11 +183,10 @@
                 <div class="mb-3 form-group">
                     <label for="input40" class="col-form-label"><b>Publish Status</b>
                     </label>
-                    <select id="online_status" name="online_status" class="select2 form-select">
-
+                    <select id="status" name="status" class="select2 form-select">
                         <option value="1">Publish</option>
-                        <option value="0">Draft</option>
-                        <option value="2">Legacy</option>
+                        <option value="0" selected>Draft</option>
+                        
                     </select>
                 </div>
                 <div class="mb-3 form-group">
@@ -176,6 +205,7 @@
                     </label>
 
                     <select id="category" name="category" class="select2 form-select">
+                        <option>Select</option>
                         @if($objCategory)
                         @foreach($objCategory as $val)
                         <option value="{{$val->id}}">{{$val->name}}</option>
@@ -184,62 +214,37 @@
                     </select>
                 </div>
 
-                {{-- <div class="mb-3 form-group">
-                    <label for="input40" class="col-form-label"><b>Order Type</b>
+                <div class="mb-3">
+                    <label for="input40" class="col-form-label"><b>Provider</b>
                     </label>
-                    <select class="select2 form-select" id="order_types" name="order_types">
-                        <option value=" ">Select</option>
-                        <option value="New">New</option>
-                        <option value="CLN">CLN</option>
-                        <option value="Transfer">Transfer</option>
-                    </select>
-                </div> --}}
-                
 
-                <div class="mb-3 form-group" id="temp" style="display:none">
-                    <label for="input40" class=" col-form-label"><b>Template</b>
-                    </label>
-                    <select id="template" name="template" class="template form-select">
-                        <option value="Default">Default</option>
+                    <select id="category" name="category" class="select2 form-select">
+                        <option>Select</option>
+                        @if($providers)
+                        @foreach($providers as $provider)
+                        <option value="{{$provider->id}}">{{$provider->name}}</option>
+                        @endforeach
+                        @endif
                     </select>
                 </div>
-
-
-                <div class="mb-3 form-group">
-                    <label for="input40" class="col-form-label"><b data-bs-toggle="tooltip" data-bs-title="Catalogue Name for Speed">Catalogue Name</b>
-                    </label>
-                    <input type="text" class="form-control" id="catalogue_name" name="catalogue_name" placeholder="Catalogue Name">
+                <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
+                <div class="mb-3">
+                    <input type="file" class="form-control" name="image" id="image" accept="image/*">
                 </div>
-                <div class="mb-3 form-group">
-                    <label for="input40" class="col-form-label"><b data-bs-toggle="tooltip" data-bs-title="Product Name for Api">Product Name</b>
-                    </label>
-                    <input type="text" class="form-control" id="product_name_api" name="product_name_api" placeholder="Product Name for Api">
-                </div>
-
-
-                
-
-
                 <label for="input35" class="col-form-label"><b>Combo Products</b></label>
                 <div class="mb-3 add-scroll">
                     @if($objRelatedProducts)
                     @foreach($objRelatedProducts as $val)
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="related_products[]" value="{{$val->id}}">
+                        <input class="form-check-input" type="checkbox" name="combos[]" value="{{$val->id}}">
                         <label class="form-check-label" for="flexCheckDefault">{{$val->title}}</label>
                     </div>
                     @endforeach
                     @endif
                 </div>
 
-                <label for="input35" class="col-form-label"><b>Features</b></label>
-                <div class="mb-3 add-scroll">
-                    
-                </div>
-                <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
-                <div class="mb-3">
-                    <input type="file" class="form-control" name="image" id="image" accept="image/*">
-                </div>
+                
+                
             </div>
         </div>
     </div>

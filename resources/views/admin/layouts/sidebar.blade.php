@@ -36,12 +36,27 @@
                  </li> --}}
              </ul>
          </li>
+          <li>
+             <a href="{{route('admin.providers.index')}}">
+                 <div class="parent-icon"><i class='bx bx-face'></i>
+                 </div>
+                 <div class="menu-title">Providers</div>
+             </a>
 
+         </li>
          <li>
              <a href="{{route('admin.categories.index')}}">
                  <div class="parent-icon"><i class='bx bx-face'></i>
                  </div>
                  <div class="menu-title">Categories</div>
+             </a>
+
+         </li>
+         <li>
+             <a href="{{route('admin.features.index')}}">
+                 <div class="parent-icon"><i class='bx bx-face'></i>
+                 </div>
+                 <div class="menu-title">Features</div>
              </a>
 
          </li>

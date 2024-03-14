@@ -44,11 +44,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('editor-test', 'HomeController@editorTest')->name('editortest');
         Route::resource('posts', 'PostController');
         Route::resource('users', 'UserController');
+        Route::resource('providers', 'ProviderController');
         //Tv Product
-        Route::get('/fetch/internet-tv', 'TvProductController@gettvproducts')->name('get.tv_products');
-        Route::resource('internet-tv', 'TvProductController');
+        Route::get('/fetch/internet-tv', 'TvInternetController@gettvproducts')->name('get.internet-tv');
+        Route::resource('internet-tv', 'TvInternetController');
         Route::post('/tv-product-update/{id}', 'TvProductController@tv_update')->name('tv-product-update');
-        Route::resource('tv-features', 'TvFeatureController');
+        Route::resource('features', 'FeatureController');
         Route::resource('tv-contract-lengths', 'TvContractLengthController');
         Route::get('/tv-default/{id}', 'TvProductController@default')->name('tv-default');
         Route::post('/tv-default-update', 'TvProductController@default_update')->name('tv-default-update');
@@ -69,7 +70,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
         //Drivers
         Route::resource('categories', 'CategoryController');
-
+        
         //Events
         Route::resource('events', 'EventController');
 

@@ -47,9 +47,9 @@
             </label>
             <select id="status" name="status" class="select2 form-select">
                 <option value="">All</option>
-                <option value="1" selected>Publish</option>
+                <option value="1">Publish</option>
                 <option value="0">Draft</option>
-                <option value="2">Legacy</option>
+               
 
             </select>
         </div>
@@ -89,9 +89,9 @@
         var table = $('#userTable').DataTable({
             processing: true,
             serverSide: true,
-            //ajax: "{{route('admin.get.tv_products')}}",
+            
             ajax: {
-                url: "{{route('admin.get.tv_products')}}",
+                url: "{{route('admin.get.internet-tv')}}",
                 data: function(d) {
                     d.product_name = $('input[name=product_name]').val(),
                         
