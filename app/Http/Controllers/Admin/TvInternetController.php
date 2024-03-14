@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\TvProduct;
-use App\Models\CommissionType;
+use App\Models\TvInternetProduct;
+use App\Models\Provider;
 use App\Models\TvContractLength;
 use App\Models\AdditionalCategory;
 use App\Models\ShopCategory;
@@ -19,7 +19,7 @@ use Brian2694\Toastr\Facades\Toastr;
 
 use Illuminate\Support\Facades\Auth;
 
-class TvProductController extends Controller
+class TvInternetController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +28,7 @@ class TvProductController extends Controller
      */
     public function index()
     {
-        $objTv = TvProduct::latest()->get();
+        $objTv = TvInternetProduct::latest()->get();
         return view('admin.tvproducts.index', compact('objTv'));
     }
 
@@ -42,11 +42,11 @@ class TvProductController extends Controller
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
         // $objAdditionalCategories = AdditionalCategory::latest()->get();
-         $objRelatedProducts = TvProduct::orderBy('id', 'asc')->get();
+         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
          $objCategory = Category::latest()->get();
-        // $objAffiliates = Affiliate::latest()->get();
+         $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvproducts.add', compact('objCategory', 'objRelatedProducts'));
+        return view('admin.tvproducts.add', compact('objCategory', 'objRelatedProducts', 'providers'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -63,11 +63,11 @@ class TvProductController extends Controller
         $searchValue = $request['search']['value']; // Search value
         ## Read value
         $data = array();
-        $totalRecords = TvProduct::select('count(*) as allcount')->count();
+        $totalRecords = TvInternetProduct::select('count(*) as allcount')->count();
         if ($searchValue) {
-            $totalRecordswithFilter = TvProduct::select('count(*) as allcount')->where('title', 'like', '%' . $searchValue . '%');
+            $totalRecordswithFilter = TvInternetProduct::select('count(*) as allcount')->where('title', 'like', '%' . $searchValue . '%');
         } else {
-            $totalRecordswithFilter = TvProduct::select('count(*) as allcount');
+            $totalRecordswithFilter = TvInternetProduct::select('count(*) as allcount');
         }
         if (isset($request->product_name)) {
             $totalRecordswithFilter = $totalRecordswithFilter->where('title', 'like', '%' . $request->product_name . '%');
@@ -82,12 +82,12 @@ class TvProductController extends Controller
 
         // Fetch records
         if ($searchValue) {
-            $productRecords = TvProduct::orderBy($columnName, $columnSortOrder)
+            $productRecords = TvInternetProduct::orderBy($columnName, $columnSortOrder)
                 ->where('title', 'like', '%' . $searchValue . '%')
-                ->select('tv_products.*');
+                ->select('tv_internet_products.*');
         } else {
-            $productRecords = TvProduct::orderBy($columnName, $columnSortOrder)
-                ->select('tv_products.*');
+            $productRecords = TvInternetProduct::orderBy($columnName, $columnSortOrder)
+                ->select('tv_internet_products.*');
         }
         if (isset($request->status)) {
             $productRecords = $productRecords->where('status',  $request->status);
@@ -102,17 +102,17 @@ class TvProductController extends Controller
         $i = 1;
         foreach ($productRecords as $key => $record) {
 
-            $edit_btn = route('admin.tv-products.edit', $record->id);
-            $delete_btn = route('admin.tv-products.destroy', $record->id);
+            $edit_btn = route('admin.internet-tv.edit', $record->id);
+            $delete_btn = route('admin.internet-tv.destroy', $record->id);
             $default_btn = route('admin.tv-default', $record->id);
             $duplicate_btn = route('admin.duplicate-tv', $record->id);
 
-            if ($record->product_type == 'consumer') {
-                $pro_type =  '<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Consumer</div>';
-            } else if ($record->product_type == 'upgrade') {
-                $pro_type =  '<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Upgrade</div>';
+            if ($record->product_type == 'personal') {
+                $pro_type =  '<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Personal</div>';
+            } else if ($record->product_type == 'business') {
+                $pro_type =  '<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Business</div>';
             } else if ($record->product_type == 'cln') {
-                $pro_type =  '<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>CLN</div>';
+                $pro_type =  '<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Large Business</div>';
             } else if ($record->product_type == 'affiliate') {
                 $pro_type =  '<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Affiliate</div>';
             } else {
@@ -129,18 +129,18 @@ class TvProductController extends Controller
             }
 
             $edit_link = $delete_link = $default_link = $duplicate_link = '';
-            if (Auth::guard('admin')->user()->can('tv-product-edit')) {
+            // if (Auth::guard('admin')->user()->can('tv-product-edit')) {
                 $edit_link =   '<a title="Edit" href="' . $edit_btn . '" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>';
-            }
-            if (Auth::guard('admin')->user()->can('tv-product-delete')) {
+            //}
+            //if (Auth::guard('admin')->user()->can('tv-product-delete')) {
                 $delete_link = ' <a title="Delete" class="btn1 btn-outline-danger trash remove-tv" data-id="' . $record->id . '" data-action="' . $delete_btn . '"><i class="bx bx-trash me-0"></i></a>';
-            }
-            if (Auth::guard('admin')->user()->can('tv-product-default')) {
+            //}
+            //if (Auth::guard('admin')->user()->can('tv-product-default')) {
                 $default_link = '  <a title="Default" class="btn1 btn-outline-success" href="' . $default_btn . '"><i class="bx bx-star me-0"></i></a>';
-            }
-            if (Auth::guard('admin')->user()->can('tv-products-duplicate')) {
+            //}
+            //if (Auth::guard('admin')->user()->can('internet-tv-duplicate')) {
                 $duplicate_link = ' <a title="Duplicate" class="btn1 btn-outline-warning" href="' . $duplicate_btn . '"><i class="bx bx-copy me-0"></i></a>';
-            }
+            //}
 
             if ($record->add_extras || $record->related_products) {
                 //         $action =  '<div class="col">
@@ -185,50 +185,50 @@ class TvProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = TvProduct::where('title', $request->title)->first();
+        $product = TvInternetProduct::where('title', $request->title)->first();
         if (isset($product) && $product->count() > 0) {
             $message = array('message' => 'Already Exists! Please enter unique title', 'title' => 'Already Exists!');
             return response()->json(["status" => false, 'message' => $message, 'title' => 'Already Exists!']);
         } else {
-            $objTv = new TvProduct();
+            $objTv = new TvInternetProduct();
             $objTv->title = $request->title;
             $objTv->content = $request->description;
-            //$objTv->avg_speed = $request->avg_speed;
-            $objTv->avg_download_speed = $request->avg_download_speed;
-            $objTv->avg_upload_speed = $request->avg_upload_speed;
-            $objTv->price = $request->price;
-            $objTv->contract_length_id = $request->contract_length_id;
             $objTv->commission = $request->commission;
             $objTv->commission_type = $request->commission_type;
-            $objTv->feature_id = $request->features ? implode(",", $request->features) : "";
-            $objTv->add_extras = $request->additional_extras ? implode(",", $request->additional_extras) : "";
-            $objTv->related_products =  $request->related_products ? implode(",", $request->related_products) : "";
-            $objTv->status = $request->online_status;
-            $objTv->akj_product_id =  $request->akj_product_id;
-            $objTv->akj_discount_id =  $request->akj_discount_id;
+            $objTv->avg_delivery_time = $request->avg_delivery_time;
+            $objTv->price = $request->price;
+            $objTv->contract_length = $request->contract_length;
+            $objTv->contract_type = $request->contract_type;
+            $objTv->transfer_service = $request->transfer_service;
+            $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);
+            //$objTv->related_products =  $request->related_products ? explode(",", $request->related_products) : "";
+            $objTv->status = $request->status?$request->status:0;
+            $objTv->valid_till =  $request->valid_till;
+            $objTv->category =  $request->category;
             $objTv->product_type = $request->product_type;
-            $objTv->order_type = $request->order_types;
+            $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
-            $objTv->catalogue_name = $request->catalogue_name;
-            $objTv->product_name_api = $request->product_name_api;
-            $objTv->category_id =  $request->category;
-            $objTv->url = $request->link;
-            $objTv->affiliate = $request->affiliate_name;
-            $objTv->template = $request->template;
-            $objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
+            $objTv->mechanic_install = $request->mechanic_install;
+            $objTv->mechanic_charge = $request->mechanic_charge;            
+            $objTv->slug = $request->link;
+            $objTv->provider = $request->provider;
+            
+            //$objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
             if ($request->file('image') == null || $request->file('image') == '') {
-                $input['image'] = $objTv->product_image;
+                $input['image'] = $objTv->image;
             } else {
                 $destinationPath = '/images';
                 $imgfile = $request->file('image');
                 $imgFilename = $imgfile->getClientOriginalName();
                 $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
                 $image = $imgFilename;
-                $objTv->product_image = $image;
+                $objTv->image = $image;
             }
             if ($objTv->save()) {
-                Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
-                return response()->json(["status" => true, "redirect_location" => route("admin.tv-products.index")]);
+                return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
+                //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
             } else {
                 $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
                 return response()->json(["status" => false, 'message' => $message]);
@@ -255,15 +255,15 @@ class TvProductController extends Controller
      */
     public function edit($id)
     {
-        $objTv = TvProduct::find($id);
-        $objContract = TvContractLength::latest()->get();
-        $objCommission = CommissionType::latest()->get();
-        $objAdditionalCategories = AdditionalCategory::latest()->get();
-        $objRelatedProducts = ShopCategory::orderBy('id', 'asc')->get();
-        $objCategory = Category::latest()->where("product_type", "broadband")->get();
-        $objAffiliates = Affiliate::latest()->get();
-        $objFeature = TvFeature::latest()->get();
-        return view('admin.tvproducts.edit', compact('objTv', 'objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature'));
+        $objTv = TvInternetProduct::find($id);
+        //$objContract = TvContractLength::latest()->get();
+        //$objCommission = CommissionType::latest()->get();
+        //$objAdditionalCategories = AdditionalCategory::latest()->get();
+        $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
+        $objCategory = Category::latest()->get();
+        //$objAffiliates = Affiliate::latest()->get();
+        //$objFeature = TvFeature::latest()->get();
+        return view('admin.tvproducts.edit', compact('objTv', 'objRelatedProducts', 'objCategory'));
     }
 
     /**
@@ -276,7 +276,7 @@ class TvProductController extends Controller
 
     public function tv_update(Request $request, $id)
     {
-        $objTv = TvProduct::where('id', $id)->first();
+        $objTv = TvInternetProduct::where('id', $id)->first();
         $objTv->title = $request->title;
         //$objTv->avg_speed = $request->avg_speed;
         $objTv->avg_download_speed = $request->avg_download_speed;
@@ -285,9 +285,9 @@ class TvProductController extends Controller
         $objTv->contract_length_id = $request->contract_length_id;
         $objTv->commission = $request->commission;
         $objTv->commission_type = $request->commission_type;
-        $objTv->feature_id = $request->features ? implode(",", $request->features) : "";
-        $objTv->add_extras = $request->additional_extras ? implode(",", $request->additional_extras) : "";
-        $objTv->related_products =  $request->related_products ? implode(",", $request->related_products) : "";
+        $objTv->feature_id = $request->features ? explode(",", $request->features) : "";
+        $objTv->add_extras = $request->additional_extras ? explode(",", $request->additional_extras) : "";
+        $objTv->related_products =  $request->related_products ? explode(",", $request->related_products) : "";
         $objTv->status = $request->online_status;
         $objTv->akj_product_id =  $request->akj_product_id;
         $objTv->akj_discount_id =  $request->akj_discount_id;
@@ -317,7 +317,7 @@ class TvProductController extends Controller
         }
         if ($objTv->save()) {
             Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.tv-products.index")]);
+            return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -331,24 +331,24 @@ class TvProductController extends Controller
      */
     public function destroy($id)
     {
-        $objTv = TvProduct::find($id);
+        $objTv = TvInternetProduct::find($id);
         if ($objTv->delete()) {
             return back()->with(Toastr::error(__('Tv Data deleted successfully!')));
         } else {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
-            return redirect()->route('admin.tv-products.index')->with($error_msg);
+            return redirect()->route('admin.internet-tv.index')->with($error_msg);
         }
     }
     public function default(Request $request, $id)
     {
         //dd($id);
-        $product = TvProduct::find($id);
+        $product = TvInternetProduct::find($id);
         $default = DefaultProduct::latest()->get();
         $responseData = array();
         $data = DefaultProduct::where('product_id', $id)->where('product_type', 'tv')->where('is_default', '1')->pluck('default_product_id')->toArray();
         $manda_data = DefaultProduct::where('product_id', $id)->where('product_type', 'tv')->where('is_mandatory', '1')->pluck('default_product_id')->toArray();
 
-        return view('admin.tvproducts.default', compact('product', 'data', 'manda_data'));
+        return view('admin.TvInternetProducts.default', compact('product', 'data', 'manda_data'));
     }
 
     public function default_update(Request $request)
@@ -479,9 +479,9 @@ class TvProductController extends Controller
 
     public function duplicate(Request $request, $id)
     {
-        $objExtProduct = TvProduct::where('id', $id)->first();
-        $objProduct = new TvProduct();
-        $last_product = TvProduct::where('id', $id)->max('duplicate_count');
+        $objExtProduct = TvInternetProduct::where('id', $id)->first();
+        $objProduct = new TvInternetProduct();
+        $last_product = TvInternetProduct::where('id', $id)->max('duplicate_count');
         //dd($last_product);
         if ($last_product == 0) {
             $dup_no = '--' . 'duplicate';
@@ -521,10 +521,10 @@ class TvProductController extends Controller
             $objExtProduct->duplicate_count = $last_product + 1;
             $objExtProduct->save();
 
-            return redirect()->route("admin.tv-products.index")->with(Toastr::success(__('Tv Duplicated Successfully')));
+            return redirect()->route("admin.internet-tv.index")->with(Toastr::success(__('Tv Duplicated Successfully')));
         } else {
 
-            return redirect()->route("admin.tv-products.index")->with(Toastr::error(__('Something went wrong !! Please Try again later')));
+            return redirect()->route("admin.internet-tv.index")->with(Toastr::error(__('Something went wrong !! Please Try again later')));
         }
     }
 }
