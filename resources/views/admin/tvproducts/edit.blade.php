@@ -339,7 +339,28 @@
                         </div>
                         <div class="col-md-8 col-12">
                             <div class="card-body p-4">
-                                
+                                <form id="productForm2" method="post" action="{{route('admin.internet-tv.update', $objTv->id)}}" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="post_id">
+                                    <div class="row">
+                                    	@if($objInternetFeatures)
+                                    	@foreach($objInternetFeatures as $elm)
+                                        <div class="col-md-9 col-lg-9 col-12">
+                                            <div class="card">
+                                                
+                                                <div class="card-body p-4">
+                                                    <div class=" mb-3">
+                                                        <label for="input35" class=" col-form-label">Title</label>
+                                                        <input type="text" class="form-control" id="title" name="title" placeholder="Product Title" value="{{$objTv->title}}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       @endforeach
+                                       @endif
+                                    </div>
+                                </form>
 
                             </div>
                         </div>
