@@ -310,7 +310,7 @@ class TvInternetController extends Controller
         }
          $objTv->image = $image;
         if ($objTv->save()) {
-            Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
             return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
