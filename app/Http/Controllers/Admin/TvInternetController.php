@@ -255,8 +255,9 @@ class TvInternetController extends Controller
     public function edit($id)
     {
         $objTv = TvInternetProduct::find($id);
-        $objTvFeatures = TvFeature::where('category', $objTv->category)->latest()->get();
-        dd($objTvFeatures);
+        $objTvFeatures = TvFeature::select('id','features','input_type')->where('category', 9)->get()->toArray();
+        $objInternetFeatures = TvFeature::select('id','features','input_type')->where('category', 8)->get()->toArray();
+        //dd($objTvFeatures);
         //$objCommission = CommissionType::latest()->get();
         //$objAdditionalCategories = AdditionalCategory::latest()->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
