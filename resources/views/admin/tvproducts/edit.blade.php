@@ -27,7 +27,7 @@
                 </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" data-bs-toggle="tab" href="#internet-feature" role="tab" aria-selected="false">
+                <a class="nav-link" data-bs-toggle="tab" href="#internet" role="tab" aria-selected="false">
                     <div class="d-flex align-items-center">
                     <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
@@ -37,7 +37,7 @@
             </li>
          
             <li class="nav-item" role="presentation">
-                <a class="nav-link" data-bs-toggle="tab" href="#tv-feature" role="tab" aria-selected="false">
+                <a class="nav-link" data-bs-toggle="tab" href="#tv" role="tab" aria-selected="false">
                     <div class="d-flex align-items-center">
                         <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
@@ -302,68 +302,85 @@
                     </div>
                 
             </div>
+
+            <div class="tab-pane fade" id="internet" role="tabpanel">
+                <form id="internetForm" method="post" action="" enctype="multipart/form-data">
+                    @csrf
+                    
+                    <div class="row">
+                        <div class="card-header px-4 py-3">
+                            <h5 class="mb-0">Edit Internet Features</h5>
+                        </div>
+                        <div class="col-md-7 col-12">
+                            <div class="card-body p-4">
+
+                            	@if($objInternetFeatures)
+                                @foreach($objInternetFeatures as $elm)
+                                @if($elm->input_type == "text")
+                                <div class="mb-3">
+                                    <label for="input35" class="col-sm-3 col-form-label">{{$elm->features}}</label>
+                                    <input type="text" class="form-control" id="" name="features[]" placeholder="" value="">
+                                </div>
+                                @endif
+                                @if($elm->input_type == "checkbox")
+                                <div class="form-check">
+			                    <input class="form-check-input" type="checkbox"  name="features[]" value="1" >
+			                    <label class="form-check-label" for="mechanic_charge">{{$elm->features}}</label>
+			                    </div>
+                                @endif
+                                @endforeach
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <div class="d-md-flex d-grid align-items-center gap-3">
+                                <button type="submit" id="submitBtn" class="btn btn-primary px-4">Submit</button>
+                                <button type="reset" class="btn btn-light px-4">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>  
+            </div>
+
             <div class="tab-pane fade" id="tv" role="tabpanel">
                 
+                   <form id="tvForm" method="post" action="" enctype="multipart/form-data">
+                    @csrf
+                    
                     <div class="row">
                         <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Tv</h5>
+                            <h5 class="mb-0">Edit Internet Features</h5>
                         </div>
-                        <div class="col-md-8 col-12">
+                        <div class="col-md-7 col-12">
                             <div class="card-body p-4">
 
-                                
-                            </div>
-
-                        </div>
-                        
-                    </div>
-
-                    <div class="row">
-                        <label class="col-sm-3 col-form-label"></label>
-                        <div class="col-sm-8">
-                            <div class="d-md-flex d-grid align-items-center gap-3">
-                                <button type="submit" id="submitBtn" class="btn btn-primary px-4">Submit</button>
-                                <button type="reset" class="btn btn-light px-4">Reset</button>
-                            </div>
-                        </div>
-                    </div>
-                
-            </div>
-
-         
-            <div class="tab-pane fade" id="internet-feateure" role="tabpanel">
-                
-                    <div class="row">
-                        <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Internet Feature</h5>
-                        </div>
-                        <div class="col-md-8 col-12">
-                            <div class="card-body p-4">
-                                <form id="productForm2" method="post" action="{{route('admin.internet-tv.update', $objTv->id)}}" enctype="multipart/form-data">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="post_id">
-                                    <div class="row">
-                                    	@if($objInternetFeatures)
-                                    	@foreach($objInternetFeatures as $elm)
-                                        <div class="col-md-9 col-lg-9 col-12">
-                                            <div class="card">
-                                                
-                                                <div class="card-body p-4">
-                                                    <div class=" mb-3">
-                                                        <label for="input35" class=" col-form-label">Title</label>
-                                                        <input type="text" class="form-control" id="title" name="title" placeholder="Product Title" value="{{$objTv->title}}">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                       @endforeach
-                                       @endif
-                                    </div>
-                                </form>
+                            	@if($objTvFeatures)
+                                @foreach($objTvFeatures as $elm)
+                                @if($elm->input_type == "text")
+                                <div class="mb-3">
+                                    <label for="input35" class="col-sm-3 col-form-label">{{$elm->features}}</label>
+                                    <input type="text" class="form-control" id="" name="features[]" placeholder="" value="">
+                                </div>
+                                @endif
+                                @if($elm->input_type == "checkbox")
+                                <div class="form-check">
+			                    <input class="form-check-input" type="checkbox"  name="features[]" value="1" >
+			                    <label class="form-check-label" for="mechanic_charge">{{$elm->features}}</label>
+			                    </div>
+			                    @endif
+                                @endforeach
+                                @endif
 
                             </div>
+
                         </div>
+
                     </div>
                     <div class="row">
                         <label class="col-sm-3 col-form-label"></label>
@@ -374,9 +391,10 @@
                             </div>
                         </div>
                     </div>
-               
+                </form>
+                
+            </div>         
 
-            </div>
 
             <div class="tab-pane fade" id="meta" role="tabpanel">
                 <form id="offerForm" method="post" action="" enctype="multipart/form-data">
