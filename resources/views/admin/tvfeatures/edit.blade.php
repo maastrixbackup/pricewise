@@ -24,8 +24,9 @@
                 <h5 class="mb-0">Edit Feature</h5>
             </div>
             <div class="card-body p-4">
-                <form id="categoryForm" method="PUT" action="{{route('admin.features.update',$objFeature->id)}}">
+                <form id="categoryForm" method="post" action="{{route('admin.features.update',$objFeature->id)}}">
                     @csrf
+                    @method('PUT')
                     <div class="row mb-3">
                         <label for="input35" class=" col-form-label">Name</label>
                         <div class="">

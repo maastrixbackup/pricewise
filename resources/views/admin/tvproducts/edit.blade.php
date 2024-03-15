@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','PriceWise- Tv Products Edit')
+@section('title','PriceWise- Tv Internet Products Edit')
 @section('content')
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -67,8 +67,9 @@
 
 
                             <div class="card-body p-4">
-                                <form id="productForm" method="PUT" action="{{route('admin.internet-tv.update', $objTv->id)}}" enctype="multipart/form-data">
+                                <form id="productForm2" method="post" action="{{route('admin.internet-tv.update', $objTv->id)}}" enctype="multipart/form-data">
                                     @csrf
+                                    @method('PUT')
                                     <div class="row">
                                         <div class="col-md-9 col-lg-9 col-12">
                                             <div class="card">
@@ -223,7 +224,7 @@
                                                 <div class="">
                                                     <label class=" col-form-label"></label>
                                                     <div class="d-md-flex d-grid align-items-center gap-3">
-                                                        <button type="submit" class="btn btn-primary px-4" name="submit2">Submit</button>
+                                                        <button type="submit" class="btn btn-primary px-4" name="submit23">Submit</button>
                                                         <button type="reset" class="btn btn-light px-4">Reset</button>
                                                     </div>
                                                 </div>
@@ -326,7 +327,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                
             </div>
 
          
@@ -352,7 +353,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+               
 
             </div>
 
@@ -447,10 +448,11 @@
             var data = CKEDITOR.instances.description.getData();
             $("#description").val(data);
             var formData = new FormData(form);
+            alert(form.action)
             $.ajax({
 
                 url: form.action,
-                method: "post",
+                method: "PUT",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },

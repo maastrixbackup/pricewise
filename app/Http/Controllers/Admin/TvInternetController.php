@@ -28,7 +28,7 @@ class TvInternetController extends Controller
      */
     public function index()
     {
-        $objTv = TvInternetProduct::latest()->get();
+    	$objTv = TvInternetProduct::latest()->get();
         return view('admin.tvproducts.index', compact('objTv'));
     }
 
@@ -201,8 +201,7 @@ class TvInternetController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);
-            //$objTv->related_products =  $request->related_products ? explode(",", $request->related_products) : "";
+            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -244,7 +243,7 @@ class TvInternetController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -256,7 +255,9 @@ class TvInternetController extends Controller
     public function edit($id)
     {
         $objTv = TvInternetProduct::find($id);
-        //$objContract = TvContractLength::latest()->get();
+        $objTvFeatures = TvFeature::select('id','features','input_type')->where('category', 9)->get()->toArray();
+        $objInternetFeatures = TvFeature::select('id','features','input_type')->where('category', 8)->get()->toArray();
+        //dd($objTvFeatures);
         //$objCommission = CommissionType::latest()->get();
         //$objAdditionalCategories = AdditionalCategory::latest()->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
@@ -274,50 +275,46 @@ class TvInternetController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function tv_update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $objTv = TvInternetProduct::where('id', $id)->first();
-        $objTv->title = $request->title;
-        //$objTv->avg_speed = $request->avg_speed;
-        $objTv->avg_download_speed = $request->avg_download_speed;
-        $objTv->avg_upload_speed = $request->avg_upload_speed;
-        $objTv->price = $request->price;
-        $objTv->contract_length_id = $request->contract_length_id;
-        $objTv->commission = $request->commission;
-        $objTv->commission_type = $request->commission_type;
-        $objTv->feature_id = $request->features ? explode(",", $request->features) : "";
-        $objTv->add_extras = $request->additional_extras ? explode(",", $request->additional_extras) : "";
-        $objTv->related_products =  $request->related_products ? explode(",", $request->related_products) : "";
-        $objTv->status = $request->online_status;
-        $objTv->akj_product_id =  $request->akj_product_id;
-        $objTv->akj_discount_id =  $request->akj_discount_id;
-        $objTv->product_type = $request->product_type;
-        $objTv->order_type = $request->order_types;
-        $objTv->is_featured = $request->is_featured;
-        $objTv->catalogue_name = $request->catalogue_name;
-        $objTv->product_name_api = $request->product_name_api;
-        $objTv->category_id =  $request->category;
-        $objTv->mpf_product = $request->mpf_product;
-        $objTv->url = $request->link;
-        $objTv->affiliate = $request->affiliate_name;
-        $objTv->template = $request->template;
-
-        $objTv->content = $request->input('description');
-        $objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
-        // dd($request->all());
+        //jhdjhddjhf
+            $objTv->title = $request->title;
+            $objTv->content = $request->description3;
+            $objTv->commission = $request->commission;
+            $objTv->commission_type = $request->commission_type;
+            $objTv->avg_delivery_time = $request->avg_delivery_time;
+            $objTv->price = $request->price;
+            $objTv->contract_length = $request->contract_length;
+            $objTv->contract_type = $request->contract_type;
+            $objTv->transfer_service = $request->transfer_service;
+            $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
+            $objTv->status = $request->online_status?$request->online_status:0;
+            $objTv->valid_till =  $request->valid_till;
+            $objTv->category =  $request->category;
+            $objTv->product_type = $request->product_type;
+            $objTv->manual_install = $request->manual_install;
+            $objTv->is_featured = $request->is_featured;
+            $objTv->mechanic_install = $request->mechanic_install;
+            $objTv->mechanic_charge = $request->mechanic_charge;            
+            $objTv->slug = $request->link;
+            $objTv->provider = $request->provider;
         if ($request->file('image') == null || $request->file('image') == '') {
-            $input['image'] = $objTv->product_image;
+            $image = $objTv->image;
         } else {
             $destinationPath = '/images';
             $imgfile = $request->file('image');
             $imgFilename = $imgfile->getClientOriginalName();
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
-            $objTv->product_image = $image;
+           
         }
+         $objTv->image = $image;
         if ($objTv->save()) {
-            Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
+            //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
+            return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
