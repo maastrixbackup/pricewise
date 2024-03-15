@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-
+Route::group(['prefix' => 'pricewise'], function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
@@ -129,4 +129,5 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         });
     });
     Route::post('logout', 'Auth\AuthenticatedSessionController@destroy')->name('logout');
+});
 });
