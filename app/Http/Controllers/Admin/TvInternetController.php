@@ -256,6 +256,7 @@ class TvInternetController extends Controller
     {
         $objTv = TvInternetProduct::find($id);
         $objTvFeatures = TvFeature::where('category', $objTv->category)->latest()->get();
+        dd($objTvFeatures);
         //$objCommission = CommissionType::latest()->get();
         //$objAdditionalCategories = AdditionalCategory::latest()->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
@@ -288,7 +289,7 @@ class TvInternetController extends Controller
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
-            $objTv->status = $request->status?$request->status:0;
+            $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
             $objTv->product_type = $request->product_type;
