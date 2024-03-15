@@ -1,4 +1,4 @@
-# Project Name
+# Price Wise
 
 [![Build Status](https://img.shields.io/travis/user/repo.svg?style=flat-square)](https://travis-ci.org/user/repo)
 [![GitHub issues](https://img.shields.io/github/issues/user/repo.svg?style=flat-square)](https://github.com/user/repo/issues)
