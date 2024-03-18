@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','NoPlan- Roles Edit')
+@section('title','Pricewise- Roles Edit')
 @section('content')
 
 <!--breadcrumb-->
@@ -74,7 +74,9 @@
 							<ul  style="list-style:none">
 								@foreach ($permissions as $permission)
 								<li>
-
+									<?php 
+									//dd($permission);
+									?>
 
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="permission[]" {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}  value="{{ $permission->id }}">

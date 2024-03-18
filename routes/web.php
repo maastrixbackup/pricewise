@@ -18,12 +18,14 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 Route::group(['prefix' => 'pricewise'], function () {
+	Route::get('/', function () {
+    return view('welcome');
+});
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__ . '/auth.php';
-
 
 
 // Admin 
@@ -110,7 +112,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
         // Role
         Route::prefix('roles')->group(function () {
-            Route::get('/index', 'RoleController@index')->name('roles.index');
+            Route::get('/', 'RoleController@index')->name('roles.index');
             Route::get('/create', 'RoleController@create')->name('roles.create');
             Route::post('/store', 'RoleController@store')->name('roles.store');
             Route::get('/edit/{id}', 'RoleController@edit')->name('roles.edit');

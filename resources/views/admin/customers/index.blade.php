@@ -15,8 +15,9 @@
     </div>
     <div class="ms-auto">
         <div class="btn-group">
+            @if(Auth::guard('admin')->user()->can('customer-create'))
             <a href="{{route('admin.customers.create')}}" class="btn btn-primary">Create a New Customer</a>
-
+            @endif
         </div>
     </div>
 </div>
@@ -48,9 +49,13 @@
                                 <td>{{$val->phone ? $val->phone  : "NA"}}</td>
                                 <td>
                                     <div class="col">
+                                        @if(Auth::guard('admin')->user()->can('customer-edit'))
                                         <a title="Edit" href="{{route('admin.customers.edit',$val->id)}}" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
+                                        @endif
                                         <!-- <a title="Password Generate" href="{{--route('admin.customers.pw-generate',$val->id)--}}" class="btn1 btn-outline-success"><i class="lni lni-key me-0"></i></a> -->
+                                        @if(Auth::guard('admin')->user()->can('customer-delete'))
                                         <a title="Delete" class="btn1 btn-outline-danger trash remove-category" data-id="{{ $val->id }}" data-action="{{route('admin.customers.destroy', $val->id)}}"><i class="bx bx-trash me-0"></i></a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

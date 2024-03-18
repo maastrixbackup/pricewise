@@ -11,6 +11,19 @@ use App\Models\TvProduct;
 
 class FeatureController extends Controller
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:feature-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:feature-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:feature-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:feature-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *

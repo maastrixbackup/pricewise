@@ -7,6 +7,19 @@ use Illuminate\Http\Request;
 
 class PostController extends AdminController
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:post-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:post-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:post-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:post-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *

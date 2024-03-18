@@ -6,9 +6,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:category-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:category-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:category-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:category-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,6 +32,17 @@ class CategoryController extends Controller
     public function index()
     {
         $objCategory = Category::latest()->get();
+//if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
+//dd(\Auth::guard('admin')->user()->roles);
+// foreach (Auth::guard('admin')->user()->roles as $role) {
+//         $permissions = $role->permissions;
+//          echo $permission->name . "\n";
+//     }
+    // $permissions = Permission::all();
+
+    // foreach ($permissions as $permission) {
+    //     echo $permission->name . "\n";
+    // }
         return view('admin.categories.index', compact('objCategory'));
     }
 

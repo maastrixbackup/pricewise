@@ -54,10 +54,9 @@
 								<td>{{$role->code}}</td>
 								<td>
 									<div class="col">
-										@if(Gate::check('role-edit'))
-										<a title="Edit" href="{{route('admin.roles.edit', $role->id)}}" class="btn btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
+										@if(Auth::guard('admin')->user()->can('role-list'))
+										<a title="Edit" href="{{route('admin.roles.edit', $role->id)}}" class="btn btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>						
 										@endif
-
 										@if(Gate::check('role-delete'))
 										<a title="Delete" class="btn btn-outline-danger trash remove-role" data-id="{{ $role->id }}" data-action="{{route('admin.roles.destroy')}}"><i class="bx bx-trash me-0"></i></a>
 										@endif

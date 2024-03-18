@@ -11,6 +11,19 @@ use Brian2694\Toastr\Facades\Toastr;
 
 class userController extends Controller
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:user-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
