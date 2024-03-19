@@ -52,7 +52,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('internet-tv', 'TvInternetController');
         Route::post('/tv-product-update/{id}', 'TvProductController@tv_update')->name('tv-product-update');
         Route::resource('features', 'FeatureController');
-        Route::resource('tv-contract-lengths', 'TvContractLengthController');
+        //Route::resource('tv-contract-lengths', 'TvContractLengthController');
         Route::get('/tv-default/{id}', 'TvProductController@default')->name('tv-default');
         Route::post('/tv-default-update', 'TvProductController@default_update')->name('tv-default-update');
         Route::get('duplicate-tv/{id}', 'TvProductController@duplicate')->name('duplicate-tv');
