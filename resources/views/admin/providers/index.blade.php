@@ -16,8 +16,9 @@
     <div class="ms-auto">
         
         <div class="btn-group">
+            @if(Auth::guard('admin')->user()->can('providers-list'))
             <a href="{{route('admin.providers.create')}}" class="btn btn-primary">Create a New Provider</a>
-
+            @endif
         </div>
        
     </div>
@@ -36,7 +37,9 @@
                                 <th>Sl</th>
                                 <th>Name</th>
                                 <th>Category</th>
+                                @if(Auth::guard('admin')->user()->can('providers-list'))
                                 <th>Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -48,12 +51,12 @@
                                 <td>{{$val->categoryDetail ? $val->categoryDetail->name : "NA"}}</td>
                                 <td>
                                     <div class="col">
-                                        
+                                        @if(Auth::guard('admin')->user()->can('providers-edit'))
                                         <a title="Edit" href="{{route('admin.providers.edit',$val->id)}}" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
-                                        
-                                        
+                                        @endif
+                                        @if(Auth::guard('admin')->user()->can('providers-delete'))
                                         <a title="Delete" class="btn1 btn-outline-danger trash remove-category" data-id="{{ $val->id }}" data-action="{{route('admin.providers.destroy', $val->id)}}"><i class="bx bx-trash me-0"></i></a>
-                                        
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

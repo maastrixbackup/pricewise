@@ -36,6 +36,7 @@
                  </li> --}}
              </ul>
          </li>
+         @if(Auth::guard('admin')->user()->can('providers-list'))
           <li>
              <a href="{{route('admin.providers.index')}}">
                  <div class="parent-icon"><i class='bx bx-face'></i>
@@ -44,6 +45,8 @@
              </a>
 
          </li>
+         @endif
+         @if(Auth::guard('admin')->user()->can('category-list'))
          <li>
              <a href="{{route('admin.categories.index')}}">
                  <div class="parent-icon"><i class='bx bx-face'></i>
@@ -52,6 +55,8 @@
              </a>
 
          </li>
+         @endif
+         @if(Auth::guard('admin')->user()->can('feature-list'))
          <li>
              <a href="{{route('admin.features.index')}}">
                  <div class="parent-icon"><i class='bx bx-face'></i>
@@ -60,7 +65,7 @@
              </a>
 
          </li>
-
+         @endif
          <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="bx bx-category"></i>
@@ -68,8 +73,10 @@
                 <div class="menu-title">Products/Services</div>
             </a>
             <ul>
+                @if(Auth::guard('admin')->user()->can('internet-tv-list'))
                 <li> <a href="{{route('admin.internet-tv.index')}}"><i class="bx bx-right-arrow-alt"></i>Internet TV</a>
-                </li>                
+                </li>
+                @endif                
             </ul>
         </li>
          <!-- <li class="menu-label">ADMINISTRATION</li> -->
@@ -80,8 +87,10 @@
                  <div class="menu-title">Access Management</div>
              </a>
              <ul>
+                @if(Auth::guard('admin')->user()->can('user-list'))
                  <li> <a href="{{route('admin.users.index')}}"><i class="bx bx-right-arrow-alt"></i>Users</a>
                  </li>
+                 @endif
                  @if(Auth::guard('admin')->user()->can('role-list'))
                  <li> <a href="{{route('admin.roles.index')}}"><i class="bx bx-right-arrow-alt"></i>Roles</a>
                  </li>

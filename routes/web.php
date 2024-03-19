@@ -18,12 +18,14 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 Route::group(['prefix' => 'pricewise'], function () {
+	Route::get('/', function () {
+    return view('welcome');
+});
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__ . '/auth.php';
-
 
 
 // Admin 
@@ -50,7 +52,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('internet-tv', 'TvInternetController');
         Route::post('/tv-product-update/{id}', 'TvProductController@tv_update')->name('tv-product-update');
         Route::resource('features', 'FeatureController');
-        Route::resource('tv-contract-lengths', 'TvContractLengthController');
+        //Route::resource('tv-contract-lengths', 'TvContractLengthController');
         Route::get('/tv-default/{id}', 'TvProductController@default')->name('tv-default');
         Route::post('/tv-default-update', 'TvProductController@default_update')->name('tv-default-update');
         Route::get('duplicate-tv/{id}', 'TvProductController@duplicate')->name('duplicate-tv');
@@ -110,7 +112,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
         // Role
         Route::prefix('roles')->group(function () {
-            Route::get('/index', 'RoleController@index')->name('roles.index');
+            Route::get('/', 'RoleController@index')->name('roles.index');
             Route::get('/create', 'RoleController@create')->name('roles.create');
             Route::post('/store', 'RoleController@store')->name('roles.store');
             Route::get('/edit/{id}', 'RoleController@edit')->name('roles.edit');

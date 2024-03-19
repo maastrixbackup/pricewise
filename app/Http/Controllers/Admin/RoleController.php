@@ -86,7 +86,8 @@ class RoleController extends Controller
 		try {
 			$role = Role::create([
 				'name' => $request->input('name'),
-				'code' => $request->input('code')
+				'code' => $request->input('code'),
+				'slug' => $request->input('code')
 			]);
 			$role->syncPermissions($request->input('permission'));
 			Toastr::success(__('Role added successfully!'));
@@ -126,6 +127,7 @@ class RoleController extends Controller
 			$role = Role::find($id);
 			$role->name = $request->input('name');
 			$role->code = $request->input('code');
+			$role->slug = $request->input('code');
 			$role->save();
 			$role->syncPermissions($request->input('permission'));
 

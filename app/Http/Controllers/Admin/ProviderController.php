@@ -10,6 +10,19 @@ use App\Models\Provider;
 
 class ProviderController extends Controller
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:providers-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:providers-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:providers-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:providers-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *

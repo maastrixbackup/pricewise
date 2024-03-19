@@ -21,6 +21,19 @@ use Illuminate\Support\Facades\Auth;
 
 class TvInternetController extends Controller
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:internet-tv-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:internet-tv-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:internet-tv-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:internet-tv-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
