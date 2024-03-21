@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use UniSharp\LaravelFilemanager\Lfm;
+use Illuminate\Support\Facades\Artisan;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,6 +22,12 @@ Route::namespace('Admin')->name('admin.')->middleware('admin')->group(function (
 Route::get('file-manager', 'FileManagerController@index');
 });
 Route::group(['prefix' => 'pricewise'], function () {
+	Route::get('/run-command', function () {
+    // Call the Artisan command
+    Artisan::call('optimize:clear');
+     Artisan::call('permission:cache-reset');
+    return 'Command executed successfully!';
+});
 	Route::get('/', function () {
     return view('welcome');
 });
