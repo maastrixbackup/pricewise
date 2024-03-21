@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','NoPlan- Dashboard')
+@section('title','PriceWise- Dashboard')
 @section('content')
 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
     <div class="col">
@@ -7,7 +7,7 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div>
-                        <p class="mb-0 text-secondary">Total Orders</p>
+                        <p class="mb-0 text-secondary">Total Requests</p>
                         <h4 class="my-1 text-info">4805</h4>
                         <p class="mb-0 font-13">+2.5% from last week</p>
                     </div>
@@ -22,8 +22,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div>
-                        <p class="mb-0 text-secondary">Total Revenue</p>
-                        <h4 class="my-1 text-danger">$84,245</h4>
+                        <p class="mb-0 text-secondary">Revenue</p>
+                        <h4 class="my-1 text-danger">€84,245</h4>
                         <p class="mb-0 font-13">+5.4% from last week</p>
                     </div>
                     <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i class='bx bxs-wallet'></i>
@@ -37,8 +37,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div>
-                        <p class="mb-0 text-secondary">Bounce Rate</p>
-                        <h4 class="my-1 text-success">34.6%</h4>
+                        <p class="mb-0 text-secondary">Commisions</p>
+                        <h4 class="my-1 text-success">€34.6</h4>
                         <p class="mb-0 font-13">-4.5% from last week</p>
                     </div>
                     <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto"><i class='bx bxs-bar-chart-alt-2'></i>
@@ -147,13 +147,13 @@
                 </div>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Jeans <span class="badge bg-success rounded-pill">25</span>
+                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Modems <span class="badge bg-success rounded-pill">25</span>
                 </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">T-Shirts <span class="badge bg-danger rounded-pill">10</span>
+                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Wi-fi Routers <span class="badge bg-danger rounded-pill">10</span>
                 </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Shoes <span class="badge bg-primary rounded-pill">65</span>
+                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">FRITZ Box <span class="badge bg-primary rounded-pill">65</span>
                 </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Lingerie <span class="badge bg-warning text-dark rounded-pill">14</span>
+                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Router Stand <span class="badge bg-warning text-dark rounded-pill">14</span>
                 </li>
             </ul>
         </div>
@@ -165,7 +165,7 @@
     <div class="card-body">
         <div class="d-flex align-items-center">
             <div>
-                <h6 class="mb-0">Recent Orders</h6>
+                <h6 class="mb-0">Recent Requests</h6>
             </div>
             <div class="dropdown ms-auto">
                 <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
@@ -202,7 +202,7 @@
                         <td><img src="{{asset('assets/images/products/01.png')}}" class="product-img-2" alt="product img"></td>
                         <td>#9405822</td>
                         <td><span class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span></td>
-                        <td>$1250.00</td>
+                        <td>€1250.00</td>
                         <td>03 Feb 2020</td>
                         <td>
                             <div class="progress" style="height: 6px;">
@@ -216,7 +216,7 @@
                         <td><img src="{{asset('assets/images/products/02.png')}}" class="product-img-2" alt="product img"></td>
                         <td>#8304620</td>
                         <td><span class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span></td>
-                        <td>$1500.00</td>
+                        <td>€1500.00</td>
                         <td>05 Feb 2020</td>
                         <td>
                             <div class="progress" style="height: 6px;">
@@ -226,11 +226,11 @@
                     </tr>
 
                     <tr>
-                        <td>HD Hand Camera</td>
+                        <td>Full HD Sansui 32" Tv</td>
                         <td><img src="{{asset('assets/images/products/03.png')}}" class="product-img-2" alt="product img"></td>
                         <td>#4736890</td>
                         <td><span class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span></td>
-                        <td>$1400.00</td>
+                        <td>€1400.00</td>
                         <td>06 Feb 2020</td>
                         <td>
                             <div class="progress" style="height: 6px;">
@@ -240,11 +240,11 @@
                     </tr>
 
                     <tr>
-                        <td>Clasic Shoes</td>
+                        <td>Clasic 100MB Internet</td>
                         <td><img src="{{asset('assets/images/products/04.png')}}" class="product-img-2" alt="product img"></td>
                         <td>#8543765</td>
                         <td><span class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span></td>
-                        <td>$1200.00</td>
+                        <td>€1200.00</td>
                         <td>14 Feb 2020</td>
                         <td>
                             <div class="progress" style="height: 6px;">
@@ -253,11 +253,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Sitting Chair</td>
+                        <td>KPN Super Fast 50 MBPS Optical Internet</td>
                         <td><img src="{{asset('assets/images/products/06.png')}}" class="product-img-2" alt="product img"></td>
                         <td>#9629240</td>
                         <td><span class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span></td>
-                        <td>$1500.00</td>
+                        <td>€1500.00</td>
                         <td>18 Feb 2020</td>
                         <td>
                             <div class="progress" style="height: 6px;">
@@ -266,11 +266,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Hand Watch</td>
+                        <td>SOLCON Internet & Tv</td>
                         <td><img src="{{asset('assets/images/products/05.png')}}" class="product-img-2" alt="product img"></td>
                         <td>#8506790</td>
                         <td><span class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span></td>
-                        <td>$1800.00</td>
+                        <td>€1800.00</td>
                         <td>21 Feb 2020</td>
                         <td>
                             <div class="progress" style="height: 6px;">
@@ -422,7 +422,7 @@
                 <p class="font-weight-bold mb-1 text-secondary">Weekly Revenue</p>
                 <div class="d-flex align-items-center mb-4">
                     <div>
-                        <h4 class="mb-0">$89,540</h4>
+                        <h4 class="mb-0">€89,540</h4>
                     </div>
                     <div class="">
                         <p class="mb-0 align-self-center font-weight-bold text-success ms-2">4.4% <i class="bx bxs-up-arrow-alt mr-2"></i>
@@ -440,7 +440,7 @@
             <div class="card-header bg-transparent">
                 <div class="d-flex align-items-center">
                     <div>
-                        <h6 class="mb-0">Orders Summary</h6>
+                        <h6 class="mb-0">Request Summary</h6>
                     </div>
                     <div class="dropdown ms-auto">
                         <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
@@ -506,14 +506,14 @@
             <div class="row row-group border-top g-0">
                 <div class="col">
                     <div class="p-3 text-center">
-                        <h4 class="mb-0 text-danger">$45,216</h4>
-                        <p class="mb-0">Clothing</p>
+                        <h4 class="mb-0 text-danger">€45,216</h4>
+                        <p class="mb-0">Internet</p>
                     </div>
                 </div>
                 <div class="col">
                     <div class="p-3 text-center">
-                        <h4 class="mb-0 text-success">$68,154</h4>
-                        <p class="mb-0">Electronic</p>
+                        <h4 class="mb-0 text-success">€68,154</h4>
+                        <p class="mb-0">Tv</p>
                     </div>
                 </div>
             </div>
