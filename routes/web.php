@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use UniSharp\LaravelFilemanager\Lfm;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::namespace('Admin')->name('admin.')->middleware('admin')->group(function () {
+Route::get('file-manager', 'FileManagerController@index');
+});
 Route::group(['prefix' => 'pricewise'], function () {
 	Route::get('/', function () {
     return view('welcome');
@@ -27,9 +30,13 @@ Route::get('/dashboard', function () {
 
 require __DIR__ . '/auth.php';
 
-
+// Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']],  function () {
+// 		    Lfm::routes();
+// 		});
 // Admin 
+
 Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
+
     Route::namespace('Auth')->middleware('guest:admin')->group(function () {
         // login route
         Route::get('login', 'AuthenticatedSessionController@create')->name('login');
@@ -41,6 +48,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('reset-password', 'NewPasswordController@store')->name('password.update');
     });
     Route::middleware('admin')->group(function () {
+    	Route::get('file-manager', 'FileManagerController@index');
+    	Route::resource('email-templates', 'EmailTemplateController');
         Route::get('dashboard', 'HomeController@index')->name('dashboard');
         Route::get('admin-test', 'HomeController@adminTest')->name('admintest');
         Route::get('editor-test', 'HomeController@editorTest')->name('editortest');

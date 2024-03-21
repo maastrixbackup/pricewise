@@ -43,7 +43,7 @@ class PasswordResetLinkController extends Controller
             'created_at'=>Carbon::now()
         ]);
         $action_link = route('admin.password.reset',['token'=>$token,'email'=>$request->email]);
-        $body = "We are received a request to reset the password for Solfehx account associated with ".$request->email.
+        $body = "We are received a request to reset the password for Price Compare account associated with ".$request->email.
         ".You can reset your password by clicking the link below " ;
 
        
