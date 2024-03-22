@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','POPTelecom- Driver Create')
+@section('title','Price Compare- Email Template Create')
 @section('content')
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -122,7 +122,7 @@
         let y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight
 
         tinymce.activeEditor.windowManager.openUrl({
-          url : 'http://192.168.1.44:8000/file-manager/tinymce5',
+          url : '/file-manager/tinymce5',
           title : 'Laravel File manager',
           width : x * 0.8,
           height : y * 0.8,

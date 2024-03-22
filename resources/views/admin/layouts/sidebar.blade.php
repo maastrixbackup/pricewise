@@ -101,7 +101,7 @@
                  @endif
              </ul>
          </li>
-         <li>
+         <!-- <li>
              <a href="javascript:;" class="has-arrow">
                  <div class="parent-icon"><i class="bx bx-mail-send"></i>
                  </div>
@@ -114,7 +114,7 @@
                      <a href="{{route('admin.contacts-list')}}"><i class="bx bx-right-arrow-alt"></i>Contacts List</a>
                  </li>
              </ul>
-         </li>
+         </li> -->
          <li>
              <a href="javascript:;" class="has-arrow">
                  <div class="parent-icon"><i class="bx bx-cog"></i>
@@ -125,8 +125,8 @@
                  <li>
                      <a href="{{route('admin.website-setting')}}"><i class="bx bx-right-arrow-alt"></i>Website Setting</a>
                      <a href="{{route('admin.email-templates.index')}}"><i class="bx bx-right-arrow-alt"></i>Email Templates</a>
-                     
-
+                     <a href="{{route('admin.smtp-setting')}}"><i class="bx bx-right-arrow-alt"></i>SMTP Setting</a>
+                     <a href="{{route('admin.payment-setting')}}"><i class="bx bx-right-arrow-alt"></i>Payment Setting</a>
                  </li>
              </ul>
          </li>

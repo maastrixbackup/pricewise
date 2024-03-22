@@ -114,7 +114,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         //Website Setting
         Route::get('website-setting', 'SettingController@websiteEdit')->name('website-setting');
         Route::post('website-store', 'SettingController@websiteStore')->name('website-store');
-
+        Route::get('smtp-setting', 'SettingController@smtpEdit')->name('smtp-setting');
+        Route::post('smtp-store', 'SettingController@smtpStore')->name('smtp-store');
+        Route::get('payment-setting', 'SettingController@paymentEdit')->name('payment-setting');
+        Route::post('payment-store', 'SettingController@paymentStore')->name('payment-store');
         //Newsletter Template
         Route::get('newsletter-template', 'NewsletterTemplateController@index')->name('newsletter-template');
         Route::get('newsletter-template-view/{id}', 'NewsletterTemplateController@show')->name('newsletter-template-view');
