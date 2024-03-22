@@ -16,6 +16,7 @@ if ($config->getAcl()) {
 
 Route::group([
     'middleware' => $middleware,
+    //'prefix'     => $config->getRoutePrefix(),
     'prefix'     => $config->getRoutePrefix(),
     'namespace'  => 'Alexusmai\LaravelFileManager\Controllers',
 ], function () {

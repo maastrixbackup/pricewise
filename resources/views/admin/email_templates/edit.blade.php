@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','POPTelecom- Driver Edit')
+@section('title','Price Compare- Email Template Edit')
 @section('content')
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">

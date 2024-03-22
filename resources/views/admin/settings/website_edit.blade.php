@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','POPTelecom- Website Setting')
+@section('title','Price Compare- Website Setting')
 @section('content')
 
 <!--breadcrumb-->
@@ -16,15 +16,21 @@
     </div>
 </div>
 <!--end breadcrumb-->
-<div class="row">
-    <div class="col-12 col-lg-6">
-        <div class="card">
+
+    <div class="card">
             <div class="card-header px-4 py-3">
                 <h5 class="mb-0">Website Setting</h5>
             </div>
-            <div class="card-body p-4">
-                <form id="websiteForm" method="post" action="{{route('admin.website-store')}}">
+            <form id="websiteForm" method="post" action="{{route('admin.website-store')}}">
                     @csrf
+    <div class="row">
+    
+    <div class="col-12 col-lg-6 col-md-6">        
+            <div class="card-body p-4">   
+                    <div class="mb-3">
+                        <label for="site_title" class="col-form-label">Website Title</label>
+                        <input type="text" class="form-control" id="site_title" name="site_title" placeholder="Site Title" value="{{$website->site_title}}">
+                    </div>
                     <div class="mb-3">
                         <label for="input35" class="col-form-label">Website Description</label>
                         <textarea type="text" class="form-control" id="description" name="description" placeholder="Description.." > {{$website->description}}</textarea>
@@ -45,6 +51,31 @@
                         <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{$website->email}}">
                     </div>
 
+                    
+
+                    <label class="col-form-label"></label>
+
+                    <div class="d-md-flex d-grid align-items-center gap-3">
+                        <button type="submit" class="btn btn-primary px-4" name="submit2">Update</button>
+
+                    </div>
+                
+            </div>
+        </div>
+    
+    <div class="col-12 col-lg-6 col-md-6">        
+            <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label for="image_label">Logo</label>
+                        <div class="input-group">
+                            <img src="{{$website->logo}}" id="profile-pic" width="200">
+                            <input type="text" id="image_label" class="form-control" name="image"
+                                   aria-label="Image" aria-describedby="button-image">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="button-image">Select</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="input35" class="col-form-label">Facebook</label>
                         <input type="text" class="form-control" id="facebook" name="facebook" placeholder="Facebook" value="{{$website->facebook}}">
@@ -64,29 +95,38 @@
                         <input type="text" class="form-control" id="linkedin" name="linkedin" placeholder="LinkedIn" value="{{$website->linkedin}}">
                     </div>
                     <div class="mb-3">
-                        <label for="input35" class="col-form-label">Tiktok</label>
-                        <input type="text" class="form-control" id="Tiktok" name="tiktok" placeholder="Tiktok" value="{{$website->tiktok}}">
+                        <label for="input35" class="col-form-label">Telegram</label>
+                        <input type="text" class="form-control" id="telegram" name="telegram" placeholder="Telegram" value="{{$website->telegram}}">
                     </div>
                     <div class="mb-3">
                         <label for="input35" class="col-form-label">YouTube</label>
                         <input type="text" class="form-control" id="YouTube" name="youTube" placeholder="YouTube" value="{{$website->youTube}}">
                     </div>
-
-                    <label class="col-form-label"></label>
-
-                    <div class="d-md-flex d-grid align-items-center gap-3">
-                        <button type="submit" class="btn btn-primary px-4" name="submit2">Update</button>
-
-                    </div>
-                </form>
             </div>
-        </div>
+                   
     </div>
+</div>
+ </form>
 </div>
 @endsection
 @push('scripts')
 <script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
 <script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+    document.getElementById('button-image').addEventListener('click', (event) => {
+      event.preventDefault();
+
+      window.open('http://192.168.1.44:8000/file-manager/fm-button', 'fm', 'width=1400,height=800');
+    });
+  });
+
+  // set file link
+  function fmSetLink($url) {
+    document.getElementById('image_label').value = $url;
+    document.getElementById('profile-pic').src = $url;
+  }
     //CKEDITOR.replace('description', {
    // allowedContent: true
 //});
