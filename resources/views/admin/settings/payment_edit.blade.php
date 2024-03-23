@@ -27,7 +27,7 @@
                     @csrf
                     @foreach($paymentSetting as $key=>$payment2)
                     <div class="card-header px-4 py-3">
-                        <h4 class="mb-0">{{strtoupper($key)}}</h4>
+                        <h4 class="mb-0" style="margin-left: -20px !important">{{strtoupper($key)}}</h4>
                     </div>
                     @foreach($payment2 as $payment)
                     <div class="mb-3">
