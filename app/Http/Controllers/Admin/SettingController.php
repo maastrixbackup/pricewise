@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\WebsiteSetting;
+use App\Models\Setting;
 use App\Models\MailchimpSetting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
@@ -116,24 +117,27 @@ class SettingController extends Controller
 
     public function paymentEdit()
     {
-        $mailchimp = Setting::where('');
-        return view('admin.settings.mailchimp_edit', compact('mailchimp'));
+        $paymentSetting = Setting::where('type', 'payment_setting')->orderBy('key', 'asc')->get()->groupBy('sub_type');
+        //dd($paymentSetting);
+        return view('admin.settings.payment_edit', compact('paymentSetting'));
     }
 
 
-    public function paymentStore(Request $request)
-    {
-
-        $mailchimp = MailchimpSetting::find(1);
-        $mailchimp->mailchimp_key = $request->mailchimp_key;
-        $mailchimp->listId = $request->listId;
-        if ($mailchimp->save()) {
-            $message = array('message' => 'Updated Successfully', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
-        } else {
-            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            return response()->json(["status" => false, 'message' => $message]);
+    public function paymentStore(Request $request){    
+        try{
+        foreach($request->input('payment') as $key => $value){          
+           Setting::where('type','payment_setting')->where('key', $key)
+        ->update(['value' => $value]);
         }
+        $message = array('message' => 'Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
+        } catch (\Exception $e) {
+            $errorMessage = 'Failed to update Payment settings: ' . $e->getMessage();
+    // Log the error for further investigation
+    \Log::error($errorMessage);
+        $message = ['message' => 'Failed to update Payment settings', 'title' => 'Error'];
+        return response()->json(['status' => false, 'message' => $message]);
+    }
     }
 
 }
