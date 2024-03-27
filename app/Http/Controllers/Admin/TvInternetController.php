@@ -13,6 +13,7 @@ use App\Models\DefaultProduct;
 use App\Models\AdditionalInfo;
 use App\Models\ShopProduct;
 use App\Models\Category;
+use App\Models\PostFeature;
 use App\Models\Affiliate;
 use App\Models\TvFeature;
 use Brian2694\Toastr\Facades\Toastr;
@@ -361,130 +362,27 @@ class TvInternetController extends Controller
         return view('admin.TvInternetProducts.default', compact('product', 'data', 'manda_data'));
     }
 
-    public function default_update(Request $request)
-    {
-
-        if (isset($request->related_product_ids)) {
-            foreach ($request->related_product_ids as $val) {
-                $addinfo = ShopProduct::where('id', $val)->first();
-                $category = ShopCategory::where('id',  $addinfo->category_id)->first();
-
-                $default = DefaultProduct::where('default_product_category_id', $category->id)->where('product_id', $request->product_id)->where('product_type', 'tv')->where('default_product_type', 'related_product')->first();
-
-                if ($default) {
-                    $objDefault = DefaultProduct::find($default->id);
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id = $val;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'related_product';
-                    $objDefault->is_default = 1;
-                    $objDefault->save();
-                } else {
-                    $objDefault = new DefaultProduct();
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id =  $val;
-                    $objDefault->default_product_type = $request->add;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'related_product';
-                    $objDefault->is_default = 1;
-                    $objDefault->save();
-                }
-            }
+    public function internet_feature_update(Request $request, $post_id)
+    {//dd($request->category_id);
+        $category_id = $request->category_id;
+        try{
+        foreach($request->input('features') as $feature_id => $value){
+            if($value != null && $category_id !=null){
+                
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $category_id, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $category_id, 'feature_id' => $feature_id, 'feature_value' => $value]);
+            
         }
-
-        if (isset($request->mandatory_related_product_ids)) {
-            foreach ($request->mandatory_related_product_ids as $val) {
-                $addinfo = ShopProduct::where('id', $val)->first();
-                $addinfo->is_mandatory = 1;
-                $addinfo->save();
-                $category = ShopCategory::where('id',  $addinfo->category_id)->first();
-                $default = DefaultProduct::where('default_product_category_id', $category->id)->where('product_id', $request->product_id)->where('product_type', 'tv')->where('default_product_type', 'related_product')->where('is_mandatory', "1")->first();
-
-                if ($default) {
-                    $objDefault = DefaultProduct::find($default->id);
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id = $val;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'related_product';
-                    $objDefault->is_mandatory = 1;
-                    $objDefault->save();
-                } else {
-                    $objDefault = new DefaultProduct();
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id =  $val;
-                    $objDefault->default_product_type = $request->add;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'related_product';
-                    $objDefault->is_mandatory = 1;
-                    $objDefault->save();
-                }
-            }
         }
-        if (isset($request->addon_ids)) {
-            foreach ($request->addon_ids as $val) {
-                $addinfo = AdditionalInfo::where('id', $val)->first();
-                $category = AdditionalCategory::where('id',  $addinfo->add_cat_id)->first();
-
-                $default = DefaultProduct::where('default_product_category_id', $category->id)->where('product_id', $request->product_id)->where('product_type', 'tv')->where('default_product_type', 'addon')->first();
-                if ($default) {
-                    $objDefault = DefaultProduct::find($default->id);
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id = $val;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'addon';
-                    $objDefault->is_default = 1;
-                    $objDefault->save();
-                } else {
-                    $objDefault = new DefaultProduct();
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id =  $val;
-                    $objDefault->default_product_type = $request->add;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'addon';
-                    $objDefault->is_default = 1;
-                    $objDefault->save();
-                }
-            }
+        }catch(\Exception $e){
+            $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
+        // Log the error for further investigation
+        \Log::error($errorMessage);
+            $message = ['message' =>  $errorMessage, 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
         }
-        if (isset($request->mandatory_addon_ids)) {
-            foreach ($request->mandatory_addon_ids as $val) {
-                $addinfo = AdditionalInfo::where('id', $val)->first();
-                $category = AdditionalCategory::where('id',  $addinfo->add_cat_id)->first();
-                $addinfo->is_mandatory = 1;
-                $addinfo->save();
-                $default = DefaultProduct::where('default_product_category_id', $category->id)->where('product_id', $request->product_id)->where('product_type', 'tv')->where('default_product_type', 'addon')->where('is_mandatory', "1")->first();
-
-                if ($default) {
-                    $objDefault = DefaultProduct::find($default->id);
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id = $val;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'addon';
-                    $objDefault->is_mandatory = 1;
-                    $objDefault->save();
-                } else {
-                    $objDefault = new DefaultProduct();
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_id = $request->product_id;
-                    $objDefault->product_type = 'tv';
-                    $objDefault->default_product_id =  $val;
-                    $objDefault->default_product_type = $request->add;
-                    $objDefault->default_product_category_id = $category->id;
-                    $objDefault->default_product_type = 'addon';
-                    $objDefault->is_mandatory = 1;
-                    $objDefault->save();
-                }
-            }
-        }
-        return redirect()->back()->with(["status" => true, Toastr::success('Success', '', ["positionClass" => "toast-top-right"])]);
+        $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
+        
     }
 
     public function duplicate(Request $request, $id)

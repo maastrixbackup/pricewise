@@ -92,31 +92,7 @@
                 { text: 'C#', value: 'csharp' },
                 { text: 'C++', value: 'cpp' }
             ],
-        // file_picker_callback: function(callback, value, meta) {
-        //     // Open Laravel File Manager file picker dialog
-        //     // Replace 'laravel-filemanager' with the appropriate route prefix for your application
-        //     var route_prefix = "{{url('unisharp.lfm.show')}}";
-        //     //var url = route_prefix + '?type=' + meta.filetype;
-        //     var url = "http://192.168.1.44:8000/file-manager/fm-button";
-        //     tinymce.activeEditor.windowManager.openUrl({
-        //         url: url,
-        //         title: 'File Manager',
-        //         width: 900,
-        //         height: 600,
-        //         resizable: 'yes',
-        //         close_previous: 'no',
-        //         inline: 'yes',
-        //         popup_css: true,
-        //         onMessage: function(api, message) {
-        //         // Handle message from file manager
-        //         if (message.mceAction === 'insert') {
-        //             // Insert selected image into editor
-        //             callback(message.url);
-        //             api.close();
-        //         }
-        //     }
-        //     });
-        // }
+       
          file_picker_callback (callback, value, meta) {
         let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth
         let y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight

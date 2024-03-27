@@ -304,9 +304,9 @@
             </div>
 
             <div class="tab-pane fade" id="internet" role="tabpanel">
-                <form id="internetForm" method="post" action="" enctype="multipart/form-data">
+                <form id="internetForm" method="post" action="{{route('admin.internet_feature_update', $objTv->id)}}" enctype="multipart/form-data">
                     @csrf
-                    
+                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
                             <h5 class="mb-0">Edit Internet Features</h5>
@@ -319,12 +319,12 @@
                                 @if($elm->input_type == "text")
                                 <div class="mb-3">
                                     <label for="input35" class="col-sm-3 col-form-label">{{$elm->features}}</label>
-                                    <input type="text" class="form-control" id="" name="features[]" placeholder="" value="">
+                                    <input type="text" class="form-control" id="" name="features[{{$elm->id}}]" placeholder="" value="">
                                 </div>
                                 @endif
                                 @if($elm->input_type == "checkbox")
                                 <div class="form-check">
-			                    <input class="form-check-input" type="checkbox"  name="features[]" value="1" >
+			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" >
 			                    <label class="form-check-label" for="mechanic_charge">{{$elm->features}}</label>
 			                    </div>
                                 @endif
@@ -350,12 +350,12 @@
 
             <div class="tab-pane fade" id="tv" role="tabpanel">
                 
-                   <form id="tvForm" method="post" action="" enctype="multipart/form-data">
+                   <form id="tvForm" method="post" action="{{route('admin.tv_feature_update', $objTv->id)}}" enctype="multipart/form-data">
                     @csrf
-                    
+                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Edit Internet Features</h5>
+                            <h5 class="mb-0">Edit Tv Features</h5>
                         </div>
                         <div class="col-md-7 col-12">
                             <div class="card-body p-4">
@@ -454,14 +454,7 @@
         extraPlugins: 'colorbutton'
     });
 </script>
-<script>
-    $(document).ready(function() {
-        $('#affiliate_name').on('change', function() {
-            $("temp_old").hide();
-            $("#temp").show();
-        });
-    });
-</script>
+
 <script type="text/javascript">
     $("#productForm").validate({
         errorElement: 'span',
@@ -514,7 +507,94 @@
             return false;
         }
     });
+$("#internetForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
 
+        
+        submitHandler: function(form) {
+            var data = CKEDITOR.instances.description.getData();
+            $("#description").val(data);
+            var formData = new FormData(form);
+            alert(form.action)
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.error(data.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Already Exists!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+$("#tvForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            var data = CKEDITOR.instances.description.getData();
+            $("#description").val(data);
+            var formData = new FormData(form);
+            alert(form.action)
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.error(data.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Something went wrong!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
     $("#title").keyup(function() {
         var title_val = $("#title").val();
         $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));

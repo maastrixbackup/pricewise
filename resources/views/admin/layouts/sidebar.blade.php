@@ -66,6 +66,26 @@
 
          </li>
          @endif
+         @if(Auth::guard('admin')->user()->can('page-list'))
+         <li>
+             <a href="{{route('admin.pages.index')}}">
+                 <div class="parent-icon"><i class='bx bx-face'></i>
+                 </div>
+                 <div class="menu-title">Pages</div>
+             </a>
+
+         </li>
+         @endif
+         @if(Auth::guard('admin')->user()->can('banner-list'))
+         <li>
+             <a href="{{route('admin.banners.index')}}">
+                 <div class="parent-icon"><i class='bx bx-face'></i>
+                 </div>
+                 <div class="menu-title">Banners</div>
+             </a>
+
+         </li>
+         @endif
          <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="bx bx-category"></i>
