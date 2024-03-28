@@ -9,7 +9,7 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.internet-tv.index')}}">Tv Products</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.internet-tv.index')}}">Internet Tv</a></li>
             </ol>
         </nav>
     </div>
@@ -31,7 +31,7 @@
                     <div class="d-flex align-items-center">
                     <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
-                        <div class="tab-title">Internet Feature</div>
+                        <div class="tab-title">Internet Features</div>
                     </div>
                 </a>
             </li>
@@ -41,7 +41,7 @@
                     <div class="d-flex align-items-center">
                         <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
-                        <div class="tab-title">Tv Feature</div>
+                        <div class="tab-title">Tv Features</div>
                     </div>
                 </a>
             </li>
@@ -51,7 +51,16 @@
                     <div class="d-flex align-items-center">
                         <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
-                        <div class="tab-title">Meta Tag</div>
+                        <div class="tab-title">Telephone Features</div>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#serviceInfo" role="tab" aria-selected="false">
+                    <div class="d-flex align-items-center">
+                        <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
+                        </div>
+                        <div class="tab-title">Service Info</div>
                     </div>
                 </a>
             </li>
@@ -275,7 +284,7 @@
                                                 
                                 
                                 
-                                                <label for="input35" class="col-form-label"><b>Combo Products</b></label>
+                                                <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                                                 <div class="mb-3 add-scroll">
                                                     @if($objRelatedProducts)
                                                     @foreach($objRelatedProducts as $val)
@@ -304,7 +313,7 @@
             </div>
 
             <div class="tab-pane fade" id="internet" role="tabpanel">
-                <form id="internetForm" method="post" action="{{route('admin.internet_feature_update', $objTv->id)}}" enctype="multipart/form-data">
+                <form id="internetForm" method="post" action="{{route('admin.internet_feature_update', $objTv->id)}}">
                     @csrf
                     <input type="hidden" name="category_id" value="{{$objTv->category}}">
                     <div class="row">
@@ -316,16 +325,19 @@
 
                             	@if($objInternetFeatures)
                                 @foreach($objInternetFeatures as $elm)
+                                @php                                
+                                $value = $postInternetFeatures[trim($elm->id)] ?? '';
+                                @endphp
                                 @if($elm->input_type == "text")
                                 <div class="mb-3">
-                                    <label for="input35" class="col-sm-3 col-form-label">{{$elm->features}}</label>
-                                    <input type="text" class="form-control" id="" name="features[{{$elm->id}}]" placeholder="" value="">
+                                    <label for="text_{{$elm->id}}" class="col-sm-3 col-form-label">{{$elm->features}}</label>
+                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{$value}}">
                                 </div>
                                 @endif
                                 @if($elm->input_type == "checkbox")
                                 <div class="form-check">
-			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" >
-			                    <label class="form-check-label" for="mechanic_charge">{{$elm->features}}</label>
+			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if($value == 1)checked @endif>
+			                    <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
 			                    </div>
                                 @endif
                                 @endforeach
@@ -340,7 +352,7 @@
                         <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-8">
                             <div class="d-md-flex d-grid align-items-center gap-3">
-                                <button type="submit" id="submitBtn" class="btn btn-primary px-4">Submit</button>
+                                <button type="submit" id="submitBtn2" class="btn btn-primary px-4" value="Submit">Save</button>
                                 <button type="reset" class="btn btn-light px-4">Reset</button>
                             </div>
                         </div>
@@ -362,16 +374,19 @@
 
                             	@if($objTvFeatures)
                                 @foreach($objTvFeatures as $elm)
+                                @php                                
+                                $tvValue = $postTvFeatures[trim($elm->id)] ?? '';
+                                @endphp
                                 @if($elm->input_type == "text")
                                 <div class="mb-3">
-                                    <label for="input35" class="col-sm-3 col-form-label">{{$elm->features}}</label>
-                                    <input type="text" class="form-control" id="" name="features[]" placeholder="" value="">
+                                    <label for="text_{{$elm->id}}" class="col-sm-3 col-form-label">{{$elm->features}}</label>
+                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{$tvValue}}">
                                 </div>
                                 @endif
                                 @if($elm->input_type == "checkbox")
                                 <div class="form-check">
-			                    <input class="form-check-input" type="checkbox"  name="features[]" value="1" >
-			                    <label class="form-check-label" for="mechanic_charge">{{$elm->features}}</label>
+			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if($tvValue == 1)checked @endif>
+			                    <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
 			                    </div>
 			                    @endif
                                 @endforeach
@@ -386,7 +401,7 @@
                         <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-8">
                             <div class="d-md-flex d-grid align-items-center gap-3">
-                                <button type="submit" id="submitBtn" class="btn btn-primary px-4">Submit</button>
+                                <button type="submit" id="submitBtn3" class="btn btn-primary px-4" value="Submit">Save</button>
                                 <button type="reset" class="btn btn-light px-4">Reset</button>
                             </div>
                         </div>
@@ -397,30 +412,82 @@
 
 
             <div class="tab-pane fade" id="meta" role="tabpanel">
-                <form id="offerForm" method="post" action="" enctype="multipart/form-data">
+                <form id="teleForm" method="post" action="{{route('admin.tele_feature_update', $objTv->id)}}" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Edit Meta Section</h5>
+                            <h5 class="mb-0">Edit Telephone Section</h5>
                         </div>
                         <div class="col-md-7 col-12">
                             <div class="card-body p-4">
 
 
+                                @if($objTeleFeatures)
+                                @foreach($objTeleFeatures as $elm)
+                                @php                                
+                                $telValue = $postTeleFeatures[trim($elm->id)] ?? '';
+                                @endphp
+                                @if($elm->input_type == "text")
                                 <div class="mb-3">
-                                    <label for="input35" class="col-sm-3 col-form-label">Meta Title</label>
-                                    <input type="text" class="form-control" id="meta_tag" name="meta_tag" placeholder="Meta Tag" value="">
+                                    <label for="text_{{$elm->id}}" class="col-sm-3 col-form-label">{{$elm->features}}</label>
+                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{$telValue}}">
+                                </div>
+                                @endif
+                                @if($elm->input_type == "checkbox")
+                                <div class="form-check">
+                                <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if($telValue == 1)checked @endif>
+                                <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
+                                </div>
+                                @endif
+                                @endforeach
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <div class="d-md-flex d-grid align-items-center gap-3">
+                                <button type="submit" id="submitBtn4" class="btn btn-primary px-4" value="Save">Save</button>
+                                <button type="reset" class="btn btn-light px-4">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="serviceInfo" role="tabpanel">
+                <form id="infoForm" method="post" action="{{route('admin.service_info_update', $objTv->id)}}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
+                    <div class="row">
+                        <div class="card-header px-4 py-3">
+                            <h5 class="mb-0">Edit Service Info</h5>
+                        </div>
+                        <div class="col-md-7 col-12">
+                            <div class="card-body p-4">
+
+                                <div class=" mb-3">
+                                    <label for="internet_guarantee" class=" col-form-label">Internet Guarantee</label>
+                                    <textarea class="form-control" name="internet_guarantee" id="internet_guarantee" placeholder="Internet Guarantee">{{$serviceInfo[0]->feature_value??''}}</textarea>
+                                </div>
+                                
+                                <div class=" mb-3">
+                                    <label for="tr_info" class=" col-form-label">Transfer Information</label>
+                                    <textarea class="form-control" name="transfer_info" id="tr_info" placeholder="Transfer Information">{{$serviceInfo[0]->feature_value??''}}</textarea>
+                                </div>
+                                <div class=" mb-3">
+                                    <label for="active_service_info" class=" col-form-label">If Already have a Service</label>
+                                    <textarea class="form-control" name="active_service_info" id="active_service_info" placeholder="Active Service Information">{{$serviceInfo[0]->feature_value??''}}</textarea>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="input35" class="col-sm-3 col-form-label">Meta Keyword</label>
-                                    <input type="text" class="form-control" id="meta_keyword" name="meta_keyword" placeholder="Meta Keyword" value="">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="input40" class="col-sm-34 col-form-label">Meta Description </label>
-                                    <textarea type="text" class="form-control" id="meta_desc" name="meta_desc" placeholder="Description ..." rows="3"></textarea>
-
+                                <div class=" mb-3">
+                                    <label for="mechanic_service_info" class=" col-form-label">Mechanic Service</label>
+                                    <textarea class="form-control" name="mechanic_service_info" id="active_service_info" placeholder="Mechanic Service Information">{{$serviceInfo[0]->feature_value??''}}</textarea>
                                 </div>
 
                             </div>
@@ -432,13 +499,14 @@
                         <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-8">
                             <div class="d-md-flex d-grid align-items-center gap-3">
-                                <button type="submit" id="submitBtn" class="btn btn-primary px-4">Submit</button>
+                                <button type="submit" id="submitBtn4" class="btn btn-primary px-4" value="Save">Save</button>
                                 <button type="reset" class="btn btn-light px-4">Reset</button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
@@ -520,28 +588,28 @@ $("#internetForm").validate({
 
         
         submitHandler: function(form) {
-            var data = CKEDITOR.instances.description.getData();
-            $("#description").val(data);
-            var formData = new FormData(form);
-            alert(form.action)
+            // var data = CKEDITOR.instances.description.getData();
+            // $("#description").val(data);
+            //var formData = new FormData(form);
+            //alert(form.action)
             $.ajax({
 
                 url: form.action,
                 method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: formData,
-                processData: false,
-                contentType: false,
+                // headers: {
+                //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                // },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
                 success: function(data) {
                     //success
 
                     if (data.status) {
                         //location.href = data.redirect_location;
-                        toastr.error(data.message, '');
+                        toastr.success(data.message.message, '');
                     } else {
-                        toastr.error(data.message.message, 'Already Exists!');
+                        toastr.error(data.message.message, '');
                     }
                 },
                 error: function(e) {
@@ -564,10 +632,10 @@ $("#tvForm").validate({
 
         
         submitHandler: function(form) {
-            var data = CKEDITOR.instances.description.getData();
-            $("#description").val(data);
-            var formData = new FormData(form);
-            alert(form.action)
+            // var data = CKEDITOR.instances.description.getData();
+            // $("#description").val(data);
+            // var formData = new FormData(form);
+            // alert(form.action)
             $.ajax({
 
                 url: form.action,
@@ -575,15 +643,103 @@ $("#tvForm").validate({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: formData,
-                processData: false,
-                contentType: false,
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
                 success: function(data) {
                     //success
 
                     if (data.status) {
                         //location.href = data.redirect_location;
-                        toastr.error(data.message, '');
+                        toastr.success(data.message.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Something went wrong!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+$("#teleForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            // var data = CKEDITOR.instances.description.getData();
+            // $("#description").val(data);
+            // var formData = new FormData(form);
+            // alert(form.action)
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.success(data.message.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Something went wrong!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+$("#infoForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            // var data = CKEDITOR.instances.description.getData();
+            // $("#description").val(data);
+            // var formData = new FormData(form);
+            // alert(form.action)
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.success(data.message.message, '');
                     } else {
                         toastr.error(data.message.message, 'Something went wrong!');
                     }

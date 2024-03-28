@@ -53,7 +53,44 @@
 
             </select>
         </div>
-
+    </div>
+    <div class="row">
+        <div class="col-lg-3 mb-2">
+            <label for="internet" class="col-form-label">Internet
+            </label>
+            <select id="internet" name="internet" class="select2 form-select">
+                <option value="">All</option>
+                @if($objInternetFeatures)
+                @foreach($objInternetFeatures as $internet)
+                <option value="{{$internet->id}}">{{$internet->features}}</option>
+                @endforeach
+                @endif
+            </select>
+        </div>
+        <div class="col-lg-3 mb-2">
+            <label for="tv" class="col-form-label">Tv
+            </label>
+            <select id="tv" name="tv" class="select2 form-select">
+                <option value="">All</option>
+                @if($objTvFeatures)
+                @foreach($objTvFeatures as $tv)
+                <option value="{{$tv->id}}">{{$tv->features}}</option>
+                @endforeach
+                @endif
+            </select>
+        </div>
+        <div class="col-lg-3 mb-2">
+            <label for="telephone" class="col-form-label">Telephone
+            </label>
+            <select id="telephone" name="telephone" class="select2 form-select">
+                <option value="">All</option>
+                @if($objTeleFeatures)
+                @foreach($objTeleFeatures as $tel)
+                <option value="{{$tel->id}}">{{$tel->features}}</option>
+                @endforeach
+                @endif
+            </select>
+        </div>
     </div>
 </form>
 <div class="row">
@@ -68,7 +105,7 @@
                             <tr>
                                 <th>Sl</th>
                                 <th>Title</th>
-                                
+                                <th>Product Type</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -94,7 +131,10 @@
                 url: "{{route('admin.get.internet-tv')}}",
                 data: function(d) {
                     d.product_name = $('input[name=product_name]').val(),
-                        
+                        d.product_type = $('select[name=product_type]').val(),
+                        d.internet = $('select[name=internet]').val(),
+                        d.tv = $('select[name=tv]').val(),
+                        d.telephone = $('select[name=telephone]').val(),
                         d.status = $('#status').val()
 
                 },
@@ -107,6 +147,9 @@
                 },
                 {
                     data: 'title'
+                },
+                {
+                    data: 'product_type'
                 },
                 
                 {
@@ -170,6 +213,9 @@
             table.draw();
         });
         $("#product_type").change(function() {
+            table.draw();
+        });
+        $("#internet").change(function() {
             table.draw();
         });
 

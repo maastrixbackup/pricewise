@@ -40,10 +40,13 @@ class TvInternetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
     	$objTv = TvInternetProduct::latest()->get();
-        return view('admin.tvproducts.index', compact('objTv'));
+        $objTvFeatures = TvFeature::select('id','features','input_type')->where('category', 9)->get();
+        $objInternetFeatures = TvFeature::select('id','features','input_type')->where('category', 8)->get();
+        $objTeleFeatures = TvFeature::select('id','features','input_type')->where('category', 2)->get();
+        return view('admin.tvinternet.index', compact('objTv', 'objTvFeatures', 'objInternetFeatures', 'objTeleFeatures'));
     }
 
     /**
@@ -60,7 +63,7 @@ class TvInternetController extends Controller
          $objCategory = Category::latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvproducts.add', compact('objCategory', 'objRelatedProducts', 'providers'));
+        return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -77,17 +80,23 @@ class TvInternetController extends Controller
         $searchValue = $request['search']['value']; // Search value
         ## Read value
         $data = array();
+
         $totalRecords = TvInternetProduct::select('count(*) as allcount')->count();
         if ($searchValue) {
-            $totalRecordswithFilter = TvInternetProduct::select('count(*) as allcount')->where('title', 'like', '%' . $searchValue . '%');
+            $totalRecordswithFilter = TvInternetProduct::with('postFeatures')->select('count(*) as allcount')->where('title', 'like', '%' . $searchValue . '%');
         } else {
-            $totalRecordswithFilter = TvInternetProduct::select('count(*) as allcount');
+            $totalRecordswithFilter = TvInternetProduct::with('postFeatures')->select('count(*) as allcount');
         }
         if (isset($request->product_name)) {
             $totalRecordswithFilter = $totalRecordswithFilter->where('title', 'like', '%' . $request->product_name . '%');
         }
         if (isset($request->product_type)) {
             $totalRecordswithFilter = $totalRecordswithFilter->where('product_type', 'like', '%' . $request->product_type . '%');
+        }
+        if (isset($request->internet)) {
+            $totalRecordswithFilter = $totalRecordswithFilter->whereHas('postFeatures', function ($query) use ($request) {
+                $query->where('feature_id', $request->internet);
+            });
         }
         if (isset($request->status)) {
             $totalRecordswithFilter = $totalRecordswithFilter->where('status', $request->status);
@@ -96,11 +105,11 @@ class TvInternetController extends Controller
 
         // Fetch records
         if ($searchValue) {
-            $productRecords = TvInternetProduct::orderBy($columnName, $columnSortOrder)
+            $productRecords = TvInternetProduct::with('postFeatures')->orderBy($columnName, $columnSortOrder)
                 ->where('title', 'like', '%' . $searchValue . '%')
                 ->select('tv_internet_products.*');
         } else {
-            $productRecords = TvInternetProduct::orderBy($columnName, $columnSortOrder)
+            $productRecords = TvInternetProduct::with('postFeatures')->orderBy($columnName, $columnSortOrder)
                 ->select('tv_internet_products.*');
         }
         if (isset($request->status)) {
@@ -111,6 +120,11 @@ class TvInternetController extends Controller
         }
         if (isset($request->product_type)) {
             $productRecords = $productRecords->where('product_type', 'like', '%' . $request->product_type . '%');
+        }
+        if (isset($request->internet)) {
+            $productRecords = $productRecords->whereHas('postFeatures', function ($query) use ($request) {
+                $query->where('feature_id', $request->internet);
+            });
         }
         $productRecords = $productRecords->skip($row)->take($rowperpage)->get();
         $i = 1;
@@ -270,15 +284,17 @@ class TvInternetController extends Controller
     {
         $objTv = TvInternetProduct::find($id);
         $objTvFeatures = TvFeature::select('id','features','input_type')->where('category', 9)->get();
+        $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', 9)->pluck('feature_value', 'feature_id')->toArray();
         $objInternetFeatures = TvFeature::select('id','features','input_type')->where('category', 8)->get();
-        //dd($objInternetFeatures);
-        //$objCommission = CommissionType::latest()->get();
-        //$objAdditionalCategories = AdditionalCategory::latest()->get();
+        $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', 8)->pluck('feature_value', 'feature_id')->toArray();       
+        $objTeleFeatures = TvFeature::select('id','features','input_type')->where('category', 2)->get();
+        $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
+        $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvproducts.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures'));
+        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
     }
 
     /**
@@ -363,13 +379,34 @@ class TvInternetController extends Controller
     }
 
     public function internet_feature_update(Request $request, $post_id)
-    {//dd($request->category_id);
-        $category_id = $request->category_id;
+    {
+        $post_category = $request->category_id;
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $category_id !=null){
+            if($value != null && $post_category != null){
                 
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $category_id, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $category_id, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
+            
+        }
+        }
+        }catch(\Exception $e){
+            $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
+        // Log the error for further investigation
+        \Log::error($errorMessage);
+            $message = ['message' =>  $errorMessage, 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
+        }
+        $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
+        
+    }
+    public function tv_feature_update(Request $request, $post_id)
+    {
+        $post_category = $request->category_id;
+        try{
+        foreach($request->input('features') as $feature_id => $value){
+            if($value != null && $post_category != null){                
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 9, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 9, 'feature_id' => $feature_id, 'feature_value' => $value]);
             
         }
         }
@@ -385,54 +422,47 @@ class TvInternetController extends Controller
         
     }
 
-    public function duplicate(Request $request, $id)
+    public function tele_feature_update(Request $request, $post_id)
     {
-        $objExtProduct = TvInternetProduct::where('id', $id)->first();
-        $objProduct = new TvInternetProduct();
-        $last_product = TvInternetProduct::where('id', $id)->max('duplicate_count');
-        //dd($last_product);
-        if ($last_product == 0) {
-            $dup_no = '--' . 'duplicate';
-        } else {
-            $dup_no = '--' . 'duplicate-' . $last_product;
+        $post_category = $request->category_id;
+        try{
+        foreach($request->input('features') as $feature_id => $value){
+            if($value != null && $post_category != null){                
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
+            
         }
-
-        $objProduct->title = $objExtProduct->title . $dup_no;
-        $objProduct->url = $objExtProduct->url . $dup_no;
-        // $objProduct->avg_speed = $objExtProduct->avg_speed;
-        $objProduct->avg_download_speed = $objExtProduct->avg_download_speed;
-        $objProduct->avg_upload_speed = $objExtProduct->avg_upload_speed;
-        $objProduct->price = $objExtProduct->price;
-        $objProduct->contract_length_id = $objExtProduct->contract_length_id;
-        $objProduct->commission = $objExtProduct->commission;
-        $objProduct->commission_type = $objExtProduct->commission_type;
-        $objProduct->feature_id = $objExtProduct->feature_id;
-        $objProduct->add_extras = $objExtProduct->add_extras;
-        $objProduct->related_products =  $objExtProduct->related_products;
-        $objProduct->status = $objExtProduct->status;
-        $objProduct->akj_product_id =  $objExtProduct->akj_product_id;
-        $objProduct->akj_discount_id =  $objExtProduct->akj_discount_id;
-        $objProduct->product_type = $objExtProduct->product_type;
-        $objProduct->order_type = $objExtProduct->order_type;
-        $objProduct->is_featured = $objExtProduct->is_featured;
-        $objProduct->catalogue_name = $objExtProduct->catalogue_name;
-        $objProduct->product_name_api = $objExtProduct->product_name_api;
-        $objProduct->category_id =  $objExtProduct->category_id;
-        $objProduct->affiliate = $objExtProduct->affiliate;
-        $objProduct->template = $objExtProduct->template;
-        $objProduct->is_page = $objExtProduct->is_page;
-        $objProduct->content = $objExtProduct->content;
-        $objProduct->product_image =  $objExtProduct->product_image;
-
-
-        if ($objProduct->save()) {
-            $objExtProduct->duplicate_count = $last_product + 1;
-            $objExtProduct->save();
-
-            return redirect()->route("admin.internet-tv.index")->with(Toastr::success(__('Tv Duplicated Successfully')));
-        } else {
-
-            return redirect()->route("admin.internet-tv.index")->with(Toastr::error(__('Something went wrong !! Please Try again later')));
         }
+        }catch(\Exception $e){
+            $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
+        // Log the error for further investigation
+        \Log::error($errorMessage);
+            $message = ['message' =>  $errorMessage, 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
+        }
+        $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
+        
+    }
+
+    public function service_info_update(Request $request, $post_id)
+    {
+        $post_category = $request->category_id;
+        try{
+        foreach($request->input('features') as $feature_id => $value){
+            if($value != null && $post_category != null){                
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
+            
+        }
+        }
+        }catch(\Exception $e){
+            $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
+        // Log the error for further investigation
+        \Log::error($errorMessage);
+            $message = ['message' =>  $errorMessage, 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
+        }
+        $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
+        
     }
 }

@@ -9,4 +9,9 @@ class TvInternetProduct extends Model
 {
     use HasFactory;
     protected $table = "tv_internet_products";
+
+    public function postFeatures()
+    {
+        return $this->hasMany(PostFeature::class, 'post_id', 'id');
+    }
 }
