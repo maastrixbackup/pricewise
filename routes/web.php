@@ -69,6 +69,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('internet-tv', 'TvInternetController');
         Route::post('/tv-feature-update/{id}', 'TvInternetController@tv_feature_update')->name('tv_feature_update');
         Route::post('/internet-feature-update/{id}', 'TvInternetController@internet_feature_update')->name('internet_feature_update');
+        Route::post('/telephone-feature-update/{id}', 'TvInternetController@tele_feature_update')->name('tele_feature_update');
+        Route::post('/service-info-update/{id}', 'TvInternetController@service_info_update')->name('service_info_update');
         Route::resource('features', 'FeatureController');
         //Route::resource('tv-contract-lengths', 'TvContractLengthController');
         Route::get('/tv-default/{id}', 'TvProductController@default')->name('tv-default');

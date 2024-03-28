@@ -190,7 +190,7 @@
                     </select>
                 </div>
                 <div class="mb-3 form-group">
-                    <label for="input40" class="col-form-label"><b>Product Type</b>
+                    <label for="product_type" class="col-form-label"><b>Product Type</b>
                     </label>
                     <select id="product_type" name="product_type" class="select2 form-select">
                         <option value="personal">Personal</option>
@@ -199,9 +199,13 @@
                         
                     </select>
                 </div>
-
+                <div class="mb-3 form-group">
+                    <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
+                    </label>
+                    <input type="number" class="form-control" id="no_of_person" name="no_of_person">
+                </div>
                 <div class="mb-3">
-                    <label for="input40" class="col-form-label"><b>Category</b>
+                    <label for="category" class="col-form-label"><b>Category</b>
                     </label>
 
                     <select id="category" name="category" class="select2 form-select">
@@ -215,10 +219,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="input40" class="col-form-label"><b>Provider</b>
+                    <label for="provider" class="col-form-label"><b>Provider</b>
                     </label>
 
-                    <select id="category" name="category" class="select2 form-select">
+                    <select id="provider" name="provider" class="select2 form-select">
                         <option>Select</option>
                         @if($providers)
                         @foreach($providers as $provider)
@@ -231,7 +235,7 @@
                 <div class="mb-3">
                     <input type="file" class="form-control" name="image" id="image" accept="image/*">
                 </div>
-                <label for="input35" class="col-form-label"><b>Combo Products</b></label>
+                <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                 <div class="mb-3 add-scroll">
                     @if($objRelatedProducts)
                     @foreach($objRelatedProducts as $val)
