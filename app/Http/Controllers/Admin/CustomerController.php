@@ -10,6 +10,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\WelcomeMail;
 use Mail;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -59,10 +60,30 @@ class CustomerController extends Controller
         $objUser = new User();
         $objUser->name = $request->name;
         $objUser->email = $request->email;
-        $objUser->phone =  $request->mobile;
+        $objUser->mobile =  $request->mobile;
         $objUser->address =  $request->address;
         $objUser->country =  $request->country;
-        $objUser->status =  'Pending';
+        $objUser->status =  $request->status;
+        $croppedImage = $request->cropped_image;
+        $objUser->password = Hash::make('password');
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        // Generate a unique file name for the image
+        $imageName = 'customer_' . time() . '.png';
+
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/customers';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $objUser->photo = $imageName;
         if ($objUser->save()) {
             Toastr::success('Customer Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.customers.index")]);
@@ -108,10 +129,41 @@ class CustomerController extends Controller
         $objUser = User::where('id',$id)->first();
         $objUser->name = $request->name;
         $objUser->email = $request->email;
-        $objUser->phone =  $request->mobile;
+        $objUser->mobile =  $request->mobile;
         $objUser->address =  $request->address;
         $objUser->country =  $request->country;
-        $objUser->status =  'Pending';
+        $objUser->status =  $request->status;
+        //dd($request->country);
+        if ($request->has('cropped_image')) {
+        // Access base64 encoded image data directly from the request
+        $croppedImage = $request->cropped_image;
+
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        // Generate a unique file name for the image
+        $imageName = 'customer_' . time() . '.png';
+        //dd($imgData);
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/customers';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+
+        // Delete the old image if it exists
+        if ($objUser->image) {
+            Storage::delete($destinationDirectory . '/' . $objUser->photo);
+        }
+
+        // Save the new image
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $objUser->photo = $imageName;
+        }
         if ($objUser->save()) {
             Toastr::success('Customer Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.customers.index")]);

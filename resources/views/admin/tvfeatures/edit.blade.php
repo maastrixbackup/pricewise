@@ -57,7 +57,20 @@
                             </select>
                         </div>
                     </div>
-
+                     <div class="row mb-3">
+                        <label for="input_type" class=" col-form-label">Select Icon</label>
+                        <div class="form-group">
+                            <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa {{$objFeature->icon}}"></i></span>
+                            </div>
+                            <select class="form-control selectpicker" data-live-search="true" name="icon" id="icon">
+                                <option value="">Select</option>
+                                @include('admin.layouts.icons')
+                            </select>
+                        </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <label class=" col-form-label"></label>
                         <div class="">

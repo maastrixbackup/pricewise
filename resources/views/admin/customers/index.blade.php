@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','POPTelecom- Customers')
+@section('title','Price Compare- Customers')
 @section('content')
 
 <!--breadcrumb-->

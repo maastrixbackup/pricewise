@@ -35,10 +35,21 @@
 
     <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css"> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css" rel="stylesheet"> -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+        <link rel="stylesheet" href="https://unpkg.com/dropzone/dist/dropzone.css" />
+        <link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet"/>
+        
+        
     <title>@yield('title')</title>
-
+    <style type="text/css">
+    #icon {
+  font-family: 'FontAwesome', 'sans-serif';
+}
+</style>
 
     @stack('css')
 </head>
@@ -95,6 +106,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <!--app JS-->
     <script src="{{ asset('assets/js/app.js')}}"></script>
+    
+        <script src="https://unpkg.com/dropzone"></script>
+    <script src="https://unpkg.com/cropperjs"></script>
     <script type="text/javascript">
         $(function() {
             $('#datepicker').datepicker();
