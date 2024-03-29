@@ -126,7 +126,7 @@ class FeatureController extends Controller
         $id = $request->id;
         $getFeature = TvFeature::find($id);
         try {
-            $check = TvProduct::where('feature_id', $getFeature->id)->first();
+            $check = TvFeature::where('id', $id)->first();
             if ($check) {
                 return back()->with(Toastr::error(__('Sorry we could not delete this Feature .This Feature is assigned to some topdeal service')));
             } else {
