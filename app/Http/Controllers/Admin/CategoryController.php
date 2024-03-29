@@ -8,6 +8,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -64,31 +65,36 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $objDriver = new Category();
-        $objDriver->name = $request->name;
-        $objDriver->slug = $request->slug;
-        $objDriver->parent = $request->parent;
-        $objDriver->type = $request->type;
-        // $objDriver->passport = $request->passport;
-        // $objDriver->driving_license = $request->driving_license;
-        // $objDriver->own_vehicle = $request->own_vehicle;
-        // $objDriver->vehicle_model = $request->vehicle_model;
-        // $objDriver->black_suit = $request->black_suit;
-        // $objDriver->to_time = $request->to_time;
-        // $objDriver->from_time = $request->from_time;
-        // $objDriver->booking_responsible = $request->booking_responsible;
-        // $objDriver->status = $request->status;
-        // if ($request->file('cv') == null || $request->file('cv') == null) {
-        //     $input['cv'] = $objDriver->cv;
-        // } else {
-        //     $destinationPath = '/driver_documents';
-        //     $imgfile = $request->file('cv');
-        //     $imgFilename = $imgfile->getClientOriginalName();
-        //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-        //     $cvFile = $imgFilename;
-        //     $objDriver->cv = $cvFile;
-        // }
-        if ($objDriver->save()) {
+        $objCategory = new Category();
+        $objCategory->name = $request->name;
+        $objCategory->slug = $request->slug;
+        $objCategory->parent = $request->parent;
+        $objCategory->type = $request->type;
+        $objCategory->image = $request->image;
+        $objCategory->icon = $request->icon;
+        
+        $objCategory->status = $request->status;
+        $croppedImage = $request->cropped_image;
+
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        // Generate a unique file name for the image
+        $imageName = 'category_' . time() . '.png';
+
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/categories';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $objCategory->image = $imageName;
+        if ($objCategory->save()) {
             return redirect()->route('admin.categories.index')->with(Toastr::success('Category Created Successfully', '', ["positionClass" => "toast-top-right"]));
             // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
             // return response()->json(["status" => true, "redirect_location" => route("admin.drivers.index")]);
@@ -137,16 +143,40 @@ class CategoryController extends Controller
         $objCategory->slug = $request->slug;
         $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
-        // if ($request->file('cv') == null || $request->file('cv') == null) {
-        //     $input['cv'] = $objDriver->cv;
-        // } else {
-        //     $destinationPath = '/driver_documents';
-        //     $imgfile = $request->file('cv');
-        //     $imgFilename = $imgfile->getClientOriginalName();
-        //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-        //     $cvFile = $imgFilename;
-        //     $objDriver->cv = $cvFile;
-        // }
+        $objCategory->image = $request->image;
+        $objCategory->icon = $request->icon;
+        
+        $objCategory->status = $request->status;
+        if ($request->has('cropped_image')) {
+        // Access base64 encoded image data directly from the request
+        $croppedImage = $request->cropped_image;
+
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        // Generate a unique file name for the image
+        $imageName = 'category_' . time() . '.png';
+
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/categories';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+
+        // Delete the old image if it exists
+        if ($objCategory->image) {
+            Storage::delete($destinationDirectory . '/' . $objCategory->image);
+        }
+
+        // Save the new image
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $objCategory->image = $imageName;
+        }
         if ($objCategory->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Category Updated Successfully', '', ["positionClass" => "toast-top-right"]);

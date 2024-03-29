@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
 use App\Models\Provider;
+use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
 {
@@ -58,16 +59,29 @@ class ProviderController extends Controller
         
         $objProvider->category = $request->category;
         $objProvider->status = $request->status;
-        if ($request->file('image') == null || $request->file('image') == '') {
-            $input['image'] = '';
-        } else {
-            $destinationPath = '/images/providers';
-            $imgfile = $request->file('image');
-            $imgFilename = $imgfile->getClientOriginalName();
-            $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-            $image = $imgFilename;
-            $objProvider->image = $image;
-        }
+        // Access base64 encoded image data directly from the request
+    $croppedImage = $request->cropped_image;
+
+    // Extract base64 encoded image data and decode it
+    $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+    // Generate a unique file name for the image
+    $imageName = 'provider_' . time() . '.png';
+
+    // Specify the destination directory where the image will be saved
+    $destinationDirectory = 'public/images/providers';
+
+    // Create the directory if it doesn't exist
+    Storage::makeDirectory($destinationDirectory);
+
+    // Save the image to the server using Laravel's file upload method
+    $filePath = $destinationDirectory . '/' . $imageName;
+    Storage::put($filePath, $imgData);
+
+    // Set the image file name for the provider
+    $objProvider->image = $imageName;
+
+   
         if ($objProvider->save()) {
             return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]));
             // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -112,23 +126,43 @@ class ProviderController extends Controller
     public function update(Request $request, $id)
     {
         //echo 123;exit;
-        $objCategory = Provider::find($id);
-        $objCategory->name = $request->name;
-        $objCategory->status = $request->status;
-        $objCategory->category = $request->category;
-        
-        if ($request->file('image') == null || $request->file('image') == null) {
-            $image = $objCategory->image;
-        } else {
-            $destinationPath = '/images/providers';
-            $imgfile = $request->file('image');
-            $imgFilename = $imgfile->getClientOriginalName();
-            $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-            $image = $imgFilename;
-            
+        $objProvider = Provider::find($id);
+        $objProvider->name = $request->name;
+        $objProvider->status = $request->status;
+        $objProvider->category = $request->category;        
+        $objProvider->status = $request->status;
+        if ($request->has('cropped_image')) {
+        // Access base64 encoded image data directly from the request
+        $croppedImage = $request->cropped_image;
+
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        // Generate a unique file name for the image
+        $imageName = 'provider_' . time() . '.png';
+
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/providers';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+
+        // Delete the old image if it exists
+        if ($objProvider->image) {
+            Storage::delete($destinationDirectory . '/' . $objProvider->image);
         }
-        $objCategory->image = $image;
-        if ($objCategory->save()) {
+
+        // Save the new image
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $objProvider->image = $imageName;
+        }
+
+        if ($objProvider->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Provider Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
@@ -147,10 +181,10 @@ class ProviderController extends Controller
     public function destroy(Request $request, $id)
     {
         $id = $request->id;
-        $getCategory = Category::find($id);
+        $getCategory = Provider::find($id);
         try {
-            Category::find($id)->delete();
-            return back()->with(Toastr::error(__('Driver deleted successfully!')));
+            Provider::find($id)->delete();
+            return back()->with(Toastr::error(__('Provider deleted successfully!')));
         } catch (Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.providers.index')->with($error_msg);

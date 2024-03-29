@@ -58,6 +58,7 @@ class FeatureController extends Controller
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
+        $objFeature->icon = $request->icon;
         if ($objFeature->save()) {
             Toastr::success('Feature Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.features.index")]);
@@ -104,6 +105,7 @@ class FeatureController extends Controller
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
+        $objFeature->icon = $request->icon;
         if ($objFeature->save()) {
             Toastr::success('Feature Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.features.index")]);
