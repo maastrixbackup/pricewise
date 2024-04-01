@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\EmailTemplate;
+use Illuminate\Support\Facades\Validator;
 
 class EmailTemplateController extends Controller
 {
@@ -52,16 +53,30 @@ class EmailTemplateController extends Controller
      */
     public function store(Request $request)
     {
-        $objDriver = new EmailTemplate();
-        $objDriver->name = $request->name;
-        $objDriver->content = $request->content;
-        if ($objDriver->save()) {
-            return redirect()->route('admin.email-templates.index')->with(Toastr::success('Template Created Successfully', '', ["positionClass" => "toast-top-right"]));
-            // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
-            // return response()->json(["status" => true, "redirect_location" => route("admin.drivers.index")]);
+        $validator = Validator::make($request->all(), [
+            'email_of' => 'string|required',
+            'mail_subject' => 'required',
+            'mail_body' => 'required',
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $data = [
+        'email_of' => $request->email_of,
+        'mail_subject' => $request->mail_subject,
+        'mail_body' => $request->mail_body,
+        'status' => $request->status,
+        'signature' => $request->mail_signature
+        ];
+
+        $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
+
+        if ($emailTemplate) {
+            return response()->json(['success' => true, 'data' => $emailTemplate], 200);
         } else {
-            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            return response()->json(["status" => false, 'message' => $message]);
+            return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
         }
     }
 
@@ -98,16 +113,30 @@ class EmailTemplateController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $objDriver = new EmailTemplate();
-        $objDriver->name = $request->name;
-        $objDriver->content = $request->content;
-        if ($objDriver->save()) {
-            return redirect()->route('admin.email-templates.index')->with(Toastr::success('Template Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-            // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
-            // return response()->json(["status" => true, "redirect_location" => route("admin.drivers.index")]);
+        $validator = Validator::make($request->all(), [
+            'email_of' => 'string|required',
+            'mail_subject' => 'required',
+            'mail_body' => 'required',
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $data = [
+        'email_of' => $request->email_of,
+        'mail_subject' => $request->mail_subject,
+        'mail_body' => $request->mail_body,
+        'status' => $request->status,
+        'signature' => $request->mail_signature
+        ];
+
+        $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
+
+        if ($emailTemplate) {
+            return response()->json(['success' => true, 'data' => $emailTemplate], 200);
         } else {
-            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            return response()->json(["status" => false, 'message' => $message]);
+            return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
         }
     }
 

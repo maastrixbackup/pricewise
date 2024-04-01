@@ -63,10 +63,10 @@ class CustomerController extends Controller
         $objUser->mobile =  $request->mobile;
         $objUser->address =  $request->address;
         $objUser->country =  $request->country;
-        $objUser->status =  $request->status;
-        $croppedImage = $request->cropped_image;
+        $objUser->status =  $request->status;        
         $objUser->password = Hash::make('password');
         // Extract base64 encoded image data and decode it
+        $croppedImage = $request->cropped_image;
         $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
         // Generate a unique file name for the image
@@ -154,7 +154,7 @@ class CustomerController extends Controller
         $filePath = $destinationDirectory . '/' . $imageName;
 
         // Delete the old image if it exists
-        if ($objUser->image) {
+        if ($objUser->photo) {
             Storage::delete($destinationDirectory . '/' . $objUser->photo);
         }
 

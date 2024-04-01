@@ -1,79 +1,105 @@
-@extends('admin.layouts.app')
-@section('title','Price Compare- Email Template Create')
-@section('content')
-<!--breadcrumb-->
-<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-    <div class="ps-3">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0 p-0">
-                <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.email-templates.index')}}">Email Templates</a></li>
-            </ol>
-        </nav>
+<x-app-layout>
+
+    <div class="row">
+
+
+        <div class="col-10">
+            <h2 class="text-center mb-3">Add Email Template</h1>
+        </div>
+        <div class="col-2"><a href="{{route('admin.email-templates.index')}}" class="btn btn-primary">Go Back</a></div>
+    </div>
+    <div class="row p-3">
+    <div class="imageContainer mb-3 col-md-6">
+        <form method="POST" action="{{route('admin.email-templates.store')}}" class="row" id="emailTemplateForm">
+            @csrf
+            <div class="col-12 form-group">
+                <div>
+                    <label for="email_of">Select For</label>
+                    <select name="email_of" class="form-control" value="{{ old('email_of') }}">
+                        <option value="">Select</option>
+                        <option value="1">Register for User</option>
+                        <option value="2">Forgot password</option>
+                        <option value="3">User Past Ad Order</option>
+                        <option value="4">Admin Past Ad Order</option>
+                        <option value="5">User Register for Admin</option>
+                        <option value="6">Seller Past Ad Order</option>
+                        <option value="7">Parts Request Question(parent)</option>
+                        <option value="8">Parts Request Question(sub question)</option>
+                        <option value="9">Bid Offer</option>
+                        <option value="10">Sales Question</option>
+                        <option value="11">Parts Order to User</option>
+                        <option value="12">Parts Order to Bidder</option>
+                        <option value="13">Parts Order to Admin</option>
+                        <option value="14">Subscribe Alert for ad</option>
+                        <option value="15">Subscribe Alert for Request Parts</option>
+                    </select> 
+                       
+                    @error('email_of')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label for="mail_subject">Mail Subject</label>
+                    <input type="text" name="mail_subject" class="form-control" id="mail_subject"
+                        value="{{ old('mail_subject') }}">
+                    @error('mail_subject')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label for="mail_body" class="col-sm-4 col-form-label">Caption</label>
+                    <textarea class="ckeditor form-control" name="mail_body" id="mail_body" placeholder="Description">{{ old('mail_body') }}</textarea>
+                    @error('mail_body')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label for="mail_signature" class="col-sm-4 col-form-label">Signature</label>
+                    <textarea class="ckeditor form-control" name="mail_signature" id="mail_signature" placeholder="Mail signature">{{ old('mail_signature') }}</textarea>
+                    @error('mail_signature')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label for="status">Status</label>
+                    <select name="status" class="form-control" id="status">
+                        <option >Status</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                    @error('status')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                
+                <button class="btn btn-sm btn-primary col-2 mt-2" type="submit" id="saveButton">Save</button>
+            </div>
+            
+        
+</form>
+    </div>
+    <div class="imageContainer mb-3 col-md-6">
+        <div id="emailTemplateForm">
+    <div>
+        # Hello!
+        
+    </div>
+    <div>
+        <button id="resetPasswordButton" class="btn btn-primary">Reset Password</button>
+    </div>
+    <div>
+        Thanks,<br>
+        {{ config('app.name') }}
     </div>
 </div>
-<!--end breadcrumb-->
-<form id="productForm" method="post" action="{{route('admin.email-templates.store')}}" enctype="multipart/form-data">
-    @csrf
-    <div class="row">
-        <div class="col-md-9 col-12">
-            <div class="card">
-                <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New Template</h5>
-                </div>
-                <div class="card-body p-4">
-                    <div class=" mb-3">
-                        <label for="input35" class=" col-form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Name">
-                    </div>
-
-                    
-                    <textarea id="content" name="content"></textarea>
-                
-
-                <div class="row mb-3">
-                    <div class="">
-                        <label class=" col-form-label"></label>
-
-                        <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4" name="submit2">Submit</button>
-                            <button type="reset" class="btn btn-light px-4">Reset</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-    
     </div>
 
-    </div>
+</div>
 
-</form>
-@endsection
-@push('scripts')
 <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
 <script>
-//     function laravelFileManager(callback, value, meta){
-//     var route_prefix = "/laravel-filemanager";
-//             var url = route_prefix + '?type=' + meta.filetype;
-//             tinymce.activeEditor.windowManager.openUrl({
-//                 url: url,
-//                 title: 'File Manager',
-//                 width: 900,
-//                 height: 600,
-//                 resizable: 'yes',
-//                 close_previous: 'no',
-//                 inline: 'yes',
-//                 popup_css: false
-//             });
-// }
     tinymce.init({
-        selector: '#content',
+        selector: '#mail_body',
         plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
         toolbar_mode: 'floating',
         tinycomments_mode: 'embedded',
@@ -108,56 +134,43 @@
         })
       }
     });
-</script>
-<script type="text/javascript">
-    $("#productForm").validate({
-        errorElement: 'span',
-        errorClass: 'help-block',
-        highlight: function(element, errorClass, validClass) {
-            $(element).closest('.form-group').addClass("has-error");
-        },
-        unhighlight: function(element, errorClass, validClass) {
-            $(element).closest('.form-group').removeClass("has-error");
-            $(element).closest('.form-group').addClass("has-success");
-        },
+    document.addEventListener("DOMContentLoaded", function() {
 
-        rules: {
-            name: "required",
-            
+    document.getElementById('button-image').addEventListener('click', (event) => {
+      event.preventDefault();
 
-        },
-        messages: {
-            name: "Name is missing",
-            
-        },
-        submitHandler: function(form) {
-            // var value = CKEDITOR.instances['description'].getData()
-            // $("#description").val(value);
+      window.open('http://192.168.1.44:8000/file-manager/fm-button', 'fm', 'width=1400,height=800');
+    });
+  });
 
-            var formData = new FormData(this);
-            $.ajax({
+  // set file link
+  function fmSetLink($url) {
+    document.getElementById('image_label').value = $url;
+    document.getElementById('profile-pic').src = $url;
+  }
+      document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('saveButton').addEventListener('click', function () {
+            // Prevent default form submission
+            event.preventDefault();
 
-                url: form.action,
-                method: "post",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    //success
-                    // alert(data);
-                    $("#productForm").trigger("reset");
-                    if (data.status) {
-                        location.href = data.redirect_location;
-                    } else {
-                        toastr.error(data.message.message, '');
-                    }
-                },
-                error: function(e) {
-                    toastr.error('Something went wrong . Please try again later!!', '');
-                }
+            // Serialize form data
+            var formData = new FormData(document.getElementById('emailTemplateForm'));
+
+            // Send AJAX request
+            fetch("{{ route('admin.email-templates.store') }}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display response data synchronously
+                console.log(data); // You can replace this with your desired action
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-            return false;
-        }
+        });
     });
 </script>
-@endpush
+
+</x-app-layout>

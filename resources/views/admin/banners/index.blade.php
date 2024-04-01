@@ -50,7 +50,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->title ? $val->title : "NA"}}</td>                                
-                                <td><img src="{{$val->image ?? $val->image}}"></td>
+                                <td><img src="{{asset('storage/images/banners/'.$val->image)}}" width="50"></td>
                                 <td>{{$val->type ? $val->type : "NA"}}</td>
                                 <td>{{$val->page ? $val->page : "NA"}}</td>
                                 <td>
