@@ -36,7 +36,7 @@
                     <div class="row mb-3">
                         <label for="input40" class="col-sm-6 col-form-label"><b>Image </b></label>
                         <div class="mb-3">
-                            <img src="{{$banner->image}}" width="200">
+                            <img src="{{$banner->image}}" width="200" id="banner-img">
                             <input type="file" class="form-control" name="image" id="button-image" accept="image/*">
                         </div>
                     </div>
@@ -131,14 +131,14 @@
         })
       }
     });
-    document.addEventListener("DOMContentLoaded", function() {
+  //   document.addEventListener("DOMContentLoaded", function() {
 
-    document.getElementById('button-image').addEventListener('click', (event) => {
-      event.preventDefault();
+  //   document.getElementById('button-image').addEventListener('click', (event) => {
+  //     event.preventDefault();
 
-      window.open('http://192.168.1.44:8000/file-manager/fm-button', 'fm', 'width=1400,height=800');
-    });
-  });
+  //     window.open('http://192.168.1.44:8000/file-manager/fm-button', 'fm', 'width=1400,height=800');
+  //   });
+  // });
 
   // set file link
   function fmSetLink($url) {

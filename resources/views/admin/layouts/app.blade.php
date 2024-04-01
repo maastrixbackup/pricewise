@@ -6,19 +6,6 @@
 
      <title>@yield('title')</title>
 
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph Meta -->
-    <meta property="og:title" content="">
-    <meta property="og:site_name" content="">
-    <meta property="og:description" content="">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-
-    <!-- Icons -->
     <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
     <link rel="shortcut icon" href="{{ asset('assets/media/favicons/favicon.png') }}">
     <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('assets/media/favicons/favicon-192x192.png') }}">
@@ -34,7 +21,17 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/mystyle.css') }}" rel="stylesheet">
-    
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/dropzone.css')}}" />
+        <link href="{{ asset('assets/css/plugins/cropper.css')}}" rel="stylesheet"/>
+    <style type="text/css">
+      #main-container{
+    margin-top: 30px;
+    padding: 10px;
+}
+h6{
+    font-size:22px !important;
+}
+    </style>
 
     @stack('css')
   </head>

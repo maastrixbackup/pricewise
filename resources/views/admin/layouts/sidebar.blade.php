@@ -146,7 +146,7 @@
              
               <li class="nav-main-item">
                 <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
-                  <i class="nav-main-link-icon fa fa-user"></i>
+                  <i class="nav-main-link-icon fa fa-briefcase"></i>
                   <span class="nav-main-link-name">CMS Pages</span>
                 </a>
                 <ul class="nav-main-submenu">
@@ -216,25 +216,25 @@
                     </a>
                   </li>
                  <li class="nav-main-item">
-                    <a class="nav-main-link" href="">
+                    <a class="nav-main-link" href="{{route('admin.website-setting')}}">
                       <i class="nav-main-link-icon fa-regular fa-circle"></i>
                       <span class="nav-main-link-name">Website Setting</span>
                     </a>
                   </li>
                   <li class="nav-main-item">
-                    <a class="nav-main-link" href="">
+                    <a class="nav-main-link" href="{{route('admin.smtp-setting')}}">
                       <i class="nav-main-link-icon fa-regular fa-circle"></i>
-                      <span class="nav-main-link-name">Mail Setting</span>
+                      <span class="nav-main-link-name">SMTP Setting</span>
                     </a>
                   </li>
                   <li class="nav-main-item">
-                    <a class="nav-main-link" href="">
+                    <a class="nav-main-link" href="{{route('admin.payment-setting')}}">
                       <i class="nav-main-link-icon fa-regular fa-circle"></i>
-                      <span class="nav-main-link-name">Newsletter Template</span>
+                      <span class="nav-main-link-name">Payment Setting</span>
                     </a>
                   </li>
                   <li class="nav-main-item">
-                    <a class="nav-main-link" href="">
+                    <a class="nav-main-link" href="{{route('admin.email-templates.index')}}">
                       <i class="nav-main-link-icon fa-regular fa-circle"></i>
                       <span class="nav-main-link-name">Email Template</span>
                     </a>
@@ -243,7 +243,8 @@
               </li>
               <li class="nav-main-item">
                 <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
-                  <i class="nav-main-link-icon fa fa-briefcase"></i>
+                  <i class="nav-main-link-icon fa fa-user"></i>
+                  
                   <span class="nav-main-link-name">Access Management</span>
                 </a>
                 <ul class="nav-main-submenu">

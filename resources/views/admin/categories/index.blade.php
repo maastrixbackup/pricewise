@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
-@section('title','NoPlan- Drivers')
+@section('title','Energise- Categories')
 @section('content')
 
 <!--breadcrumb-->
-<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
     <div class="ps-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
