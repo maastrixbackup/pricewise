@@ -1,0 +1,54 @@
+* {
+	font-family: "Poppins", sans-serif;
+}
+
+#page-container.sidebar-dark #sidebar {
+    color: #dfe4f1;
+    background-color: #3c4b64;
+}
+
+.dark-mode #main-container .nav-main-link, .dark-mode #side-overlay .nav-main-link, .nav-main-dark .nav-main-link, .page-header-dark #page-header .nav-main-link, .sidebar-dark #sidebar .nav-main-link {
+    color: #ffffff;
+}
+
+ .sidebar-dark #sidebar .nav-main-link>.nav-main-link-icon {
+    color: #ffffff;
+}
+
+.sidebar-dark #sidebar .nav-main-item.open>.nav-main-submenu {
+    background-color: #303c50;
+}
+
+.sidebar-dark #sidebar .nav-main-link.active, .sidebar-dark #sidebar .nav-main-link:hover {
+    color: #fff;
+    background-color: #3b4659;
+}
+
+.sidebar-dark #sidebar .nav-main-item.open>.nav-main-link-submenu {
+    color: #fff;
+    background-color: #303c50;
+}
+
+.sidebar-dark #sidebar .nav-main-heading {
+    color: #e69f29;
+}
+
+.toplogo {
+    font-size: 32px;
+    margin-top: 50px;
+}
+
+.content-side {
+    padding-bottom: 200px;
+
+}
+
+.content-side .nav-main-link {
+    padding: 18px 10px;
+}
+
+.content-side .nav-main-submenu .nav-main-link {
+    padding: 10px 10px;
+}
+
+

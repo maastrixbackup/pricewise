@@ -1,525 +1,971 @@
 @extends('admin.layouts.app')
-@section('title','Price Compare- Dashboard')
+@section('title','Enerzise - Dashboard')
 @section('content')
-<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
-    <div class="col">
-        <div class="card radius-10 border-start border-0 border-3 border-info">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <p class="mb-0 text-secondary">Total Requests</p>
-                        <h4 class="my-1 text-info">4805</h4>
-                        <p class="mb-0 font-13">+2.5% from last week</p>
-                    </div>
-                    <div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto"><i class='bx bxs-cart'></i>
-                    </div>
+<div class="bg-image d-none" style="background-image: url('assets/media/various/bg_dashboard.jpg');">
+          <div class="bg-primary-dark-op">
+            <div class="content content-full">
+              <div class="row my-3">
+                <div class="col-md-6 d-md-flex align-items-md-center">
+                  <div class="py-4 py-md-0 text-center text-md-start">
+                    <h1 class="fs-2 text-white mb-2">Dashboard</h1>
+                    <h2 class="fs-lg fw-normal text-white-75 mb-0">Welcome to your overview</h2>
+                  </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card radius-10 border-start border-0 border-3 border-danger">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <p class="mb-0 text-secondary">Revenue</p>
-                        <h4 class="my-1 text-danger">€84,245</h4>
-                        <p class="mb-0 font-13">+5.4% from last week</p>
+                <div class="col-md-6 d-md-flex align-items-md-center">
+                  <div class="row w-100 text-center">
+                    <div class="col-6 col-xl-4 offset-xl-4">
+                      <p class="fs-3 fw-semibold text-white mb-0">
+                        860
+                      </p>
+                      <p class="fs-sm fw-semibold text-white-75 text-uppercase mb-0">
+                        <i class="far fa-chart-bar opacity-75 me-1"></i> Sales
+                      </p>
                     </div>
-                    <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i class='bx bxs-wallet'></i>
+                    <div class="col-6 col-xl-4">
+                      <p class="fs-3 fw-semibold text-white mb-0">
+                        $8.960
+                      </p>
+                      <p class="fs-sm fw-semibold text-white-75 text-uppercase mb-0">
+                        <i class="far fa-chart-bar opacity-75 me-1"></i> Earnings
+                      </p>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    <div class="col">
-        <div class="card radius-10 border-start border-0 border-3 border-success">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <p class="mb-0 text-secondary">Commisions</p>
-                        <h4 class="my-1 text-success">€34.6</h4>
-                        <p class="mb-0 font-13">-4.5% from last week</p>
-                    </div>
-                    <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto"><i class='bx bxs-bar-chart-alt-2'></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card radius-10 border-start border-0 border-3 border-warning">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <p class="mb-0 text-secondary">Total Customers</p>
-                        <h4 class="my-1 text-warning">8.4K</h4>
-                        <p class="mb-0 font-13">+8.4% from last week</p>
-                    </div>
-                    <div class="widgets-icons-2 rounded-circle bg-gradient-blooker text-white ms-auto"><i class='bx bxs-group'></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end row-->
+        <!-- END Hero -->
 
-<div class="row">
-    <div class="col-12 col-lg-8">
-        <div class="card radius-10">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-0">Sales Overview</h6>
-                    </div>
-                    <div class="dropdown ms-auto">
-                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center ms-auto font-13 gap-2 my-3">
-                    <span class="border px-1 rounded cursor-pointer"><i class="bx bxs-circle me-1" style="color: #14abef"></i>Sales</span>
-                    <span class="border px-1 rounded cursor-pointer"><i class="bx bxs-circle me-1" style="color: #ffc107"></i>Visits</span>
-                </div>
-                <div class="chart-container-1">
-                    <canvas id="chart1"></canvas>
-                </div>
-            </div>
-            <div class="row row-cols-1 row-cols-md-3 row-cols-xl-3 g-0 row-group text-center border-top">
-                <div class="col">
-                    <div class="p-3">
-                        <h5 class="mb-0">24.15M</h5>
-                        <small class="mb-0">Overall Visitor <span> <i class="bx bx-up-arrow-alt align-middle"></i> 2.43%</span></small>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="p-3">
-                        <h5 class="mb-0">12:38</h5>
-                        <small class="mb-0">Visitor Duration <span> <i class="bx bx-up-arrow-alt align-middle"></i> 12.65%</span></small>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="p-3">
-                        <h5 class="mb-0">639.82</h5>
-                        <small class="mb-0">Pages/Visit <span> <i class="bx bx-up-arrow-alt align-middle"></i> 5.62%</span></small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-lg-4">
-        <div class="card radius-10">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-0">Trending Products</h6>
-                    </div>
-                    <div class="dropdown ms-auto">
-                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="chart-container-2 mt-4">
-                    <canvas id="chart2"></canvas>
-                </div>
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Modems <span class="badge bg-success rounded-pill">25</span>
-                </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Wi-fi Routers <span class="badge bg-danger rounded-pill">10</span>
-                </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">FRITZ Box <span class="badge bg-primary rounded-pill">65</span>
-                </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Router Stand <span class="badge bg-warning text-dark rounded-pill">14</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-<!--end row-->
+                <div class="content mb-4">
+                   <section id="minimal-statistics">
+                      <div class="row">
+                        <div class="col-12 mt-3 mb-1">
+                          <h4 class="text-uppercase mb-0">Dashboard</h4>
+                          <p>Welcome to your overview</p>
+                        </div>
+                      </div>
+                      <div class="row">
 
-<div class="card radius-10">
-    <div class="card-body">
-        <div class="d-flex align-items-center">
-            <div>
-                <h6 class="mb-0">Recent Requests</h6>
-            </div>
-            <div class="dropdown ms-auto">
-                <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="javascript:;">Action</a>
-                    </li>
-                    <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Product</th>
-                        <th>Photo</th>
-                        <th>Product ID</th>
-                        <th>Status</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Shipping</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Iphone 5</td>
-                        <td><img src="{{asset('assets/images/products/01.png')}}" class="product-img-2" alt="product img"></td>
-                        <td>#9405822</td>
-                        <td><span class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span></td>
-                        <td>€1250.00</td>
-                        <td>03 Feb 2020</td>
-                        <td>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-gradient-quepal" role="progressbar" style="width: 100%"></div>
+
+
+                        <div class="col-md-6 col-xl-3">
+                          <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                            <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                              <div>
+                                <!-- Sparkline Container -->
+                                <span class="js-sparkline" data-type="line"
+                                      data-points="[7,9,5,2,3,4,8,3]"
+                                      data-width="90px"
+                                      data-height="40px"
+                                      data-line-color="#3c90df"
+                                      data-fill-color="transparent"
+                                      data-spot-color="transparent"
+                                      data-min-spot-color="transparent"
+                                      data-max-spot-color="transparent"
+                                      data-highlight-spot-color="#3c90df"
+                                      data-highlight-line-color="#3c90df"
+                                      data-tooltip-suffix="New Customer"></span>
+                              </div>
+                              <div class="ms-3 text-end">
+                                <p class="text-muted mb-0">
+                                  New Customer
+                                </p>
+                                <p class="fs-3 fw-medium mb-0">
+                                  2708
+                                </p>
+                              </div>
                             </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Earphone GL</td>
-                        <td><img src="{{asset('assets/images/products/02.png')}}" class="product-img-2" alt="product img"></td>
-                        <td>#8304620</td>
-                        <td><span class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span></td>
-                        <td>€1500.00</td>
-                        <td>05 Feb 2020</td>
-                        <td>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-gradient-blooker" role="progressbar" style="width: 60%"></div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Full HD Sansui 32" Tv</td>
-                        <td><img src="{{asset('assets/images/products/03.png')}}" class="product-img-2" alt="product img"></td>
-                        <td>#4736890</td>
-                        <td><span class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span></td>
-                        <td>€1400.00</td>
-                        <td>06 Feb 2020</td>
-                        <td>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-gradient-bloody" role="progressbar" style="width: 70%"></div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Clasic 100MB Internet</td>
-                        <td><img src="{{asset('assets/images/products/04.png')}}" class="product-img-2" alt="product img"></td>
-                        <td>#8543765</td>
-                        <td><span class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span></td>
-                        <td>€1200.00</td>
-                        <td>14 Feb 2020</td>
-                        <td>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-gradient-quepal" role="progressbar" style="width: 100%"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>KPN Super Fast 50 MBPS Optical Internet</td>
-                        <td><img src="{{asset('assets/images/products/06.png')}}" class="product-img-2" alt="product img"></td>
-                        <td>#9629240</td>
-                        <td><span class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span></td>
-                        <td>€1500.00</td>
-                        <td>18 Feb 2020</td>
-                        <td>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-gradient-blooker" role="progressbar" style="width: 60%"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>SOLCON Internet & Tv</td>
-                        <td><img src="{{asset('assets/images/products/05.png')}}" class="product-img-2" alt="product img"></td>
-                        <td>#8506790</td>
-                        <td><span class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span></td>
-                        <td>€1800.00</td>
-                        <td>21 Feb 2020</td>
-                        <td>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-gradient-bloody" role="progressbar" style="width: 40%"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-12 col-lg-7 col-xl-8 d-flex">
-        <div class="card radius-10 w-100">
-            <div class="card-header bg-transparent">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-0">Recent Orders</h6>
-                    </div>
-                    <div class="dropdown ms-auto">
-                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-7 col-xl-8 border-end">
-                        <div id="geographic-map-2"></div>
-                    </div>
-                    <div class="col-lg-5 col-xl-4">
-
-                        <div class="mb-4">
-                            <p class="mb-2"><i class="flag-icon flag-icon-us me-1"></i> USA <span class="float-end">70%</span></p>
-                            <div class="progress" style="height: 7px;">
-                                <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" style="width: 70%"></div>
-                            </div>
+                          </a>
                         </div>
 
-                        <div class="mb-4">
-                            <p class="mb-2"><i class="flag-icon flag-icon-ca me-1"></i> Canada <span class="float-end">65%</span></p>
-                            <div class="progress" style="height: 7px;">
-                                <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 65%"></div>
+                        <div class="col-md-6 col-xl-3">
+                          <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                            <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                              <div>
+                                <!-- Sparkline Container -->
+                                <span class="js-sparkline" data-type="line"
+                                      data-points="[68,25,36,62,59,80,75,89]"
+                                      data-width="90px"
+                                      data-height="40px"
+                                      data-line-color="#343a40"
+                                      data-fill-color="transparent"
+                                      data-spot-color="transparent"
+                                      data-min-spot-color="transparent"
+                                      data-max-spot-color="transparent"
+                                      data-highlight-spot-color="#343a40"
+                                      data-highlight-line-color="#343a40"
+                                      data-tooltip-suffix="New Offers"></span>
+                              </div>
+                              <div class="ms-3 text-end">
+                                <p class="text-muted mb-0">
+                                  New Offers
+                                </p>
+                                <p class="fs-3 fw-medium mb-0">
+                                  +156
+                                </p>
+                              </div>
                             </div>
+                          </a>
+                        </div> 
+
+                        <div class="col-md-6 col-xl-3">
+                          <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                            <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                              <div>
+                                <!-- Sparkline Container -->
+                                <span class="js-sparkline" data-type="line"
+                                      data-points="[340,330,360,340,360,350,370,360]"
+                                      data-width="90px"
+                                      data-height="40px"
+                                      data-line-color="#82b54b"
+                                      data-fill-color="transparent"
+                                      data-spot-color="transparent"
+                                      data-min-spot-color="transparent"
+                                      data-max-spot-color="transparent"
+                                      data-highlight-spot-color="#82b54b"
+                                      data-highlight-line-color="#82b54b"
+                                      data-tooltip-suffix="Request Approval"></span>
+                              </div>
+                              <div class="ms-3 text-end">
+                                <p class="text-muted mb-0">
+                                  Request Approval
+                                </p>
+                                <p class="fs-3 fw-medium mb-0">
+                                  4800
+                                </p>
+                              </div>
+                            </div>
+                          </a>
                         </div>
 
-                        <div class="mb-4">
-                            <p class="mb-2"><i class="flag-icon flag-icon-gb me-1"></i> England <span class="float-end">60%</span></p>
-                            <div class="progress" style="height: 7px;">
-                                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: 60%"></div>
+                        <div class="col-md-6 col-xl-3">
+                          <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                            <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                              <div>
+                                <!-- Sparkline Container -->
+                               <span class="js-sparkline" data-type="line"
+                                data-points="[340,230,360,140,260,350,370,460]"
+                                data-width="100%"
+                                data-height="40px"
+                                data-fill-color="transparent"
+                                data-spot-color="transparent"
+                                data-min-spot-color="transparent"
+                                data-max-spot-color="transparent"
+                                data-tooltip-prefix="Total Visits"></span>
+                              </div>
+                              <div class="ms-3 text-end">
+                                <p class="text-muted mb-0">
+                                  Total Visits
+                                </p>
+                                <p class="fs-3 fw-medium mb-0">
+                                  400023
+                                </p>
+                              </div>
                             </div>
+                          </a>
                         </div>
-
-                        <div class="mb-4">
-                            <p class="mb-2"><i class="flag-icon flag-icon-au me-1"></i> Australia <span class="float-end">55%</span></p>
-                            <div class="progress" style="height: 7px;">
-                                <div class="progress-bar bg-warning progress-bar-striped" role="progressbar" style="width: 55%"></div>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <p class="mb-2"><i class="flag-icon flag-icon-in me-1"></i> India <span class="float-end">50%</span></p>
-                            <div class="progress" style="height: 7px;">
-                                <div class="progress-bar bg-info progress-bar-striped" role="progressbar" style="width: 50%"></div>
-                            </div>
-                        </div>
-
-                        <div class="mb-0">
-                            <p class="mb-2"><i class="flag-icon flag-icon-cn me-1"></i> China <span class="float-end">45%</span></p>
-                            <div class="progress" style="height: 7px;">
-                                <div class="progress-bar bg-dark progress-bar-striped" role="progressbar" style="width: 45%"></div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-lg-5 col-xl-4 d-flex">
-        <div class="card w-100 radius-10">
-            <div class="card-body">
-                <div class="card radius-10 border shadow-none">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
+                      </div>
+                      <div class="row">
+                      <div class="col-md-6 col-xl-3">
+                        <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                          <div class="block-content block-content-full d-flex align-items-center justify-content-between text-white  bg-primary">
                             <div>
-                                <p class="mb-0 text-secondary">Total Likes</p>
-                                <h4 class="my-1">45.6M</h4>
-                                <p class="mb-0 font-13">+6.2% from last week</p>
+                              <!-- Sparkline Container -->
+                              <span class="js-sparkline" data-type="line"
+                                    data-points="[68,25,36,122,59,80,75,89]"
+                                    data-width="80px"
+                                    data-height="40px"
+                                    data-line-color="#FFF"
+                                    data-fill-color="transparent"
+                                    data-spot-color="transparent"
+                                    data-min-spot-color="transparent"
+                                    data-max-spot-color="transparent"
+                                    data-highlight-spot-color="#343a40"
+                                    data-highlight-line-color="#343a40"
+                                    data-tooltip-suffix="New Providers"></span>
                             </div>
-                            <div class="widgets-icons-2 bg-gradient-cosmic text-white ms-auto"><i class='bx bxs-heart-circle'></i>
+                            <div class="ms-3 text-end">
+                              <p class="mb-0">
+                                New Providers
+                              </p>
+                              <p class="fs-3 fw-medium mb-0">
+                                278
+                              </p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card radius-10 border shadow-none">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-secondary">Comments</p>
-                                <h4 class="my-1">25.6K</h4>
-                                <p class="mb-0 font-13">+3.7% from last week</p>
-                            </div>
-                            <div class="widgets-icons-2 bg-gradient-ibiza text-white ms-auto"><i class='bx bxs-comment-detail'></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card radius-10 mb-0 border shadow-none">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-secondary">Total Shares</p>
-                                <h4 class="my-1">85.4M</h4>
-                                <p class="mb-0 font-13">+4.6% from last week</p>
-                            </div>
-                            <div class="widgets-icons-2 bg-gradient-kyoto text-dark ms-auto"><i class='bx bxs-share-alt'></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</div>
-<!--end row-->
-
-<div class="row row-cols-1 row-cols-lg-3">
-    <div class="col d-flex">
-        <div class="card radius-10 w-100">
-            <div class="card-body">
-                <p class="font-weight-bold mb-1 text-secondary">Weekly Revenue</p>
-                <div class="d-flex align-items-center mb-4">
-                    <div>
-                        <h4 class="mb-0">€89,540</h4>
-                    </div>
-                    <div class="">
-                        <p class="mb-0 align-self-center font-weight-bold text-success ms-2">4.4% <i class="bx bxs-up-arrow-alt mr-2"></i>
-                        </p>
-                    </div>
-                </div>
-                <div class="chart-container-0">
-                    <canvas id="chart3"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col d-flex">
-        <div class="card radius-10 w-100">
-            <div class="card-header bg-transparent">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-0">Request Summary</h6>
-                    </div>
-                    <div class="dropdown ms-auto">
-                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
+                          </div>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="chart-container-1">
-                    <canvas id="chart4"></canvas>
-                </div>
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Completed <span class="badge bg-gradient-quepal rounded-pill">25</span>
-                </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Pending <span class="badge bg-gradient-ibiza rounded-pill">10</span>
-                </li>
-                <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Process <span class="badge bg-gradient-deepblue rounded-pill">65</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="col d-flex">
-        <div class="card radius-10 w-100">
-            <div class="card-header bg-transparent">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-0">Top Selling Categories</h6>
-                    </div>
-                    <div class="dropdown ms-auto">
-                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
+                      </div>
+                        
+                      <div class="col-md-6 col-xl-3">
+                        <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                          <div class="block-content block-content-full d-flex align-items-center text-white bg-success justify-content-between">
+                            <div>
+                              <!-- Sparkline Container -->
+                              <span class="js-sparkline" data-type="bar"
+                                         data-points="[7,9,5,2,3,4,8,3]"
+                                         data-height="40px"
+                                         data-bar-width="6"
+                                         data-bar-color="#fff"
+                                         data-bar-spacing="3"
+                                         data-tooltip-suffix="New Request"></span>
+                            </div>
+                            <div class="ms-3 text-end">
+                              <p class="mb-0">
+                                New Request
+                              </p>
+                              <p class="fs-3 fw-medium mb-0">
+                                278
+                              </p>
+                            </div>
+                          </div>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                            </li>
-                        </ul>
+                      </div>
+
+                      <div class="col-md-6 col-xl-3">
+                        <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                          <div class="block-content block-content-full d-flex align-items-center bg-gd-sublime text-white justify-content-between">
+                            <div>
+                              <!-- Sparkline Container -->
+                              <span class="js-sparkline" data-type="line"
+                                    data-points="[68,25,36,10,59,80,75,10]"
+                                    data-width="80px"
+                                    data-height="40px"
+                                    data-line-color="#fff"
+                                    data-fill-color="transparent"
+                                    data-spot-color="transparent"
+                                    data-min-spot-color="transparent"
+                                    data-max-spot-color="transparent"
+                                    data-highlight-spot-color="#343a40"
+                                    data-highlight-line-color="#343a40"
+                                    data-tooltip-suffix="Pending"></span>
+                            </div>
+                            <div class="ms-3 text-end">
+                              <p class=" mb-0">
+                                Request Pending
+                              </p>
+                              <p class="fs-3 fw-medium mb-0">
+                                40
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-md-6 col-xl-3">
+                        <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                          <div class="block-content block-content-full d-flex align-items-center bg-gd-aqua text-white justify-content-between">
+                            <div>
+                              <!-- Sparkline Container -->
+                              <span class="js-sparkline" data-type="line"
+                                    data-points="[68,25,36,10,59,80,60,100]"
+                                    data-width="80px"
+                                    data-height="40px"
+                                    data-line-color="#fff"
+                                    data-fill-color="transparent"
+                                    data-spot-color="transparent"
+                                    data-min-spot-color="transparent"
+                                    data-max-spot-color="transparent"
+                                    data-highlight-spot-color="#343a40"
+                                    data-highlight-line-color="#343a40"
+                                    data-tooltip-suffix="Pending"></span>
+                            </div>
+                            <div class="ms-3 text-end">
+                              <p class="mb-0">
+                                Total Services
+                              </p>
+                              <p class="fs-3 fw-medium mb-0">
+                                50
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                      </div>
+                    
+                      <div class="row">
+                          <div class="col-md-6 col-xl-3">
+                            <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                              <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                                <div>
+                                  <!-- Sparkline Container -->
+                                  <span class="js-sparkline" data-type="line"
+                                        data-points="[68,25,36,10,59,80,60,100]"
+                                        data-width="80px"
+                                        data-height="40px"
+                                        data-line-color="#044792"
+                                        data-fill-color="transparent"
+                                        data-spot-color="transparent"
+                                        data-min-spot-color="transparent"
+                                        data-max-spot-color="transparent"
+                                        data-highlight-spot-color="#343a40"
+                                        data-highlight-line-color="#343a40"
+                                        data-tooltip-suffix="Pending"></span>
+                                </div>
+                                <div class="ms-3 text-end">
+                                  <p class="text-muted mb-0">
+                                    Tickets Open
+                                  </p>
+                                  <p class="fs-3 fw-medium mb-0">
+                                    155
+                                  </p>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+
+                          <div class="col-md-6 col-xl-3">
+                            <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                              <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                                <div>
+                                  <!-- Sparkline Container -->
+                                  <span class="js-sparkline" data-type="line"
+                                        data-points="[68,25,36,10,59,80,60,100]"
+                                        data-width="80px"
+                                        data-height="40px"
+                                        data-line-color="#d262e3"
+                                        data-fill-color="transparent"
+                                        data-spot-color="transparent"
+                                        data-min-spot-color="transparent"
+                                        data-max-spot-color="transparent"
+                                        data-highlight-spot-color="#343a40"
+                                        data-highlight-line-color="#343a40"
+                                        data-tooltip-suffix="Pending"></span>
+                                </div>
+                                <div class="ms-3 text-end">
+                                  <p class="text-muted mb-0">
+                                    Tickets Close
+                                  </p>
+                                  <p class="fs-3 fw-medium mb-0">
+                                    80
+                                  </p>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                          <div class="col-md-6 col-xl-3">
+                            <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                              <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                                <div>
+                                  <!-- Sparkline Container -->
+                                  <span class="js-sparkline" data-type="line"
+                                        data-points="[68,25,36,10,59,80,60,100]"
+                                        data-width="80px"
+                                        data-height="40px"
+                                        data-line-color="#3db708"
+                                        data-fill-color="transparent"
+                                        data-spot-color="transparent"
+                                        data-min-spot-color="transparent"
+                                        data-max-spot-color="transparent"
+                                        data-highlight-spot-color="#343a40"
+                                        data-highlight-line-color="#343a40"
+                                        data-tooltip-suffix="Pending"></span>
+                                </div>
+                                <div class="ms-3 text-end">
+                                  <p class="text-muted mb-0">
+                                    Total Active Users
+                                  </p>
+                                  <p class="fs-3 fw-medium mb-0">
+                                    2365
+                                  </p>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+
+                           <div class="col-md-6 col-xl-3">
+                             <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                               <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+                                 <div>
+                                   <!-- Sparkline Container -->
+                                   <span class="js-sparkline" data-type="line"
+                                         data-points="[68,25,36,10,59,80,60,100]"
+                                         data-width="80px"
+                                         data-height="40px"
+                                         data-line-color="#ff0000"
+                                         data-fill-color="transparent"
+                                         data-spot-color="transparent"
+                                         data-min-spot-color="transparent"
+                                         data-max-spot-color="transparent"
+                                         data-highlight-spot-color="#343a40"
+                                         data-highlight-line-color="#343a40"
+                                         data-tooltip-suffix="Pending"></span>
+                                 </div>
+                                 <div class="ms-3 text-end">
+                                   <p class="text-muted mb-0">
+                                     Total Inactive Users
+                                   </p>
+                                   <p class="fs-3 fw-medium mb-0">
+                                     325
+                                   </p>
+                                 </div>
+                               </div>
+                             </a>
+                           </div>
+                      </div>
+                    </section>
+
+                    <!-- Main Chart -->
+                    <div class="block block-rounded block-mode-loading-refresh">
+                      <div class="block-header block-header-default">
+                        <h3 class="block-title">Earnings</h3>
+                        <div class="block-options">
+                          <div class="btn-group btn-group-sm me-2" role="group" aria-label="Earnings Select Date Group">
+                            <input type="radio" class="btn-check" name="dashboard-chart-options" id="dashboard-chart-options-week" autocomplete="off">
+                            <label class="btn btn-primary" for="dashboard-chart-options-week" data-toggle="dashboard-chart-set-week">Week</label>
+
+                            <input type="radio" class="btn-check" name="dashboard-chart-options" id="dashboard-chart-options-month" autocomplete="off">
+                            <label class="btn btn-primary" for="dashboard-chart-options-month" data-toggle="dashboard-chart-set-month">Month</label>
+
+                            <input type="radio" class="btn-check" name="dashboard-chart-options" id="dashboard-chart-options-year" autocomplete="off" checked>
+                            <label class="btn btn-primary" for="dashboard-chart-options-year" data-toggle="dashboard-chart-set-year">Year</label>
+                          </div>
+                          <button type="button" class="btn-block-option align-middle" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+                            <i class="si si-refresh"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="block-content px-0 overflow-hidden">
+                        <div class="m-n1" style="height: 380px">
+                          <!-- Chart.js Dashboard Earnings Container -->
+                          <!-- Chart.js Chart is initialized in js/pages/be_pages_dashboard_v1.min.js which was auto compiled from _js/pages/be_pages_dashboard_v1.js -->
+                          <!-- For more info and examples you can check out http://www.chartjs.org/docs/ -->
+                          <canvas id="js-chartjs-dashboard-earnings"></canvas>
+                        </div>
+                      </div>
                     </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="chart-container-0">
-                    <canvas id="chart5"></canvas>
-                </div>
-            </div>
-            <div class="row row-group border-top g-0">
-                <div class="col">
-                    <div class="p-3 text-center">
-                        <h4 class="mb-0 text-danger">€45,216</h4>
-                        <p class="mb-0">Internet</p>
+                    <!-- END Main Chart -->
+                    
+                    <section id="stats-subtitle">
+                    <div class="row">
+                      <div class="col-12 mt-3 mb-1">
+                        <h4 class="text-uppercase mt-5 mb-0">Statistics With Subtitle</h4>
+                        <p>Statistics on minimal cards with Title &amp; Sub Title.</p>
+                      </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="p-3 text-center">
-                        <h4 class="mb-0 text-success">€68,154</h4>
-                        <p class="mb-0">Tv</p>
+                   <div class="row">
+                  <div class="col-xl-6 col-md-12">
+                        <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                          <div class="block-content block-content-full d-flex align-items-center justify-content-between text-white bg-gd-sea">
+                            <div>
+                              <!-- Sparkline Container -->
+                              <span class="js-sparkline" data-type="line"
+                                    data-points="[63,52,14,36,48,17,53,64]"
+                                    data-width="100%"
+                                    data-height="120px"
+                                    data-line-color="#fff"
+                                    data-fill-color="transparent"
+                                    data-spot-color="transparent"
+                                    data-min-spot-color="transparent"
+                                    data-max-spot-color="transparent"
+                                    data-highlight-spot-color="#ff0000"
+                                    data-highlight-line-color="#ff0000"
+                                    data-tooltip-suffix="Sales"></span>
+                            </div>
+                            <div class="ms-3 text-end">
+                              <h4>Last Month Sale</h4>
+                               <span>Total</span>
+                              <p class="fs-3 fw-medium mb-0">
+                               <h1>18,000</h1>
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+
+                      <div class="col-xl-6 col-md-12">
+                            <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                              <div class="block-content block-content-full d-flex align-items-center bg-gd-leaf text-white justify-content-between">
+                                <div>
+                                  <!-- Sparkline Container -->
+                                  <span class="js-sparkline" data-type="line"
+                                        data-points="[63,52,14,36,48,17,53,64]"
+                                        data-width="100%"
+                                        data-height="120px"
+                                        data-line-color="#fff"
+                                        data-fill-color="transparent"
+                                        data-spot-color="transparent"
+                                        data-min-spot-color="transparent"
+                                        data-max-spot-color="transparent"
+                                        data-highlight-spot-color="#ff0000"
+                                        data-highlight-line-color="#ff0000"
+                                        data-tooltip-suffix="Sales"></span>
+                                </div>
+                                <div class="ms-3 text-end">
+                                  <h4>Last Month Commission</h4>
+                                   <span>Total</span>
+                                  <p class="fs-3 fw-medium mb-0">
+                                   <h1>84,000</h1>
+                                  </p>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
                     </div>
+
+                    <div class="row">
+
+
+
+               <div class="col-xl-6 col-md-12">
+                            <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                              <div class="block-content block-content-full d-flex align-items-center bg-gd-dusk-op text-white justify-content-between">
+                                <div>
+                                  <!-- Sparkline Container -->
+                                  <span class="js-sparkline" data-type="line"
+                                        data-points="[10,2,14,36,48,0,53,64]"
+                                        data-width="100%"
+                                        data-height="120px"
+                                        data-line-color="#fff"
+                                        data-fill-color="transparent"
+                                        data-spot-color="transparent"
+                                        data-min-spot-color="transparent"
+                                        data-max-spot-color="transparent"
+                                        data-highlight-spot-color="#ff0000"
+                                        data-highlight-line-color="#ff0000"
+                                        data-tooltip-suffix="Sales"></span>
+                                </div>
+                                <div class="ms-3 text-end">
+                                  <h4>Total Revenue Generated</h4>
+                                   <span>Total Sales</span>
+                                  <p class="fs-3 fw-medium mb-0">
+                                   <h1>$76,456.00</h1>
+                                  </p>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+
+
+                    <div class="col-xl-6 col-md-12">
+                                 <a class="block block-rounded block-link-pop" href="javascript:void(0)">
+                                   <div class="block-content block-content-full d-flex align-items-center text-white justify-content-between bg-gd-fruit-op">
+                                     <div>
+                                       <!-- Sparkline Container -->
+                                       <span class="js-sparkline" data-type="line"
+                                             data-points="[50,20,35,45,48,0,53,64]"
+                                             data-width="100%"
+                                             data-height="120px"
+                                             data-line-color="#fff"
+                                             data-fill-color="transparent"
+                                             data-spot-color="transparent"
+                                             data-min-spot-color="transparent"
+                                             data-max-spot-color="transparent"
+                                             data-highlight-spot-color="#ff0000"
+                                             data-highlight-line-color="#ff0000"
+                                             data-tooltip-suffix="Sales"></span>
+                                     </div>
+                                     <div class="ms-3 text-end">
+                                       <h4>Total Commission Generated</h4>
+                                        <span>Total Sales</span>
+                                       <p class="fs-3 fw-medium mb-0">
+                                        <h1>$26,456.00</h1>
+                                       </p>
+                                     </div>
+                                   </div>
+                                 </a>
+                               </div>
+                    </div>
+                  </section>
+
+                  <!-- Visitors Growth -->
+                  <div class="d-flex justify-content-between align-items-center pt-5 pb-3">
+                    <h2 class="h3 fw-normal mb-0">Visitors Growth</h2>
+                    <div class="dropdown">
+                      <button type="button" class="btn btn-sm btn-alt-secondary px-3" id="dropdown-analytics-visitors-growth" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        This Week <i class="fa fa-fw fa-angle-down"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-end fs-sm" aria-labelledby="dropdown-analytics-visitors-growth">
+                        <a class="dropdown-item" href="javascript:void(0)">Last 30 days</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:void(0)">Previous Week</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:void(0)">This Month</a>
+                        <a class="dropdown-item" href="javascript:void(0)">Previous Month</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="block block-rounded block-fx-pop">
+                    <div class="block-content block-content-full">
+                      <div class="row">
+                        <div class="col-md-5 col-lg-4 d-md-flex align-items-md-center">
+                          <div class="p-md-2 p-lg-3">
+                            <div class="display-4 fw-bold">3,687</div>
+                            <div class="fs-lg fw-bold">Your new website visitors</div>
+                            <div class="py-3 d-flex align-items-center">
+                              <div class="bg-success-light px-2 py-1 rounded me-3">
+                                <i class="fa fa-fw fa-caret-up text-success"></i>
+                              </div>
+                              <p class="mb-0">
+                                You have a <span class="fw-semibold text-success">25% Growth</span> in the last 30 days. Keep it up!
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-7 col-lg-8">
+                          <div class="p-md-2 p-lg-3 w-100" style="height: 350px;">
+                            <!-- Bars Chart Container -->
+                            <!-- Chart.js Chart is initialized in js/pages/db_analytics.min.js which was auto compiled from _js/pages/db_analytics.js -->
+                            <!-- For more info and examples you can check out http://www.chartjs.org/docs/ -->
+                            <canvas id="js-chartjs-analytics-bars"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- END Visitors Growth -->
+
+
+                  <!-- Users and Purchases -->
+                  <div class="row items-push">
+                    <div class="col-xl-6">
+                      <!-- Users -->
+                      <div class="block block-rounded block-mode-loading-refresh h-100 mb-0">
+                        <div class="block-header block-header-default">
+                          <h3 class="block-title">Users</h3>
+                          <div class="block-options">
+                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+                              <i class="si si-refresh"></i>
+                            </button>
+                            <button type="button" class="btn-block-option">
+                              <i class="si si-cloud-download"></i>
+                            </button>
+                            <div class="dropdown">
+                              <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="si si-wrench"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="javascript:void(0)">
+                                  <i class="far fa-fw fa-user me-1"></i> New Users
+                                </a>
+                                <a class="dropdown-item" href="javascript:void(0)">
+                                  <i class="far fa-fw fa-bookmark me-1"></i> VIP Users
+                                </a>
+                                <div role="separator" class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript:void(0)">
+                                  <i class="fa fa-fw fa-pencil-alt"></i> Manage
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="block-content block-content-full block-content-sm bg-body-dark">
+                          <form action="be_pages_dashboard.html" method="POST" onsubmit="return false;">
+                            <input type="text" class="form-control form-control-alt" placeholder="Search Users..">
+                          </form>
+                        </div>
+                        <div class="block-content">
+                          <table class="table table-striped table-hover table-borderless table-vcenter fs-sm">
+                            <thead>
+                              <tr class="text-uppercase">
+                                <th class="fw-bold text-center" style="width: 120px;">Avatar</th>
+                                <th class="fw-bold">Name</th>
+                                <th class="d-none d-sm-table-cell fw-bold">Access</th>
+                                <th class="fw-bold text-center" style="width: 60px;"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td class="text-center">
+                                  <img class="img-avatar img-avatar32 img-avatar-thumb" src="assets/media/avatars/avatar7.jpg" alt="">
+                                </td>
+                                <td>
+                                  <div class="fw-semibold fs-base">Amanda Powell</div>
+                                  <div class="text-muted">carol@example.com</div>
+                                </td>
+                                <td class="d-none d-sm-table-cell fs-base">
+                                  <span class="badge bg-dark">VIP</span>
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit User">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="text-center">
+                                  <img class="img-avatar img-avatar32 img-avatar-thumb" src="assets/media/avatars/avatar13.jpg" alt="">
+                                </td>
+                                <td>
+                                  <div class="fw-semibold fs-base">Ralph Murray</div>
+                                  <div class="text-muted">smith@example.com</div>
+                                </td>
+                                <td class="d-none d-sm-table-cell fs-base">
+                                  <span class="badge bg-black-50">Pro</span>
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit User">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="text-center">
+                                  <img class="img-avatar img-avatar32 img-avatar-thumb" src="assets/media/avatars/avatar14.jpg" alt="">
+                                </td>
+                                <td>
+                                  <div class="fw-semibold fs-base">Ralph Murray</div>
+                                  <div class="text-muted">john@example.com</div>
+                                </td>
+                                <td class="d-none d-sm-table-cell fs-base">
+                                  <span class="badge bg-dark">VIP</span>
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit User">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="text-center">
+                                  <img class="img-avatar img-avatar32 img-avatar-thumb" src="assets/media/avatars/avatar8.jpg" alt="">
+                                </td>
+                                <td>
+                                  <div class="fw-semibold fs-base">Andrea Gardner</div>
+                                  <div class="text-muted">lori@example.com</div>
+                                </td>
+                                <td class="d-none d-sm-table-cell fs-base">
+                                  <span class="badge bg-black-50">Pro</span>
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit User">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="text-center">
+                                  <img class="img-avatar img-avatar32 img-avatar-thumb" src="assets/media/avatars/avatar13.jpg" alt="">
+                                </td>
+                                <td>
+                                  <div class="fw-semibold fs-base">Thomas Riley</div>
+                                  <div class="text-muted">jack@example.com</div>
+                                </td>
+                                <td class="d-none d-sm-table-cell fs-base">
+                                  <span class="badge bg-success">Free</span>
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit User">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <!-- END Users -->
+                    </div>
+                    <div class="col-xl-6">
+                      <!-- Purchases -->
+                      <div class="block block-rounded block-mode-loading-refresh h-100 mb-0">
+                        <div class="block-header block-header-default">
+                          <h3 class="block-title">Purchases</h3>
+                          <div class="block-options">
+                            <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+                              <i class="si si-refresh"></i>
+                            </button>
+                            <button type="button" class="btn-block-option">
+                              <i class="si si-cloud-download"></i>
+                            </button>
+                            <div class="dropdown">
+                              <button type="button" class="btn-block-option" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="si si-wrench"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="javascript:void(0)">
+                                  <i class="fa fa-fw fa-sync fa-spin text-warning me-1"></i> Pending
+                                </a>
+                                <a class="dropdown-item" href="javascript:void(0)">
+                                  <i class="far fa-fw fa-times-circle text-danger me-1"></i> Cancelled
+                                </a>
+                                <a class="dropdown-item" href="javascript:void(0)">
+                                  <i class="far fa-fw fa-check-circle text-success me-1"></i> Completed
+                                </a>
+                                <div role="separator" class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript:void(0)">
+                                  <i class="fa fa-fw fa-eye me-1"></i> View All
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="block-content block-content-full block-content-sm bg-body-dark">
+                          <form action="be_pages_dashboard.html" method="POST" onsubmit="return false;">
+                            <input type="text" class="form-control form-control-alt" placeholder="Search Purchases..">
+                          </form>
+                        </div>
+                        <div class="block-content">
+                          <table class="table table-striped table-hover table-borderless table-vcenter fs-sm">
+                            <thead>
+                              <tr class="text-uppercase">
+                                <th class="fw-bold">Product</th>
+                                <th class="d-none d-sm-table-cell fw-bold">Date</th>
+                                <th class="fw-bold">Status</th>
+                                <th class="d-none d-sm-table-cell fw-bold text-end" style="width: 120px;">Price</th>
+                                <th class="fw-bold text-center" style="width: 60px;"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">iPhone X</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">today</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-warning">Pending..</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $999,99
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">MacBook Pro 15"</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">today</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-warning">Pending..</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $2.299,00
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">Nvidia GTX 1080 Ti</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">today</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-warning">Pending..</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $1200,00
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">Playstation 4 Pro</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">today</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-danger">Cancelled</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $399,00
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">Nintendo Switch</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">yesterday</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-success">Completed</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $349,00
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">iPhone X</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">yesterday</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-success">Completed</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $999,00
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">Echo Dot</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">yesterday</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-success">Completed</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $39,99
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <span class="fw-semibold">Xbox One X</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell">
+                                  <span class="fs-sm text-muted">yesterday</span>
+                                </td>
+                                <td>
+                                  <span class="fw-semibold text-success">Completed</span>
+                                </td>
+                                <td class="d-none d-sm-table-cell text-end">
+                                  $499,00
+                                </td>
+                                <td class="text-center">
+                                  <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="left" title="Manage">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <!-- END Purchases -->
+                    </div>
+                  </div>
+                  <!-- END Users and Purchases -->
+
                 </div>
-            </div>
-            <!--end row-->
-        </div>
-    </div>
-</div>
-<!--end row-->
 @endsection

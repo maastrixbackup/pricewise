@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,7 +23,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
 		{ name: 'styles' },
 		{ name: 'colors' },
-		{ name: 'about' },{ name: 'colordialog', groups: [ 'TextColor', 'BGColor' ] }
+		{ name: 'about' }
 	];
 
 	// Remove some buttons provided by the standard plugins, which are
@@ -35,11 +35,4 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
-
-	config.extraPlugins = 'colorbutton';
-	config.extraPlugins = 'panelbutton';
-	config.extraPlugins = 'button';
-	config.extraPlugins = 'imageuploader';
-	//config.filebrowserBrowseUrl = '/browser/browse.php';
-	//config.filebrowserUploadUrl = '/uploader/upload.php';
 };

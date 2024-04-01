@@ -1,156 +1,276 @@
- <!--sidebar wrapper -->
- <div class="sidebar-wrapper" data-simplebar="true">
-     <div class="sidebar-header">
-         <!-- <div>
-                    <img src="assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
-                </div> -->
-         <div>
-             <h4 class="logo-text">Price Compare</h4>
-         </div>
-         <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
-         </div>
-     </div>
-     <!--navigation-->
-     <ul class="metismenu" id="menu">
-         <li>
-             <a href="{{route('admin.dashboard')}}">
-                 <div class="parent-icon"><i class='bx bx-home-circle'></i>
-                 </div>
-                 <div class="menu-title">Dashboard</div>
-             </a>
-
-         </li>
-
-         <li>
-             <a href="javascript:;" class="has-arrow">
-                 <div class="parent-icon"><i class="lni lni-users"></i>
-                 </div>
-                 <div class="menu-title">Customers</div>
-             </a>
-             <ul>
-                 <li> <a href="{{route('admin.customers.index')}}"><i class="bx bx-right-arrow-alt"></i>Customers</a>
-                 </li>
-                 {{-- <li> <a href="{{route('admin.approve-customers')}}"><i class="bx bx-right-arrow-alt"></i>Approved Customers</a>
-                 </li>
-                 <li> <a href="{{route('admin.reject-customers')}}"><i class="bx bx-right-arrow-alt"></i>Rejected Customers</a>
-                 </li> --}}
-             </ul>
-         </li>
-         @if(Auth::guard('admin')->user()->can('providers-list'))
-          <li>
-             <a href="{{route('admin.providers.index')}}">
-                 <div class="parent-icon"><i class='bx bx-face'></i>
-                 </div>
-                 <div class="menu-title">Providers</div>
-             </a>
-
-         </li>
-         @endif
-         @if(Auth::guard('admin')->user()->can('category-list'))
-         <li>
-             <a href="{{route('admin.categories.index')}}">
-                 <div class="parent-icon"><i class='bx bx-face'></i>
-                 </div>
-                 <div class="menu-title">Categories</div>
-             </a>
-
-         </li>
-         @endif
-         @if(Auth::guard('admin')->user()->can('feature-list'))
-         <li>
-             <a href="{{route('admin.features.index')}}">
-                 <div class="parent-icon"><i class='bx bx-face'></i>
-                 </div>
-                 <div class="menu-title">Features</div>
-             </a>
-
-         </li>
-         @endif
-         @if(Auth::guard('admin')->user()->can('page-list'))
-         <li>
-             <a href="{{route('admin.pages.index')}}">
-                 <div class="parent-icon"><i class='bx bx-face'></i>
-                 </div>
-                 <div class="menu-title">Pages</div>
-             </a>
-
-         </li>
-         @endif
-         @if(Auth::guard('admin')->user()->can('banner-list'))
-         <li>
-             <a href="{{route('admin.banners.index')}}">
-                 <div class="parent-icon"><i class='bx bx-face'></i>
-                 </div>
-                 <div class="menu-title">Banners</div>
-             </a>
-
-         </li>
-         @endif
-         <li>
-            <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
-                </div>
-                <div class="menu-title">Products/Services</div>
+ <nav id="sidebar" aria-label="Main Navigation">
+        <!-- Side Header (mini Sidebar mode) -->
+        <div class="smini-visible-block">
+          <div class="content-header">
+            <!-- Logo -->
+            <a class="fw-semibold text-white tracking-wide" href="index.html">
+              P<span class="opacity-75">W</span>
             </a>
-            <ul>
-                @if(Auth::guard('admin')->user()->can('internet-tv-list'))
-                <li> <a href="{{route('admin.internet-tv.index')}}"><i class="bx bx-right-arrow-alt"></i>Internet TV</a>
-                </li>
-                @endif                
+            <!-- END Logo -->
+          </div>
+        </div>
+        <!-- END Side Header (mini Sidebar mode) -->
+
+        <!-- Side Header (normal Sidebar mode) -->
+        <div class="smini-hidden">
+          <div class="content-header toplogo justify-content-lg-center">
+            <!-- Logo -->
+            <a class="fw-semibold text-white tracking-wide" href="index.html">
+              Energise<span class="opacity-75"></span>
+            </a>
+            <!-- END Logo -->
+
+            <!-- Options -->
+            <div class="d-lg-none">
+              <!-- Close Sidebar, Visible only on mobile screens -->
+              <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+              <button type="button" class="btn btn-sm btn-alt-secondary d-lg-none" data-toggle="layout" data-action="sidebar_close">
+                <i class="fa fa-times-circle"></i>
+              </button>
+              <!-- END Close Sidebar -->
+            </div>
+            <!-- END Options -->
+          </div>
+        </div>
+        <!-- END Side Header (normal Sidebar mode) -->
+
+        <!-- Sidebar Scrolling -->
+        <div class="js-sidebar-scroll">
+          <!-- Side Actions -->
+
+          <!-- END Side Actions -->
+
+          <!-- Side Navigation -->
+          <div class="content-side">
+            <ul class="nav-main">
+              <li class="nav-main-item">
+                <a class="nav-main-link active" href="adminOverview.html">
+                  <i class="nav-main-link-icon fa fa-chart-bar"></i>
+                  <span class="nav-main-link-name">Dashboard</span>
+                </a>
+              </li>
+              <li class="nav-main-heading">Manage</li>
+
+              <li class="nav-main-item">
+                <a class="nav-main-link" href="#">
+                <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                <span class="nav-main-link-name">Requests</span>
+                </a>
+              </li>
+              <li class="nav-main-item">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                  <i class="nav-main-link-icon fa fa-briefcase"></i>
+                  <span class="nav-main-link-name">Products/Services</span>
+                </a>
+                <ul class="nav-main-submenu">
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="{{route('admin.categories.index')}}">
+                      <i class="nav-main-link-icon fa-solid fa-list"></i>
+                      <span class="nav-main-link-name">Categories</span>
+                    </a>                
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="service.html">
+                      <i class="nav-main-link-icon fa-solid fa-bolt-lightning"></i>
+                      <span class="nav-main-link-name">Electra</span>
+                    </a>
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="service.html">
+                      <i class="nav-main-link-icon fa-brands fa-gripfire"></i>
+                      <span class="nav-main-link-name">Gas</span>
+                    </a>
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="{{route('admin.internet-tv.index')}}">
+                      <i class="nav-main-link-icon fa-solid fa-globe"></i>
+                      <span class="nav-main-link-name">Internet, Tv & Telephone</span>
+                    </a>
+                  </li>
+                   
+                   
+                    <li class="nav-main-item">
+                    <a class="nav-main-link" href="service.html">
+                      <i class="nav-main-link-icon fa-solid fa-user-shield"></i>
+                      <span class="nav-main-link-name">Insurances</span>
+                    </a>
+                  </li>
+                    <li class="nav-main-item">
+                    <a class="nav-main-link" href="service.html">
+                      <i class="nav-main-link-icon fa-solid fa-mobile-screen"></i>
+                      <span class="nav-main-link-name">Smartphones</span>
+                    </a>
+                  </li>
+                   <li class="nav-main-item">
+                    <a class="nav-main-link" href="#">
+                      <i class="nav-main-link-icon fa-solid fa-hands-holding-circle"></i>
+                      <span class="nav-main-link-name">Exclusive Deal</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              
+              <li class="nav-main-item">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                  <i class="nav-main-link-icon fa-solid fa-sliders"></i>
+                  <span class="nav-main-link-name">Sale/Promotion</span>
+                </a>
+              <ul class="nav-main-submenu">
+              <li class="nav-main-item">
+                <a class="nav-main-link" href="#">
+                <i class="nav-main-link-icon fa-solid fa-hand-holding-heart"></i>
+                <span class="nav-main-link-name">Offers</span>
+                </a>
+              </li>
+              <li class="nav-main-item">
+                <a class="nav-main-link" href="#">
+                <i class="nav-main-link-icon fa-solid fa-percent"></i>
+                <span class="nav-main-link-name">Discount</span>
+                </a>
+              </li>
+              <li class="nav-main-item">
+                <a class="nav-main-link" href="#">
+                <i class="nav-main-link-icon fa-regular fa-clone"></i>
+                <span class="nav-main-link-name">Combos</span>
+                </a>
+              </li>
+               <li class="nav-main-item">
+                <a class="nav-main-link" href="#">
+                <i class="nav-main-link-icon fa-solid fa-circle-plus"></i>
+                <span class="nav-main-link-name">Extras</span>
+                </a>
+              </li>
+              </ul>
+            </li>
+              
+             
+              <li class="nav-main-item">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                  <i class="nav-main-link-icon fa fa-user"></i>
+                  <span class="nav-main-link-name">CMS Pages</span>
+                </a>
+                <ul class="nav-main-submenu">
+                  <li class="nav-main-item">
+                      <a class="nav-main-link" href="{{route('admin.pages.index')}}">
+                        <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Pages</span>
+                    </a>                    
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="{{route('admin.banners.index')}}">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Banners/Sliders</span>
+                    </a>
+                    </li>
+                    <li class="nav-main-item">
+                    <a class="nav-main-link" href="#">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Reviews</span>
+                    </a>
+                  </li>
+                    <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">FAQ</span>
+                    </a>
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Terms & Agreements</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-main-item">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                  <i class="nav-main-link-icon fa-solid fa-ticket"></i>
+                  <span class="nav-main-link-name">Tickets</span>
+                </a>
+                <ul class="nav-main-submenu">
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-solid fa-up-right-from-square"></i>
+                      <span class="nav-main-link-name">Open Tickets</span>
+                    </a>
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa fa-pencil-alt"></i>
+                      <span class="nav-main-link-name">Manage</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="nav-main-item">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                  <i class="nav-main-link-icon fa-solid fa-sliders"></i>
+                  <span class="nav-main-link-name">Setting</span>
+                </a>
+                <ul class="nav-main-submenu">
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">VAT Setting</span>
+                    </a>
+                  </li>
+                 <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Website Setting</span>
+                    </a>
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Mail Setting</span>
+                    </a>
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Newsletter Template</span>
+                    </a>
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                      <span class="nav-main-link-name">Email Template</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-main-item">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                  <i class="nav-main-link-icon fa fa-briefcase"></i>
+                  <span class="nav-main-link-name">Access Management</span>
+                </a>
+                <ul class="nav-main-submenu">
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="{{route('admin.users.index')}}">
+                      <i class="nav-main-link-icon fa-solid fa-list"></i>
+                      <span class="nav-main-link-name">Users</span>
+                    </a>                
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="{{route('admin.roles.index')}}">
+                      <i class="nav-main-link-icon fa-solid fa-list"></i>
+                      <span class="nav-main-link-name">Roles</span>
+                    </a>                
+                  </li>
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="{{route('admin.permissions.index')}}">
+                      <i class="nav-main-link-icon fa-solid fa-list"></i>
+                      <span class="nav-main-link-name">Permissions</span>
+                    </a>                
+                  </li>
+                </ul>
+              </li>
             </ul>
-        </li>
-         <!-- <li class="menu-label">ADMINISTRATION</li> -->
-         <li>
-             <a href="javascript:;" class="has-arrow">
-                 <div class="parent-icon"><i class="bx bx-category"></i>
-                 </div>
-                 <div class="menu-title">Access Management</div>
-             </a>
-             <ul>
-                @if(Auth::guard('admin')->user()->can('user-list'))
-                 <li> <a href="{{route('admin.users.index')}}"><i class="bx bx-right-arrow-alt"></i>Users</a>
-                 </li>
-                 @endif
-                 @if(Auth::guard('admin')->user()->can('role-list'))
-                 <li> <a href="{{route('admin.roles.index')}}"><i class="bx bx-right-arrow-alt"></i>Roles</a>
-                 </li>
-                 @endif
-                 @if(Auth::guard('admin')->user()->can('permission-list'))
-                 <li> <a href="{{route('admin.permissions.index')}}"><i class="bx bx-right-arrow-alt"></i>Permissions</a>
-                 </li>
-                 @endif
-             </ul>
-         </li>
-         <!-- <li>
-             <a href="javascript:;" class="has-arrow">
-                 <div class="parent-icon"><i class="bx bx-mail-send"></i>
-                 </div>
-                 <div class="menu-title">MailChimp</div>
-             </a>
-             <ul>
-                 <li>
-                     <a href="{{route('admin.create-campaign')}}"><i class="bx bx-right-arrow-alt"></i>MailChimp</a>
-                     <a href="{{route('admin.subscribers-list')}}"><i class="bx bx-right-arrow-alt"></i>Subscribers List</a>
-                     <a href="{{route('admin.contacts-list')}}"><i class="bx bx-right-arrow-alt"></i>Contacts List</a>
-                 </li>
-             </ul>
-         </li> -->
-         <li>
-             <a href="javascript:;" class="has-arrow">
-                 <div class="parent-icon"><i class="bx bx-cog"></i>
-                 </div>
-                 <div class="menu-title">Setting</div>
-             </a>
-             <ul>
-                 <li>
-                     <a href="{{route('admin.website-setting')}}"><i class="bx bx-right-arrow-alt"></i>Website Setting</a>
-                     <a href="{{route('admin.email-templates.index')}}"><i class="bx bx-right-arrow-alt"></i>Email Templates</a>
-                     <a href="{{route('admin.smtp-setting')}}"><i class="bx bx-right-arrow-alt"></i>SMTP Setting</a>
-                     <a href="{{route('admin.payment-setting')}}"><i class="bx bx-right-arrow-alt"></i>Payment Setting</a>
-                 </li>
-             </ul>
-         </li>
-     </ul>
-     <!--end navigation-->
- </div>
- <!--end sidebar wrapper -->
+          </div>
+          <!-- END Side Navigation -->
+        </div>
+        <!-- END Sidebar Scrolling -->
+      </nav>
+      <!-- END Sidebar -->
