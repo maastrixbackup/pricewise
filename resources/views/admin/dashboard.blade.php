@@ -1,6 +1,11 @@
 @extends('admin.layouts.app')
 @section('title','Enerzise - Dashboard')
 @section('content')
+<style type="text/css">
+  .content{
+    width:100% !important;
+  }
+</style>
 <div class="bg-image d-none" style="background-image: url('assets/media/various/bg_dashboard.jpg');">
           <div class="bg-primary-dark-op">
             <div class="content content-full">
@@ -969,3 +974,6 @@
 
                 </div>
 @endsection
+@push('scripts')
+<script src="{{ asset('assets/js/pages/be_pages_dashboard_v1.min.js') }}"></script>
+@endpush

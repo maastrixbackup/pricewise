@@ -13,23 +13,36 @@
     <!-- END Icons -->
 
     <!-- Stylesheets -->    
-    <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/app.min.css') }}">
-
-    <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
-    <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/xwork.min.css"> -->
-    <!-- END Stylesheets -->
     
+    <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive-bs5/css/responsive.bootstrap5.min.css')}}">
+    <link rel="stylesheet" id="css-main" href="{{ asset('assets/css/dashmix.css') }}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />     
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
+     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/mystyle.css') }}" rel="stylesheet">
+    <!-- END Stylesheets -->
+    <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}" rel="stylesheet">
+    <!--Image Cropper-->    
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/dropzone.css')}}" />
-        <link href="{{ asset('assets/css/plugins/cropper.css')}}" rel="stylesheet"/>
+    <link href="{{ asset('assets/css/plugins/cropper.css')}}" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <style type="text/css">
-      #main-container{
+      /*#main-container{
     margin-top: 30px;
     padding: 10px;
-}
+}*/
 h6{
     font-size:22px !important;
+}
+#icon {
+  font-family: 'FontAwesome', 'sans-serif' !important;
 }
     </style>
 
@@ -122,7 +135,9 @@ h6{
       <main id="main-container">
 
         <!-- Hero -->
+        <div class="content">
         @yield('content')
+      </div>
         
       </main>
       <!-- END Main Container -->
@@ -146,34 +161,35 @@ h6{
       webpack is putting everything together at assets/_js/main/app.js
     -->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
-
     <!-- jQuery (required for jQuery Sparkline plugin) -->
-    <script src="{{ asset('assets/js/lib/jquery.min.js') }}"></script>
-
-    <!-- Page JS Plugins -->
+    <script src="{{ asset('assets/js/lib/jquery.min.js') }}"></script>    
+    <!-- Page JS Plugins -->    
+    <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-buttons/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-buttons-jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-buttons-pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-buttons-pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-buttons/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatables-buttons/buttons.html5.min.js') }}"></script>
+    <!-- Page JS Code -->
+    <script src="{{ asset('assets/js/pages/be_tables_datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/chart.js/chart.umd.js') }}"></script>
-
      <!-- Page JS Code -->
-    <script src="{{ asset('assets/js/pages/be_pages_dashboard_v1.min.js') }}"></script>
-
-    <!-- <script src="{{ asset('assets/js/index.js')}}"></script> -->
-    <script src="https://codervent.com/rocker/demo/vertical/assets/plugins/validation/jquery.validate.min.js"></script>
-    <script src="https://codervent.com/rocker/demo/vertical/assets/plugins/validation/validation-script.js"></script>
-
-    <script src="{{ asset('assets/js/plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{ asset('assets/js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js')}}"></script>
-    <!-- Page JS Code -->
-    <script src="{{ asset('assets/js/pages/db_analytics.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
     
-    <!-- Page JS Helpers (jQuery Sparkline Plugin) -->
+    <script src="https://codervent.com/rocker/demo/vertical/assets/plugins/validation/jquery.validate.min.js"></script>
+    <script src="https://codervent.com/rocker/demo/vertical/assets/plugins/validation/validation-script.js"></script>    
+    <script src="{{ asset('assets/js/pages/db_analytics.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>                
     <script>Dashmix.helpersOnLoad('jq-sparkline');</script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
-    <!-- <script src="{{ asset('assets/js/app.js')}}"></script> -->
-    
-    <script src="{{ asset('assets/js/plugins/dropzone/dropzone.js')}}"></script>
-    <script src="{{ asset('assets/js/plugins/cropperjs/cropper.min.js')}}"></script>
+    <!-- <script src="{{ asset('assets/js/app.js')}}"></script> -->    
+    <script src="{{ asset('assets/plugins/dropzone/dropzone.js')}}"></script>
+    <script src="{{ asset('assets/plugins/cropperjs/cropper.min.js')}}"></script>
     <script type="text/javascript">
         $(function() {
             $('#datepicker').datepicker();
