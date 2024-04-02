@@ -10,6 +10,7 @@ use App\Models\MailchimpSetting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -23,8 +24,7 @@ class SettingController extends Controller
     {
 
         $website = WebsiteSetting::find(1);
-        $website->site_title = $request->site_title;
-        $website->logo = $request->image;
+        $website->site_title = $request->site_title;        
         $website->description = $request->description;
         $website->address = $request->address;
         $website->phone = $request->phone;
@@ -35,8 +35,39 @@ class SettingController extends Controller
         $website->linkedin = $request->linkedin;
         $website->telegram = $request->telegram;
         $website->youTube = $request->youTube;
+        // $website->status = $request->status;
+        if ($request->has('cropped_image')) {
+        // Access base64 encoded image data directly from the request
+        $croppedImage = $request->cropped_image;
+
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        // Generate a unique file name for the image
+        $imageName = 'logo_' . time() . '.png';
+
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/website';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+
+        // Delete the old image if it exists
+        if ($website->logo) {
+            Storage::delete($destinationDirectory . '/' . $objCategory->image);
+        }
+
+        // Save the new image
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $website->logo = $imageName;
+        }
         if ($website->save()) {
-            $message = array('message' => 'Updated Successfully', 'title' => '');
+            $message = array('message' => 'Website Settings Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');

@@ -976,4 +976,8 @@
 @endsection
 @push('scripts')
 <script src="{{ asset('assets/js/pages/be_pages_dashboard_v1.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/jquery-sparkline/jquery.sparkline.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/chart.js/chart.umd.js') }}"></script>
+<script src="{{ asset('assets/js/pages/db_analytics.min.js') }}"></script>
+<script>Dashmix.helpersOnLoad('jq-sparkline');</script>
 @endpush

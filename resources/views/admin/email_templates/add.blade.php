@@ -79,19 +79,18 @@
 </form>
     </div>
     <div class="imageContainer mb-3 col-md-6">
-        <div id="emailTemplateForm">
-    <div>
+        @component('mail::message')
         # Hello!
-        
-    </div>
-    <div>
-        <button id="resetPasswordButton" class="btn btn-primary">Reset Password</button>
-    </div>
-    <div>
+
+        {{$body['body']}}
+
+        @component('mail::button', ['url' => $body['action_link']])
+        Reset Password
+        @endcomponent
+
         Thanks,<br>
         {{ config('app.name') }}
-    </div>
-</div>
+        @endcomponent
     </div>
 
 </div>

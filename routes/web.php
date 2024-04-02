@@ -25,6 +25,7 @@ Route::group(['prefix' => 'pricewise'], function () {
 	Route::get('/run-command', function () {
     // Call the Artisan command
     Artisan::call('optimize:clear');
+    Artisan::call('config:cache');
      Artisan::call('permission:cache-reset');
     return 'Command executed successfully!';
 });
