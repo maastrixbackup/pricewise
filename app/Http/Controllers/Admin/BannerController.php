@@ -160,7 +160,7 @@ class BannerController extends Controller
         $imageName = 'customer_' . time() . '.png';
         //dd($imgData);
         // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/customers';
+        $destinationDirectory = 'public/images/banners';
 
         // Create the directory if it doesn't exist
         Storage::makeDirectory($destinationDirectory);

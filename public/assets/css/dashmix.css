@@ -3874,6 +3874,12 @@ textarea.form-control-lg {
   position: relative;
   flex: 1 1 auto;
 }
+.dt-buttons > button{
+  position: relative;
+  flex: 1 1 auto;
+  width: 35px;
+  background: #3490e3;
+}
 .btn-group > .btn-check:checked + .btn,
 .btn-group > .btn-check:focus + .btn,
 .btn-group > .btn:hover,
@@ -7898,9 +7904,9 @@ textarea.form-control-lg {
   flex-shrink: 1 !important;
 }
 
-.flex-wrap {
+/* .flex-wrap {
   flex-wrap: wrap !important;
-}
+} */
 
 .flex-nowrap {
   flex-wrap: nowrap !important;

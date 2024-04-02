@@ -58,20 +58,7 @@
 @push('scripts')
 <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
 <script>
-//     function laravelFileManager(callback, value, meta){
-//     var route_prefix = "/laravel-filemanager";
-//             var url = route_prefix + '?type=' + meta.filetype;
-//             tinymce.activeEditor.windowManager.openUrl({
-//                 url: url,
-//                 title: 'File Manager',
-//                 width: 900,
-//                 height: 600,
-//                 resizable: 'yes',
-//                 close_previous: 'no',
-//                 inline: 'yes',
-//                 popup_css: false
-//             });
-// }
+
     tinymce.init({
         selector: '#content',
         plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',

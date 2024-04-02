@@ -42,7 +42,11 @@ class EmailTemplateController extends Controller
      */
     public function create()
     {
-        return view('admin.email_templates.add');
+        $body = [
+        'body' => 'Your email body content here',
+        'action_link' => 'https://example.com/reset-password',
+    ];
+        return view('admin.email_templates.add', compact('body'));
     }
 
     /**
@@ -148,7 +152,7 @@ class EmailTemplateController extends Controller
      */
     public function destroy($id)
     {
-        $id = $request->id;
+       
         $getTemplate = EmailTemplate::find($id);
         try {
             EmailTemplate::find($id)->delete();

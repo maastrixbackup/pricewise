@@ -37,11 +37,17 @@
                             <input type="text" class="form-control" placeholder="title" name="title" value="">
                         </div>
                         <div class="row mb-3">
-                        <label for="input40" class=" col-form-label"><b>Image </b></label>
-                        <img src="" id="profile-pic">
-                        <div class="mb-3">
-                            <input type="file" class="form-control" name="image" id="button-image" accept="image/*">
-                        </div>
+                        <label for="input40" class="col-sm-6 col-form-label"><b>Image </b></label>
+                        <label for="upload_image">
+                                <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+
+                                <div class="overlay">
+                                    <div>Click to Change Image</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
+
+                        </label>
                         </div>
                         <div class="row mb-3">
                             <label class=" col-form-label">Description</label>
@@ -118,20 +124,7 @@
         })
       }
     });
-    document.addEventListener("DOMContentLoaded", function() {
 
-    document.getElementById('button-image').addEventListener('click', (event) => {
-      event.preventDefault();
-
-      window.open('http://192.168.1.44:8000/file-manager/fm-button', 'fm', 'width=1400,height=800');
-    });
-  });
-
-  // set file link
-  function fmSetLink($url) {
-    document.getElementById('image_label').value = $url;
-    document.getElementById('profile-pic').src = $url;
-  }
     $("#featureForm").validate({
         errorElement: 'span',
         errorClass: 'help-block',
