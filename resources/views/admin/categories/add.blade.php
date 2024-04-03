@@ -28,6 +28,15 @@
                         <label for="input35" class=" col-form-label">Name</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Name">
                     </div>
+                    <div class=" mb-3">
+                        <label for="parent" class=" col-form-label">Parent Category</label>
+                        <select class="form-control selectpicker" data-live-search="true" name="parent" id="parent">
+                                <option value="">Select</option>
+                                @foreach($parents as $parent)
+                                <option value="{{$parent->id}}">{{$parent->name}}</option>
+                                @endforeach
+                        </select>
+                    </div>
 
                     <div class="row mb-3">
                         <label for="input_type" class=" col-form-label">Select Icon</label>

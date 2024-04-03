@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class InsuranceProduct extends Model
 {
     use HasFactory;
 
-    public function parentCat()
+    public function postFeatures()
     {
-        return $this->belongsTo(Category::class, 'parent');
+        return $this->hasMany(PostFeature::class, 'post_id', 'id');
     }
 }

@@ -55,7 +55,7 @@
                 </div>
                 <div>
                     <label for="mail_signature" class="col-sm-4 col-form-label">Signature</label>
-                    <textarea class="ckeditor form-control" name="mail_signature" id="mail_signature" placeholder="Mail signature">{{ old('mail_signature', ,$data->signature) }}</textarea>
+                    <textarea class="ckeditor form-control" name="mail_signature" id="mail_signature" placeholder="Mail signature">{{ old('mail_signature', $data->signature) }}</textarea>
                     @error('mail_signature')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror

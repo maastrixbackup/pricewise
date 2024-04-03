@@ -35,7 +35,7 @@
                             <tr>
                                 <th>Sl</th>
                                 <th>Name</th>                               
-                                <th>Type</th>
+                                <th>Parent</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -45,7 +45,8 @@
                            
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{$val->name ? $val->name : "NA"}}</td>                                
+                                <td>{{$val->name ? $val->name : "NA"}}</td>
+                                <td>{{$val->parentCat ? $val->parentCat->name : "NA"}}</td>                            
                                 <td><span class="badge bg-info">{{$val->type ? $val->type : "NA"}}</span></td>
                                 <td>
                                     <div class="col">
@@ -79,8 +80,8 @@
     //         buttons: ['excel', 'pdf', 'print']
     //     });
 
-    //     // table.buttons().container()
-    //     //     .appendTo('#userTable_wrapper .col-md-6:eq(0)');
+    //     table.buttons().container()
+    //         .appendTo('#userTable_wrapper .col-md-6:eq(0)');
 
 
     //     $("body").on("click", ".remove-category", function() {

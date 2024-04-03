@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\TvFeature;
+use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\TvProduct;
 
@@ -31,7 +31,7 @@ class FeatureController extends Controller
      */
     public function index()
     {
-        $objFeatures = TvFeature::latest()->get();
+        $objFeatures = Feature::latest()->get();
         return view('admin.tvfeatures.index', compact('objFeatures'));
     }
 
@@ -54,7 +54,7 @@ class FeatureController extends Controller
      */
     public function store(Request $request)
     {
-        $objFeature = new TvFeature();
+        $objFeature = new Feature();
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
@@ -87,7 +87,7 @@ class FeatureController extends Controller
      */
     public function edit($id)
     {
-        $objFeature = TvFeature::find($id);
+        $objFeature = Feature::find($id);
         $categories = Category::latest()->get();
         return view('admin.tvfeatures.edit', compact('objFeature', 'categories'));
     }
@@ -101,7 +101,7 @@ class FeatureController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $objFeature = TvFeature::find($id);
+        $objFeature = Feature::find($id);
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
@@ -124,13 +124,13 @@ class FeatureController extends Controller
     public function destroy(Request $request,$id)
     {
         $id = $request->id;
-        $getFeature = TvFeature::find($id);
+        $getFeature = Feature::find($id);
         try {
-            $check = TvFeature::where('id', $id)->first();
+            $check = Feature::where('id', $id)->first();
             if ($check) {
                 return back()->with(Toastr::error(__('Sorry we could not delete this Feature .This Feature is assigned to some topdeal service')));
             } else {
-                TvFeature::find($id)->delete();
+                Feature::find($id)->delete();
                 return back()->with(Toastr::error(__('Feature deleted successfully!')));
             }
         } catch (Exception $e) {

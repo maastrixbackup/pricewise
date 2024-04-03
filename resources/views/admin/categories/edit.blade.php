@@ -31,6 +31,15 @@
                             <label for="input35" class=" col-form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{$objCategory->name}}">
                         </div>
+                        <div class=" mb-3">
+                        <label for="parent" class=" col-form-label">Parent Category</label>
+                        <select class="form-control selectpicker" data-live-search="true" name="parent" id="parent">
+                                <option value="">Select</option>
+                                @foreach($parents as $parent)
+                                <option value="{{$parent->id}}" @if($objCategory->parent == $parent->id)selected @endif>{{$parent->name}}</option>
+                                @endforeach
+                        </select>
+                        </div>
                         <div class="mb-3">
                         <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
                         

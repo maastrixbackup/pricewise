@@ -72,11 +72,20 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/internet-feature-update/{id}', 'TvInternetController@internet_feature_update')->name('internet_feature_update');
         Route::post('/telephone-feature-update/{id}', 'TvInternetController@tele_feature_update')->name('tele_feature_update');
         Route::post('/service-info-update/{id}', 'TvInternetController@service_info_update')->name('service_info_update');
-        Route::resource('features', 'FeatureController');
-        //Route::resource('tv-contract-lengths', 'TvContractLengthController');
         Route::get('/tv-default/{id}', 'TvProductController@default')->name('tv-default');
         Route::post('/tv-default-update', 'TvProductController@default_update')->name('tv-default-update');
         Route::get('duplicate-tv/{id}', 'TvProductController@duplicate')->name('duplicate-tv');
+        //Insurance
+        Route::get('/fetch/insurance', 'InsuranceController@getinsuranceproducts')->name('get.insurance');
+        Route::resource('insurance', 'InsuranceController');
+        Route::post('/insurance-feature-update/{id}', 'InsuranceController@insurance_feature_update')->name('insurance_feature_update');
+        Route::post('/insurance-reimburse-update/{id}', 'InsuranceController@insurance_reimburse_update')->name('insurance_reimburse_update');
+        Route::get('/insurance/{id}', 'InsuranceController@default')->name('insurance-default');
+        //Route::post('/telephone-feature-update/{id}', 'TvInternetController@tele_feature_update')->name('tele_feature_update');
+        //Route::post('/service-info-update/{id}', 'TvInternetController@service_info_update')->name('service_info_update');
+        Route::resource('features', 'FeatureController');
+        //Route::resource('tv-contract-lengths', 'TvContractLengthController');
+        
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');

@@ -4,20 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\TvInternetProduct;
+use App\Models\InsuranceProduct;
 use App\Models\Provider;
+use App\Models\Reimbursement;
+use App\Models\AdditionalCategory;
+use App\Models\PostReimbursement;
 use App\Models\DefaultProduct;
 use App\Models\AdditionalInfo;
-use App\Models\ShopProduct;
 use App\Models\Category;
 use App\Models\PostFeature;
-use App\Models\Affiliate;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
 
 use Illuminate\Support\Facades\Auth;
 
-class TvInternetController extends Controller
+class InsuranceController extends Controller
 {
     protected string $guard = 'admin';
     public function guard()
@@ -27,10 +28,10 @@ class TvInternetController extends Controller
     function __construct()
     {
         $this->middleware('auth:admin');
-        $this->middleware('permission:internet-tv-list', ['only' => ['index', 'store']]);
-        $this->middleware('permission:internet-tv-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:internet-tv-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:internet-tv-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:insurance-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:insurance-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:insurance-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:insurance-delete', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -39,11 +40,11 @@ class TvInternetController extends Controller
      */
     public function index(Request $request)
     {
-    	$objTv = TvInternetProduct::latest()->get();
+    	$objTv = InsuranceProduct::latest()->get();
         $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
         $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
-        return view('admin.tvinternet.index', compact('objTv', 'objTvFeatures', 'objInternetFeatures', 'objTeleFeatures'));
+        return view('admin.insurance.index', compact('objTv', 'objTvFeatures', 'objInternetFeatures', 'objTeleFeatures'));
     }
 
     /**
@@ -56,15 +57,15 @@ class TvInternetController extends Controller
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
         // $objAdditionalCategories = AdditionalCategory::latest()->get();
-         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
+         $objRelatedProducts = InsuranceProduct::orderBy('id', 'asc')->get();
          $objCategory = Category::latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers'));
+        return view('admin.insurance.add', compact('objCategory', 'objRelatedProducts', 'providers'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
-    public function gettvproducts(Request $request)
+    public function getinsuranceproducts(Request $request)
     {
 
         ## Read value
@@ -78,11 +79,11 @@ class TvInternetController extends Controller
         ## Read value
         $data = array();
 
-        $totalRecords = TvInternetProduct::select('count(*) as allcount')->count();
+        $totalRecords = InsuranceProduct::select('count(*) as allcount')->count();
         if ($searchValue) {
-            $totalRecordswithFilter = TvInternetProduct::with('postFeatures')->select('count(*) as allcount')->where('title', 'like', '%' . $searchValue . '%');
+            $totalRecordswithFilter = InsuranceProduct::with('postFeatures')->select('count(*) as allcount')->where('title', 'like', '%' . $searchValue . '%');
         } else {
-            $totalRecordswithFilter = TvInternetProduct::with('postFeatures')->select('count(*) as allcount');
+            $totalRecordswithFilter = InsuranceProduct::with('postFeatures')->select('count(*) as allcount');
         }
         if (isset($request->product_name)) {
             $totalRecordswithFilter = $totalRecordswithFilter->where('title', 'like', '%' . $request->product_name . '%');
@@ -102,12 +103,12 @@ class TvInternetController extends Controller
 
         // Fetch records
         if ($searchValue) {
-            $productRecords = TvInternetProduct::with('postFeatures')->orderBy($columnName, $columnSortOrder)
+            $productRecords = InsuranceProduct::with('postFeatures')->orderBy($columnName, $columnSortOrder)
                 ->where('title', 'like', '%' . $searchValue . '%')
-                ->select('tv_internet_products.*');
+                ->select('insurance_products.*');
         } else {
-            $productRecords = TvInternetProduct::with('postFeatures')->orderBy($columnName, $columnSortOrder)
-                ->select('tv_internet_products.*');
+            $productRecords = InsuranceProduct::with('postFeatures')->orderBy($columnName, $columnSortOrder)
+                ->select('insurance_products.*');
         }
         if (isset($request->status)) {
             $productRecords = $productRecords->where('status',  $request->status);
@@ -127,10 +128,12 @@ class TvInternetController extends Controller
         $i = 1;
         foreach ($productRecords as $key => $record) {
 
-            $edit_btn = route('admin.internet-tv.edit', $record->id);
-            $delete_btn = route('admin.internet-tv.destroy', $record->id);
-            $default_btn = route('admin.tv-default', $record->id);
-            $duplicate_btn = route('admin.duplicate-tv', $record->id);
+            $edit_btn = route('admin.insurance.edit', $record->id);
+            $delete_btn = route('admin.insurance.destroy', $record->id);
+            $default_btn = '';
+            //route('admin.insurance-default', $record->id);
+            $duplicate_btn = '';
+            //route('admin.duplicate-insurance', $record->id);
 
             if ($record->product_type == 'personal') {
                 $pro_type =  '<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Personal</div>';
@@ -210,12 +213,12 @@ class TvInternetController extends Controller
      */
     public function store(Request $request)
     {
-        $product = TvInternetProduct::where('title', $request->title)->first();
+        $product = InsuranceProduct::where('title', $request->title)->first();
         if (isset($product) && $product->count() > 0) {
             $message = array('message' => 'Already Exists! Please enter unique title', 'title' => 'Already Exists!');
             return response()->json(["status" => false, 'message' => $message, 'title' => 'Already Exists!']);
         } else {
-            $objTv = new TvInternetProduct();
+            $objTv = new InsuranceProduct();
             $objTv->title = $request->title;
             $objTv->content = $request->description;
             $objTv->commission = $request->commission;
@@ -230,6 +233,7 @@ class TvInternetController extends Controller
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
+            $objTv->sub_category =  $request->sub_category;
             $objTv->product_type = $request->product_type;
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
@@ -279,7 +283,7 @@ class TvInternetController extends Controller
      */
     public function edit($id)
     {
-        $objTv = TvInternetProduct::find($id);
+        $objTv = InsuranceProduct::find($id);
         $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
         $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', 9)->pluck('feature_value', 'feature_id')->toArray();
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
@@ -287,11 +291,11 @@ class TvInternetController extends Controller
         $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
         $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
-        $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
+        $objRelatedProducts = InsuranceProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
+        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
     }
 
     /**
@@ -304,7 +308,7 @@ class TvInternetController extends Controller
 
     public function update(Request $request, $id)
     {
-        $objTv = TvInternetProduct::where('id', $id)->first();
+        $objTv = InsuranceProduct::where('id', $id)->first();
         //jhdjhddjhf
             $objTv->title = $request->title;
             $objTv->content = $request->description3;
@@ -312,6 +316,7 @@ class TvInternetController extends Controller
             $objTv->commission_type = $request->commission_type;
             $objTv->avg_delivery_time = $request->avg_delivery_time;
             $objTv->price = $request->price;
+            $objTv->family_extra_amount = $request->family_extra_amount;
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
@@ -320,6 +325,7 @@ class TvInternetController extends Controller
             $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
+            $objTv->sub_category =  $request->sub_category;
             $objTv->product_type = $request->product_type;
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
@@ -355,7 +361,7 @@ class TvInternetController extends Controller
      */
     public function destroy($id)
     {
-        $objTv = TvInternetProduct::find($id);
+        $objTv = InsuranceProduct::find($id);
         if ($objTv->delete()) {
             return back()->with(Toastr::error(__('Tv Data deleted successfully!')));
         } else {
@@ -366,16 +372,16 @@ class TvInternetController extends Controller
     public function default(Request $request, $id)
     {
         //dd($id);
-        $product = TvInternetProduct::find($id);
+        $product = InsuranceProduct::find($id);
         $default = DefaultProduct::latest()->get();
         $responseData = array();
         $data = DefaultProduct::where('product_id', $id)->where('product_type', 'tv')->where('is_default', '1')->pluck('default_product_id')->toArray();
         $manda_data = DefaultProduct::where('product_id', $id)->where('product_type', 'tv')->where('is_mandatory', '1')->pluck('default_product_id')->toArray();
 
-        return view('admin.TvInternetProducts.default', compact('product', 'data', 'manda_data'));
+        return view('admin.insurance.default', compact('product', 'data', 'manda_data'));
     }
 
-    public function internet_feature_update(Request $request, $post_id)
+    public function insurace_feature_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
         try{
@@ -397,7 +403,7 @@ class TvInternetController extends Controller
             return response()->json(["status" => true, 'message' => $message]);
         
     }
-    public function tv_feature_update(Request $request, $post_id)
+    public function insurance_reimburse_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
         try{

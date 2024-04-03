@@ -30,7 +30,7 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $objCategory = Category::latest()->get();
 //if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
@@ -44,6 +44,10 @@ class CategoryController extends Controller
     // foreach ($permissions as $permission) {
     //     echo $permission->name . "\n";
     // }
+        if($request->category_id && $request->category_id != null){
+            $subCategory = Category::where('parent', $request->category_id)->latest()->get();
+            return response()->json(['status' => true, 'data' => $subCategory]);
+        }
         return view('admin.categories.index', compact('objCategory'));
     }
 
@@ -54,7 +58,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-       return view('admin.categories.add');
+        $parents = Category::whereNull('parent')->latest()->get();
+       return view('admin.categories.add', compact('parents'));
     }
 
     /**
@@ -125,7 +130,8 @@ class CategoryController extends Controller
     {
 
         $objCategory = Category::find($id);
-        return view('admin.categories.edit', compact('objCategory'));
+        $parents = Category::whereNull('parent')->latest()->get();
+        return view('admin.categories.edit', compact('objCategory', 'parents'));
     }
 
     /**
