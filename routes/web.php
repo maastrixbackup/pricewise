@@ -104,6 +104,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('categories', 'CategoryController');
         //Banners
         Route::resource('banners', 'BannerController');
+        //Reimbursement
+        Route::resource('reimbursement', 'ReimbursementController');
         //Events
         Route::resource('events', 'EventController');
 

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Pricewise- Features Create')
+@section('title','Pricewise- Features Edit')
 @section('content')
 
 <!--breadcrumb-->
@@ -11,7 +11,7 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.features.index')}}">Features</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.features.index')}}">Feature</a></li>
             </ol>
         </nav>
     </div>
@@ -21,25 +21,27 @@
     <div class="col-12 col-lg-8">
         <div class="card">
             <div class="card-header px-4 py-3">
-                <h5 class="mb-0">Add New Feature</h5>
+                <h5 class="mb-0">Edit Feature</h5>
             </div>
             <div class="card-body p-4">
-                <form id="featureForm" method="post" action="{{route('admin.features.store')}}">
+                <form id="categoryForm" method="post" action="{{route('admin.features.update',$objFeature->id)}}">
                     @csrf
+                    @method('PUT')
                     <div class="row mb-3">
                         <label for="input35" class=" col-form-label">Name</label>
                         <div class="">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{$objFeature->features}}">
                         </div>
                     </div>
+
                     <div class="row mb-3">
                         <label for="input_type" class=" col-form-label">Input Type</label>
                         <div class="">
                             <select class="form-control" id="input_type" name="input_type">
                             <option value="">Select</option>
-                            <option value="text">Text</option>
-                            <option value="checkbox">Checkbox</option>
-                            <option value="textarea">Textarea</option>
+                            <option value="text" @if($objFeature->input_type == "text")selected @endif>Text</option>
+                            <option value="checkbox" @if($objFeature->input_type == "checkbox")selected @endif>Checkbox</option>
+                            <option value="textarea" @if($objFeature->input_type == "textarea")selected @endif>Textarea</option>
                             </select>
                         </div>
                     </div>
@@ -49,27 +51,43 @@
                             <select class="form-control" id="category" name="category">
                             <option value="">Select</option>
                             @foreach($categories as $category)
-                            <option value="{{$category->id}}">{{$category->name}}</option>
+                            <option value="{{$category->id}}" @if($objFeature->category == $category->id)selected @endif>{{$category->name}}</option>
                             @endforeach
                             
                             </select>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="input_type" class=" col-form-label">Select Icon</label>
+                        <label for="sub_category" class="col-form-label"><b>Sub Category</b>
+                        </label>
+                        <!-- HTML -->
+                        
 
-                        <select class="form-control selectpicker" data-live-search="true" name="icon" id="icon">
-                            <option value="">Select</option>
-                            @include('admin.layouts.icons')
+                        <select id="sub_category" name="sub_category" class="select2 form-select">
+                            <option value="{{ $objFeature->sub_category}}">{{ $objFeature->subCategory ? $objFeature->subCategory->name : 'Select' }}</option>
+                            
                         </select>
-
+                    </div>
+                     <div class="row mb-3">
+                        <label for="input_type" class=" col-form-label">Select Icon</label>
+                        <div class="form-group">
+                            <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa {{$objFeature->icon}}"></i></span>
+                            </div>
+                            <select class="form-control selectpicker" data-live-search="true" name="icon" id="icon">
+                                <option value="">Select</option>
+                                @include('admin.layouts.icons')
+                            </select>
+                        </div>
+                        </div>
                     </div>
                     <div class="row">
                         <label class=" col-form-label"></label>
                         <div class="">
                             <div class="d-md-flex d-grid align-items-center gap-3">
-                                <button type="submit" class="btn btn-primary px-4" name="submit2">Submit</button>
-                                <button type="reset" class="btn btn-light px-4">Reset</button>
+                                <button type="submit" class="btn btn-primary px-4" name="submit2">Update</button>
+                              
                             </div>
                         </div>
                     </div>
@@ -81,7 +99,7 @@
 @endsection
 @push('scripts')
 <script type="text/javascript">
-    $("#featureForm").validate({
+    $("#categoryForm").validate({
         errorElement: 'span',
         errorClass: 'help-block',
         highlight: function(element, errorClass, validClass) {
@@ -101,7 +119,7 @@
         submitHandler: function(form) {
             $.ajax({
                 url: form.action,
-                method: "post",
+                method: "put",
                 data: $(form).serialize(),
                 success: function(data) {
                     //success
@@ -119,7 +137,6 @@
             return false;
         }
     });
-
 
 </script>
 @endpush

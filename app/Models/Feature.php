@@ -10,7 +10,13 @@ class Feature extends Model
     use HasFactory;
     protected $table = "features";
 
-    public function categoryDetail(){
-        return $this->hasOne(Category::class, 'id', 'category'); 
+    public function subCategory()
+    {
+        return $this->belongsTo(Category::class, 'sub_category');
+    }
+
+    public function categoryDetail()
+    {
+        return $this->belongsTo(Category::class, 'category');
     }
 }

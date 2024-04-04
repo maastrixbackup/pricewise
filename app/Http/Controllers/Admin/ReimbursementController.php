@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
+use App\Models\Reimbursement;
 use App\Models\Category;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class CategoryController extends Controller
+class ReimbursementController extends Controller
 {
     protected string $guard = 'admin';
     public function guard()
@@ -32,7 +33,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $objCategory = Category::latest()->get();
+        $objCategory = Reimbursement::latest()->get();
 //if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
 //dd(\Auth::guard('admin')->user()->roles);
 // foreach (Auth::guard('admin')->user()->roles as $role) {
@@ -45,10 +46,10 @@ class CategoryController extends Controller
     //     echo $permission->name . "\n";
     // }
         if($request->category_id && $request->category_id != null){
-            $subCategory = Category::where('parent', $request->category_id)->latest()->get();
+            $subCategory = Reimbursement::where('parent', $request->category_id)->latest()->get();
             return response()->json(['status' => true, 'data' => $subCategory]);
         }
-        return view('admin.categories.index', compact('objCategory'));
+        return view('admin.reimbursement.index', compact('objCategory'));
     }
 
     /**
@@ -58,8 +59,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $parents = Category::whereNull('parent')->latest()->get();
-       return view('admin.categories.add', compact('parents'));
+        $parents = Reimbursement::whereNull('parent')->latest()->get();
+        $categories = Category::where('parent', 5)->get();
+       return view('admin.reimbursement.add', compact('parents','categories'));
     }
 
     /**
@@ -70,15 +72,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $objCategory = new Category();
+        $objCategory = new Reimbursement();
         $objCategory->name = $request->name;
-        $objCategory->slug = $request->slug;
+        $objCategory->description = $request->description;        
         $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
-        $objCategory->image = $request->image;
-        $objCategory->icon = $request->icon;
+        $objCategory->sub_category = $request->sub_category;
+        // $objCategory->icon = $request->icon;
         
-        $objCategory->status = $request->status;
+        // $objCategory->status = $request->status;
+        if($request->has('cropped_image')){
         $croppedImage = $request->cropped_image;
 
         // Extract base64 encoded image data and decode it
@@ -88,7 +91,7 @@ class CategoryController extends Controller
         $imageName = 'category_' . time() . '.png';
 
         // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/categories';
+        $destinationDirectory = 'public/images/reimbursement';
 
         // Create the directory if it doesn't exist
         Storage::makeDirectory($destinationDirectory);
@@ -98,9 +101,10 @@ class CategoryController extends Controller
         Storage::put($filePath, $imgData);
 
         // Set the image file name for the provider
-        $objCategory->image = $imageName;
+        //$objCategory->image = $imageName;
+        }
         if ($objCategory->save()) {
-            return redirect()->route('admin.categories.index')->with(Toastr::success('Category Created Successfully', '', ["positionClass" => "toast-top-right"]));
+            return redirect()->route('admin.reimbursement.index')->with(Toastr::success('Reimbursement Created Successfully', '', ["positionClass" => "toast-top-right"]));
             // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
             // return response()->json(["status" => true, "redirect_location" => route("admin.drivers.index")]);
         } else {
@@ -128,10 +132,10 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-
-        $objCategory = Category::find($id);
-        $parents = Category::whereNull('parent')->latest()->get();
-        return view('admin.categories.edit', compact('objCategory', 'parents'));
+        $categories = Category::where('parent', 5)->get();
+        $objCategory = Reimbursement::find($id);
+        $parents = Reimbursement::whereNull('parent')->latest()->get();
+        return view('admin.reimbursement.edit', compact('objCategory', 'parents', 'categories'));
     }
 
     /**
@@ -144,49 +148,49 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         //echo 123;exit;
-        $objCategory = Category::find($id);
+        $objCategory = Reimbursement::find($id);
         $objCategory->name = $request->name;
-        $objCategory->slug = $request->slug;
+        //$objCategory->slug = $request->slug;
         $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
-        $objCategory->image = $request->image;
-        $objCategory->icon = $request->icon;
-        
-        $objCategory->status = $request->status;
-        if ($request->has('cropped_image')) {
-        // Access base64 encoded image data directly from the request
-        $croppedImage = $request->cropped_image;
+        $objCategory->sub_category = $request->sub_category;
+        //$objCategory->icon = $request->icon;
+        $objCategory->description = $request->description;
+        //$objCategory->status = $request->status;
+        // if ($request->has('cropped_image')) {
+        // // Access base64 encoded image data directly from the request
+        // $croppedImage = $request->cropped_image;
 
-        // Extract base64 encoded image data and decode it
-        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+        // // Extract base64 encoded image data and decode it
+        // $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
-        // Generate a unique file name for the image
-        $imageName = 'category_' . time() . '.png';
+        // // Generate a unique file name for the image
+        // $imageName = 'category_' . time() . '.png';
 
-        // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/categories';
+        // // Specify the destination directory where the image will be saved
+        // $destinationDirectory = 'public/images/reimbursement';
 
-        // Create the directory if it doesn't exist
-        Storage::makeDirectory($destinationDirectory);
+        // // Create the directory if it doesn't exist
+        // Storage::makeDirectory($destinationDirectory);
 
-        // Save the image to the server using Laravel's file upload method
-        $filePath = $destinationDirectory . '/' . $imageName;
+        // // Save the image to the server using Laravel's file upload method
+        // $filePath = $destinationDirectory . '/' . $imageName;
 
-        // Delete the old image if it exists
-        if ($objCategory->image) {
-            Storage::delete($destinationDirectory . '/' . $objCategory->image);
-        }
+        // // Delete the old image if it exists
+        // if ($objCategory->image) {
+        //     Storage::delete($destinationDirectory . '/' . $objCategory->image);
+        // }
 
-        // Save the new image
-        Storage::put($filePath, $imgData);
+        // // Save the new image
+        // Storage::put($filePath, $imgData);
 
-        // Set the image file name for the provider
-        $objCategory->image = $imageName;
-        }
+        // // Set the image file name for the provider
+        // $objCategory->image = $imageName;
+        // }
         if ($objCategory->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-            Toastr::success('Category Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.categories.index")]);
+            Toastr::success('Reimbursement Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            return response()->json(["status" => true, "redirect_location" => route("admin.reimbursement.index")]);
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
@@ -202,10 +206,10 @@ class CategoryController extends Controller
     public function destroy(Request $request, $id)
     {
         $id = $request->id;
-        $getCategory = Category::find($id);
+        $getCategory = Reimbursement::find($id);
         try {
-            Category::find($id)->delete();
-            return back()->with(Toastr::error(__('Category deleted successfully!')));
+            Reimbursement::find($id)->delete();
+            return back()->with(Toastr::error(__('Reimbursement deleted successfully!')));
         } catch (Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.categories.index')->with($error_msg);

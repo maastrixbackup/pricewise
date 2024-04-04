@@ -267,6 +267,34 @@
         });
     });
   });
+
+  $(document).ready(function(){
+        $("#category").on('change', function() {
+            var cat_val = $(this).val(); // Get the selected category value
+
+            // Make an AJAX call to fetch subcategories based on the selected category
+            $.ajax({
+                url: "{{route('admin.categories.index')}}", // Replace this with the actual URL to fetch subcategories
+                type: 'GET',
+                data: {
+                    category_id: cat_val
+                },
+                success: function(response) {
+                    // Clear existing options
+                    $("#sub_category").html('');
+
+                    // Populate subcategories dropdown with new options
+                    $.each(response.data, function(index, subcategory) {
+                        $("#sub_category").append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Handle errors here
+                }
+            });
+        });
+    });
     </script>
     @stack('scripts')
     {!! Toastr::message() !!}

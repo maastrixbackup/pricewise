@@ -10,5 +10,8 @@ class Reimbursement extends Model
     use HasFactory;
     protected $table = "reimbursements";
 
-    
+    public function parentCat()
+    {
+        return $this->belongsTo(Reimbursement::class, 'parent');
+    }
 }
