@@ -15,7 +15,7 @@ use App\Models\Category;
 use App\Models\PostFeature;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class InsuranceController extends Controller
@@ -229,7 +229,8 @@ class InsuranceController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
+            $combos = implode(",", $request->combos);
+            $objTv->combos = json_encode($request->combos ? explode(",", $combos) : []);            
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -243,18 +244,38 @@ class InsuranceController extends Controller
             $objTv->provider = $request->provider;
             
             //$objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
-            if ($request->file('image') == null || $request->file('image') == '') {
-                $input['image'] = $objTv->image;
-            } else {
-                $destinationPath = '/images';
-                $imgfile = $request->file('image');
-                $imgFilename = $imgfile->getClientOriginalName();
-                $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-                $image = $imgFilename;
-                $objTv->image = $image;
-            }
+            // if ($request->file('image') == null || $request->file('image') == '') {
+            //     $input['image'] = $objTv->image;
+            // } else {
+            //     $destinationPath = '/images';
+            //     $imgfile = $request->file('image');
+            //     $imgFilename = $imgfile->getClientOriginalName();
+            //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
+            //     $image = $imgFilename;
+            //     $objTv->image = $image;
+            // }
+            $croppedImage = $request->cropped_image;
+
+            // Extract base64 encoded image data and decode it
+            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+            // Generate a unique file name for the image
+            $imageName = 'category_' . time() . '.png';
+
+            // Specify the destination directory where the image will be saved
+            $destinationDirectory = 'public/images/insurance';
+
+            // Create the directory if it doesn't exist
+            Storage::makeDirectory($destinationDirectory);
+
+            // Save the image to the server using Laravel's file upload method
+            $filePath = $destinationDirectory . '/' . $imageName;
+            Storage::put($filePath, $imgData);
+
+            // Set the image file name for the provider
+            $objTv->image = $imageName;
             if ($objTv->save()) {
-                return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                return redirect()->route('admin.insurance.index')->with(Toastr::success('Insurance Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
                 //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
                 //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
             } else {
@@ -284,10 +305,17 @@ class InsuranceController extends Controller
     public function edit($id)
     {
         $objTv = InsuranceProduct::find($id);
-        $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
+        $objInternetFeatures = Feature::select('id','features','input_type')->where('category', $objTv->category)->orWhere('sub_category', $objTv->sub_category)->get();
+
         $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', 9)->pluck('feature_value', 'feature_id')->toArray();
-        $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
-        $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', 8)->pluck('feature_value', 'feature_id')->toArray();       
+        $postInternetFeatures = PostFeature::where('post_id', $id)
+        ->select('feature_id', 'feature_value', 'details')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            return [$item['feature_id'] => ['feature_value' => $item['feature_value'], 'details' => $item['details']]];
+        })->toArray();
+        //$postInternetFeatures = PostFeature::where('post_id', $id)->pluck('feature_value', 'feature_id', 'details')->get()->toArray();
+        //dd($postInternetFeatures);    
         $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
         $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
@@ -295,7 +323,7 @@ class InsuranceController extends Controller
         $objCategory = Category::latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
+        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
     }
 
     /**
@@ -309,7 +337,6 @@ class InsuranceController extends Controller
     public function update(Request $request, $id)
     {
         $objTv = InsuranceProduct::where('id', $id)->first();
-        //jhdjhddjhf
             $objTv->title = $request->title;
             $objTv->content = $request->description3;
             $objTv->commission = $request->commission;
@@ -321,7 +348,8 @@ class InsuranceController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
+            $combos = implode(",", $request->combos);
+            $objTv->combos = json_encode($request->combos ? explode(",", $combos) : []);            
             $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -333,21 +361,51 @@ class InsuranceController extends Controller
             $objTv->mechanic_charge = $request->mechanic_charge;            
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
-        if ($request->file('image') == null || $request->file('image') == '') {
-            $image = $objTv->image;
-        } else {
-            $destinationPath = '/images';
-            $imgfile = $request->file('image');
-            $imgFilename = $imgfile->getClientOriginalName();
-            $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-            $image = $imgFilename;
+        // if ($request->file('image') == null || $request->file('image') == '') {
+        //     $image = $objTv->image;
+        // } else {
+        //     $destinationPath = '/images';
+        //     $imgfile = $request->file('image');
+        //     $imgFilename = $imgfile->getClientOriginalName();
+        //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
+        //     $image = $imgFilename;
            
+        // }
+        if ($request->has('cropped_image')) {
+        // Access base64 encoded image data directly from the request
+        $croppedImage = $request->cropped_image;
+
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        // Generate a unique file name for the image
+        $imageName = 'category_' . time() . '.png';
+
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/insurance';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+
+        // Delete the old image if it exists
+        if ($objTv->image) {
+            Storage::delete($destinationDirectory . '/' . $objTv->image);
         }
-         $objTv->image = $image;
+
+        // Save the new image
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $objTv->image = $imageName;
+        }
+         
         if ($objTv->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
-            return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            return redirect()->route('admin.insurance.index')->with(Toastr::success('Insurance Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -366,7 +424,7 @@ class InsuranceController extends Controller
             return back()->with(Toastr::error(__('Tv Data deleted successfully!')));
         } else {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
-            return redirect()->route('admin.internet-tv.index')->with($error_msg);
+            return redirect()->route('admin.insurance.index')->with($error_msg);
         }
     }
     public function default(Request $request, $id)
@@ -381,14 +439,14 @@ class InsuranceController extends Controller
         return view('admin.insurance.default', compact('product', 'data', 'manda_data'));
     }
 
-    public function insurace_feature_update(Request $request, $post_id)
-    {
+    public function insurance_feature_update(Request $request, $post_id)
+    {        
         $post_category = $request->category_id;
+        $sub_category = $request->sub_category;
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){
-                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
+            if($value != null && $post_category != null){                
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $post_category, 'sub_category' => $sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id], 'post_category' => $post_category]);
             
         }
         }
@@ -399,7 +457,7 @@ class InsuranceController extends Controller
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
-        $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
+        $message = array('message' => 'Insurance Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         
     }

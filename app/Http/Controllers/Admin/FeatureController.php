@@ -32,7 +32,7 @@ class FeatureController extends Controller
     public function index()
     {
         $objFeatures = Feature::latest()->get();
-        return view('admin.tvfeatures.index', compact('objFeatures'));
+        return view('admin.features.index', compact('objFeatures'));
     }
 
     /**
@@ -43,7 +43,7 @@ class FeatureController extends Controller
     public function create()
     {
         $categories = Category::latest()->get();
-        return view('admin.tvfeatures.add', compact('categories'));
+        return view('admin.features.add', compact('categories'));
     }
 
     /**
@@ -58,6 +58,7 @@ class FeatureController extends Controller
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
+        $objFeature->sub_category = $request->sub_category;
         $objFeature->icon = $request->icon;
         if ($objFeature->save()) {
             Toastr::success('Feature Added Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -89,7 +90,7 @@ class FeatureController extends Controller
     {
         $objFeature = Feature::find($id);
         $categories = Category::latest()->get();
-        return view('admin.tvfeatures.edit', compact('objFeature', 'categories'));
+        return view('admin.features.edit', compact('objFeature', 'categories'));
     }
 
     /**
@@ -105,6 +106,7 @@ class FeatureController extends Controller
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
+        $objFeature->sub_category = $request->sub_category;
         $objFeature->icon = $request->icon;
         if ($objFeature->save()) {
             Toastr::success('Feature Updated Successfully', '', ["positionClass" => "toast-top-right"]);

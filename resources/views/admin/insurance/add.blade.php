@@ -210,10 +210,16 @@
                         @endif
                     </select>
                 </div>
-                <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
-                <div class="mb-3">
-                    <input type="file" class="form-control" name="image" id="image" accept="image/*">
-                </div>
+                <label for="upload_image">
+                                <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+
+                                <div class="overlay">
+                                    <div>Click to Change Image</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
+
+                            </label>
                 <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                 <div class="mb-3 add-scroll">
                     @if($objRelatedProducts)
@@ -312,32 +318,6 @@
         var title_val = $("#title").val();
         $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
     });
-    $(document).ready(function(){
-        $("#category").on('change', function() {
-            var cat_val = $(this).val(); // Get the selected category value
 
-            // Make an AJAX call to fetch subcategories based on the selected category
-            $.ajax({
-                url: "{{route('admin.categories.index')}}", // Replace this with the actual URL to fetch subcategories
-                type: 'GET',
-                data: {
-                    category_id: cat_val
-                },
-                success: function(response) {
-                    // Clear existing options
-                    $("#sub_category").html('');
-
-                    // Populate subcategories dropdown with new options
-                    $.each(response.data, function(index, subcategory) {
-                        $("#sub_category").append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    // Handle errors here
-                }
-            });
-        });
-    });
 </script>
 @endpush

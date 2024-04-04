@@ -29,7 +29,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="userTable" class="table table-bordered table-striped table-vcenter js-dataTable-buttons">
+                    <table id="userTable" class="table table-bordered table-striped table-vcenter">
                    <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _js/pages/be_tables_datatables.js -->             
                         <thead>
                             <tr>
@@ -47,7 +47,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->name ? $val->name : "NA"}}</td>
                                 <td>{{$val->parentCat ? $val->parentCat->name : "NA"}}</td>                            
-                                <td><span class="badge bg-info">{{$val->type ? $val->type : "NA"}}</span></td>
+                                
                                 <td>
                                     <div class="col">
                                         @if(Auth::guard('admin')->user()->can('category-edit'))
@@ -74,41 +74,68 @@
 @push('scripts')
 
 <script>
-    // $(document).ready(function() {
-    //     var table = $('#userTable').DataTable({
-    //         lengthChange: false,
-    //         buttons: ['excel', 'pdf', 'print']
-    //     });
+    $(document).ready(function() {
+        var table = $('#userTable').DataTable({
+            lengthChange: false,
+            buttons: [{
+                    extend: 'excelHtml5',
+                    text: '<i class="far fa-file-excel"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fal fa-file-pdf"></i>',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="far fa-print"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+            ],
+            'columnDefs': [{
+                'targets': [2], // column index (start from 0)
+                'orderable': false, // set orderable false for selected columns
+            }]
+        });
 
-    //     table.buttons().container()
-    //         .appendTo('#userTable_wrapper .col-md-6:eq(0)');
+        table.buttons().container()
+            .appendTo('#userTable_wrapper .col-md-6:eq(0)');
 
 
-    //     $("body").on("click", ".remove-category", function() {
-    //         var current_object = $(this);
-    //         swal({
-    //             title: "Are you sure?",
-    //             text: "You will not be able to recover this data!",
-    //             type: "error",
-    //             showCancelButton: true,
-    //             dangerMode: true,
-    //             cancelButtonClass: '#DD6B55',
-    //             confirmButtonColor: '#dc3545',
-    //             confirmButtonText: 'Delete!',
-    //         }, function(result) {
-    //             if (result) {
-    //                 var action = current_object.attr('data-action');
-    //                 var token = jQuery('meta[name="csrf-token"]').attr('content');
-    //                 var id = current_object.attr('data-id');
+        $("body").on("click", ".remove-category", function() {
+            var current_object = $(this);
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "error",
+                showCancelButton: true,
+                dangerMode: true,
+                cancelButtonClass: '#DD6B55',
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Delete!',
+            }, function(result) {
+                if (result) {
+                    var action = current_object.attr('data-action');
+                    var token = jQuery('meta[name="csrf-token"]').attr('content');
+                    var id = current_object.attr('data-id');
 
-    //                 $('body').html("<form class='form-inline remove-form' method='post' action='" + action + "'></form>");
-    //                 $('body').find('.remove-form').append('<input name="_method" type="hidden" value="DELETE">');
-    //                 $('body').find('.remove-form').append('<input name="_token" type="hidden" value="' + token + '">');
-    //                 $('body').find('.remove-form').append('<input name="id" type="hidden" value="' + id + '">');
-    //                 $('body').find('.remove-form').submit();
-    //             }
-    //         });
-    //     });
-    // });
+                    $('body').html("<form class='form-inline remove-form' method='post' action='" + action + "'></form>");
+                    $('body').find('.remove-form').append('<input name="_method" type="hidden" value="DELETE">');
+                    $('body').find('.remove-form').append('<input name="_token" type="hidden" value="' + token + '">');
+                    $('body').find('.remove-form').append('<input name="id" type="hidden" value="' + id + '">');
+                    $('body').find('.remove-form').submit();
+                }
+            });
+        });
+    });
 </script>
 @endpush

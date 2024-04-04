@@ -67,7 +67,7 @@
 
 
                             <div class="card-body p-4">
-                                <form id="productForm2" method="post" action="{{route('admin.internet-tv.update', $objTv->id)}}" enctype="multipart/form-data">
+                                <form id="productForm2" method="post" action="{{route('admin.insurance.update', $objTv->id)}}" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
@@ -102,11 +102,16 @@
                                                     </div>
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
-                                                            <label for="input37" class="col-form-label">family per head Amount</label>
-                                                            <input type="number" class="form-control" id="price" name="price" placeholder="Price" value="{{$objTv->price}}">
+                                                            <label for="family_extra_amount" class="col-form-label">Extra Per Head Cost</label>
+                                                            <input type="number" class="form-control" id="family_extra_amount" name="family_extra_amount" placeholder="Extra Per Head Cost" value="{{$objTv->family_extra_amount}}">
                                                     </div>
                                                     </div>
-                                
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                            <label for="own_risk" class="col-form-label">Own Risk Amount</label>
+                                                            <input type="number" class="form-control" id="own_risk" name="own_risk" placeholder="Own Risk Amount" value="{{$objTv->own_risk}}">
+                                                    </div>
+                                                    </div>
                                                     
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
@@ -126,18 +131,11 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                         <label for="avg_delivery_time" class=" col-form-label">Average Approval Time</label>
-                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" value="{{$objTv->avg_delivery_time}}">
+                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Approval Time" value="{{$objTv->avg_delivery_time}}">
                                                             </div>
                                                         </div>
                                                    
-                                                        <div class="col-md-6 col-12">                                                           
-                                                            <div class="mb-3 add-scroll">
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" name="is_featured" value="1"  @if($objTv->is_featured == 1)checked @endif>
-                                                                    <label class="form-check-label" for="flexCheckDefault">Feature Product</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                       
                                                     
                                                     
                                                     <div class="col-md-6 col-12">
@@ -174,6 +172,14 @@
                                                                     <option value="flat" @if($objTv->commission_type == "flat")selected @endif>Flat</option>
                                                                     <option value="prct" @if($objTv->commission_type == "prct")selected @endif>Percentage</option>
                                                                 </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-12">                                                           
+                                                            <div class="mb-3 add-scroll">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="is_featured" value="1"  @if($objTv->is_featured == 1)checked @endif>
+                                                                    <label class="form-check-label" for="flexCheckDefault">Feature Product</label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -233,11 +239,25 @@
                                                         @endif
                                                     </select>
                                                 </div>
-                                
-                                                <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
                                                 <div class="mb-3">
-                                                    <input type="file" class="form-control" name="image" id="image" accept="image/*" value="{{$objTv->image}}">
+                                                    <label for="sub_category" class="col-form-label"><b>Sub Category</b>
+                                                    </label>
+
+                                                    <select id="sub_category" name="sub_category" class="select2 form-select">
+                                                        <option value="{{ $objTv->sub_category}}">{{ $objTv->subCategory ? $objTv->subCategory->name : 'Select' }}</option>
+                                                        
+                                                    </select>
                                                 </div>
+                                                <label for="upload_image">
+                                                    <img src="{{asset('storage/images/insurance/'. $objTv->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+
+                                                    <div class="overlay">
+                                                        <div>Click to Change Image</div>
+                                                    </div>
+                                                    <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                                    <input type="hidden" name="cropped_image" id="cropped_image">
+
+                                                </label>
                                                 
                                 
                                 
@@ -246,7 +266,7 @@
                                                     @if($objRelatedProducts)
                                                     @foreach($objRelatedProducts as $val)
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="related_products[]" value="{{$val->id}}" @if(in_array($val->id, json_decode($objTv->combos)))checked @endif>
+                                                        <input class="form-check-input" type="checkbox" name="combos[]" value="{{$val->id}}" @if(in_array($val->id, json_decode($objTv->combos)))checked @endif>
                                                         <label class="form-check-label" for="flexCheckDefault">{{$val->title}}</label>
                                                     </div>
                                                     @endforeach
@@ -270,9 +290,10 @@
             </div>
 
             <div class="tab-pane fade" id="internet" role="tabpanel">
-                <form id="internetForm" method="post" action="{{route('admin.internet_feature_update', $objTv->id)}}">
+                <form id="internetForm" method="post" action="{{route('admin.insurance_feature_update', $objTv->id)}}">
                     @csrf
                     <input type="hidden" name="category_id" value="{{$objTv->category}}">
+                    <input type="hidden" name="sub_category" value="{{$objTv->sub_category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
                             <h5 class="mb-0">Edit Insurance Features</h5>
@@ -283,18 +304,20 @@
                             	@if($objInternetFeatures)
                                 @foreach($objInternetFeatures as $elm)
                                 @php                                
-                                $value = $postInternetFeatures[trim($elm->id)] ?? '';
+                                $value = $postInternetFeatures[trim($elm->id)] ?? '';                                
                                 @endphp
                                 @if($elm->input_type == "text")
                                 <div class="mb-3">
-                                    <label for="text_{{$elm->id}}" class="col-sm-3 col-form-label">{{$elm->features}}</label>
-                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{$value}}">
+                                    <label for="text_{{$elm->id}}" class="form-label">{{$elm->features}}</label>
+                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{ $value['feature_value']??'' }}">
+                                    <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']??''}}</textarea>
                                 </div>
                                 @endif
                                 @if($elm->input_type == "checkbox")
                                 <div class="form-check">
-			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if($value == 1)checked @endif>
+			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if( isset($value['feature_value']) && $value['feature_value'] == 1 )checked @endif>
 			                    <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
+                                <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']??''}}</textarea>
 			                    </div>
                                 @endif
                                 @endforeach
@@ -651,5 +674,7 @@ $("#infoForm").validate({
         var title_val = $("#title").val();
         $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
     });
+
+    
 </script>
 @endpush
