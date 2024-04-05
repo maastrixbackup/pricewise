@@ -315,6 +315,7 @@
                                 @endif
                                 @if($elm->input_type == "checkbox")
                                 <div class="form-check">
+                                <input type="hidden" name="features[{{$elm->id}}]" value="0">
 			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if( isset($value['feature_value']) && $value['feature_value'] == 1 )checked @endif>
 			                    <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
                                 <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']??''}}</textarea>
@@ -342,9 +343,10 @@
 
             <div class="tab-pane fade" id="tv" role="tabpanel">
                 
-                   <form id="tvForm" method="post" action="{{route('admin.tv_feature_update', $objTv->id)}}" enctype="multipart/form-data">
+                   <form id="tvForm" method="post" action="{{route('admin.insurance_reimburse_update', $objTv->id)}}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="category_id" value="{{$objTv->category}}">
+                    <input type="hidden" name="sub_category" value="{{$objTv->sub_category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
                             <h5 class="mb-0">Edit Reimbursements</h5>
@@ -352,7 +354,24 @@
                         <div class="col-md-7 col-12">
                             <div class="card-body p-4">
 
-                            	
+                            	@if($objReimburseFeatures)
+                                @foreach($objReimburseFeatures as $elm2)
+                                @php                                
+                                $value = $postReimburseFeatures[trim($elm2->id)] ?? []; 
+
+                                @endphp
+                                <div class="mb-3">
+                                    
+                                    
+                                <div class="form-check">
+                                <input type="hidden" name="reimburse[{{$elm2->id}}]" value="0">
+                                <input class="form-check-input" type="checkbox"  name="reimburse[{{$elm2->id}}]" value="1" id="reimburse_{{$elm2->id}}" @if( isset($value['feature_value']) && $value['feature_value'] == 1 )checked @else '' @endif>
+                                <label for="reimburse_{{$elm2->id}}" class="form-label">{{$elm2->name}}</label>
+                                <textarea placeholder="Additional Info" name="details[{{$elm2->id}}]" class="form-control">{{$value['details']??$elm2->description}}</textarea>
+                                </div>
+                                
+                                @endforeach
+                                @endif
 
                             </div>
 
@@ -674,7 +693,6 @@ $("#infoForm").validate({
         var title_val = $("#title").val();
         $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
     });
-
     
 </script>
 @endpush

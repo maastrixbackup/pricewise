@@ -306,24 +306,32 @@ class InsuranceController extends Controller
     {
         $objTv = InsuranceProduct::find($id);
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', $objTv->category)->orWhere('sub_category', $objTv->sub_category)->get();
-
-        $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', 9)->pluck('feature_value', 'feature_id')->toArray();
         $postInternetFeatures = PostFeature::where('post_id', $id)
+        ->where('category_id', $objTv->category)
+        ->orWhere('sub_category', $objTv->sub_category)
         ->select('feature_id', 'feature_value', 'details')
         ->get()
         ->mapWithKeys(function ($item) {
             return [$item['feature_id'] => ['feature_value' => $item['feature_value'], 'details' => $item['details']]];
         })->toArray();
         //$postInternetFeatures = PostFeature::where('post_id', $id)->pluck('feature_value', 'feature_id', 'details')->get()->toArray();
-        //dd($postInternetFeatures);    
-        $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
-        $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
+        $objReimburseFeatures = Reimbursement::where('sub_category', $objTv->sub_category)->get();
+        $postReimburseFeatures = PostFeature::where('post_id', $id)
+        ->where('category_id', $objTv->category)
+        ->orWhere('sub_category', $objTv->sub_category)
+        ->select('feature_id', 'feature_value', 'details')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            return [$item['feature_id'] => ['feature_value' => $item['feature_value'], 'details' => $item['details']]];
+        })->toArray();
+        //$objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
+        //$postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
         $objRelatedProducts = InsuranceProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
+        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'objReimburseFeatures', 'postReimburseFeatures', 'serviceInfo'));
     }
 
     /**
@@ -443,6 +451,7 @@ class InsuranceController extends Controller
     {        
         $post_category = $request->category_id;
         $sub_category = $request->sub_category;
+        //dd($request->features);
         try{
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){                
@@ -464,10 +473,12 @@ class InsuranceController extends Controller
     public function insurance_reimburse_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
+        $sub_category = $request->sub_category;
+        //dd($request->reimburse);
         try{
-        foreach($request->input('features') as $feature_id => $value){
+        foreach($request->reimburse as $feature_id => $value){
             if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 9, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 9, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category], ['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'sub_category' =>$sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id]]);
             
         }
         }
@@ -478,7 +489,7 @@ class InsuranceController extends Controller
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
-        $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
+        $message = array('message' => 'Insurance Reimbursement Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         
     }

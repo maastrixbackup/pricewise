@@ -1,5 +1,67 @@
 <x-app-layout>
+<style type="text/css">
+    .email-verify-main {
+    background-color: #edf2f7;
+    padding: 0px 25px;
+}
 
+.email-slfeh-title {
+    text-align: center;
+    padding: 25px 0;
+}
+
+.email-slfeh-title span {
+    font-weight: 600;
+    font-size: 18px;
+    color: #585858;
+}
+
+.btn-style-verify {
+    background: #2d3748;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.verify-email-inner-box {
+    padding: 20px 25px;
+    background: #fff;
+    box-shadow: 0 0 20px rgb(192 192 192 / 22%);
+}
+
+.verify-email-inner-box h5 {
+    margin: 0 0 5px 0;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.verify-email-inner-box p,
+.verify-email-inner-box span {
+    color: #909090;
+    font-size: 16px;
+}
+
+.verify-descrip-data {
+    word-break: break-all;
+    font-size: 13px !important;
+}
+
+.verify-descrip-data a {
+    color: #2f65bd;
+}
+
+.from-money-main .input-group .form-control {
+    line-height: 20px;
+    min-height: 32px;
+}
+
+.d-flex-btn-loans {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+</style>
     <div class="row">
 
 
@@ -79,18 +141,9 @@
 </form>
     </div>
     <div class="imageContainer mb-3 col-md-6">
-        @component('mail::message')
-        # Hello!
 
-        {{$body['body']}}
 
-        @component('mail::button', ['url' => $body['action_link']])
-        Reset Password
-        @endcomponent
-
-        Thanks,<br>
-        {{ config('app.name') }}
-        @endcomponent
+   
     </div>
 
 </div>

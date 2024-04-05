@@ -42,11 +42,8 @@ class EmailTemplateController extends Controller
      */
     public function create()
     {
-        $body = [
-        'body' => 'Your email body content here',
-        'action_link' => 'https://example.com/reset-password',
-    ];
-        return view('admin.email_templates.add', compact('body'));
+        // $templates = EmailTemplate::where('status', 1)->get();
+        return view('admin.email_templates.add');
     }
 
     /**
@@ -78,9 +75,10 @@ class EmailTemplateController extends Controller
         $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
 
         if ($emailTemplate) {
-            return response()->json(['success' => true, 'data' => $emailTemplate], 200);
+            //return response()->json(['success' => true, 'data' => $emailTemplate], 200);
+            return redirect()->route('admin.email-templates.index')->with(Toastr::success('Email Template Created Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
-            return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
+            //return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
         }
     }
 
@@ -104,8 +102,8 @@ class EmailTemplateController extends Controller
      */
     public function edit($id)
     {
-        $template = EmailTemplate::where('id', $id)->first();
-        return view('admin.email_templates.edit', compact('template'));
+        $email_template = EmailTemplate::where('id', $id)->first();
+        return view('admin.email_templates.edit', compact('email_template'));
     }
 
     /**
@@ -138,7 +136,9 @@ class EmailTemplateController extends Controller
         $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
 
         if ($emailTemplate) {
-            return response()->json(['success' => true, 'data' => $emailTemplate], 200);
+            //return response()->json(['success' => true, 'data' => $emailTemplate], 200);
+            Toastr::success('Email Template Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            return redirect()->back();
         } else {
             return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
         }

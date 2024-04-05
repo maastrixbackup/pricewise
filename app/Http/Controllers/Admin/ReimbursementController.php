@@ -135,7 +135,7 @@ class ReimbursementController extends Controller
         $categories = Category::where('parent', 5)->get();
         $objCategory = Reimbursement::find($id);
         $parents = Reimbursement::whereNull('parent')->latest()->get();
-        return view('admin.reimbursement.edit', compact('objCategory', 'parents', 'categories'));
+        return view('admin.reimbursement.edit', compact('objCategory', 'parents', 'categories', 'objCategory'));
     }
 
     /**

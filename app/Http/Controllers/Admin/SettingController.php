@@ -171,4 +171,24 @@ class SettingController extends Controller
     }
     }
 
+    public function mailchimpEdit()
+    {
+        $mailchimp = MailchimpSetting::find(1);
+        return view('admin.settings.mailchimp_edit', compact('mailchimp'));
+    }
+
+    public function mailchimpStore(Request $request)
+    {
+        $mailchimp = MailchimpSetting::find(1);
+        $mailchimp->mailchimp_key = $request->mailchimp_key;
+        $mailchimp->listId = $request->listId;
+        if ($mailchimp->save()) {
+            $message = array('message' => 'Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
+        } else {
+            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
+            return response()->json(["status" => false, 'message' => $message]);
+        }
+    }
+
 }
