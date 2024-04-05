@@ -10,6 +10,13 @@ if (!function_exists('getSettings')) {
         return $settings;
     }
 }
+if (!function_exists('siteSettings')) {
+    function siteSettings()
+    {
+        $settings = WebsiteSetting::first();
+        return $settings;
+    }
+}
 if (!function_exists('getBanners')) {
     function getBanners($page)
     {
