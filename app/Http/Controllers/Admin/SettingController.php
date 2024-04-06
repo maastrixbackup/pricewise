@@ -171,6 +171,29 @@ class SettingController extends Controller
     }
     }
 
+    public function businessEdit()
+    {
+        $businessSetting  = Setting::where('type', 'business_general')->orderBy('key', 'asc')->get()->groupBy('sub_type');
+        return view('admin.settings.business_edit', compact('businessSetting'));
+    }
+
+    public function businessStore(Request $request){    
+        try{
+        foreach($request->input('business') as $key => $value){          
+           Setting::where('type','business_general')->where('key', $key)
+        ->update(['value' => $value]);
+        }
+        $message = array('message' => 'Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
+        } catch (\Exception $e) {
+            $errorMessage = 'Failed to update Business Settings: ' . $e->getMessage();
+    // Log the error for further investigation
+    \Log::error($errorMessage);
+        $message = ['message' => 'Failed to update Business Settings', 'title' => 'Error'];
+        return response()->json(['status' => false, 'message' => $message]);
+    }
+    }
+
     public function mailchimpEdit()
     {
         $mailchimp = MailchimpSetting::find(1);
