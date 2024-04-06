@@ -106,6 +106,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('banners', 'BannerController');
         //Reimbursement
         Route::resource('reimbursement', 'ReimbursementController');
+        //Energy
+        Route::resource('energy-rate-chat', 'EnergyRateChatController');
         //Events
         Route::resource('events', 'EventController');
 
@@ -129,8 +131,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('get-template', 'MailChimpController@getTemplate')->name('get-template');
 
         //Website Setting
-        Route::get('website-setting', 'SettingController@websiteEdit')->name('website-setting');
+        Route::get('website-setting', 'SettingController@websiteEdit')->name('website-setting');        
         Route::post('website-store', 'SettingController@websiteStore')->name('website-store');
+        Route::get('business-setting', 'SettingController@businessEdit')->name('business-setting');
+        Route::post('business-store', 'SettingController@businessStore')->name('business-store');
         Route::get('smtp-setting', 'SettingController@smtpEdit')->name('smtp-setting');
         Route::post('smtp-store', 'SettingController@smtpStore')->name('smtp-store');
         Route::get('payment-setting', 'SettingController@paymentEdit')->name('payment-setting');

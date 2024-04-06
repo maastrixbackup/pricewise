@@ -116,6 +116,12 @@
                 </a>
               </li>
               <li class="nav-main-item">
+                <a class="nav-main-link" href="{{route('admin.energy-rate-chat.index')}}">
+                <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                <span class="nav-main-link-name">Energy Rate Chat</span>
+                </a>
+              </li>
+              <li class="nav-main-item">
                     <a class="nav-main-link" href="{{route('admin.reimbursement.index')}}">
                       <i class="nav-main-link-icon fa-solid fa-list"></i>
                       <span class="nav-main-link-name">Reimbursement</span>
@@ -233,9 +239,9 @@
                 </a>
                 <ul class="nav-main-submenu">
                   <li class="nav-main-item">
-                    <a class="nav-main-link" href="">
+                    <a class="nav-main-link" href="{{route('admin.business-setting')}}">
                       <i class="nav-main-link-icon fa-regular fa-circle"></i>
-                      <span class="nav-main-link-name">VAT Setting</span>
+                      <span class="nav-main-link-name">Business Setting</span>
                     </a>
                   </li>
                  <li class="nav-main-item">
