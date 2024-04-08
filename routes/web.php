@@ -106,8 +106,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('banners', 'BannerController');
         //Reimbursement
         Route::resource('reimbursement', 'ReimbursementController');
-        //Energy
+        //Energy Rate Chat
         Route::resource('energy-rate-chat', 'EnergyRateChatController');
+        //Feed In-Costs
+        Route::resource('feed-in-costs', 'FeedInCostController');
         //Events
         Route::resource('events', 'EventController');
 
