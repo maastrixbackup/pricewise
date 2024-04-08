@@ -70,13 +70,13 @@
                     </a>                
                   </li>
                   <li class="nav-main-item">
-                    <a class="nav-main-link" href="service.html">
+                    <a class="nav-main-link" href="#">
                       <i class="nav-main-link-icon fa-solid fa-bolt-lightning"></i>
                       <span class="nav-main-link-name">Electra</span>
                     </a>
                   </li>
                   <li class="nav-main-item">
-                    <a class="nav-main-link" href="service.html">
+                    <a class="nav-main-link" href="#">
                       <i class="nav-main-link-icon fa-brands fa-gripfire"></i>
                       <span class="nav-main-link-name">Gas</span>
                     </a>
@@ -119,6 +119,12 @@
                 <a class="nav-main-link" href="{{route('admin.energy-rate-chat.index')}}">
                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                 <span class="nav-main-link-name">Energy Rate Chat</span>
+                </a>
+              </li>
+               <li class="nav-main-item">
+                <a class="nav-main-link" href="{{route('admin.feed-in-costs.index')}}">
+                <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                <span class="nav-main-link-name">Feed In Costs</span>
                 </a>
               </li>
               <li class="nav-main-item">

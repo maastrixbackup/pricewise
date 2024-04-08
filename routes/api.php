@@ -21,7 +21,9 @@ use App\Http\Controllers\Api\InternetTvController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::middleware('web')->get('/csrf-token', function() {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
 // Route::post('/logout', [UserController::class, 'logout']);
 // Route::post('/login', [UserController::class, 'login']);
 // Route::controller(RegisterController::class, 'api')->group(function(){

@@ -51,12 +51,12 @@ class RegisterController extends BaseController
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('_token')->plainTextToken; 
-            $success['name'] =  $user->name;
+            $success['name'] =  $user->name;            
    
             return $this->sendResponse($success, 'User login successfully.');
         } 
         else{ 
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+            return response()->json(['error' => 'Unauthorized'], 401);
         } 
     }
 
