@@ -10,7 +10,7 @@ use Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\URL;
-
+use JWTAuth;
 class RegisterController extends BaseController
 {
     /**
@@ -46,8 +46,9 @@ class RegisterController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request)
-    {
-        //dd('hi');
+    {//\Log::info('Attempting login with:', $request->input());
+
+        
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('_token')->plainTextToken; 
@@ -59,6 +60,16 @@ class RegisterController extends BaseController
             return response()->json(['error' => 'Unauthorized'], 401);
         } 
     }
+
+    // public function login(Request $request)
+    // {dd('hi');
+    //     $input = $request->all();
+    //     if (!$token = JWTAuth::attempt($input)) {
+    //         return response()->json(['result' => 'wrong email or password.']);
+    //     }
+    //         return response()->json(['result' => $token]);
+    // }
+
 
     public function logout(Request $request)
     {

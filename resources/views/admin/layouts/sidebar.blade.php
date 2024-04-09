@@ -70,17 +70,12 @@
                     </a>                
                   </li>
                   <li class="nav-main-item">
-                    <a class="nav-main-link" href="#">
+                    <a class="nav-main-link" href="{{route('admin.energy.index')}}">
                       <i class="nav-main-link-icon fa-solid fa-bolt-lightning"></i>
-                      <span class="nav-main-link-name">Electra</span>
+                      <span class="nav-main-link-name">Energy</span>
                     </a>
                   </li>
-                  <li class="nav-main-item">
-                    <a class="nav-main-link" href="#">
-                      <i class="nav-main-link-icon fa-brands fa-gripfire"></i>
-                      <span class="nav-main-link-name">Gas</span>
-                    </a>
-                  </li>
+                  
                   <li class="nav-main-item">
                     <a class="nav-main-link" href="{{route('admin.internet-tv.index')}}">
                       <i class="nav-main-link-icon fa-solid fa-globe"></i>

@@ -35,17 +35,10 @@ class FeedInCostController extends Controller
     public function index(Request $request)
     {
         $rateChats = FeedInCost::latest()->get();
-//if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
-//dd(\Auth::guard('admin')->user()->roles);
-// foreach (Auth::guard('admin')->user()->roles as $role) {
-//         $permissions = $role->permissions;
-//          echo $permission->name . "\n";
-//     }
-    // $permissions = Permission::all();
-
-    // foreach ($permissions as $permission) {
-    //     echo $permission->name . "\n";
-    // }
+        if($request->provider_id && $request->provider_id != null){
+            $ratechat = FeedInCost::where('provider', $request->provider_id)->latest()->get();
+            return response()->json(['status' => true, 'data' => $ratechat]);
+        }
         if($request->category_id && $request->category_id != null){
             $subCategory = Reimbursement::where('parent', $request->category_id)->latest()->get();
             return response()->json(['status' => true, 'data' => $subCategory]);
@@ -77,6 +70,8 @@ class FeedInCostController extends Controller
         $objCategory->from_range = $request->from_range;        
         $objCategory->to_range = $request->to_range;
         $objCategory->amount = $request->amount;
+        $objCategory->normal_feed_in_cost = $request->normal_feed_in_cost;
+        $objCategory->off_peak_feed_in_cost = $request->off_peak_feed_in_cost;
         if ($objCategory->save()) {
             return redirect()->route('admin.feed-in-costs.index')->with(Toastr::success('Feed In Cost Created Successfully', '', ["positionClass" => "toast-top-right"]));
             // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -127,6 +122,8 @@ class FeedInCostController extends Controller
         $objCategory->from_range = $request->from_range;
         $objCategory->to_range = $request->to_range;
         $objCategory->amount = $request->amount;
+        $objCategory->normal_feed_in_cost = $request->normal_feed_in_cost;
+        $objCategory->off_peak_feed_in_cost = $request->off_peak_feed_in_cost;
         if ($objCategory->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Feed In Cost Updated Successfully', '', ["positionClass" => "toast-top-right"]);

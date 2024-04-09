@@ -37,6 +37,7 @@
                                 <th>Provider</th>                               
                                 <th>Gas Rate</th>
                                 <th>Electric Rate</th>
+                                <th>Off Peak Rate</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -49,6 +50,7 @@
                                 <td>{{$val->providerDetail ? $val->providerDetail->name : "NA"}}</td>
                                 <td>{{ $val->gas_rate }}</td>                            
                                 <td>{{ $val->electric_rate }}</td>
+                                <td>{{ $val->off_peak_rate }}</td>
                                 <td>
                                     <div class="col">
                                         @if(Auth::guard('admin')->user()->can('energy_rate_chat-edit'))

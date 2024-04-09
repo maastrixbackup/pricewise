@@ -35,20 +35,9 @@ class EnergyRateChatController extends Controller
     public function index(Request $request)
     {
         $rateChats = EnergyRateChat::latest()->get();
-//if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
-//dd(\Auth::guard('admin')->user()->roles);
-// foreach (Auth::guard('admin')->user()->roles as $role) {
-//         $permissions = $role->permissions;
-//          echo $permission->name . "\n";
-//     }
-    // $permissions = Permission::all();
-
-    // foreach ($permissions as $permission) {
-    //     echo $permission->name . "\n";
-    // }
-        if($request->category_id && $request->category_id != null){
-            $subCategory = Reimbursement::where('parent', $request->category_id)->latest()->get();
-            return response()->json(['status' => true, 'data' => $subCategory]);
+        if($request->provider_id && $request->provider_id != null){
+            $ratechat = EnergyRateChat::where('provider', $request->provider_id)->latest()->get();
+            return response()->json(['status' => true, 'data' => $ratechat]);
         }
         return view('admin.energy_rate_chat.index', compact('rateChats'));
     }
@@ -107,9 +96,9 @@ class EnergyRateChatController extends Controller
     public function edit($id)
     {
         $providers = Provider::all();
-        $objCategory = EnergyRateChat::find($id);
-        $parents = Reimbursement::whereNull('parent')->latest()->get();
-        return view('admin.energy_rate_chat.edit', compact('objCategory', 'providers'));
+        $rateChat = EnergyRateChat::find($id);
+        //$parents = Reimbursement::whereNull('parent')->latest()->get();
+        return view('admin.energy_rate_chat.edit', compact('rateChat', 'providers'));
     }
 
     /**
@@ -127,7 +116,7 @@ class EnergyRateChatController extends Controller
         //$objCategory->slug = $request->slug;
         $objCategory->gas_rate = $request->gas_rate;
         $objCategory->electric_rate = $request->electric_rate;
-        
+        $objCategory->off_peak_electric_rate = $request->off_peak_electric_rate;
         if ($objCategory->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Energy Rate Updated Successfully', '', ["positionClass" => "toast-top-right"]);

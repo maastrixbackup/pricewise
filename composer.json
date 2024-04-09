@@ -17,6 +17,7 @@
         "mailchimp/mailchimp": "^2.0",
         "mailchimp/marketing": "^3.0",
         "spatie/laravel-permission": "^5.5",
+        "tymon/jwt-auth": "^1.0@dev",
         "unisharp/laravel-filemanager": "^2.6"
     },
     "require-dev": {
