@@ -47,7 +47,14 @@
                         <label for="amount" class=" col-form-label">Amount</label>
                         <input type="number" class="form-control" id="amount" name="amount" placeholder="Amount">
                     </div>
-
+                    <div class=" mb-3">
+                        <label for="normal_feed_in_cost" class=" col-form-label">Normal Feed In Cost</label>
+                        <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost">
+                    </div>
+                    <div class=" mb-3">
+                        <label for="off_peak_feed_in_cost" class=" col-form-label">Off Peak Feed In Cost</label>
+                        <input type="number" class="form-control" id="off_peak_feed_in_cost" name="off_peak_feed_in_cost" placeholder="Off Peak Feed In Cost">
+                    </div>
                 <div class="row mb-3">
                     <div class="">
                         <label class=" col-form-label"></label>

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Energise- Reimbursement Edit')
+@section('title','Energise- Energy Rate Edit')
 @section('content')
 
 <!--breadcrumb-->
@@ -10,13 +10,13 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.categories.index')}}">Reimbursements</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.energy-rate-chat.index')}}">Energy Rate Chats</a></li>
             </ol>
         </nav>
     </div>
 </div>
 <!--end breadcrumb-->
-<form id="productForm" method="post" action="{{route('admin.reimbursement.update',$objCategory->id)}}" enctype="multipart/form-data">
+<form id="productForm" method="post" action="{{route('admin.energy-rate-chat.update',$rateChat->id)}}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="row">
@@ -27,48 +27,27 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="card-body p-4">
+                                               
                         <div class=" mb-3">
-                            <label for="input35" class=" col-form-label">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{$objCategory->name}}">
-                        </div>
-                        <div class=" mb-3">
-                        <label for="parent" class=" col-form-label">Parent Reimbursement</label>
-                        <select class="form-control selectpicker" data-live-search="true" name="parent" id="parent">
+                        <label for="provider" class=" col-form-label">Provider</label>
+                        <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider">
                                 <option value="">Select</option>
-                                @foreach($parents as $parent)
-                                <option value="{{$parent->id}}" @if($objCategory->parent == $parent->id)selected @endif>{{$parent->name}}</option>
+                                @foreach($providers as $provider)
+                                <option value="{{$provider->id}}" @if($provider->id == $rateChat->provider)selected @endif>{{$provider->name}}</option>
                                 @endforeach
                         </select>
-                        </div>
-                        <div class=" mb-3">
-                        <label for="sub_category" class=" col-form-label">Insurance Category</label>
-                        <select class="form-control selectpicker" data-live-search="true" name="sub_category" id="sub_category">
-                                <option value="">Select</option>
-                                @foreach($categories as $category)
-                                <option value="{{$category->id}}" @if($category->id == $objCategory->sub_category) selected @endif>{{$category->name}}</option>
-                                @endforeach
-                        </select>
-                        </div>
-                        <div class=" mb-3">
-                        <label for="parent" class=" col-form-label">Reimbursement Description</label>
-                        <textarea name="description" id="description" class="form-control" placeholder="Description">{{$objCategory->description}}</textarea>
-                        </div>
-                        <div class="mb-3">
-                        <label for="input40" class="col-sm-6 col-form-label"><b>Reimbursement Image </b></label>
-                        
-                        <label for="upload_image">
-                                <img src="{{asset('storage/images/categories/'. $objCategory->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
-                                <div class="overlay">
-                                    <div>Click to Change Image</div>
-                                </div>
-                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
-                                <input type="hidden" name="cropped_image" id="cropped_image">
-
-                            </label>
-                        </div>
-                        <div class="row mb-3">
-                        <label for="input_type" class=" col-form-label">Select Icon</label>
-                        
+                    </div>
+                    <div class=" mb-3">
+                        <label for="gas_rate" class=" col-form-label">Gas Rate</label>
+                        <input type="text" class="form-control" id="gas_rate" name="gas_rate" placeholder="Gas Rate" value="{{$rateChat->gas_rate}}">
+                    </div>
+                    <div class=" mb-3">
+                        <label for="electric_rate" class=" col-form-label">Normal Electric Rate</label>
+                        <input type="text" class="form-control" id="electric_rate" name="electric_rate" placeholder="Electric Rate" value="{{$rateChat->electric_rate}}">
+                    </div>
+                    <div class=" mb-3">
+                        <label for="off_peak_electric_rate" class=" col-form-label">Off Peak Electric Rate</label>
+                        <input type="text" class="form-control" id="electric_rate" name="off_peak_electric_rate" placeholder="Off Peak Electric Rate" value="{{$rateChat->off_peak_electric_rate}}">
                     </div>
                         
 

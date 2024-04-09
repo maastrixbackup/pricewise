@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserDetailController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\InternetTvController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +18,18 @@ use App\Http\Controllers\Api\InternetTvController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// Route::post('/login', function (Request $request) {
+//     $credentials = $request->only('email', 'password');
+//     \Log::info('Login attempt with credentials:', $credentials);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::middleware('web')->get('/csrf-token', function() {
-    return response()->json(['csrf_token' => csrf_token()]);
-});
+//     // Authentication logic...
+// });
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+// Route::middleware('web')->get('/csrf-token', function() {
+//     return response()->json(['csrf_token' => csrf_token()]);
+// });
 // Route::post('/logout', [UserController::class, 'logout']);
 // Route::post('/login', [UserController::class, 'login']);
 // Route::controller(RegisterController::class, 'api')->group(function(){
@@ -31,9 +37,16 @@ Route::middleware('web')->get('/csrf-token', function() {
 //     Route::post('login', 'login');
 // });
 Route::post('/register', [RegisterController::class, 'register']);
-Route::post('/login', [RegisterController::class, 'login']);
+Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
+// Route::group(['middleware' => ['api','cors'],'prefix' => 'api'], function () {
+//     Route::post('register', 'RegisterController@register');
+//     Route::post('login', 'RegisterController@login');
+//     Route::group(['middleware' => 'jwt-auth'], function () {
+//     	Route::post('get_user_details', 'RegisterController@get_user_details');
+//     });
+// });
 Route::get('internet-tv', [InternetTvController::class, 'index']);  
 Route::middleware('auth:sanctum')->group( function () {
 	Route::post('/logout', [RegisterController::class, 'logout']);

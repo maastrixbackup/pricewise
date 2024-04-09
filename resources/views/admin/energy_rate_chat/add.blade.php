@@ -28,8 +28,8 @@
                         <label for="provider" class=" col-form-label">Provider</label>
                         <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider">
                                 <option value="">Select</option>
-                                @foreach($providers as $parent)
-                                <option value="{{$parent->id}}">{{$parent->name}}</option>
+                                @foreach($providers as $provider)
+                                <option value="{{$provider->id}}">{{$provider->name}}</option>
                                 @endforeach
                         </select>
                     </div>

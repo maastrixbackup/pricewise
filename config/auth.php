@@ -45,6 +45,12 @@ return [
             'provider' => 'admins',
         ],
 
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+            'hash' => false, // Whether to use the hashed token
+        ],
+
     ],
 
     /*
