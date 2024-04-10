@@ -27,9 +27,9 @@ use Illuminate\Support\Facades\Auth;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-// Route::middleware('web')->get('/csrf-token', function() {
-//     return response()->json(['csrf_token' => csrf_token()]);
-// });
+Route::middleware('auth:sanctum')->get('/csrf-token', function() {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
 // Route::post('/logout', [UserController::class, 'logout']);
 // Route::post('/login', [UserController::class, 'login']);
 // Route::controller(RegisterController::class, 'api')->group(function(){
@@ -37,7 +37,9 @@ use Illuminate\Support\Facades\Auth;
 //     Route::post('login', 'login');
 // });
 Route::post('/register', [RegisterController::class, 'register']);
-Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
+Route::middleware('api_secure')->group(function () {
+    Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
+});
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
 // Route::group(['middleware' => ['api','cors'],'prefix' => 'api'], function () {
@@ -47,7 +49,7 @@ Route::post('/reset-password/{token}', [RegisterController::class, 'resetPasswor
 //     	Route::post('get_user_details', 'RegisterController@get_user_details');
 //     });
 // });
-Route::get('internet-tv', [InternetTvController::class, 'index']);  
+Route::get('internet-tv', [InternetTvController::class, 'index']);
 Route::middleware('auth:sanctum')->group( function () {
 	Route::post('/logout', [RegisterController::class, 'logout']);
     Route::get('/profile-details', [UserDetailController::class, 'index']);

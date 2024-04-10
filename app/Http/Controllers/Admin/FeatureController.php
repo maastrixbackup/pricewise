@@ -128,16 +128,16 @@ class FeatureController extends Controller
         $id = $request->id;
         $getFeature = Feature::find($id);
         try {
-            $check = Feature::where('id', $id)->first();
-            if ($check) {
-                return back()->with(Toastr::error(__('Sorry we could not delete this Feature .This Feature is assigned to some topdeal service')));
-            } else {
+            // $check = Feature::where('id', $id)->first();
+            // if ($check) {
+            //     return back()->with(Toastr::error(__('Sorry we could not delete this Feature .This Feature is assigned to some topdeal service')));
+            // } else {
                 Feature::find($id)->delete();
                 return back()->with(Toastr::error(__('Feature deleted successfully!')));
-            }
+            
         } catch (Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
-            return redirect()->route('admin.tv-features.index')->with($error_msg);
+            return redirect()->route('admin.features.index')->with($error_msg);
         }
     }
 }
