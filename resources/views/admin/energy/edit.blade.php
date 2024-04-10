@@ -9,7 +9,7 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.internet-tv.index')}}">Internet Tv</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.internet-tv.index')}}">Energy</a></li>
             </ol>
         </nav>
     </div>
@@ -27,11 +27,11 @@
                 </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" data-bs-toggle="tab" href="#internet" role="tab" aria-selected="false">
+                <a class="nav-link" data-bs-toggle="tab" href="#pricing" role="tab" aria-selected="false">
                     <div class="d-flex align-items-center">
                     <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
-                        <div class="tab-title">Internet Features</div>
+                        <div class="tab-title">Pricing</div>
                     </div>
                 </a>
             </li>
@@ -41,7 +41,7 @@
                     <div class="d-flex align-items-center">
                         <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
-                        <div class="tab-title">Tv Features</div>
+                        <div class="tab-title">Energy Features</div>
                     </div>
                 </a>
             </li>
@@ -51,7 +51,7 @@
                     <div class="d-flex align-items-center">
                         <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                         </div>
-                        <div class="tab-title">Telephone Features</div>
+                        <div class="tab-title">Documents</div>
                     </div>
                 </a>
             </li>
@@ -70,13 +70,13 @@
                 
                     <div class="row">
                         <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Edit Internet & Tv Details</h5>
+                            <h5 class="mb-0">Edit Energy Details</h5>
                         </div>
                         <div class="col-md-12 col-lg-12 col-12">
 
 
                             <div class="card-body p-4">
-                                <form id="productForm2" method="post" action="{{route('admin.internet-tv.update', $objTv->id)}}" enctype="multipart/form-data">
+                                <form id="productForm2" method="post" action="{{route('admin.energy.update', $objTv->id)}}" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
@@ -86,21 +86,21 @@
                                                 <div class="card-body p-4">
                                                     <div class=" mb-3">
                         <label for="input35" class=" col-form-label">Title</label>
-                        <input type="text" class="form-control" id="title" name="title" placeholder="Product Title">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Product Title" value="{{$objTv->title}}">
                     </div>
 
                     <div class=" mb-3">
                         <label for="input37" class="col-form-label">URL</label>
 
                         <!-- <div class="input-group mb-3"> <span class="input-group-text">/product/</span> -->
-                        <input type="text" class="form-control" id="link" name="link" readonly>
+                        <input type="text" class="form-control" id="link" name="link" readonly value="{{$objTv->slug}}">
                         <!-- </div> -->
 
                     </div>
 
                     <div class="">
                         <label for="input35" class=" col-form-label">Description</label>
-                        <textarea class="form-control" name="description2" id="description23" placeholder="Product Description"></textarea>
+                        <textarea class="form-control" name="description2" id="description23" placeholder="Product Description">{{$objTv->description}}</textarea>
                     </div>
                      <div class="mb-3">
                     <label for="provider" class="col-form-label"><b>Provider</b>
@@ -110,50 +110,13 @@
                         <option>Select</option>
                         @if($providers)
                         @foreach($providers as $provider)
-                        <option value="{{$provider->id}}">{{$provider->name}}</option>
+                        <option value="{{$provider->id}}" @if($objTv->provider == $provider->id)selected @endif>{{$provider->name}}</option>
                         @endforeach
                         @endif
                     </select>
                     </div>
                     
-                        <div class=" mb-3">
-                            <label for="input37" class="col-form-label">Gas Price/m<sup>3</sup></label>
-                            <input type="number" class="form-control" id="gas_price" name="gas_price" placeholder="Price">
-                        </div>
                         
-                        
-                            <div class=" mb-3">
-                                <label for="input37" class="col-form-label">Normal Electric Price/kWh</label>
-                                <input type="number" class="form-control" id="normal_electric_price" name="normal_electric_price" placeholder="Normal Electric Price" readonly="readonly">
-                        </div>
-                        
-                        
-                            <div class=" mb-3">
-                                <label for="input37" class="col-form-label">Off Peak Electric Price/kWh</label>
-                                <input type="number" class="form-control" id="peak_electric_price" name="peak_electric_price" placeholder="Off Peak Electric Price" readonly="readonly">
-                        </div>
-                        
-                        
-                            <div class=" mb-3">
-                                <label for="input37" class="col-form-label">Normal Feed In Cost/kWh</label>
-                                <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" readonly="readonly">
-                        </div>
-                       
-                       
-                            <div class=" mb-3">
-                                <label for="input37" class="col-form-label">Off Peak Feed In Cost/kWh</label>
-                                <input type="number" class="form-control" id="peak_feed_in_cost" name="peak_feed_in_cost" placeholder="Off Peak Feed In Cost" readonly="readonly">
-                        </div>
-                                            
-                            <div class=" mb-3">
-                                <label for="input37" class="col-form-label">Network Management Cost for Gas</label>
-                                <input type="number" class="form-control" id="network_cost" name="network_cost" placeholder="Network Management Cost">
-                        </div>
-
-                        <div class=" mb-3">
-                                <label for="input37" class="col-form-label">Cashback</label>
-                                <input type="number" class="form-control" id="cashback" name="cashback" placeholder="Cashback">
-                        </div>
                                 
                                                     <div class="row">
                                                         <div class="col-md-6 col-12">
@@ -322,9 +285,17 @@
                                                     </select>
                                                 </div>
                                 
-                                                <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
+                                                
                                                 <div class="mb-3">
-                                                    <input type="file" class="form-control" name="image" id="image" accept="image/*" value="{{$objTv->image}}">
+                                                    <label for="upload_image">
+                                <img src="{{asset('storage/images/energy/'. $objTv->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+                                <div class="overlay">
+                                    <div>Click to Change Image</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
+
+                            </label>
                                                 </div>
                                                 
                                 
@@ -357,40 +328,71 @@
                 
             </div>
 
-            <div class="tab-pane fade" id="internet" role="tabpanel">
-                <form id="internetForm" method="post" action="{{route('admin.internet_feature_update', $objTv->id)}}">
+            <div class="tab-pane fade" id="pricing" role="tabpanel">
+                <form id="internetForm" method="post" action="{{route('admin.energy.pricing', $objTv->id)}}">
                     @csrf
                     <input type="hidden" name="category_id" value="{{$objTv->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Edit Internet Features</h5>
+                            <h5 class="mb-0">Edit Pricing</h5>
                         </div>
-                        <div class="col-md-7 col-12">
-                            <div class="card-body p-4">
+                        
 
-                            	@if($objInternetFeatures)
-                                @foreach($objInternetFeatures as $elm)
-                                @php                                
-                                $value = $postInternetFeatures[trim($elm->id)] ?? '';
-                                @endphp
-                                @if($elm->input_type == "text")
-                                <div class="mb-3">
-                                    <label for="text_{{$elm->id}}" class="col-sm-3 col-form-label">{{$elm->features}}</label>
-                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{$value}}">
-                                </div>
-                                @endif
-                                @if($elm->input_type == "checkbox")
-                                <div class="form-check">
-			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if($value == 1)checked @endif>
-			                    <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
-			                    </div>
-                                @endif
-                                @endforeach
-                                @endif
-
-                            </div>
-
+                            	<div class="col-md-4 mb-3">
+                            <label for="input37" class="col-form-label">Gas Price/m<sup>3</sup></label>
+                            <input type="number" class="form-control" id="gas_price" name="gas_price" placeholder="Price" value="{{$objTv->gas_price}}">
                         </div>
+                    
+                    
+                        <div class="col-md-4 mb-3">
+                            <label for="input37" class="col-form-label">Normal Electric Price/kWh</label>
+                            <input type="number" class="form-control" id="normal_electric_price" name="normal_electric_price" placeholder="Normal Electric Price" readonly="readonly" value="{{$objTv->normal_electric_price}}">
+                        </div>
+                    
+                    
+                        <div class="col-md-4 mb-3">
+                            <label for="input37" class="col-form-label">Off Peak Electric Price/kWh</label>
+                            <input type="number" class="form-control" id="peak_electric_price" name="peak_electric_price" placeholder="Off Peak Electric Price" readonly="readonly" value="{{$objTv->peak_electric_price}}">
+                        </div>
+                    
+                    
+                        <div class="col-md-4 mb-3">
+                            <label for="input37" class="col-form-label">Normal Feed In Cost/kWh</label>
+                            <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" readonly="readonly" value="{{$objTv->feed_in_normal}}">
+                        </div>
+                   
+                   
+                        <div class="col-md-4 mb-3">
+                            <label for="input37" class="col-form-label">Off Peak Feed In Cost/kWh</label>
+                            <input type="number" class="form-control" id="peak_feed_in_cost" name="peak_feed_in_cost" placeholder="Off Peak Feed In Cost" readonly="readonly" value="{{$objTv->feed_in_peak}}">
+                        </div>
+                                        
+                        <div class="col-md-4 mb-3">
+                            <label for="network_cost_gas" class="col-form-label">Network Management Cost for Gas</label>
+                            <input type="number" class="form-control" id="network_cost_gas" name="network_cost_gas" placeholder="Network Management Cost Gas" value="{{$objTv->network_cost_gas}}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                                <label for="input37" class="col-form-label">Network Management Cost for Electric</label>
+                                <input type="number" class="form-control" id="network_cost_electric" name="network_cost_electric" placeholder="Network Management Cost Gas" value="{{$objTv->network_cost_electric}}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                                <label for="delivery_cost_electric" class="col-form-label">Fixed Delivery Cost Electric</label>
+                                <input type="number" class="form-control" id="delivery_cost_electric" name="delivery_cost_electric" placeholder="Fixed Delivery Cost Electric" value="{{$objTv->delivery_cost_electric}}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                                <label for="delivery_cost_gas" class="col-form-label">Fixed Delivery Cost Gas</label>
+                                <input type="number" class="form-control" id="delivery_cost_gas" name="delivery_cost_gas" placeholder="Fixed Delivery Cost Gas" value="{{$objTv->delivery_cost_gas}}">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                                <label for="input37" class="col-form-label">Cashback</label>
+                                <input type="number" class="form-control" id="cashback" name="cashback" placeholder="Cashback" value="{{$objTv->cashback}}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                                <label for="delivery_cost_gas" class="col-form-label">Reduction Energy Charge</label>
+                                <input type="number" class="form-control" id="reduction_energy_tax" name="reduction_energy_tax" placeholder="Fixed Delivery Cost Gas">
+                        </div>
+                            
 
                     </div>
                     <div class="row">
@@ -407,18 +409,18 @@
 
             <div class="tab-pane fade" id="tv" role="tabpanel">
                 
-                   <form id="tvForm" method="post" action="{{route('admin.tv_feature_update', $objTv->id)}}" enctype="multipart/form-data">
+                   <form id="tvForm" method="post" action="{{route('admin.energy_feature_update', $objTv->id)}}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="category_id" value="{{$objTv->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Edit Tv Features</h5>
+                            <h5 class="mb-0">Edit Energy Features</h5>
                         </div>
                         <div class="col-md-7 col-12">
                             <div class="card-body p-4">
 
-                            	@if($objTvFeatures)
-                                @foreach($objTvFeatures as $elm)
+                            	@if($objEnergyFeatures)
+                                @foreach($objEnergyFeatures as $elm)
                                 @php                                
                                 $tvValue = $postTvFeatures[trim($elm->id)] ?? '';
                                 @endphp
@@ -457,36 +459,18 @@
 
 
             <div class="tab-pane fade" id="meta" role="tabpanel">
-                <form id="teleForm" method="post" action="{{route('admin.tele_feature_update', $objTv->id)}}" enctype="multipart/form-data">
+                <form id="teleForm" method="post" action="{{route('admin.energy_doc_update', $objTv->id)}}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="category_id" value="{{$objTv->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
-                            <h5 class="mb-0">Edit Telephone Section</h5>
+                            <h5 class="mb-0">Edit Documents</h5>
                         </div>
                         <div class="col-md-7 col-12">
                             <div class="card-body p-4">
 
 
-                                @if($objTeleFeatures)
-                                @foreach($objTeleFeatures as $elm)
-                                @php                                
-                                $telValue = $postTeleFeatures[trim($elm->id)] ?? '';
-                                @endphp
-                                @if($elm->input_type == "text")
-                                <div class="mb-3">
-                                    <label for="text_{{$elm->id}}" class="col-sm-3 col-form-label">{{$elm->features}}</label>
-                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{$telValue}}">
-                                </div>
-                                @endif
-                                @if($elm->input_type == "checkbox")
-                                <div class="form-check">
-                                <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if($telValue == 1)checked @endif>
-                                <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
-                                </div>
-                                @endif
-                                @endforeach
-                                @endif
+                                
 
                             </div>
 
@@ -803,6 +787,30 @@ $("#infoForm").validate({
     $("#title").keydown(function() {
         var title_val = $("#title").val();
         $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+    });
+    $(document).ready(function(){
+        $("#provider").on('change', function() {
+            var provider_id = $(this).val(); 
+            $.ajax({
+                url: "http://192.168.1.44/pricewise/public/api/login", // Replace this with the actual URL to fetch subcategories
+                type: 'POST',
+                data: {
+                   "email" : "customer@customer.com",
+                   "password" : "password"    
+                },
+                // headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                // },
+                success: function(response) {
+                    console.log(response.data)
+                    
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Handle errors here
+                }
+            });
+        });
     });
 </script>
 @endpush

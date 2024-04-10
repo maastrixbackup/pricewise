@@ -14,7 +14,7 @@ use App\Models\PostFeature;
 use App\Models\Affiliate;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class EnergyController extends Controller
@@ -129,8 +129,8 @@ class EnergyController extends Controller
 
             $edit_btn = route('admin.energy.edit', $record->id);
             $delete_btn = route('admin.energy.destroy', $record->id);
-            $default_btn = route('admin.tv-default', $record->id);
-            $duplicate_btn = route('admin.duplicate-tv', $record->id);
+            $default_btn = route('admin.energy-default', $record->id);
+            $duplicate_btn = route('admin.duplicate-energy', $record->id);
 
             if ($record->product_type == 'personal') {
                 $pro_type =  '<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Personal</div>';
@@ -217,11 +217,10 @@ class EnergyController extends Controller
         } else {
             $objTv = new EnergyProduct();
             $objTv->title = $request->title;
-            $objTv->content = $request->description;
+            $objTv->description = $request->description;
             $objTv->commission = $request->commission;
             $objTv->commission_type = $request->commission_type;
-            $objTv->avg_delivery_time = $request->avg_delivery_time;
-            $objTv->price = $request->price;
+            $objTv->avg_delivery_time = $request->avg_delivery_time;            
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
@@ -238,17 +237,26 @@ class EnergyController extends Controller
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
             
-            //$objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
-            if ($request->file('image') == null || $request->file('image') == '') {
-                $input['image'] = $objTv->image;
-            } else {
-                $destinationPath = '/images';
-                $imgfile = $request->file('image');
-                $imgFilename = $imgfile->getClientOriginalName();
-                $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-                $image = $imgFilename;
-                $objTv->image = $image;
-            }
+            $croppedImage = $request->cropped_image;
+
+            // Extract base64 encoded image data and decode it
+            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+            // Generate a unique file name for the image
+            $imageName = 'energy_' . time() . '.png';
+
+            // Specify the destination directory where the image will be saved
+            $destinationDirectory = 'public/images/energy';
+
+            // Create the directory if it doesn't exist
+            Storage::makeDirectory($destinationDirectory);
+
+            // Save the image to the server using Laravel's file upload method
+            $filePath = $destinationDirectory . '/' . $imageName;
+            Storage::put($filePath, $imgData);
+
+            // Set the image file name for the provider
+            $objTv->image = $imageName;
             if ($objTv->save()) {
                 return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
                 //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -280,18 +288,18 @@ class EnergyController extends Controller
     public function edit($id)
     {
         $objTv = EnergyProduct::find($id);
-        $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
-        $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', 9)->pluck('feature_value', 'feature_id')->toArray();
+        $providers = Provider::all();
+        $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', $objTv->category)->get();
+        $postEnergyFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
         $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', 8)->pluck('feature_value', 'feature_id')->toArray();       
-        $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
-        $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
-        $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
+        
+        $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.energy.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
+        return view('admin.energy.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postInternetFeatures',  'serviceInfo'));
     }
 
     /**
@@ -375,7 +383,7 @@ class EnergyController extends Controller
         return view('admin.energy.default', compact('product', 'data', 'manda_data'));
     }
 
-    public function gas_feature_update(Request $request, $post_id)
+    public function energy_doc_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
         try{
@@ -397,7 +405,7 @@ class EnergyController extends Controller
             return response()->json(["status" => true, 'message' => $message]);
         
     }
-    public function energy_feature_update(Request $request, $post_id)
+    public function energy_price_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
         try{
@@ -419,7 +427,7 @@ class EnergyController extends Controller
         
     }
 
-    public function electric_feature_update(Request $request, $post_id)
+    public function energy_feature_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
         try{

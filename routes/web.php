@@ -88,9 +88,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         //Insurance
         Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
         Route::resource('energy', 'EnergyController');
-        Route::post('/gas-feature-update/{id}', 'EnergyController@gas_feature_update')->name('gas_feature_update');
-        Route::post('/electric-feature-update/{id}', 'EnergyController@electric_feature_update')->name('electric_feature_update');
+        Route::post('/energy-doc-update/{id}', 'EnergyController@energy_doc_update')->name('energy_doc_update');
+        Route::post('/energy-feature-update/{id}', 'EnergyController@electric_feature_update')->name('energy_feature_update');
+        Route::post('/energy-price-update/{id}', 'EnergyController@energy_price_update')->name('energy.pricing');
         Route::get('/energy/{id}', 'EnergyController@default')->name('energy-default');
+        Route::get('duplicate-energy/{id}', 'TvProductController@duplicate')->name('duplicate-energy');
         //Features
         Route::resource('features', 'FeatureController');
         //Route::resource('tv-contract-lengths', 'TvContractLengthController');
