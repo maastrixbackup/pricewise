@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','PriceWise- Tv Internet Products Edit')
+@section('title','PriceWise- Energy Products Edit')
 @section('content')
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -9,7 +9,7 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.internet-tv.index')}}">Energy</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.energy.index')}}">Energy</a></li>
             </ol>
         </nav>
     </div>
@@ -76,7 +76,7 @@
 
 
                             <div class="card-body p-4">
-                                <form id="productForm2" method="post" action="{{route('admin.energy.update', $objTv->id)}}" enctype="multipart/form-data">
+                                <form id="productForm2" method="post" action="{{route('admin.energy.update', $objEnergy->id)}}" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
@@ -86,21 +86,21 @@
                                                 <div class="card-body p-4">
                                                     <div class=" mb-3">
                         <label for="input35" class=" col-form-label">Title</label>
-                        <input type="text" class="form-control" id="title" name="title" placeholder="Product Title" value="{{$objTv->title}}">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Product Title" value="{{$objEnergy->title}}">
                     </div>
 
                     <div class=" mb-3">
                         <label for="input37" class="col-form-label">URL</label>
 
                         <!-- <div class="input-group mb-3"> <span class="input-group-text">/product/</span> -->
-                        <input type="text" class="form-control" id="link" name="link" readonly value="{{$objTv->slug}}">
+                        <input type="text" class="form-control" id="link" name="link" readonly value="{{$objEnergy->slug}}">
                         <!-- </div> -->
 
                     </div>
 
                     <div class="">
                         <label for="input35" class=" col-form-label">Description</label>
-                        <textarea class="form-control" name="description2" id="description23" placeholder="Product Description">{{$objTv->description}}</textarea>
+                        <textarea class="form-control" name="description" id="description" placeholder="Product Description">{{$objEnergy->description}}</textarea>
                     </div>
                      <div class="mb-3">
                     <label for="provider" class="col-form-label"><b>Provider</b>
@@ -110,7 +110,7 @@
                         <option>Select</option>
                         @if($providers)
                         @foreach($providers as $provider)
-                        <option value="{{$provider->id}}" @if($objTv->provider == $provider->id)selected @endif>{{$provider->name}}</option>
+                        <option value="{{$provider->id}}" @if($objEnergy->provider == $provider->id)selected @endif>{{$provider->name}}</option>
                         @endforeach
                         @endif
                     </select>
@@ -122,14 +122,14 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
-                                                                <input type="text" class="form-control" id="pin_codes" name="pin_codes" placeholder="PIN codes with coma separated" value="{{implode(',',json_decode($objTv->pin_codes))}}">
+                                                                <input type="text" class="form-control" id="pin_codes" name="pin_codes" placeholder="PIN codes with coma separated" value="{{implode(',',json_decode($objEnergy->pin_codes))}}">
                                                         </div>
                                                         </div>
                                     
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="valid_till" class="col-form-label">Offer Valid Till</label>
-                                                                <input type="date" class="form-control" id="valid_till" name="valid_till" placeholder="Valid Till" value="{{$objTv->valid_till}}">
+                                                                <input type="date" class="form-control" id="valid_till" name="valid_till" placeholder="Valid Till" value="{{$objEnergy->valid_till}}">
                                                         </div>
                                                         </div>
                                     
@@ -137,7 +137,7 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                         <label for="avg_delivery_time" class=" col-form-label">Average delivery time</label>
-                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" value="{{$objTv->avg_delivery_time}}">
+                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" value="{{$objEnergy->avg_delivery_time}}">
                                                             </div>
                                                         </div>
                                                     <div class="col-md-6 col-12">
@@ -146,7 +146,7 @@
                                     
                                                         <div class="mb-3 add-scroll">
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="transfer_service" value="1" @if($objTv->transfer_service == 1)checked @endif>
+                                                                <input class="form-check-input" type="checkbox" name="transfer_service" value="1" @if($objEnergy->transfer_service == 1)checked @endif>
                                                                 <label class="form-check-label" for="transfer_service">Available</label>
                                                             </div>
                                                         </div>
@@ -160,7 +160,7 @@
                                                         <div class=" mb-3">
                                                             <label for="input40" class=" col-form-label">Contract Length
                                                             </label>
-                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objTv->contract_length}}">
+                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objEnergy->contract_length}}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
@@ -168,8 +168,8 @@
                                                         <label for="input40" class="col-form-label">Contract Type</label>
                                     
                                                         <select id="contract_length_id" name="contract_type" class="select2 form-select">
-                                                            <option value="month" @if($objTv->contract_type == "month")selected @endif>Monthly</option>
-                                                            <option value="year" @if($objTv->contract_type == "year")selected @endif>Yearly</option>
+                                                            <option value="month" @if($objEnergy->contract_type == "month")selected @endif>Monthly</option>
+                                                            <option value="year" @if($objEnergy->contract_type == "year")selected @endif>Yearly</option>
                                                         </select>
                                                     </div>
                                                     </div>
@@ -179,7 +179,7 @@
                                                             <div class=" mb-3">
                                                                 <label for="input40" class=" col-form-label">Commission
                                                                 </label>
-                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objTv->commission}}">
+                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objEnergy->commission}}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-12">
@@ -187,8 +187,8 @@
                                                                 <label for="input40" class=" col-form-label">Commission Type
                                                                 </label>
                                                                 <select id="commission_type" name="commission_type" class="select2 form-select">
-                                                                    <option value="flat" @if($objTv->commission_type == "flat")selected @endif>Flat</option>
-                                                                    <option value="prct" @if($objTv->commission_type == "prct")selected @endif>Percentage</option>
+                                                                    <option value="flat" @if($objEnergy->commission_type == "flat")selected @endif>Flat</option>
+                                                                    <option value="prct" @if($objEnergy->commission_type == "prct")selected @endif>Percentage</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -200,7 +200,7 @@
                                                             <!-- <label for="input35" class="col-form-label"><b>Top 3 Product</b></label> -->
                                                             <div class="mb-3 add-scroll">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" name="is_featured" value="1"  @if($objTv->is_featured == 1)checked @endif>
+                                                                    <input class="form-check-input" type="checkbox" name="is_featured" value="1"  @if($objEnergy->is_featured == 1)checked @endif>
                                                                     <label class="form-check-label" for="flexCheckDefault">Feature Product</label>
                                                                 </div>
                                                             </div>
@@ -212,13 +212,13 @@
                                                         <label for="input35" class=" col-form-label">Installation options</label>
                                                         <div class="mb-3 add-scroll">
                                                         <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="manual_install" value="1"  @if($objTv->manual_install == 1)checked @endif>
+                                                        <input class="form-check-input" type="checkbox" name="manual_install" value="1"  @if($objEnergy->manual_install == 1)checked @endif>
                                                         <label class="form-check-label" for="manual_install">Manual Installation</label>
                                                         </div>
                                                         </div>
                                                         <div class="mb-3 add-scroll">
                                                         <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="mechanic_install" value="1"  @if($objTv->mechanic_install == 1)checked @endif>
+                                                        <input class="form-check-input" type="checkbox" name="mechanic_install" value="1"  @if($objEnergy->mechanic_install == 1)checked @endif>
                                                         <label class="form-check-label" for="mechanic_charge">Mechanic Installation</label>
                                                         </div>
                                                         </div>
@@ -228,7 +228,7 @@
                                                         <div class=" mb-3">
                                                             <label for="mechanic_charge" class=" col-form-label">Mechanic Charge
                                                             </label>
-                                                            <input type="number" class="form-control" id="mechanic_charge" name="mechanic_charge" value="{{$objTv->mechanic_charge}}">
+                                                            <input type="number" class="form-control" id="mechanic_charge" name="mechanic_charge" value="{{$objEnergy->mechanic_charge}}">
                                                         </div>
                                                     </div>
                                                     </div>
@@ -256,8 +256,8 @@
                                                     <label for="input40" class="col-form-label"><b>Publish Status</b>
                                                     </label>
                                                     <select id="online_status" name="online_status" class="select2 form-select">
-                                                        <option value="1"  @if($objTv->status == "1")selected @endif>Publish</option>
-                                                        <option value="0" @if($objTv->status == "0")selected @endif>Draft</option>
+                                                        <option value="1"  @if($objEnergy->status == "1")selected @endif>Publish</option>
+                                                        <option value="0" @if($objEnergy->status == "0")selected @endif>Draft</option>
                                                        
                                                     </select>
                                                 </div>
@@ -265,13 +265,17 @@
                                                     <label for="input40" class="col-form-label"><b>Product Type</b>
                                                     </label>
                                                     <select id="product_type" name="product_type" class="select2 form-select">
-                                                        <option value="personal" @if($objTv->product_type == "personal")selected @endif>Personal</option>
-                                                        <option value="business" @if($objTv->product_type == "business")selected @endif>Business</option>
-                                                        <option value="large-business" @if($objTv->product_type == "large-business")selected @endif>Large Business</option>
+                                                        <option value="personal" @if($objEnergy->product_type == "personal")selected @endif>Personal</option>
+                                                        <option value="business" @if($objEnergy->product_type == "business")selected @endif>Business</option>
+                                                        <option value="large-business" @if($objEnergy->product_type == "large-business")selected @endif>Large Business</option>
                                                         
                                                     </select>
                                                 </div>
-                                
+                                                <div class="mb-3 form-group">
+                                                    <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
+                                                    </label>
+                                                    <input type="number" class="form-control" id="no_of_person" name="no_of_person" value="{{$objEnergy->no_of_person}}">
+                                                </div>
                                                 <div class="mb-3">
                                                     <label for="input40" class="col-form-label"><b>Category</b>
                                                     </label>
@@ -279,7 +283,7 @@
                                                     <select id="category" name="category" class="select2 form-select">
                                                         @if($objCategory)
                                                         @foreach($objCategory as $val)
-                                                        <option value="{{$val->id}}" @if($objTv->category == $val->id)selected @endif>{{$val->name}}</option>
+                                                        <option value="{{$val->id}}" @if($objEnergy->category == $val->id)selected @endif>{{$val->name}}</option>
                                                         @endforeach
                                                         @endif
                                                     </select>
@@ -288,24 +292,50 @@
                                                 
                                                 <div class="mb-3">
                                                     <label for="upload_image">
-                                <img src="{{asset('storage/images/energy/'. $objTv->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+                                <img src="{{asset('storage/images/energy/'. $objEnergy->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
                                 <div class="overlay">
                                     <div>Click to Change Image</div>
                                 </div>
                                 <input type="file" name="image" class="image" id="upload_image" style="display:none" />
                                 <input type="hidden" name="cropped_image" id="cropped_image">
 
-                            </label>
+                                </label>
                                                 </div>
                                                 
-                                
+                                                <label for="input35" class="col-form-label"><b>Power Origin</b></label>
+                                                <div class="mb-3 form-group">
+                                                    <div class="row">
+                                                        <label for="wind_energy" class="col-sm-6 col-form-label">Wind</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="number" class="form-control" id="wind_energy" name="wind_energy" value="{{$objEnergy->wind_energy}}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <label for="sun_energy" class="col-sm-6 col-form-label">Sun</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="number" class="form-control" id="sun_energy" name="sun_energy" value="{{$objEnergy->sun_energy}}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <label for="water_energy" class="col-sm-6 col-form-label">Water</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="number" class="form-control" id="water_energy" name="water_energy" value="{{$objEnergy->water_energy}}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <label for="thermal_energy" class="col-sm-6 col-form-label">Thermal</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="number" class="form-control" id="thermal_energy" name="thermal_energy" value="{{$objEnergy->thermal_energy}}">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                 
                                                 <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                                                 <div class="mb-3 add-scroll">
                                                     @if($objRelatedProducts)
                                                     @foreach($objRelatedProducts as $val)
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="related_products[]" value="{{$val->id}}" @if(in_array($val->id, json_decode($objTv->combos)))checked @endif>
+                                                        <input class="form-check-input" type="checkbox" name="related_products[]" value="{{$val->id}}" @if(in_array($val->id, json_decode($objEnergy->combos)))checked @endif>
                                                         <label class="form-check-label" for="flexCheckDefault">{{$val->title}}</label>
                                                     </div>
                                                     @endforeach
@@ -329,9 +359,9 @@
             </div>
 
             <div class="tab-pane fade" id="pricing" role="tabpanel">
-                <form id="internetForm" method="post" action="{{route('admin.energy.pricing', $objTv->id)}}">
+                <form id="internetForm" method="post" action="{{route('admin.energy.pricing', $objEnergy->id)}}">
                     @csrf
-                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
+                    <input type="hidden" name="category_id" value="{{$objEnergy->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
                             <h5 class="mb-0">Edit Pricing</h5>
@@ -340,58 +370,53 @@
 
                             	<div class="col-md-4 mb-3">
                             <label for="input37" class="col-form-label">Gas Price/m<sup>3</sup></label>
-                            <input type="number" class="form-control" id="gas_price" name="gas_price" placeholder="Price" value="{{$objTv->gas_price}}">
+                            <input type="number" class="form-control" id="gas_price" name="gas_price" placeholder="Price" value="{{$objEnergy->prices?$objEnergy->prices->gas_rate:''}}" readonly="readonly">
                         </div>
                     
                     
                         <div class="col-md-4 mb-3">
                             <label for="input37" class="col-form-label">Normal Electric Price/kWh</label>
-                            <input type="number" class="form-control" id="normal_electric_price" name="normal_electric_price" placeholder="Normal Electric Price" readonly="readonly" value="{{$objTv->normal_electric_price}}">
-                        </div>
-                    
+                            <input type="number" class="form-control" id="normal_electric_price" name="normal_electric_price" placeholder="Normal Electric Price" readonly="readonly" value="{{$objEnergy->prices?$objEnergy->prices->electric_rate:''}}"> </div>
                     
                         <div class="col-md-4 mb-3">
                             <label for="input37" class="col-form-label">Off Peak Electric Price/kWh</label>
-                            <input type="number" class="form-control" id="peak_electric_price" name="peak_electric_price" placeholder="Off Peak Electric Price" readonly="readonly" value="{{$objTv->peak_electric_price}}">
+                            <input type="number" class="form-control" id="peak_electric_price" name="peak_electric_price" placeholder="Off Peak Electric Price" readonly="readonly" value="{{$objEnergy->prices?$objEnergy->prices->off_peak_electric_rate:''}}">
                         </div>
                     
                     
                         <div class="col-md-4 mb-3">
                             <label for="input37" class="col-form-label">Normal Feed In Cost/kWh</label>
-                            <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" readonly="readonly" value="{{$objTv->feed_in_normal}}">
+                            <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" readonly="readonly" value="{{$objEnergy->feedInCost?$objEnergy->feedInCost->normal_feed_in_cost:''}}">
                         </div>
                    
                    
                         <div class="col-md-4 mb-3">
                             <label for="input37" class="col-form-label">Off Peak Feed In Cost/kWh</label>
-                            <input type="number" class="form-control" id="peak_feed_in_cost" name="peak_feed_in_cost" placeholder="Off Peak Feed In Cost" readonly="readonly" value="{{$objTv->feed_in_peak}}">
+                            <input type="number" class="form-control" id="peak_feed_in_cost" name="peak_feed_in_cost" placeholder="Off Peak Feed In Cost" readonly="readonly" value="{{$objEnergy->feedInCost?$objEnergy->feedInCost->off_peak_feed_in_cost:''}}">
                         </div>
                                         
                         <div class="col-md-4 mb-3">
-                            <label for="network_cost_gas" class="col-form-label">Network Management Cost for Gas</label>
-                            <input type="number" class="form-control" id="network_cost_gas" name="network_cost_gas" placeholder="Network Management Cost Gas" value="{{$objTv->network_cost_gas}}">
+                            <label for="network_cost_gas" class="col-form-label">Network Management Cost Gas</label>
+                            <input type="number" class="form-control" id="network_cost_gas" name="network_cost_gas" placeholder="Network Management Cost Gas" value="{{$objEnergy->network_cost_gas}}">
                         </div>
                         <div class="col-md-4 mb-3">
-                                <label for="input37" class="col-form-label">Network Management Cost for Electric</label>
-                                <input type="number" class="form-control" id="network_cost_electric" name="network_cost_electric" placeholder="Network Management Cost Gas" value="{{$objTv->network_cost_electric}}">
+                                <label for="input37" class="col-form-label">Network Management Cost Electric</label>
+                                <input type="number" class="form-control" id="network_cost_electric" name="network_cost_electric" placeholder="Network Management Cost Gas" value="{{$objEnergy->network_cost_electric}}">
                         </div>
                         <div class="col-md-4 mb-3">
                                 <label for="delivery_cost_electric" class="col-form-label">Fixed Delivery Cost Electric</label>
-                                <input type="number" class="form-control" id="delivery_cost_electric" name="delivery_cost_electric" placeholder="Fixed Delivery Cost Electric" value="{{$objTv->delivery_cost_electric}}">
+                                <input type="number" class="form-control" id="delivery_cost_electric" name="delivery_cost_electric" placeholder="Fixed Delivery Cost Electric" value="{{$objEnergy->delivery_cost_electric}}">
                         </div>
                         <div class="col-md-4 mb-3">
                                 <label for="delivery_cost_gas" class="col-form-label">Fixed Delivery Cost Gas</label>
-                                <input type="number" class="form-control" id="delivery_cost_gas" name="delivery_cost_gas" placeholder="Fixed Delivery Cost Gas" value="{{$objTv->delivery_cost_gas}}">
+                                <input type="number" class="form-control" id="delivery_cost_gas" name="delivery_cost_gas" placeholder="Fixed Delivery Cost Gas" value="{{$objEnergy->delivery_cost_gas}}">
                         </div>
 
                         <div class="col-md-4 mb-3">
                                 <label for="input37" class="col-form-label">Cashback</label>
-                                <input type="number" class="form-control" id="cashback" name="cashback" placeholder="Cashback" value="{{$objTv->cashback}}">
+                                <input type="number" class="form-control" id="cashback" name="cashback" placeholder="Cashback" value="{{$objEnergy->cashback}}">
                         </div>
-                        <div class="col-md-4 mb-3">
-                                <label for="delivery_cost_gas" class="col-form-label">Reduction Energy Charge</label>
-                                <input type="number" class="form-control" id="reduction_energy_tax" name="reduction_energy_tax" placeholder="Fixed Delivery Cost Gas">
-                        </div>
+                        
                             
 
                     </div>
@@ -409,9 +434,9 @@
 
             <div class="tab-pane fade" id="tv" role="tabpanel">
                 
-                   <form id="tvForm" method="post" action="{{route('admin.energy_feature_update', $objTv->id)}}" enctype="multipart/form-data">
+                   <form id="tvForm" method="post" action="{{route('admin.energy_feature_update', $objEnergy->id)}}" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
+                    <input type="hidden" name="category_id" value="{{$objEnergy->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
                             <h5 class="mb-0">Edit Energy Features</h5>
@@ -422,20 +447,23 @@
                             	@if($objEnergyFeatures)
                                 @foreach($objEnergyFeatures as $elm)
                                 @php                                
-                                $tvValue = $postTvFeatures[trim($elm->id)] ?? '';
+                                $value = $postEnergyFeatures[trim($elm->id)] ?? '';                                
                                 @endphp
                                 @if($elm->input_type == "text")
                                 <div class="mb-3">
-                                    <label for="text_{{$elm->id}}" class="col-sm-3 col-form-label">{{$elm->features}}</label>
-                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{$tvValue}}">
+                                    <label for="text_{{$elm->id}}" class="form-label">{{$elm->features}}</label>
+                                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{ $value['feature_value']??'' }}">
+                                    <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']??''}}</textarea>
                                 </div>
                                 @endif
                                 @if($elm->input_type == "checkbox")
                                 <div class="form-check">
-			                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if($tvValue == 1)checked @endif>
-			                    <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
-			                    </div>
-			                    @endif
+                                <input type="hidden" name="features[{{$elm->id}}]" value="0">
+                                <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" @if( isset($value['feature_value']) && $value['feature_value'] == 1 )checked @endif>
+                                <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
+                                <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']??''}}</textarea>
+                                </div>
+                                @endif
                                 @endforeach
                                 @endif
 
@@ -459,9 +487,9 @@
 
 
             <div class="tab-pane fade" id="meta" role="tabpanel">
-                <form id="teleForm" method="post" action="{{route('admin.energy_doc_update', $objTv->id)}}" enctype="multipart/form-data">
+                <form id="teleForm" method="post" action="{{route('admin.energy_doc_update', $objEnergy->id)}}" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
+                    <input type="hidden" name="category_id" value="{{$objEnergy->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
                             <h5 class="mb-0">Edit Documents</h5>
@@ -469,7 +497,11 @@
                         <div class="col-md-7 col-12">
                             <div class="card-body p-4">
 
+                                <div id="documents">
+                                    @include('partials.documents')
+                                </div>
 
+                                <button id="addDocument">Add Document</button>
                                 
 
                             </div>
@@ -490,9 +522,9 @@
             </div>
 
             <div class="tab-pane fade" id="serviceInfo" role="tabpanel">
-                <form id="infoForm" method="post" action="{{route('admin.service_info_update', $objTv->id)}}" enctype="multipart/form-data">
+                <form id="infoForm" method="post" action="{{route('admin.service_info_update', $objEnergy->id)}}" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="category_id" value="{{$objTv->category}}">
+                    <input type="hidden" name="category_id" value="{{$objEnergy->category}}">
                     <div class="row">
                         <div class="card-header px-4 py-3">
                             <h5 class="mb-0">Edit Service Info</h5>
@@ -543,16 +575,46 @@
 
 @endsection
 @push('scripts')
-<script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
-
+<script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
 <script>
-    CKEDITOR.replace('description', {
-        allowedContent: true,
-        extraPlugins: 'colorbutton'
-    });
-</script>
+    tinymce.init({
+        selector: '#description',
+        plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+        toolbar_mode: 'floating',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
+            codesample_languages: [
+                { text: 'HTML/XML', value: 'markup' },
+                { text: 'JavaScript', value: 'javascript' },
+                { text: 'CSS', value: 'css' },
+                { text: 'PHP', value: 'php' },
+                { text: 'Ruby', value: 'ruby' },
+                { text: 'Python', value: 'python' },
+                { text: 'Java', value: 'java' },
+                { text: 'C', value: 'c' },
+                { text: 'C#', value: 'csharp' },
+                { text: 'C++', value: 'cpp' }
+            ],
+       
+         file_picker_callback (callback, value, meta) {
+        let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth
+        let y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight
 
-<script type="text/javascript">
+        tinymce.activeEditor.windowManager.openUrl({
+          url : '/file-manager/tinymce5',
+          title : 'Laravel File manager',
+          width : x * 0.8,
+          height : y * 0.8,
+          onMessage: (api, message) => {
+            callback(message.content, { text: message.text })
+          }
+        })
+      }
+    });
+
+
     $("#productForm").validate({
         errorElement: 'span',
         errorClass: 'help-block',
@@ -812,5 +874,41 @@ $("#infoForm").validate({
             });
         });
     });
+
+    $(document).ready(function() {
+    $('#addDocument').click(function() {
+        $('<input type="file" name="documents[]" class="documentInput">').appendTo('#documents');
+    });
+
+    $('#save').click(function() {
+        var formData = new FormData();
+        $('.documentInput').each(function(index, element) {
+            formData.append('documents[]', $(element)[0].files[0]);
+        });
+
+        $.ajax({
+            url: '/insurance/store',
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                // Handle success
+            }
+        });
+    });
+
+    $(document).on('click', '.delete', function() {
+        var documentId = $(this).data('id');
+
+        $.ajax({
+            url: '/insurance/' + documentId,
+            method: 'DELETE',
+            success: function(data) {
+                // Handle success
+            }
+        });
+    });
+});
 </script>
 @endpush

@@ -13,6 +13,8 @@ use App\Models\Category;
 use App\Models\PostFeature;
 use App\Models\Affiliate;
 use App\Models\Feature;
+use App\Models\EnergyRateChat;
+use App\Models\FeedInCost;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -39,11 +41,11 @@ class EnergyController extends Controller
      */
     public function index(Request $request)
     {
-    	$objTv = EnergyProduct::latest()->get();
-        $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
+    	$objEnergy = EnergyProduct::latest()->get();
+        $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
         $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
-        return view('admin.energy.index', compact('objTv', 'objTvFeatures', 'objInternetFeatures', 'objTeleFeatures'));
+        return view('admin.energy.index', compact('objEnergy', 'objEnergyFeatures', 'objInternetFeatures', 'objTeleFeatures'));
     }
 
     /**
@@ -215,28 +217,33 @@ class EnergyController extends Controller
             $message = array('message' => 'Already Exists! Please enter unique title', 'title' => 'Already Exists!');
             return response()->json(["status" => false, 'message' => $message, 'title' => 'Already Exists!']);
         } else {
-            $objTv = new EnergyProduct();
-            $objTv->title = $request->title;
-            $objTv->description = $request->description;
-            $objTv->commission = $request->commission;
-            $objTv->commission_type = $request->commission_type;
-            $objTv->avg_delivery_time = $request->avg_delivery_time;            
-            $objTv->contract_length = $request->contract_length;
-            $objTv->contract_type = $request->contract_type;
-            $objTv->transfer_service = $request->transfer_service;
-            $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
-            $objTv->status = $request->status?$request->status:0;
-            $objTv->valid_till =  $request->valid_till;
-            $objTv->category =  $request->category;
-            $objTv->product_type = $request->product_type;
-            $objTv->manual_install = $request->manual_install;
-            $objTv->is_featured = $request->is_featured;
-            $objTv->mechanic_install = $request->mechanic_install;
-            $objTv->mechanic_charge = $request->mechanic_charge;            
-            $objTv->slug = $request->link;
-            $objTv->provider = $request->provider;
-            
+            $objEnergy = new EnergyProduct();
+            $objEnergy->title = $request->title;
+            $objEnergy->description = $request->description;
+            $objEnergy->commission = $request->commission;
+            $objEnergy->commission_type = $request->commission_type;
+            $objEnergy->avg_delivery_time = $request->avg_delivery_time;            
+            $objEnergy->contract_length = $request->contract_length;
+            $objEnergy->contract_type = $request->contract_type;
+            $objEnergy->transfer_service = $request->transfer_service;
+            $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $combos = implode(",", $request->combos);
+            $objEnergy->combos = json_encode($request->combos ? explode(",", $combos) : []);            
+            $objEnergy->status = $request->status?$request->status:0;
+            $objEnergy->valid_till =  $request->valid_till;
+            $objEnergy->no_of_person = $request->no_of_person;
+            $objEnergy->category =  $request->category;
+            $objEnergy->product_type = $request->product_type;
+            $objEnergy->manual_install = $request->manual_install;
+            $objEnergy->is_featured = $request->is_featured;
+            $objEnergy->mechanic_install = $request->mechanic_install;
+            $objEnergy->mechanic_charge = $request->mechanic_charge;            
+            $objEnergy->slug = $request->link;
+            $objEnergy->provider = $request->provider;
+            $objEnergy->wind_energy = $request->wind_energy;
+            $objEnergy->sun_energy = $request->sun_energy;
+            $objEnergy->water_energy = $request->water_energy;
+            $objEnergy->thermal_energy = $request->thermal_energy;
             $croppedImage = $request->cropped_image;
 
             // Extract base64 encoded image data and decode it
@@ -256,8 +263,8 @@ class EnergyController extends Controller
             Storage::put($filePath, $imgData);
 
             // Set the image file name for the provider
-            $objTv->image = $imageName;
-            if ($objTv->save()) {
+            $objEnergy->image = $imageName;
+            if ($objEnergy->save()) {
                 return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
                 //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
                 //return response()->json(["status" => true, "redirect_location" => route("admin.energy.index")]);
@@ -287,19 +294,23 @@ class EnergyController extends Controller
      */
     public function edit($id)
     {
-        $objTv = EnergyProduct::find($id);
+        $objEnergy = EnergyProduct::find($id);
         $providers = Provider::all();
-        $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', $objTv->category)->get();
-        $postEnergyFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
-        $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
-        $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', 8)->pluck('feature_value', 'feature_id')->toArray();       
         
-        $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->where('type', 'info')->get();
+        $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', $objEnergy->category)->get();
+        $postEnergyFeatures = PostFeature::where('post_id', $id)
+        ->where('category_id', $objEnergy->category)
+        ->orWhere('sub_category', $objEnergy->sub_category)
+        ->select('feature_id', 'feature_value', 'details')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            return [$item['feature_id'] => ['feature_value' => $item['feature_value'], 'details' => $item['details']]];
+        })->toArray();
+        
+        $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objEnergy->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
-        //$objAffiliates = Affiliate::latest()->get();
-        //$objFeature = TvFeature::latest()->get();
-        return view('admin.energy.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postInternetFeatures',  'serviceInfo'));
+        return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo'));
     }
 
     /**
@@ -312,41 +323,63 @@ class EnergyController extends Controller
 
     public function update(Request $request, $id)
     {
-        $objTv = EnergyProduct::where('id', $id)->first();
-        //jhdjhddjhf
-            $objTv->title = $request->title;
-            $objTv->content = $request->description3;
-            $objTv->commission = $request->commission;
-            $objTv->commission_type = $request->commission_type;
-            $objTv->avg_delivery_time = $request->avg_delivery_time;
-            $objTv->price = $request->price;
-            $objTv->contract_length = $request->contract_length;
-            $objTv->contract_type = $request->contract_type;
-            $objTv->transfer_service = $request->transfer_service;
-            $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
-            $objTv->status = $request->online_status?$request->online_status:0;
-            $objTv->valid_till =  $request->valid_till;
-            $objTv->category =  $request->category;
-            $objTv->product_type = $request->product_type;
-            $objTv->manual_install = $request->manual_install;
-            $objTv->is_featured = $request->is_featured;
-            $objTv->mechanic_install = $request->mechanic_install;
-            $objTv->mechanic_charge = $request->mechanic_charge;            
-            $objTv->slug = $request->link;
-            $objTv->provider = $request->provider;
-        if ($request->file('image') == null || $request->file('image') == '') {
-            $image = $objTv->image;
-        } else {
-            $destinationPath = '/images';
-            $imgfile = $request->file('image');
-            $imgFilename = $imgfile->getClientOriginalName();
-            $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-            $image = $imgFilename;
-           
-        }
-         $objTv->image = $image;
-        if ($objTv->save()) {
+        $objEnergy = EnergyProduct::where('id', $id)->first();        
+            $objEnergy->title = $request->title;
+            $objEnergy->description = $request->description;
+            $objEnergy->commission = $request->commission;
+            $objEnergy->commission_type = $request->commission_type;
+            $objEnergy->avg_delivery_time = $request->avg_delivery_time;            
+            $objEnergy->contract_length = $request->contract_length;
+            $objEnergy->contract_type = $request->contract_type;
+            $objEnergy->transfer_service = $request->transfer_service;
+            $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $objEnergy->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
+            $objEnergy->status = $request->online_status?$request->online_status:0;
+            $objEnergy->valid_till =  $request->valid_till;
+            $objEnergy->category =  $request->category;
+            $objEnergy->product_type = $request->product_type;
+            $objEnergy->manual_install = $request->manual_install;
+            $objEnergy->is_featured = $request->is_featured;
+            $objEnergy->mechanic_install = $request->mechanic_install;
+            $objEnergy->mechanic_charge = $request->mechanic_charge;            
+            $objEnergy->slug = $request->link;
+            $objEnergy->no_of_person = $request->no_of_person;
+            $objEnergy->provider = $request->provider;
+            $objEnergy->wind_energy = $request->wind_energy;
+            $objEnergy->sun_energy = $request->sun_energy;
+            $objEnergy->water_energy = $request->water_energy;
+            $objEnergy->thermal_energy = $request->thermal_energy;
+            if ($request->has('cropped_image')) {
+            // Access base64 encoded image data directly from the request
+            $croppedImage = $request->cropped_image;
+
+            // Extract base64 encoded image data and decode it
+            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+            // Generate a unique file name for the image
+            $imageName = 'energy_' . time() . '.png';
+
+            // Specify the destination directory where the image will be saved
+            $destinationDirectory = 'public/images/energy';
+
+            // Create the directory if it doesn't exist
+            Storage::makeDirectory($destinationDirectory);
+
+            // Save the image to the server using Laravel's file upload method
+            $filePath = $destinationDirectory . '/' . $imageName;
+
+            // Delete the old image if it exists
+            if ($objEnergy->image) {
+                Storage::delete($destinationDirectory . '/' . $objEnergy->image);
+            }
+
+            // Save the new image
+            Storage::put($filePath, $imgData);
+
+            // Set the image file name for the provider
+            $objEnergy->image = $imageName;
+            }
+        if ($objEnergy->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.energy.index")]);
             return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -363,8 +396,8 @@ class EnergyController extends Controller
      */
     public function destroy($id)
     {
-        $objTv = EnergyProduct::find($id);
-        if ($objTv->delete()) {
+        $objEnergy = EnergyProduct::find($id);
+        if ($objEnergy->delete()) {
             return back()->with(Toastr::error(__('Energy deleted successfully!')));
         } else {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
@@ -405,24 +438,30 @@ class EnergyController extends Controller
             return response()->json(["status" => true, 'message' => $message]);
         
     }
-    public function energy_price_update(Request $request, $post_id)
+    public function energy_price_update(Request $request, $id)
     {
         $post_category = $request->category_id;
         try{
-        foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 9, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 9, 'feature_id' => $feature_id, 'feature_value' => $value]);
-            
-        }
-        }
+            $objEnergy = EnergyProduct::where('id', $id)->first();        
+            $objEnergy->gas_price = $request->gas_price;
+            $objEnergy->normal_electric_price = $request->normal_electric_price;
+            $objEnergy->peak_electric_price = $request->peak_electric_price;
+            $objEnergy->feed_in_normal = $request->normal_feed_in_cost;
+            $objEnergy->feed_in_peak = $request->peak_feed_in_cost;
+            $objEnergy->network_cost_gas = $request->network_cost_gas;
+            $objEnergy->network_cost_electric = $request->network_cost_electric;
+            $objEnergy->delivery_cost_electric = $request->delivery_cost_electric;
+            $objEnergy->delivery_cost_gas = $request->delivery_cost_gas;
+            $objEnergy->cashback = $request->cashback;
+            $objEnergy->save();
         }catch(\Exception $e){
-            $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
+            $errorMessage = 'Failed to Update Energy Price: ' . $e->getMessage();
         // Log the error for further investigation
         \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
-        $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
+        $message = array('message' => 'Energy Prices Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         
     }
@@ -430,21 +469,23 @@ class EnergyController extends Controller
     public function energy_feature_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
+        $sub_category = $request->sub_category;
+        //dd($request->features);
         try{
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $post_category, 'sub_category' => $sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id], 'post_category' => $post_category]);
             
         }
         }
         }catch(\Exception $e){
-            $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
+            $errorMessage = 'Failed to update energy features: ' . $e->getMessage();
         // Log the error for further investigation
         \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
-        $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
+        $message = array('message' => 'Energy Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         
     }

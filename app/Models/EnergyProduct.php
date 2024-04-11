@@ -14,4 +14,12 @@ class EnergyProduct extends Model
     {
         return $this->hasMany(PostFeature::class, 'post_id', 'id');
     }
+    public function prices()
+    {
+        return $this->hasOne(EnergyRateChat::class, 'provider', 'provider');
+    }
+    public function feedInCost()
+    {
+        return $this->hasOne(FeedInCost::class, 'provider', 'provider');
+    }
 }
