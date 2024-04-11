@@ -45,6 +45,9 @@
     #icon {
       font-family: 'FontAwesome', 'sans-serif' !important;
     }
+    input[readonly] {
+    background-color: #f8f9fc;
+    }
     </style>
 
     @stack('css')

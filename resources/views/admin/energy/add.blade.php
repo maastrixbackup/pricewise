@@ -239,6 +239,33 @@
 
                             </label>
                 </div>
+                <label for="input35" class="col-form-label"><b>Power Origin</b></label>
+                <div class="mb-3 form-group">
+                    <div class="row">
+                        <label for="wind_energy" class="col-sm-6 col-form-label">Wind</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="wind_energy" name="wind_energy">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="sun_energy" class="col-sm-6 col-form-label">Sun</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="sun_energy" name="sun_energy">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="water_energy" class="col-sm-6 col-form-label">Water</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="water_energy" name="water_energy">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="thermal_energy" class="col-sm-6 col-form-label">Thermal</label>
+                        <div class="col-sm-6">
+                            <input type="number" class="form-control" id="thermal_energy" name="thermal_energy">
+                        </div>
+                    </div>
+                </div>
                 <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                 <div class="mb-3 add-scroll">
                     @if($objRelatedProducts)
@@ -261,15 +288,45 @@
 </form>
 @endsection
 @push('scripts')
-<script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
+<script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
+<script>
+    tinymce.init({
+        selector: '#description',
+        plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+        toolbar_mode: 'floating',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
+            codesample_languages: [
+                { text: 'HTML/XML', value: 'markup' },
+                { text: 'JavaScript', value: 'javascript' },
+                { text: 'CSS', value: 'css' },
+                { text: 'PHP', value: 'php' },
+                { text: 'Ruby', value: 'ruby' },
+                { text: 'Python', value: 'python' },
+                { text: 'Java', value: 'java' },
+                { text: 'C', value: 'c' },
+                { text: 'C#', value: 'csharp' },
+                { text: 'C++', value: 'cpp' }
+            ],
+       
+         file_picker_callback (callback, value, meta) {
+        let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth
+        let y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight
 
-<script>
-    CKEDITOR.replace('description', {
-        allowedContent: true,
-        extraPlugins: 'colorbutton'
+        tinymce.activeEditor.windowManager.openUrl({
+          url : '/file-manager/tinymce5',
+          title : 'Laravel File manager',
+          width : x * 0.8,
+          height : y * 0.8,
+          onMessage: (api, message) => {
+            callback(message.content, { text: message.text })
+          }
+        })
+      }
     });
-</script>
-<script>
+
     $(document).ready(function() {
         $('#affiliate_name').on('change', function() {
             $("temp_old").hide();

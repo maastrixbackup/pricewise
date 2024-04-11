@@ -460,7 +460,7 @@ class InsuranceController extends Controller
         }
         }
         }catch(\Exception $e){
-            $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
+            $errorMessage = 'Failed to update insurance features: ' . $e->getMessage();
         // Log the error for further investigation
         \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];

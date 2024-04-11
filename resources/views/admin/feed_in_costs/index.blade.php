@@ -35,9 +35,8 @@
                             <tr>
                                 <th>Sl</th>
                                 <th>Provider</th>                               
-                                <th>From Range</th>
-                                <th>To Range</th>
-                                <th>Amount</th>
+                                <th>Feed In Normal</th>
+                                <th>Feed In Peak</th>                                
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -48,9 +47,9 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->providerDetail ? $val->providerDetail->name : "NA"}}</td>
-                                <td>{{ $val->from_range }}</td>                            
-                                <td>{{ $val->to_range }}</td>
-                                <td>{{ $val->amount }}</td>
+                                <td>{{ $val->normal_feed_in_cost }}</td>                            
+                                <td>{{ $val->off_peak_feed_in_cost }}</td>
+                                
                                 <td>
                                     <div class="col">
                                         @if(Auth::guard('admin')->user()->can('feed-in-costs-edit'))

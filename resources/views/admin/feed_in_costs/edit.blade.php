@@ -36,20 +36,50 @@
                                 @endforeach
                         </select>
                     </div>
+                    <label for="provider" class=" col-form-label"><b>Feed In Tariff</b></label>
+                    @php
+                    $return_tariff = json_decode($objFeedInCost->return_tariff);
+                    //dd($return_tariff);
+                    @endphp
+                    @if($return_tariff && count($return_tariff) > 0)
+                    @foreach($return_tariff as $key => $tariff)
+                    <div class="form-group row">
+                        <label for="" class="col-md-2 col-form-label">From Range</label>
+                        <div class="col-md-2">
+                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$key}}][from_range]" placeholder="From Range" value="{{$tariff->from_range}}">
+                        </div>
                     
-                    <div class=" mb-3">
-                        <label for="from_range" class=" col-form-label">From Range</label>
-                        <input type="number" class="form-control" id="from_range" name="from_range" placeholder="From Range" value="{{$objFeedInCost->from_range}}">
+                        <label for="" class="col-md-2 col-form-label">To Range</label>
+                        <div class="col-md-2">
+                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$key}}][to_range]" placeholder="To Range" value="{{$tariff->to_range}}">
+                        </div>
+                    
+                        <label for="" class="col-md-2 col-form-label">Amount</label>
+                        <div class="col-md-2">
+                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$key}}][amount]" placeholder="Amount" value="{{$tariff->amount}}">
+                        </div>
                     </div>
-                    <div class=" mb-3">
-                        <label for="to_range" class=" col-form-label">To Range</label>
-                        <input type="number" class="form-control" id="to_range" name="to_range" placeholder="To Range" value="{{$objFeedInCost->to_range}}">
+                    @endforeach
+                    @else
+                    @for($i=0; $i<5; $i++)
+                    <div class="form-group row">
+                        <label for="" class="col-md-2 col-form-label">From Range</label>
+                        <div class="col-md-2">
+                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$i}}][from_range]" placeholder="From Range" value="">
+                        </div>
+                    
+                        <label for="" class="col-md-2 col-form-label">To Range</label>
+                        <div class="col-md-2">
+                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$i}}][to_range]" placeholder="To Range" value="">
+                        </div>
+                    
+                        <label for="" class="col-md-2 col-form-label">Amount</label>
+                        <div class="col-md-2">
+                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$i}}][amount]" placeholder="Amount" value="">
+                        </div>
                     </div>
-
-                    <div class=" mb-3">
-                        <label for="amount" class=" col-form-label">Amount</label>
-                        <input type="number" class="form-control" id="amount" name="amount" placeholder="Amount" value="{{$objFeedInCost->amount}}">
-                    </div>
+                    @endfor
+                    @endif
                     <div class=" mb-3">
                         <label for="normal_feed_in_cost" class=" col-form-label">Normal Feed In Cost</label>
                         <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" value="{{$objFeedInCost->normal_feed_in_cost}}">

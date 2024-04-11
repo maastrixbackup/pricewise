@@ -72,8 +72,8 @@
             </label>
             <select id="tv" name="tv" class="select2 form-select">
                 <option value="">All</option>
-                @if($objTvFeatures)
-                @foreach($objTvFeatures as $tv)
+                @if($objEnergyFeatures)
+                @foreach($objEnergyFeatures as $tv)
                 <option value="{{$tv->id}}">{{$tv->features}}</option>
                 @endforeach
                 @endif

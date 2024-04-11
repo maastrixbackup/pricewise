@@ -64,18 +64,15 @@ class FeedInCostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {        
         $objCategory = new FeedInCost();
         $objCategory->provider = $request->provider;
-        $objCategory->from_range = $request->from_range;        
-        $objCategory->to_range = $request->to_range;
-        $objCategory->amount = $request->amount;
+        $objCategory->return_tariff = json_encode($request->return_tariff);   
         $objCategory->normal_feed_in_cost = $request->normal_feed_in_cost;
         $objCategory->off_peak_feed_in_cost = $request->off_peak_feed_in_cost;
         if ($objCategory->save()) {
             return redirect()->route('admin.feed-in-costs.index')->with(Toastr::success('Feed In Cost Created Successfully', '', ["positionClass" => "toast-top-right"]));
-            // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
-            // return response()->json(["status" => true, "redirect_location" => route("admin.drivers.index")]);
+            
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -118,10 +115,7 @@ class FeedInCostController extends Controller
         //echo 123;exit;
         $objCategory = FeedInCost::find($id);
         $objCategory->provider = $request->provider;
-        //$objCategory->slug = $request->slug;
-        $objCategory->from_range = $request->from_range;
-        $objCategory->to_range = $request->to_range;
-        $objCategory->amount = $request->amount;
+        $objCategory->return_tariff = json_encode($request->return_tariff);
         $objCategory->normal_feed_in_cost = $request->normal_feed_in_cost;
         $objCategory->off_peak_feed_in_cost = $request->off_peak_feed_in_cost;
         if ($objCategory->save()) {
