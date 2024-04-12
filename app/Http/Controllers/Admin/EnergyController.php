@@ -297,7 +297,8 @@ class EnergyController extends Controller
         $objEnergy = EnergyProduct::find($id);
         $providers = Provider::all();
         
-        $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', $objEnergy->category)->get();
+        $objEnergyFeatures = Feature::select('id','features','input_type','parent')->where('category', $objEnergy->category)->get()->groupBy('parent');
+        // dd($objEnergyFeatures->except(''));
         $postEnergyFeatures = PostFeature::where('post_id', $id)
         ->where('category_id', $objEnergy->category)
         ->orWhere('sub_category', $objEnergy->sub_category)

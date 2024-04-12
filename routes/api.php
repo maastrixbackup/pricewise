@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserDetailController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\InternetTvController;
+use App\Http\Controllers\Api\EnergyController;
+use App\Http\Controllers\ProviderController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -18,54 +20,28 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// Route::post('/login', function (Request $request) {
-//     $credentials = $request->only('email', 'password');
-//     \Log::info('Login attempt with credentials:', $credentials);
 
-//     // Authentication logic...
-// });
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-Route::middleware('auth:sanctum')->get('/csrf-token', function() {
-    return response()->json(['csrf_token' => csrf_token()]);
-});
-// Route::post('/logout', [UserController::class, 'logout']);
-// Route::post('/login', [UserController::class, 'login']);
-// Route::controller(RegisterController::class, 'api')->group(function(){
-//     Route::post('register', 'register');
-//     Route::post('login', 'login');
-// });
+
 Route::post('/register', [RegisterController::class, 'register']);
-Route::middleware('api_secure')->group(function () {
-    Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
-});
+Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
-// Route::group(['middleware' => ['api','cors'],'prefix' => 'api'], function () {
-//     Route::post('register', 'RegisterController@register');
-//     Route::post('login', 'RegisterController@login');
-//     Route::group(['middleware' => 'jwt-auth'], function () {
-//     	Route::post('get_user_details', 'RegisterController@get_user_details');
-//     });
-// });
-Route::get('internet-tv', [InternetTvController::class, 'index']);
-Route::middleware('auth:sanctum')->group( function () {
-	Route::post('/logout', [RegisterController::class, 'logout']);
-    Route::get('/profile-details', [UserDetailController::class, 'index']);
-    Route::post('/profile-update', [UserDetailController::class, 'update']);
-    Route::post('/change-password', [UserDetailController::class, 'changepassword']);
-    Route::post('/reset-password', [UserDetailController::class, 'resetpassword']);
-    Route::post('/email-update', [UserDetailController::class, 'emailUpdate']);
-});
-Route::group(['middleware' => 'api_secure'], function () {
-    //Route::post('/register', [UserController::class, 'register']);
 
+
+Route::group(['middleware' => 'auth:sanctum'], function () {   
+    Route::post('/logout', [RegisterController::class, 'logout']);
     //API route for user profile
-
     Route::post('/profile-details', [UserDetailController::class, 'index']);
     Route::post('/profile-update', [UserDetailController::class, 'update']);
     Route::post('/change-password', [UserDetailController::class, 'changepassword']);
     Route::post('/reset-password', [UserDetailController::class, 'resetpassword']);
     Route::post('/email-update', [UserDetailController::class, 'emailUpdate']);
+//API route for Customer Creadential
+    Route::post('/update-credntials', [UserDetailController::class, 'updateCredentials']);
+    Route::post('/get-credntials', [UserDetailController::class, 'getCredential']);
+//Internet Tv
+    Route::get('internet-tv', [InternetTvController::class, 'index']);
+//API routs for energy
+    Route::get('energy', [EnergyController::class, 'index']);
+    Route::get('suppliers', [EnergyController::class, 'getSupliers']);
 });

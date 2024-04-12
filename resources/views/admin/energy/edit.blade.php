@@ -1,6 +1,41 @@
 @extends('admin.layouts.app')
 @section('title','PriceWise- Energy Products Edit')
 @section('content')
+<style type="text/css">
+    .form-check-box {
+    display: flex;
+    align-items: center;
+}
+.form-check-pr {
+    padding-right: 15px;
+}
+.form-check-pr label {
+    position: relative;
+    cursor: pointer;
+}
+.form-check-pr input {
+    padding: 0;
+    height: initial;
+    width: initial;
+    margin-bottom: 0;
+    display: none;
+    cursor: pointer;
+}
+.form-check-pr label:before {
+    content: '';
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 2px solid #fa9f1d;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.form-check-pr input:checked + label:after {content: '';display: block;position: absolute;top: 7px;left: 9px;width: 6px;height: 14px;border: solid #0079bf;border-width: 0 2px 2px 0;transform: rotate(45deg);}
+</style>
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="ps-3">
@@ -289,7 +324,8 @@
                                                     </select>
                                                 </div>
                                 
-                                                
+                                                <label for="input40" class="col-sm-6 col-form-label"><b>Energy Label </b></label>
+                <div class="col-lg-12"><div class="form-check-box"><div class="form-group form-check-pr"><input type="checkbox" id="a"><label for="a">A</label></div><div class="form-group form-check-pr"><input type="checkbox" id="b"><label for="b">B</label></div><div class="form-group form-check-pr"><input type="checkbox" id="c"><label for="c">C</label></div><div class="form-group form-check-pr"><input type="checkbox" id="d"><label for="d">D</label></div><div class="form-group form-check-pr"><input type="checkbox" id="e"><label for="e">E</label></div><div class="form-group form-check-pr"><input type="checkbox" id="f"><label for="f">F</label></div></div></div>
                                                 <div class="mb-3">
                                                     <label for="upload_image">
                                 <img src="{{asset('storage/images/energy/'. $objEnergy->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
@@ -444,7 +480,7 @@
                         <div class="col-md-7 col-12">
                             <div class="card-body p-4">
 
-                            	@if($objEnergyFeatures)
+                            	{{--@if($objEnergyFeatures)
                                 @foreach($objEnergyFeatures as $elm)
                                 @php                                
                                 $value = $postEnergyFeatures[trim($elm->id)] ?? '';                                
@@ -465,7 +501,70 @@
                                 </div>
                                 @endif
                                 @endforeach
-                                @endif
+                                @endif--}}
+
+@if($objEnergyFeatures)
+    @foreach($objEnergyFeatures as $parentId => $features)
+        {{-- Check if there are features for this parent --}}
+        @if($parentId)
+        @php
+        $displayedIds = [];
+        @endphp
+        @if($features->isNotEmpty())
+        @php
+            $displayedIds = array_merge($displayedIds, $features->pluck('id')->toArray());
+        @endphp
+            <h2>Parent Feature ID: {{$parentId}}</h2>
+            @foreach($features as $elm)
+                @php
+                    $value = $postEnergyFeatures[$elm->id] ?? ['feature_value' => '', 'details' => ''];
+                @endphp
+                @if($elm->input_type == "text")
+                    <div class="mb-3">
+                        <label for="text_{{$elm->id}}" class="form-label">{{$elm->features}}</label>
+                        <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{ $value['feature_value'] }}">
+                        <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']}}</textarea>
+                    </div>
+                @elseif($elm->input_type == "checkbox")
+                    <div class="form-check">
+                        <input type="hidden" name="features[{{$elm->id}}]" value="0">
+                        <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" {{ isset($value['feature_value']) && $value['feature_value'] == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
+                        <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']}}</textarea>
+                    </div>
+                @endif
+            @endforeach
+        @else
+            <p>No features found for Parent ID: {{$parentId}}</p>
+        @endif
+        @else
+        @if($features->isNotEmpty())
+        @foreach($features as $elm)
+            @php
+                $value = $postEnergyFeatures[$elm->id] ?? ['feature_value' => '', 'details' => ''];
+            @endphp
+            @if($elm->input_type == "text")
+                <div class="mb-3">
+                    <label for="text_{{$elm->id}}" class="form-label">{{$elm->features}}</label>
+                    <input type="text" class="form-control" id="text_{{$elm->id}}" name="features[{{$elm->id}}]" placeholder="" value="{{ $value['feature_value'] }}">
+                    <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']}}</textarea>
+                </div>
+            @elseif($elm->input_type == "checkbox")
+                <div class="form-check">
+                    <input type="hidden" name="features[{{$elm->id}}]" value="0">
+                    <input class="form-check-input" type="checkbox"  name="features[{{$elm->id}}]" value="1" id="check_{{$elm->id}}" {{ isset($value['feature_value']) && $value['feature_value'] == 1 ? 'checked' : '' }}>
+                    <label class="form-check-label" for="check_{{$elm->id}}">{{$elm->features}}</label>
+                    <textarea placeholder="Additional Info" name="details[{{$elm->id}}]" class="form-control">{{$value['details']}}</textarea>
+                </div>
+            @endif
+        @endforeach
+        @endif
+        @endif
+    @endforeach
+@endif
+
+
+
 
                             </div>
 
