@@ -59,16 +59,24 @@
                     </div>
                     <div class="row mb-3">
                         <label for="sub_category" class="col-form-label"><b>Sub Category</b>
-                        </label>
-                        <!-- HTML -->
-                        
-
-                        <select id="sub_category" name="sub_category" class="select2 form-select">
-                            <option value="{{ $objFeature->sub_category}}">{{ $objFeature->subCategory ? $objFeature->subCategory->name : 'Select' }}</option>
-                            
+                        </label>                        
+                        <div class="">
+                        <select id="sub_category" name="sub_category" class="select2 form-control">                            
+                            <option value="{{ $objFeature->sub_category}}">{{ $objFeature->subCategory ? $objFeature->subCategory->name : 'Select' }}</option>                            
                         </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="parent" class="col-form-label">Parent Feature
+                        </label>
+                        <div class="">
+                        <select id="parent" name="parent" class="select2 form-control">                            
+                            <option value="{{ $objFeature->parent}}">{{ $objFeature->parentFeature ? $objFeature->parentFeature->features : 'Select' }}</option>
+                        </select>
+                        </div>
                     </div>
                      <div class="row mb-3">
+                        <div class="">
                         <label for="input_type" class=" col-form-label">Select Icon</label>
                         <div class="form-group">
                             <div class="input-group">
@@ -80,6 +88,17 @@
                                 @include('admin.layouts.icons')
                             </select>
                         </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 col-12">                 
+                            <div class="mb-3 add-scroll">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_preferred" value="1"  @if($objFeature->is_preferred == 1)checked @endif>
+                                    <label class="form-check-label" for="flexCheckDefault">Is Preferred</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -137,6 +156,34 @@
             return false;
         }
     });
+    $(document).ready(function(){
+        $("#category").on('change', function() {
+            var cat_val = $(this).val(); // Get the selected category value
 
+            // Make an AJAX call to fetch subcategories based on the selected category
+            $.ajax({
+                url: "{{route('admin.features.index')}}", // Replace this with the actual URL to fetch subcategories
+                type: 'GET',
+                data: {
+                    category_id: cat_val
+                },
+                success: function(response) {
+                    // Clear existing options
+                    $("#parent").html('');
+
+                    var options = '';
+                    // Populate subcategories dropdown with new options
+                    $.each(response.data, function(index, feature) {
+                        options += '<option value="' + feature.id + '">' + feature.features + '</option>';
+                    });
+                    $("#parent").append('<option value="">Select</option>' + options);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Handle errors here
+                }
+            });
+        });
+    });
 </script>
 @endpush

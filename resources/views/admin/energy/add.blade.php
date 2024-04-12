@@ -1,6 +1,41 @@
 @extends('admin.layouts.app')
 @section('title','PriceWise- Energy Create')
 @section('content')
+<style type="text/css">
+    .form-check-box {
+    display: flex;
+    align-items: center;
+}
+.form-check-pr {
+    padding-right: 15px;
+}
+.form-check-pr label {
+    position: relative;
+    cursor: pointer;
+}
+.form-check-pr input {
+    padding: 0;
+    height: initial;
+    width: initial;
+    margin-bottom: 0;
+    display: none;
+    cursor: pointer;
+}
+.form-check-pr label:before {
+    content: '';
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 2px solid #fa9f1d;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.form-check-pr input:checked + label:after {content: '';display: block;position: absolute;top: 7px;left: 9px;width: 6px;height: 14px;border: solid #0079bf;border-width: 0 2px 2px 0;transform: rotate(45deg);}
+</style>
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="ps-3">
@@ -224,6 +259,8 @@
                         @endif
                     </select>
                 </div>
+                <label for="input40" class="col-sm-6 col-form-label"><b>Energy Label </b></label>
+                <div class="col-lg-12"><div class="form-check-box"><div class="form-group form-check-pr"><input type="checkbox" id="a" ><label for="a">A</label></div><div class="form-group form-check-pr"><input type="checkbox" id="b"><label for="b">B</label></div><div class="form-group form-check-pr"><input type="checkbox" id="c"><label for="c">C</label></div><div class="form-group form-check-pr"><input type="checkbox" id="d"><label for="d">D</label></div><div class="form-group form-check-pr"><input type="checkbox" id="e"><label for="e">E</label></div><div class="form-group form-check-pr"><input type="checkbox" id="f"><label for="f">F</label></div></div></div>
                 <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
                 <div class="mb-3">
                     <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>

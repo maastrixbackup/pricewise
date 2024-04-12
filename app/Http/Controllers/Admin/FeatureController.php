@@ -29,8 +29,12 @@ class FeatureController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if($request->category_id && $request->category_id != null){
+            $parentFeatures = Feature::where('category', $request->category_id)->where('parent', null)->latest()->get();
+            return response()->json(['status' => true, 'data' => $parentFeatures]);
+        }
         $objFeatures = Feature::latest()->get();
         return view('admin.features.index', compact('objFeatures'));
     }
@@ -59,6 +63,8 @@ class FeatureController extends Controller
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
         $objFeature->sub_category = $request->sub_category;
+        $objFeature->parent = $request->parent;
+        $objFeature->is_preferred = $request->is_preferred;
         $objFeature->icon = $request->icon;
         if ($objFeature->save()) {
             Toastr::success('Feature Added Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -108,6 +114,8 @@ class FeatureController extends Controller
         $objFeature->category = $request->category;
         $objFeature->sub_category = $request->sub_category;
         $objFeature->icon = $request->icon;
+        $objFeature->parent = $request->parent;
+        $objFeature->is_preferred = $request->is_preferred;
         if ($objFeature->save()) {
             Toastr::success('Feature Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.features.index")]);
