@@ -6,9 +6,7 @@
     display: flex;
     align-items: center;
 }
-.form-check-pr {
-    padding-right: 15px;
-}
+
 .form-check-pr label {
     position: relative;
     cursor: pointer;
@@ -170,11 +168,20 @@
                 
                 <div class="row">
                     <div class="col-md-6 col-12">
-                        <!-- <label for="input35" class="col-form-label"><b>Top 3 Product</b></label> -->
+                        
                         <div class="mb-3 add-scroll">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="is_featured" value="1" >
                                 <label class="form-check-label" for="flexCheckDefault">Feature Product</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        
+                        <div class="mb-3 add-scroll">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="no_gas" value="1" >
+                                <label class="form-check-label" for="flexCheckDefault">No Gas</label>
                             </div>
                         </div>
                     </div>
@@ -242,6 +249,16 @@
                     </select>
                 </div>
                 <div class="mb-3 form-group">
+                    <label for="meter_type" class="col-form-label"><b>Meter Type</b>
+                    </label>
+                    <select id="meter_type" name="meter_type" class="select2 form-select">
+                        <option value="">Select</option>
+                        <option>Single Meter</option>
+                        <option>Double Meter</option>
+                        
+                    </select>
+                </div>
+                <div class="mb-3 form-group">
                     <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
                     </label>
                     <input type="number" class="form-control" id="no_of_person" name="no_of_person">
@@ -260,7 +277,7 @@
                     </select>
                 </div>
                 <label for="input40" class="col-sm-6 col-form-label"><b>Energy Label </b></label>
-                <div class="col-lg-12"><div class="form-check-box"><div class="form-group form-check-pr"><input type="checkbox" id="a" ><label for="a">A</label></div><div class="form-group form-check-pr"><input type="checkbox" id="b"><label for="b">B</label></div><div class="form-group form-check-pr"><input type="checkbox" id="c"><label for="c">C</label></div><div class="form-group form-check-pr"><input type="checkbox" id="d"><label for="d">D</label></div><div class="form-group form-check-pr"><input type="checkbox" id="e"><label for="e">E</label></div><div class="form-group form-check-pr"><input type="checkbox" id="f"><label for="f">F</label></div></div></div>
+                <div class="col-lg-12"><div class="form-check-box"><div class="form-group form-check-pr"><input type="checkbox" id="a" name="energy_label[]" value="A"><label for="a">A</label></div><div class="form-group form-check-pr"><input type="checkbox" id="b" name="energy_label[]" value="B"><label for="b">B</label></div><div class="form-group form-check-pr"><input type="checkbox" id="c" name="energy_label[]" value="C"><label for="c">C</label></div><div class="form-group form-check-pr"><input type="checkbox" id="d" name="energy_label[]" value="D"><label for="d">D</label></div><div class="form-group form-check-pr"><input type="checkbox" id="e" name="energy_label[]" value="E"><label for="e">E</label></div><div class="form-group form-check-pr"><input type="checkbox" id="f" name="energy_label[]" value="F"><label for="f">F</label></div><div class="form-group form-check-pr"><input type="checkbox" id="g" name="energy_label[]" value="G"><label for="g">G</label></div></div></div>
                 <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
                 <div class="mb-3">
                     <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
@@ -276,33 +293,7 @@
 
                             </label>
                 </div>
-                <label for="input35" class="col-form-label"><b>Power Origin</b></label>
-                <div class="mb-3 form-group">
-                    <div class="row">
-                        <label for="wind_energy" class="col-sm-6 col-form-label">Wind</label>
-                        <div class="col-sm-6">
-                            <input type="number" class="form-control" id="wind_energy" name="wind_energy">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label for="sun_energy" class="col-sm-6 col-form-label">Sun</label>
-                        <div class="col-sm-6">
-                            <input type="number" class="form-control" id="sun_energy" name="sun_energy">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label for="water_energy" class="col-sm-6 col-form-label">Water</label>
-                        <div class="col-sm-6">
-                            <input type="number" class="form-control" id="water_energy" name="water_energy">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label for="thermal_energy" class="col-sm-6 col-form-label">Thermal</label>
-                        <div class="col-sm-6">
-                            <input type="number" class="form-control" id="thermal_energy" name="thermal_energy">
-                        </div>
-                    </div>
-                </div>
+                
                 <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                 <div class="mb-3 add-scroll">
                     @if($objRelatedProducts)

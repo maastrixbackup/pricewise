@@ -64,12 +64,11 @@ class UserDetailController extends Controller
     public function updateCredentials(Request $request)
     {
         $responseData = array();
+        $data = $request->input();
         
         $data['user_id'] = auth()->user()->id;
-        $data['postal_code'] =  $request->postal_code;
-        $data['house_no'] =  $request->house_no;
-        $data['category'] =  $request->category;
-        $data['service_details'] =  $request->service_details;
+        $data['service_details'] = json_encode($request->service_details);
+        
         $customerCred = CustomerCredential::updateOrCreate(['user_id' => $data['user_id'], 'category'=> $data['category']], $data);
         if ($objUser->save()) {
             array_push($responseData, array('response' => array('status' => 'success', 'msg' => 'Customer Credential Updated Successfully.')));
@@ -78,6 +77,9 @@ class UserDetailController extends Controller
             array_push($responseData, array('response' => array('status' => 'error')));
             return response()->json($responseData, 200);
         }
+    }
+    public function getCredential(){
+        
     }
 
     public function changepassword(Request $request)
