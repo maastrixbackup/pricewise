@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerCredential extends Model
 {
     use HasFactory;
-    protected $fillable = ['postal_code', 'user_id', 'category', 'service_details', 'order_status', 'house_no'];
+    protected $fillable = ['postal_code', 'user_id', 'category', 'service_details', 'order_status', 'house_no', 'updated_at', 'created_at'];
 }

@@ -216,7 +216,7 @@ class EnergyController extends Controller
         if (isset($product) && $product->count() > 0) {
             $message = array('message' => 'Already Exists! Please enter unique title', 'title' => 'Already Exists!');
             return response()->json(["status" => false, 'message' => $message, 'title' => 'Already Exists!']);
-        } else {
+        } else {//dd($request->combos);
             $objEnergy = new EnergyProduct();
             $objEnergy->title = $request->title;
             $objEnergy->description = $request->description;
@@ -227,8 +227,8 @@ class EnergyController extends Controller
             $objEnergy->contract_type = $request->contract_type;
             $objEnergy->transfer_service = $request->transfer_service;
             $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $combos = implode(",", $request->combos);
-            $objEnergy->combos = json_encode($request->combos ? explode(",", $combos) : []);            
+            //$combos = implode(",", $request->combos);
+            $objEnergy->combos = json_encode($request->combos ? $request->combos : []);            
             $objEnergy->status = $request->status?$request->status:0;
             $objEnergy->valid_till =  $request->valid_till;
             $objEnergy->no_of_person = $request->no_of_person;
@@ -240,10 +240,9 @@ class EnergyController extends Controller
             $objEnergy->mechanic_charge = $request->mechanic_charge;            
             $objEnergy->slug = $request->link;
             $objEnergy->provider = $request->provider;
-            $objEnergy->wind_energy = $request->wind_energy;
-            $objEnergy->sun_energy = $request->sun_energy;
-            $objEnergy->water_energy = $request->water_energy;
-            $objEnergy->thermal_energy = $request->thermal_energy;
+            $objEnergy->no_gas = $request->no_gas;
+            $objEnergy->energy_label = json_encode($request->energy_label);
+            $objEnergy->meter_type = $request->meter_type;
             $croppedImage = $request->cropped_image;
 
             // Extract base64 encoded image data and decode it
@@ -265,9 +264,7 @@ class EnergyController extends Controller
             // Set the image file name for the provider
             $objEnergy->image = $imageName;
             if ($objEnergy->save()) {
-                return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
-                //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
-                //return response()->json(["status" => true, "redirect_location" => route("admin.energy.index")]);
+                return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));                
             } else {
                 $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
                 return response()->json(["status" => false, 'message' => $message]);
@@ -298,16 +295,15 @@ class EnergyController extends Controller
         $providers = Provider::all();
         
         $objEnergyFeatures = Feature::select('id','features','input_type','parent')->where('category', $objEnergy->category)->get()->groupBy('parent');
-        // dd($objEnergyFeatures->except(''));
+       
         $postEnergyFeatures = PostFeature::where('post_id', $id)
-        ->where('category_id', $objEnergy->category)
-        ->orWhere('sub_category', $objEnergy->sub_category)
+        ->where('category_id', $objEnergy->category)        
         ->select('feature_id', 'feature_value', 'details')
         ->get()
         ->mapWithKeys(function ($item) {
             return [$item['feature_id'] => ['feature_value' => $item['feature_value'], 'details' => $item['details']]];
         })->toArray();
-        
+        //dd($postEnergyFeatures);
         $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objEnergy->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
@@ -334,7 +330,7 @@ class EnergyController extends Controller
             $objEnergy->contract_type = $request->contract_type;
             $objEnergy->transfer_service = $request->transfer_service;
             $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objEnergy->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
+            $objEnergy->combos = json_encode($request->combos ? $request->combos : []);            
             $objEnergy->status = $request->online_status?$request->online_status:0;
             $objEnergy->valid_till =  $request->valid_till;
             $objEnergy->category =  $request->category;
@@ -346,10 +342,9 @@ class EnergyController extends Controller
             $objEnergy->slug = $request->link;
             $objEnergy->no_of_person = $request->no_of_person;
             $objEnergy->provider = $request->provider;
-            $objEnergy->wind_energy = $request->wind_energy;
-            $objEnergy->sun_energy = $request->sun_energy;
-            $objEnergy->water_energy = $request->water_energy;
-            $objEnergy->thermal_energy = $request->thermal_energy;
+            $objEnergy->no_gas = $request->no_gas;
+            $objEnergy->energy_label = json_encode($request->energy_label);
+            $objEnergy->meter_type = $request->meter_type;
             if ($request->has('cropped_image')) {
             // Access base64 encoded image data directly from the request
             $croppedImage = $request->cropped_image;
@@ -471,7 +466,7 @@ class EnergyController extends Controller
     {
         $post_category = $request->category_id;
         $sub_category = $request->sub_category;
-        //dd($request->features);
+        //dd($post_category);
         try{
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){                
