@@ -18,7 +18,7 @@ class EnergyResource extends JsonResource
      */
     public function toArray($request)
     {
-        $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
+        $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -60,6 +60,24 @@ class EnergyResource extends JsonResource
             'features' => PostFeatureResource::collection($features),
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
+            'prices' => $this->whenLoaded('prices', function () {
+                
+                    return [
+                        'normal_electric_rate' => $this->prices->electric_rate,
+                        'off_peak_electric_rate' => $this->prices->off_peak_electric_rate,
+                        'gas_rate' => $this->prices->gas_rate,
+                    ];
+                
+            }),
+            
+            // Include feedInCost relationship if loaded
+            'feed_in_cost' => $this->whenLoaded('feedInCost', function () {
+                return [
+                    'return_tariff' => json_decode($this->feedInCost->return_tariff),
+                    'normal_feed_in_cost' => $this->feedInCost->normal_feed_in_cost,
+                    'off_peak_feed_in_cost' => $this->feedInCost->off_peak_feed_in_cost,
+                ];
+            }),
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
+use App\Models\Feature;
 use Validator;
 use App\Http\Resources\EnergyResource;
 use DB;
@@ -17,8 +18,8 @@ class EnergyController extends BaseController
 {
    public function index(Request $request)
     {
-        $products = EnergyProduct::query();
-
+        $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost');
+        
         // Filter by postal code
         if ($request->has('postal_code')) {
            $postalCode = json_encode($request->input('postal_code'));    
@@ -57,12 +58,30 @@ class EnergyController extends BaseController
             $energy_label = json_encode($request->input('energy_label'));    
             // Use whereRaw with JSON_CONTAINS to check if the energy_label is present in the energy_label array
             $products->whereRaw('JSON_CONTAINS(energy_label, ?)', [$energy_label]);
-        }
+        }     
 
+        if ($request->has('features')) {
+            $features = $request->input('features');
+            $products->whereHas('postFeatures', function ($query) use ($features) {
+                $query->whereIn('feature_id', $features);
+            });
+        }    
         // Retrieve filtered products and return response
         $filteredProducts = $products->get();
-        
-        return $this->sendResponse(EnergyResource::collection($filteredProducts), 'Products retrieved successfully.');
+        $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+            ->from('features as f1')
+            ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+            ->where('f1.category', $filteredProducts[0]->category)
+            ->where('f1.is_preferred', 1)
+            ->get()
+            ->groupBy('parent');
+            $filteredProductsFormatted = EnergyResource::collection($filteredProducts);
+
+            // Merge filteredProductsFormatted and objEnergyFeatures
+            $mergedData = $filteredProductsFormatted->merge(['energy_filters' => $objEnergyFeatures]);
+
+            // Return the merged data
+            return $this->sendResponse($mergedData, 'Products and filters retrieved successfully.');
     }
 
 

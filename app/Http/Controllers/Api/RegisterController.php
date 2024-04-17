@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\User;
+use App\Models\EmailTemplate;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\URL;
-use JWTAuth;
+use App\Mail\WelcomeEmail;
+use Illuminate\Support\Facades\Mail;
+
 class RegisterController extends BaseController
 {
     /**
@@ -25,19 +28,43 @@ class RegisterController extends BaseController
             'email' => 'required|email',
             'password' => 'required',
             'c_password' => 'required|same:password',
+            'photo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
    
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
-   
+    
         $input = $request->all();
+
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoName = time().'.'.$photo->getClientOriginalExtension();
+            $photo->move(public_path('images/customers'), $photoName);
+            $input['photo'] = $photoName;            
+        }        
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
+        if(!$user){ 
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
-   
-        return $this->sendResponse($success, 'User register successfully.');
+        $success['name'] =  $request->name;
+        $body['name'] = $request->name;
+        $email_template = EmailTemplate::where('mail_subject', 'Registation successfull')->first();
+        $body['body'] = $email_template->mail_body;
+        $body['signature'] = $email_template->signature;
+        // Generate verification link
+        $verificationLink = route('verification.verify', [
+            'id' => $user->getKey(),
+            'hash' => sha1($user->getEmailForVerification()),
+        ]);
+        
+        $body['action_link'] = $verificationLink;
+        //dd($body);
+        Mail::to($user->email)->send(new WelcomeEmail($body));
+        
+        return $this->sendResponse($success, 'Customer registered successfully.');
     }
    
     /**

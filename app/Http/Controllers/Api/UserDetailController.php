@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Use;
+use App\Models\User;
 use App\Models\CustomerCredential;
 use Illuminate\Support\Facades\Password;
 
@@ -22,9 +22,9 @@ class UserDetailController extends Controller
                 $user_arr[$key]['id'] =  $val->id;
                 $user_arr[$key]['name'] =  $val->name;
                 $user_arr[$key]['email'] =  $val->email;
-                $user_arr[$key]['mobile_number'] =  $val->phone;
+                $user_arr[$key]['mobile'] =  $val->mobile;
                 $user_arr[$key]['address'] =  $val->address;
-                $user_arr[$key]['profile_img'] = asset('images/' . $val->profile_img);
+                $user_arr[$key]['photo'] = asset('images/customers/' . $val->photo);
             }
             array_push($responseData, array('response' => array('data' =>  $user_arr)));
             return response()->json($responseData, 200);
@@ -40,17 +40,19 @@ class UserDetailController extends Controller
         $objUser =  User::where('id', $request->user_id)->first();
         $objUser->name = $request->name;
         $objUser->email =  $request->email;
-        $objUser->phone =  $request->mobile_number;
+        $objUser->age =  $request->age;
+        $objUser->gender =  $request->gender;
+        $objUser->mobile =  $request->mobile;
         $objUser->address =  $request->address;
-        if ($request->file('profile_img') == null) {
-            $input['profile_img'] = $objUser->profile_img;
+        if ($request->file('photo') == null) {
+            $input['photo'] = $objUser->photo;
         } else {
-            $destinationPath = '/images';
-            $imgfile = $request->file('profile_img');
+            $destinationPath = '/images/customers/';
+            $imgfile = $request->file('photo');
             $imgFilename = $imgfile->getClientOriginalName();
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
-            $objUser->profile_img = $image;
+            $objUser->photo = $image;
         }
         if ($objUser->save()) {
             array_push($responseData, array('response' => array('status' => 'success', 'msg' => 'Profile Updated Successfully.')));
@@ -70,7 +72,7 @@ class UserDetailController extends Controller
         $data['service_details'] = json_encode($request->service_details);
         
         $customerCred = CustomerCredential::updateOrCreate(['user_id' => $data['user_id'], 'category'=> $data['category']], $data);
-        if ($objUser->save()) {
+        if ($customerCred) {
             array_push($responseData, array('response' => array('status' => 'success', 'msg' => 'Customer Credential Updated Successfully.')));
             return response()->json($responseData, 200);
         } else {
@@ -78,8 +80,9 @@ class UserDetailController extends Controller
             return response()->json($responseData, 200);
         }
     }
-    public function getCredential(){
-        
+    public function getCredentials(Request $request){
+        $responseData = CustomerCredential::where('user_id', $request->user_id)->where('category', $request->category)->first();
+        return response()->json($responseData, 200);
     }
 
     public function changepassword(Request $request)

@@ -18,6 +18,7 @@ use App\Models\FeedInCost;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class EnergyController extends Controller
 {
@@ -294,7 +295,13 @@ class EnergyController extends Controller
         $objEnergy = EnergyProduct::find($id);
         $providers = Provider::all();
         
-        $objEnergyFeatures = Feature::select('id','features','input_type','parent')->where('category', $objEnergy->category)->get()->groupBy('parent');
+        $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+    ->from('features as f1')
+    ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+    ->where('f1.category', $objEnergy->category)
+    ->get()
+    ->groupBy('parent');
+
        
         $postEnergyFeatures = PostFeature::where('post_id', $id)
         ->where('category_id', $objEnergy->category)        
