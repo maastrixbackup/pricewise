@@ -151,7 +151,7 @@
 <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
 <script>
     tinymce.init({
-        selector: '#mail_body',
+        selector: '#mail_body,#mail_signature',
         plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
         toolbar_mode: 'floating',
         tinycomments_mode: 'embedded',

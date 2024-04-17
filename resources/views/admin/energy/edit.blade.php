@@ -499,7 +499,7 @@
 @if($objEnergyFeatures)
     @foreach($objEnergyFeatures as $parentId => $features)
         {{-- Check if there are features for this parent --}}
-        @if($parentId)
+        @if($parentId && $parentId != "No Parent")
         @php
         $displayedIds = [];
         @endphp
@@ -507,7 +507,7 @@
         @php
             $displayedIds = array_merge($displayedIds, $features->pluck('id')->toArray());
         @endphp
-            <h2>Parent Feature ID: {{$parentId}}</h2>
+            <h2>{{$parentId}}</h2>
             @foreach($features as $elm)
                 @php
                     $value = $postEnergyFeatures[$elm->id] ?? ['feature_value' => '', 'details' => ''];
