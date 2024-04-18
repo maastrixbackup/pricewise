@@ -56,30 +56,30 @@ class ProviderController extends Controller
     {
         $objProvider = new Provider();
         $objProvider->name = $request->name;
-        
+        $objProvider->about = $request->about;
         $objProvider->category = $request->category;
         $objProvider->status = $request->status;
         // Access base64 encoded image data directly from the request
-    $croppedImage = $request->cropped_image;
+        $croppedImage = $request->cropped_image;
 
-    // Extract base64 encoded image data and decode it
-    $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
-    // Generate a unique file name for the image
-    $imageName = 'provider_' . time() . '.png';
+        // Generate a unique file name for the image
+        $imageName = 'provider_' . time() . '.png';
 
-    // Specify the destination directory where the image will be saved
-    $destinationDirectory = 'public/images/providers';
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/providers';
 
-    // Create the directory if it doesn't exist
-    Storage::makeDirectory($destinationDirectory);
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
 
-    // Save the image to the server using Laravel's file upload method
-    $filePath = $destinationDirectory . '/' . $imageName;
-    Storage::put($filePath, $imgData);
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+        Storage::put($filePath, $imgData);
 
-    // Set the image file name for the provider
-    $objProvider->image = $imageName;
+        // Set the image file name for the provider
+        $objProvider->image = $imageName;
 
    
         if ($objProvider->save()) {
@@ -128,6 +128,7 @@ class ProviderController extends Controller
         //echo 123;exit;
         $objProvider = Provider::find($id);
         $objProvider->name = $request->name;
+        $objProvider->about = $request->about;
         $objProvider->status = $request->status;
         $objProvider->category = $request->category;        
         $objProvider->status = $request->status;

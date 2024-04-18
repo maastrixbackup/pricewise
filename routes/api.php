@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\InternetTvController;
 use App\Http\Controllers\Api\EnergyController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\Api\SettingsController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -20,14 +21,21 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
+//Basic Auth
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
 
-
+//Frontend Guest
+//Internet Tv
+    Route::get('internet-tv', [InternetTvController::class, 'index']);
+//API routs for energy
+    Route::get('energy', [EnergyController::class, 'index']);
+    Route::get('energy-compare', [EnergyController::class, 'energyCompare']);
+    Route::get('suppliers', [SettingsController::class, 'getSupliers']);
+    Route::get('house-type', [SettingsController::class, 'houseTypes']);
+//Frontent === Auth    
 Route::group(['middleware' => 'auth:sanctum'], function () {   
     Route::post('/logout', [RegisterController::class, 'logout']);
     //API route for user profile
@@ -39,9 +47,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 //API route for Customer Creadential
     Route::post('/update-credentials', [UserDetailController::class, 'updateCredentials']);
     Route::get('/get-credentials', [UserDetailController::class, 'getCredentials']);
-//Internet Tv
-    Route::get('internet-tv', [InternetTvController::class, 'index']);
-//API routs for energy
-    Route::get('energy', [EnergyController::class, 'index']);
-    Route::get('suppliers', [EnergyController::class, 'getSupliers']);
+
 });

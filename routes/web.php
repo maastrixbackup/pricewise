@@ -24,8 +24,8 @@ Route::get('file-manager', 'FileManagerController@index');
 Route::group(['prefix' => 'pricewise'], function () {
 	Route::get('/run-command', function () {
     // Call the Artisan command
-    Artisan::call('optimize:clear');
-    Artisan::call('config:cache');
+    Artisan::call('optimize');
+    //Artisan::call('config:cache');
      Artisan::call('permission:cache-reset');
     return 'Command executed successfully!';
 });
@@ -88,7 +88,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         //Insurance
         Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
         Route::resource('energy', 'EnergyController');
-        Route::post('/energy-doc-update/{id}', 'EnergyController@energy_doc_update')->name('energy_doc_update');
+        Route::post('/doc-update/{id}', 'EnergyController@energy_doc_update')->name('doc_update');
+        Route::post('/doc-delete/{id}', 'EnergyController@energy_doc_delete')->name('doc_delete');
         Route::post('/energy-feature-update/{id}', 'EnergyController@energy_feature_update')->name('energy_feature_update');
         Route::post('/energy-price-update/{id}', 'EnergyController@energy_price_update')->name('energy.pricing');
         Route::get('/energy/{id}', 'EnergyController@default')->name('energy-default');

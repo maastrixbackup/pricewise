@@ -55,20 +55,9 @@
         </div>
     </div>
     <div class="row">
+        
         <div class="col-lg-3 mb-2">
-            <label for="internet" class="col-form-label">Internet
-            </label>
-            <select id="internet" name="internet" class="select2 form-select">
-                <option value="">All</option>
-                @if($objInternetFeatures)
-                @foreach($objInternetFeatures as $internet)
-                <option value="{{$internet->id}}">{{$internet->features}}</option>
-                @endforeach
-                @endif
-            </select>
-        </div>
-        <div class="col-lg-3 mb-2">
-            <label for="tv" class="col-form-label">Tv
+            <label for="tv" class="col-form-label">Features
             </label>
             <select id="tv" name="tv" class="select2 form-select">
                 <option value="">All</option>
@@ -79,18 +68,7 @@
                 @endif
             </select>
         </div>
-        <div class="col-lg-3 mb-2">
-            <label for="telephone" class="col-form-label">Telephone
-            </label>
-            <select id="telephone" name="telephone" class="select2 form-select">
-                <option value="">All</option>
-                @if($objTeleFeatures)
-                @foreach($objTeleFeatures as $tel)
-                <option value="{{$tel->id}}">{{$tel->features}}</option>
-                @endforeach
-                @endif
-            </select>
-        </div>
+        
     </div>
 </form>
 <div class="row">
