@@ -56,7 +56,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="mb-3">
+                    <div class="row mb-3">
                         <label for="input40" class="col-sm-6 col-form-label"><b>Provider Logo </b></label>
                         
                         <label for="upload_image">
@@ -69,7 +69,12 @@
 
                             </label>
                     </div>
-
+                    <div class="row mb-3">
+                        <label for="input_type" class=" col-form-label">About</label>
+                        <div class="">
+                            <textarea name="about" id="about" class="form-control">{{$provider->about}}</textarea>
+                        </div>
+                    </div>
                     <div class="row">
                         <label class=" col-form-label"></label>
                         <div class="">

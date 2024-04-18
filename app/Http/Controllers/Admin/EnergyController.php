@@ -10,6 +10,7 @@ use App\Models\DefaultProduct;
 use App\Models\AdditionalInfo;
 use App\Models\ShopProduct;
 use App\Models\Category;
+use App\Models\Document;
 use App\Models\PostFeature;
 use App\Models\Affiliate;
 use App\Models\Feature;
@@ -43,10 +44,9 @@ class EnergyController extends Controller
     public function index(Request $request)
     {
     	$objEnergy = EnergyProduct::latest()->get();
-        $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
-        $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
-        $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
-        return view('admin.energy.index', compact('objEnergy', 'objEnergyFeatures', 'objInternetFeatures', 'objTeleFeatures'));
+        $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', 16)->get();
+        
+        return view('admin.energy.index', compact('objEnergy', 'objEnergyFeatures'));
     }
 
     /**
@@ -294,7 +294,7 @@ class EnergyController extends Controller
     {
         $objEnergy = EnergyProduct::find($id);
         $providers = Provider::all();
-        
+        $documents = Document::where('post_id', $id)->where('category', 16)->get();
         $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
     ->from('features as f1')
     ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
@@ -314,7 +314,7 @@ class EnergyController extends Controller
         $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objEnergy->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
-        return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo'));
+        return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents'));
     }
 
     /**
@@ -421,25 +421,49 @@ class EnergyController extends Controller
 
     public function energy_doc_update(Request $request, $post_id)
     {
-        $post_category = $request->category_id;
-        try{
-        foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){
-                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
+        // Validate the uploaded file
+        $request->validate([
+            'file' => 'required|file|mimes:pdf,doc,docx|max:2048', // Example validation rules
+        ]);
+
+        // Store the uploaded file
+        if ($request->file('file')->isValid()) {
+            $fileName = $request->file('file')->getClientOriginalName();
+            $timestamp = time(); // Get the current Unix timestamp
+            $fileName = $timestamp . '_' . $fileName;
+            //$destinationDirectory = 'public/images/documents';
+            // Create the directory if it doesn't exist
+            //Storage::makeDirectory($destinationDirectory);
+            $request->file('file')->storeAs('public/documents/', $fileName); // Store the file in the 'uploads' directory
+            Document::create(['filename' => $fileName, 'category' => $request->category_id, 'post_id' => $request->post_id, 'path' => "public/documents/"]);
+            // Optionally, you can save the file details to the database or perform any other logic here
             
+            return response()->json(['success' => true, 'message' => 'File uploaded successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'File upload failed'], 400);
         }
-        }
-        }catch(\Exception $e){
-            $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
-        // Log the error for further investigation
-        \Log::error($errorMessage);
-            $message = ['message' =>  $errorMessage, 'title' => 'Error'];
-            return response()->json(['status' => false, 'message' => $message]);
-        }
-        $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
         
+    }
+    public function energy_doc_delete(Request $request, $post_id)
+    {
+        if ($request->file_id && $request->file_id != '') {
+            // Retrieve the document from the database
+            $document = Document::find($request->file_id);
+
+            if ($document) {
+                // Delete the file from the storage path
+                Storage::delete($document->path . $document->filename);
+
+                // Delete the document record from the database
+                $document->delete();
+
+                return response()->json(['success' => true, 'message' => 'File deleted successfully']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'File not found'], 400);
+            }
+        } else {
+            return response()->json(['success' => false, 'message' => 'Invalid file ID'], 400);
+        }
     }
     public function energy_price_update(Request $request, $id)
     {

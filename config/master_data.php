@@ -6,14 +6,14 @@ return [
 
     'houses' => [
         
-            '1' => ['name'=>'appartment','image'=>'appartment.png'],
-            '2' => ['name'=>'corner_house','image'=>'corner_house.png'],
-            '3' => ['name'=>'mansion','image'=>'mansion.png'],
-            '4' => ['name'=>'studio','image'=>'studio.png'],
-            '5' => ['name'=>'terraced_house','image'=>'terraced_house.png'],
-            '6' => ['name'=>'under_hood','image'=>'under_hood.png'],
-            '7' => ['name'=>'villa','image'=>'villa.png'],
-            '8' => ['name'=>'woonboederii','image'=>'woonboederii.png'],
+            '1' => ['name'=>'appartment','image'=>'storage/images/houses/appartment.png'],
+            '2' => ['name'=>'corner_house','image'=>'storage/images/houses/corner_house.png'],
+            '3' => ['name'=>'mansion','image'=>'storage/images/houses/mansion.png'],
+            '4' => ['name'=>'studio','image'=>'storage/images/houses/studio.png'],
+            '5' => ['name'=>'terraced_house','image'=>'storage/images/houses/terraced_house.png'],
+            '6' => ['name'=>'under_hood','image'=>'storage/images/houses/under_hood.png'],
+            '7' => ['name'=>'villa','image'=>'storage/images/houses/villa.png'],
+            '8' => ['name'=>'woonboederii','image'=>'storage/images/houses/woonboederii.png'],
         ],
 
         

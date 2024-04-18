@@ -7,17 +7,103 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\TvInternetProduct;
+use App\Models\Feature;
 use Validator;
 use App\Http\Resources\InternetTvResource;
-
+use DB;
 
 class InternetTvController extends BaseController
 {
-   public function index()
+   public function index(Request $request)
     {
-        $products = TvInternetProduct::all();
+        $products = TvInternetProduct::with('postFeatures');
+        
+        // Filter by postal code
+        if ($request->has('postal_code')) {
+           $postalCode = json_encode($request->input('postal_code'));    
+            // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
+            $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
+        }
+
+        // Filter by number of persons
+        if ($request->has('no_of_person')) {
+            $products->where('no_of_person', '<=', $request->input('no_of_person'));
+        }
+
+        // Filter by house type
+        if ($request->has('house_type')) {
+            $products->where('house_type', $request->input('house_type'));
+        }
+
+        // Filter by current supplier
+        if ($request->has('current_supplier')) {
+            $products->where('provider', $request->input('current_supplier'));
+        }
+
+      
+
+        if ($request->has('features')) {
+            $features = $request->input('features');
+            $products->whereHas('postFeatures', function ($query) use ($features) {
+                $query->whereIn('feature_id', $features);
+            });
+        }    
+        // Retrieve filtered products and return response
+        $filteredProducts = $products->get();
+        $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+            ->from('features as f1')
+            ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+            ->where('f1.category', $filteredProducts[0]->category)
+            ->where('f1.is_preferred', 1)
+            ->get()
+            ->groupBy('parent');
+            $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
+
+            // Merge filteredProductsFormatted and objEnergyFeatures
+            $mergedData = $filteredProductsFormatted->merge(['filters' => $objEnergyFeatures]);
+
+            // Return the merged data
+            return $this->sendResponse($mergedData, 'Products retrieved successfully.');
+    }
+
+    public function internetCompare(Request $request)
+    {
+        $compareIds = $request->compare_ids;
+
+        if (!empty($compareIds)) {
+            $products = TvInternetProduct::with('postFeatures');
+            $filteredProducts = $products->whereIn('id', $compareIds)->get();
+
+            if ($filteredProducts->isNotEmpty()) {
+                $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+                    ->from('features as f1')
+                    ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+                    ->where('f1.category', $filteredProducts[0]->category)
+                    ->where('f1.is_preferred', 1)
+                    ->get()
+                    ->groupBy('parent');
+                
+                $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
+
+                // Merge filteredProductsFormatted and objEnergyFeatures
+                $mergedData = $filteredProductsFormatted->merge(['energy_filters' => $objEnergyFeatures]);
+
+                // Return the merged data
+                return $this->sendResponse($mergedData, 'Products retrieved successfully.');
+            } else {
+                return $this->sendError('No products found for comparison.', [], 404);
+            }
+        } else {
+            return $this->sendError('No comparison IDs provided.', [], 400);
+        }
+    }
+
+
+    public function getSupliers()
+    {
+        $providers = Provider::get();
     
-        return $this->sendResponse(InternetTvResource::collection($products), 'Products retrieved successfully.');
+        return $this->sendResponse($providers, 'Suppliers retrieved successfully.');
     }
     /**
      * Store a newly created resource in storage.

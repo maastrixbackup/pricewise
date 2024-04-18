@@ -13,9 +13,8 @@ use App\Models\Feature;
 use Validator;
 use App\Http\Resources\EnergyResource;
 use DB;
-use Illuminate\Http\Response;
 
-class EnergyController extends BaseController
+class InsuranceController extends BaseController
 {
    public function index(Request $request)
     {
@@ -76,29 +75,13 @@ class EnergyController extends BaseController
             ->where('f1.is_preferred', 1)
             ->get()
             ->groupBy('parent');
-$mergedData = [];
+            $filteredProductsFormatted = EnergyResource::collection($filteredProducts);
 
-    foreach ($filteredProducts as $product) {
-        $formattedProduct = (new EnergyResource($product))->toArray($request);
-        
-        $productFeatures = $objEnergyFeatures[$product->category] ?? [];
-        
-        if ($productFeatures instanceof \Illuminate\Support\Collection) {
-            $formattedProduct['energy_filters'] = $productFeatures->toArray();
-        } else {
-            $formattedProduct['energy_filters'] = [];
-        }
-        
-        $mergedData[] = $formattedProduct;
-    }
+            // Merge filteredProductsFormatted and objEnergyFeatures
+            $mergedData = $filteredProductsFormatted->merge(['energy_filters' => $objEnergyFeatures]);
 
-    // Return the merged data
-    return response()->json([
-        'success' => true,
-        'data' => $mergedData,
-        'message' => 'Products and filters retrieved successfully.'
-    ]);
-
+            // Return the merged data
+            return $this->sendResponse($mergedData, 'Products and filters retrieved successfully.');
     }
 
     public function energyCompare(Request $request)
