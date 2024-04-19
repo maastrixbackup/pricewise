@@ -10,7 +10,8 @@ class Document extends Model
     use HasFactory;
 
     protected $fillable = ['filename','path','post_id','type', 'category','sub_category'];
-    public function parentCat()
+    
+    public function categoryDetail()
     {
         return $this->belongsTo(Category::class, 'category');
     }

@@ -15,8 +15,8 @@
         <div class="smini-hidden">
           <div class="content-header toplogo justify-content-lg-center">
             <!-- Logo -->
-            <a class="fw-semibold text-white tracking-wide" href="index.html">
-              Energise<span class="opacity-75"></span>
+            <a class="fw-semibold text-white tracking-wide" href="{{url('/')}}">
+              <img src="{{asset('storage/images/website/').'/'.siteSettings()->logo}}" alt="Energiser"><span class="opacity-75"></span>
             </a>
             <!-- END Logo -->
 

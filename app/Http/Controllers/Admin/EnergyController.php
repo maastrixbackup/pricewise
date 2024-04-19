@@ -294,7 +294,7 @@ class EnergyController extends Controller
     {
         $objEnergy = EnergyProduct::find($id);
         $providers = Provider::all();
-        $documents = Document::where('post_id', $id)->where('category', 16)->get();
+        $documents = Document::where('post_id', $id)->where('category', $objEnergy->category)->get();
         $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
     ->from('features as f1')
     ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')

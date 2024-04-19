@@ -22,4 +22,12 @@ class EnergyProduct extends Model
     {
         return $this->hasOne(FeedInCost::class, 'provider', 'provider');
     }
+    public function providerDetails()
+    {
+        return $this->hasOne(Provider::class, 'id', 'provider');
+    }
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'post_id', 'id');
+    }
 }

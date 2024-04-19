@@ -84,35 +84,38 @@
               </button>
               <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="page-header-user-dropdown">
                 <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-3">
-                  <img class="img-avatar img-avatar48 img-avatar-thumb" src="assets/media/avatars/avatar10.jpg" alt="">
+                  @if (Auth::guard('admin')->user()->profileImage != null || Auth::guard('admin')->user()->profileImage != '')
+                     <img src="{{asset('images/'.Auth::guard('admin')->user()->profileImage)}}" alt="image" id="pImage" class="img-avatar img-avatar48 img-avatar-thumb">
+                     @else
+                     <img src="{{asset('assets/media/avatars/avatar10.jpg')}}" class="img-avatar img-avatar48 img-avatar-thumb" alt="user avatar">
+                     @endif
+                  <!-- <img class="img-avatar img-avatar48 img-avatar-thumb" src="assets/media/avatars/avatar10.jpg" alt=""> -->
                   <div class="pt-2">
-                    <a class="text-white fw-semibold" href="be_pages_generic_profile.html">George Taylor</a>
+                    <a class="text-white fw-semibold" href="be_pages_generic_profile.html">{{Auth::guard('admin')->user()->name}}</a>
                   </div>
                 </div>
                 <div class="p-2">
-                  <a class="dropdown-item" href="be_pages_generic_profile.html">
+                  <a class="dropdown-item" href="{{route('admin.edit-profile',['id' => Auth::guard('admin')->user()->id])}}">
                     <i class="far fa-fw fa-user me-1"></i> Profile
                   </a>
-                  <a class="dropdown-item d-flex align-items-center justify-content-between" href="be_pages_generic_inbox.html">
-                    <span><i class="far fa-fw fa-envelope me-1"></i> Inbox</span>
-                    <span class="badge bg-primary">3</span>
+                  <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{route('admin.change-password',['id' => Auth::guard('admin')->user()->id])}}">
+                    <span><i class="far fa-fw fa-key me-1"></i> Change Password</span>
+                    
                   </a>
-                  <a class="dropdown-item" href="be_pages_generic_invoice.html">
-                    <i class="far fa-fw fa-file-alt me-1"></i> Invoices
-                  </a>
-                  <div role="separator" class="dropdown-divider"></div>
-
-                  <!-- Toggle Side Overlay -->
-                  <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
-                  <a class="dropdown-item" href="javascript:void(0)" data-toggle="layout" data-action="side_overlay_toggle">
-                    <i class="far fa-fw fa-building me-1"></i> Settings
-                  </a>
+                  
                   <!-- END Side Overlay -->
 
                   <div role="separator" class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="op_auth_signin.html">
+                  <form method="POST" action="{{ route('admin.logout') }}">
+                             @csrf
+                             <a class="dropdown-item" href="{{ route('admin.logout') }}" onclick="event.preventDefault();
+                                                this.closest('form').submit();">
+                                 <i class='bx bx-log-out-circle'></i><span>Logout</span>
+                             </a>
+                         </form>
+                  <!-- <a class="dropdown-item" href="op_auth_signin.html">
                     <i class="far fa-fw fa-arrow-alt-circle-left me-1"></i> Sign Out
-                  </a>
+                  </a> -->
                 </div>
               </div>
             </div>

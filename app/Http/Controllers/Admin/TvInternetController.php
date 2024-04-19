@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TvInternetProduct;
 use App\Models\Provider;
+use App\Models\Document;
 use App\Models\DefaultProduct;
 use App\Models\AdditionalInfo;
 use App\Models\ShopProduct;
@@ -289,9 +290,9 @@ class TvInternetController extends Controller
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
-        //$objAffiliates = Affiliate::latest()->get();
+        $documents = Document::where('post_id', $id)->where('category', $objTv->category)->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo'));
+        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents'));
     }
 
     /**

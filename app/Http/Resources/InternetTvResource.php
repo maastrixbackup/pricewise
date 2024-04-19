@@ -17,6 +17,7 @@ class InternetTvResource extends JsonResource
     public function toArray($request)
     {
         $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -49,7 +50,18 @@ class InternetTvResource extends JsonResource
             'mechanic_install' => $this->mechanic_install, 
             'mechanic_charge' => $this->mechanic_charge, 
             'is_featured' => $this->is_featured,
-            'features' => PostFeatureResource::collection($features),
+            'documents' => $this->whenLoaded('documents', function () {
+                return $this->documents->filter(function ($document) {
+                    return $this->category == $document->category;
+                })->map(function ($document) {
+                    return [
+                        'id' => $document->id,
+                        'filename' => $document->filename,
+                        'path' => $document->path,
+                    ];
+                });
+            }),
+            'features' => PostFeatureResource::collection($features),            
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
             
