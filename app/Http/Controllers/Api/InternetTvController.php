@@ -15,8 +15,8 @@ use DB;
 class InternetTvController extends BaseController
 {
    public function index(Request $request)
-    {
-        $products = TvInternetProduct::with('postFeatures');
+    {\DB::enableQueryLog();
+        $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
         
         // Filter by postal code
         if ($request->has('postal_code')) {
@@ -41,15 +41,31 @@ class InternetTvController extends BaseController
         }
 
       
-
         if ($request->has('features')) {
             $features = $request->input('features');
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
             });
         }    
+        // // Retrieve filtered products and return response
+        // $filteredProducts = $products->get();
+        // $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+        //     ->from('features as f1')
+        //     ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+        //     ->where('f1.category', $filteredProducts[0]->category)
+        //     ->where('f1.is_preferred', 1)
+        //     ->get()
+        //     ->groupBy('parent');
+        //     $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
+
+        //     // Merge filteredProductsFormatted and objEnergyFeatures
+        //     $mergedData = $filteredProductsFormatted->merge(['filters' => $objEnergyFeatures]);
+
+        //     // Return the merged data
+        //     return $this->sendResponse($mergedData, 'Products retrieved successfully.');
         // Retrieve filtered products and return response
         $filteredProducts = $products->get();
+        if ($filteredProducts->isNotEmpty()) {
         $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
             ->from('features as f1')
             ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
@@ -57,13 +73,34 @@ class InternetTvController extends BaseController
             ->where('f1.is_preferred', 1)
             ->get()
             ->groupBy('parent');
-            $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
+            } else {
+            // Handle case when $filteredProducts is empty
+            $objEnergyFeatures = collect(); // Or any other default value or action
+        }
+        $mergedData = [];
 
-            // Merge filteredProductsFormatted and objEnergyFeatures
-            $mergedData = $filteredProductsFormatted->merge(['filters' => $objEnergyFeatures]);
-
+            foreach ($filteredProducts as $product) {
+                $formattedProduct = (new InternetTvResource($product))->toArray($request);
+                
+                // $productFeatures = $objEnergyFeatures[$product->category] ?? [];
+                
+                // if ($productFeatures instanceof \Illuminate\Support\Collection) {
+                //     $formattedProduct['filters'] = $productFeatures->toArray();
+                // } else {
+                //     $formattedProduct['filters'] = [];
+                // }
+                
+                $mergedData[] = $formattedProduct;
+            }
+            //$mergedData['additional_filters'] = $objEnergyFeatures;
+            //dd(\DB::getQueryLog());
             // Return the merged data
-            return $this->sendResponse($mergedData, 'Products retrieved successfully.');
+            return response()->json([
+                'success' => true,
+                'data' => $mergedData,
+                'filters' => $objEnergyFeatures,
+                'message' => 'Products retrieved successfully.'
+            ]);
     }
 
     public function internetCompare(Request $request)
@@ -71,7 +108,7 @@ class InternetTvController extends BaseController
         $compareIds = $request->compare_ids;
 
         if (!empty($compareIds)) {
-            $products = TvInternetProduct::with('postFeatures');
+            $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
 
             if ($filteredProducts->isNotEmpty()) {

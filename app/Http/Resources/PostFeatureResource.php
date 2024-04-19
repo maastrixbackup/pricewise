@@ -15,9 +15,9 @@ class PostFeatureResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'feature_id' => $this->id,
             'post_id' => $this->post_id,
-            'category_details' => $this->whenLoaded('postCategory'),
+            //'category_details' => $this->whenLoaded('postCategory'),
             'feature_details' => $this->whenLoaded('postFeature'),
             'feature_value' => $this->feature_value,
             'more_info' => $this->details

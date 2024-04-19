@@ -29,10 +29,11 @@ Route::post('/reset-password/{token}', [RegisterController::class, 'resetPasswor
 
 //Frontend Guest
 //Internet Tv
-    Route::get('internet-tv', [InternetTvController::class, 'index']);
+    Route::post('internet-tv', [InternetTvController::class, 'index']);
+    Route::post('internet-tv-compare', [InternetTvController::class, 'internetCompare']);
 //API routs for energy
-    Route::get('energy', [EnergyController::class, 'index']);
-    Route::get('energy-compare', [EnergyController::class, 'energyCompare']);
+    Route::post('energy', [EnergyController::class, 'index']);
+    Route::post('energy-compare', [EnergyController::class, 'energyCompare']);
     Route::get('suppliers', [SettingsController::class, 'getSupliers']);
     Route::get('house-type', [SettingsController::class, 'houseTypes']);
 //Frontent === Auth    

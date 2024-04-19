@@ -47,25 +47,57 @@ class EnergyResource extends JsonResource
             'contract_length' => $this->contract_length, 
             'contract_type' => $this->contract_type, 
             'transfer_service' => $this->transfer_service, 
-            'pin_codes' => $this->pin_codes, 
+            'pin_codes' => $this->pin_codes,
+            'no_gas' => $this->no_gas,  
             'valid_till' => $this->valid_till, 
             'no_of_person' => $this->no_of_person, 
             'category' => $this->category, 
-            'provider' => $this->provider, 
+            'provider' => $this->provider,
+            'provider_details' => $this->whenLoaded('providerDetails', function () {
+                return [
+                        'about' => $this->providerDetails->about,
+                        'payment_options' => $this->providerDetails->payment_options,
+                        'annual_accounts' => $this->providerDetails->annual_accounts,
+                        'meter_readings' => $this->providerDetails->meter_readings,
+                        'adjust_installments' => $this->providerDetails->adjust_installments,
+                        'view_consumption' => $this->providerDetails->view_consumption,
+                        'rose_scheme' => $this->providerDetails->rose_scheme,
+                    ];
+                
+            }),
             'combos' => $this->combos, 
             'manual_install' => $this->manual_install, 
             'mechanic_install' => $this->mechanic_install, 
             'mechanic_charge' => $this->mechanic_charge, 
             'is_featured' => $this->is_featured,
+            'documents' => $this->whenLoaded('documents', function () {
+                return $this->documents->filter(function ($document) {
+                    return $this->category == $document->category;
+                })->map(function ($document) {
+                    return [
+                        'id' => $document->id,
+                        'filename' => $document->filename,
+                        'path' => $document->path,
+                    ];
+                });
+            }),
             'features' => PostFeatureResource::collection($features),
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
-            'prices' => $this->whenLoaded('prices', function () {
+            'prices' => $this->whenLoaded('prices', function ()  use ($request){
                 
                     return [
                         'normal_electric_rate' => $this->prices->electric_rate,
                         'off_peak_electric_rate' => $this->prices->off_peak_electric_rate,
                         'gas_rate' => $this->prices->gas_rate,
+                        'total' => $request->normal_electric_consume * $this->prices->electric_rate
+                        + $request->peak_electric_consume * $this->prices->off_peak_electric_rate
+                        + $request->gas_consume * $this->prices->gas_rate
+                        + $this->delivery_cost_electric
+                        + $this->delivery_cost_gas
+                        + $this->feedInCost->normal_feed_in_cost
+                        + $this->feedInCost->off_peak_feed_in_cost
+                        - $this->cashback
                     ];
                 
             }),
@@ -78,6 +110,20 @@ class EnergyResource extends JsonResource
                     'off_peak_feed_in_cost' => $this->feedInCost->off_peak_feed_in_cost,
                 ];
             }),
+
+// Normal rate per kWh              €0.26475
+// Off-peak rate per kWh            €0.26475
+// Fixed delivery costs per year   €83.88
+// Feed-in costs per year *       €120.45
+// Gas
+// Rate per m³                      €1.25902
+// Fixed delivery costs per year   €83.88
+// Total
+// Total amount per year          €421.79
+// Cashback                     € -170.00
+// Your costs per month            €20.98
+// Your costs per year            €251.79
+
         ];
     }
 }

@@ -19,7 +19,7 @@ class EnergyController extends BaseController
 {
    public function index(Request $request)
     {
-        $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost');
+        $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails');
         
         // Filter by postal code
         if ($request->has('postal_code')) {
@@ -34,9 +34,9 @@ class EnergyController extends BaseController
         }
 
         // Filter by house type
-        if ($request->has('house_type')) {
-            $products->where('house_type', $request->input('house_type'));
-        }
+        // if ($request->has('house_type')) {
+        //     $products->where('house_type', $request->input('house_type'));
+        // }
 
         // Filter by current supplier
         if ($request->has('current_supplier')) {
@@ -49,7 +49,7 @@ class EnergyController extends BaseController
         }
 
         // Filter by gas availability
-        if ($request->has('no_gas')) {
+        if ($request->has('no_gas') && $request->no_gas == 1) {
             $products->where('no_gas', $request->input('no_gas'));
         }
 
@@ -69,35 +69,56 @@ class EnergyController extends BaseController
         }    
         // Retrieve filtered products and return response
         $filteredProducts = $products->get();
+        if ($filteredProducts->isNotEmpty()) {
         $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
-            ->from('features as f1')
-            ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-            ->where('f1.category', $filteredProducts[0]->category)
-            ->where('f1.is_preferred', 1)
-            ->get()
-            ->groupBy('parent');
-$mergedData = [];
-
-    foreach ($filteredProducts as $product) {
-        $formattedProduct = (new EnergyResource($product))->toArray($request);
-        
-        $productFeatures = $objEnergyFeatures[$product->category] ?? [];
-        
-        if ($productFeatures instanceof \Illuminate\Support\Collection) {
-            $formattedProduct['energy_filters'] = $productFeatures->toArray();
+        ->from('features as f1')
+        ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+        ->where('f1.category', 16)
+        ->where('f1.is_preferred', 1)
+        ->get()
+        ->groupBy('parent');//dd($objEnergyFeatures);
         } else {
-            $formattedProduct['energy_filters'] = [];
+            // Handle case when $filteredProducts is empty
+            $objEnergyFeatures = collect(); // Or any other default value or action
         }
-        
-        $mergedData[] = $formattedProduct;
-    }
+        $mergedData = [];
 
-    // Return the merged data
-    return response()->json([
-        'success' => true,
-        'data' => $mergedData,
-        'message' => 'Products and filters retrieved successfully.'
-    ]);
+            foreach ($filteredProducts as $product) {
+                $formattedProduct = (new EnergyResource($product))->toArray($request);
+                
+                // $productFeatures = $objEnergyFeatures[$product->category] ?? [];
+                
+                // if ($productFeatures instanceof \Illuminate\Support\Collection) {
+                //     $formattedProduct['energy_filters'] = $productFeatures->toArray();
+                // } else {
+                //     $formattedProduct['energy_filters'] = [];
+                // }
+                $total = $request->normal_electric_consume * $product->prices->electric_rate
+                + $request->peak_electric_consume * $product->prices->off_peak_electric_rate
+                + $request->gas_consume * $product->prices->gas_rate
+                + $product->delivery_cost_electric
+                + $product->delivery_cost_gas
+                + ($product->feedInCost ? $product->feedInCost->normal_feed_in_cost : 0)
+                + ($product->feedInCost ? $product->feedInCost->off_peak_feed_in_cost : 0)
+                - $product->cashback;
+
+                // Add the total value to the formatted product data
+                $formattedProduct['total'] = $total;
+                
+                $mergedData[] = $formattedProduct;
+            }
+            // Sort the merged data based on the total values
+            usort($mergedData, function ($a, $b) {
+                return $a['total'] <=> $b['total'];
+            });
+            //mergedData['additional_filters'] = $objEnergyFeatures;
+            // Return the merged data
+            return response()->json([
+                'success' => true,
+                'data' => $mergedData,
+                'filters' => $objEnergyFeatures,
+                'message' => 'Products retrieved successfully.'
+            ]);
 
     }
 
@@ -106,7 +127,7 @@ $mergedData = [];
         $compareIds = $request->compare_ids;
 
         if (!empty($compareIds)) {
-            $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost');
+            $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails');
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
 
             if ($filteredProducts->isNotEmpty()) {

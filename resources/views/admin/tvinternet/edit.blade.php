@@ -64,6 +64,15 @@
                     </div>
                 </a>
             </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#documents" role="tab" aria-selected="false">
+                    <div class="d-flex align-items-center">
+                        <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
+                        </div>
+                        <div class="tab-title">Documents</div>
+                    </div>
+                </a>
+            </li>
         </ul>
         <div class="tab-content py-3">
             <div class="tab-pane fade show active" id="home" role="tabpanel">
@@ -506,7 +515,27 @@
                     </div>
                 </form>
             </div>
+            <div class="tab-pane fade" id="documents" role="tabpanel">                               
 
+                    <div class="row">
+                        <div class="card-header px-4 py-3">
+                            <h5 class="mb-0">Edit Documents</h5>
+                        </div>
+                        <div class="col-md-7 col-12">
+                            <div class="card-body p-4">
+                                @include('admin.partials.document_management_html', ['objPost' => $objTv, 'documents' => $documents])
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-8">                           
+                        </div>
+                    </div>
+               
+            </div>
         </div>
     </div>
 </div>
@@ -760,4 +789,5 @@ $("#infoForm").validate({
         $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
     });
 </script>
+@include('admin.partials.document_management', ['objPost' => $objTv])
 @endpush

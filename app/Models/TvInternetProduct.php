@@ -14,4 +14,10 @@ class TvInternetProduct extends Model
     {
         return $this->hasMany(PostFeature::class, 'post_id', 'id');
     }
+
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'post_id', 'id');
+    }
 }
