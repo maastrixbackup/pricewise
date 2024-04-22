@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\InternetTvController;
 use App\Http\Controllers\Api\EnergyController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\RequestController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -36,6 +37,7 @@ Route::post('/reset-password/{token}', [RegisterController::class, 'resetPasswor
     Route::post('energy-compare', [EnergyController::class, 'energyCompare']);
     Route::get('suppliers', [SettingsController::class, 'getSupliers']);
     Route::get('house-type', [SettingsController::class, 'houseTypes']);
+    
 //Frontent === Auth    
 Route::group(['middleware' => 'auth:sanctum'], function () {   
     Route::post('/logout', [RegisterController::class, 'logout']);
@@ -45,8 +47,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/change-password', [UserDetailController::class, 'changepassword']);
     Route::post('/reset-password', [UserDetailController::class, 'resetpassword']);
     Route::post('/email-update', [UserDetailController::class, 'emailUpdate']);
+//API route for user data
+    Route::post('get-user-data', [RequestController::class, 'getUserData']);
+    Route::post('save-user-data', [RequestController::class, 'saveUserData']);
 //API route for Customer Creadential
     Route::post('/update-credentials', [UserDetailController::class, 'updateCredentials']);
     Route::get('/get-credentials', [UserDetailController::class, 'getCredentials']);
-
+//API route for user request
+    Route::post('save-user-request', [RequestController::class, 'store']);
+    Route::post('get-user-request', [RequestController::class, 'index']);
+    Route::get('show-user-request/{request_id}', [RequestController::class, 'show']);
+    //Reviews
+    Route::post('review-list', [RequestController::class, 'reviewList']);
+    Route::post('review-save', [RequestController::class, 'reviewSave']);
+    Route::get('review-show/{id}', [RequestController::class, 'reviewShow']);
 });
