@@ -69,18 +69,28 @@ class EnergyController extends BaseController
         }    
         // Retrieve filtered products and return response
         $filteredProducts = $products->get();
-        if ($filteredProducts->isNotEmpty()) {
-        $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
-        ->from('features as f1')
-        ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-        ->where('f1.category', 16)
-        ->where('f1.is_preferred', 1)
-        ->get()
-        ->groupBy('parent');//dd($objEnergyFeatures);
-        } else {
-            // Handle case when $filteredProducts is empty
-            $objEnergyFeatures = collect(); // Or any other default value or action
+        
+            $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+                ->from('features as f1')
+                ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+                ->where('f1.category', 16)
+                ->where('f1.is_preferred', 1)
+                ->get()
+                ->groupBy('parent');
+       
+
+        // Initialize an empty array to store the grouped filters
+        $filters = [];
+
+        // Loop through the grouped features and convert them to the desired structure
+        foreach ($objEnergyFeatures as $parent => $items) {
+            $filters[] = [
+                $parent => $items->map(function ($item) {
+                    return (object) $item->toArray();
+                })->toArray()
+            ];
         }
+
         $mergedData = [];
 
             foreach ($filteredProducts as $product) {
@@ -111,12 +121,12 @@ class EnergyController extends BaseController
             usort($mergedData, function ($a, $b) {
                 return $a['total'] <=> $b['total'];
             });
-            //mergedData['additional_filters'] = $objEnergyFeatures;
+            
             // Return the merged data
             return response()->json([
                 'success' => true,
                 'data' => $mergedData,
-                'filters' => $objEnergyFeatures,
+                'filters' => $filters,
                 'message' => 'Products retrieved successfully.'
             ]);
 

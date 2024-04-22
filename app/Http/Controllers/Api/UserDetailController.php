@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Models\CustomerCredential;
+use App\Models\UserCredential;
 use Illuminate\Support\Facades\Password;
 
 class UserDetailController extends Controller
@@ -71,7 +71,7 @@ class UserDetailController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['service_details'] = json_encode($request->service_details);
         
-        $customerCred = CustomerCredential::updateOrCreate(['user_id' => $data['user_id'], 'category'=> $data['category']], $data);
+        $customerCred = UserCredential::updateOrCreate(['user_id' => $data['user_id'], 'category'=> $data['category']], $data);
         if ($customerCred) {
             array_push($responseData, array('response' => array('status' => 'success', 'msg' => 'Customer Credential Updated Successfully.')));
             return response()->json($responseData, 200);
@@ -81,7 +81,7 @@ class UserDetailController extends Controller
         }
     }
     public function getCredentials(Request $request){
-        $responseData = CustomerCredential::where('user_id', $request->user_id)->where('category', $request->category)->first();
+        $responseData = UserCredential::where('user_id', $request->user_id)->where('category', $request->category)->first();
         return response()->json($responseData, 200);
     }
 
