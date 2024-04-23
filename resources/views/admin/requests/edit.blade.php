@@ -1,0 +1,446 @@
+@extends('admin.layouts.app')
+@section('title','PriceWise- Energy Products Edit')
+@section('content')
+<style type="text/css">
+    .form-check-box {
+    display: flex;
+    align-items: center;
+}
+
+.form-check-pr label {
+    position: relative;
+    cursor: pointer;
+}
+.form-check-pr input {
+    padding: 0;
+    height: initial;
+    width: initial;
+    margin-bottom: 0;
+    display: none;
+    cursor: pointer;
+}
+.form-check-pr label:before {
+    content: '';
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 2px solid #fa9f1d;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.form-check-pr input:checked + label:after {content: '';display: block;position: absolute;top: 7px;left: 9px;width: 6px;height: 14px;border: solid #0079bf;border-width: 0 2px 2px 0;transform: rotate(45deg);}
+</style>
+<!--breadcrumb-->
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="ps-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.requests.index')}}">Requests</a></li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+   
+        
+        
+
+                <form action="{{route('admin.request.update_status')}}" method="post">
+                    @csrf                    
+                    <div class="row">                      
+                        <div class="col-12">
+                            <!-- Right column content -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Subscription and One-Time Costs</h2><strong style="position: relative; right:5px">    Order Date: </strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">  
+                                    <div class="col-sm-6">
+                                    <!-- Customer Details aligned to the left -->
+                                    <h5>Subscriber Details</h5>                                
+                                    <strong>Name: </strong><br>
+                                    <strong>Address: </strong><br>
+                                    <strong>Postal Code: </strong>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <!-- Supplier Details aligned to the right -->
+                                    <h5>Supplier Details    </h5>                                
+                                    <strong>Name: </strong><br>
+                                    <strong>Address: </strong><br>
+                                    <strong>Postal Code: </strong>
+                                </div>
+                            </div>
+                                    <hr/>
+                                    <h5>Subscription Details</h5>                                
+                                    <ul class="list-group">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Subscription Cost
+                                            <span class="">$100</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            One-Time Cost
+                                            <span class="">$50</span>
+                                        </li>
+                                        <!-- Add more cost items as needed -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                            <div class="d-md-flex d-grid align-items-center gap-3">
+                                <button type="submit" id="submitBtn4" class="btn btn-primary px-4" value="Save">Save</button>
+                                <button type="reset" class="btn btn-light px-4">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--end breadcrumb-->
+
+@endsection
+@push('scripts')
+<script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
+
+<script>
+    tinymce.init({
+        selector: '#description',
+        plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+        toolbar_mode: 'floating',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
+            codesample_languages: [
+                { text: 'HTML/XML', value: 'markup' },
+                { text: 'JavaScript', value: 'javascript' },
+                { text: 'CSS', value: 'css' },
+                { text: 'PHP', value: 'php' },
+                { text: 'Ruby', value: 'ruby' },
+                { text: 'Python', value: 'python' },
+                { text: 'Java', value: 'java' },
+                { text: 'C', value: 'c' },
+                { text: 'C#', value: 'csharp' },
+                { text: 'C++', value: 'cpp' }
+            ],
+       
+         file_picker_callback (callback, value, meta) {
+        let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth
+        let y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight
+
+        tinymce.activeEditor.windowManager.openUrl({
+          url : '/file-manager/tinymce5',
+          title : 'Laravel File manager',
+          width : x * 0.8,
+          height : y * 0.8,
+          onMessage: (api, message) => {
+            callback(message.content, { text: message.text })
+          }
+        })
+      }
+    });
+
+
+    $("#productForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        rules: {
+            title: "required",
+            description: "required",
+
+        },
+        messages: {
+            title: "Title is missing",
+            description: "Description is missing",
+        },
+        submitHandler: function(form) {
+            var data = CKEDITOR.instances.description.getData();
+            $("#description").val(data);
+            var formData = new FormData(form);
+            alert(form.action)
+            $.ajax({
+
+                url: form.action,
+                method: "PUT",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        location.href = data.redirect_location;
+                    } else {
+                        toastr.error(data.message.message, 'Already Exists!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+$("#internetForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                // headers: {
+                //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                // },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.success(data.message.message, '');
+                    } else {
+                        toastr.error(data.message.message, '');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+$("#tvForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            // var data = CKEDITOR.instances.description.getData();
+            // $("#description").val(data);
+            // var formData = new FormData(form);
+            // alert(form.action)
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.success(data.message.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Something went wrong!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+$("#teleForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.success(data.message.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Something went wrong!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+$("#infoForm").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            // var data = CKEDITOR.instances.description.getData();
+            // $("#description").val(data);
+            // var formData = new FormData(form);
+            // alert(form.action)
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.success(data.message.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Something went wrong!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
+    $("#title").keyup(function() {
+        var title_val = $("#title").val();
+        $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+    });
+    $("#title").keydown(function() {
+        var title_val = $("#title").val();
+        $("#link").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+    });
+    $(document).ready(function(){
+        $("#provider").on('change', function() {
+            var provider_id = $(this).val(); 
+            $.ajax({
+                url: "http://192.168.1.44/pricewise/public/api/login", // Replace this with the actual URL to fetch subcategories
+                type: 'POST',
+                data: {
+                   "email" : "customer@customer.com",
+                   "password" : "password"    
+                },
+                // headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                // },
+                success: function(response) {
+                    console.log(response.data)
+                    
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Handle errors here
+                }
+            });
+        });
+    });
+
+    $(document).ready(function() {
+    $('#addDocument').click(function() {
+        $('<input type="file" name="documents[]" class="documentInput">').appendTo('#documents');
+    });
+
+    $('#save').click(function() {
+        var formData = new FormData();
+        $('.documentInput').each(function(index, element) {
+            formData.append('documents[]', $(element)[0].files[0]);
+        });
+
+        $.ajax({
+            url: '/insurance/store',
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                // Handle success
+            }
+        });
+    });
+
+    $(document).on('click', '.delete', function() {
+        var documentId = $(this).data('id');
+
+        $.ajax({
+            url: '/insurance/' + documentId,
+            method: 'DELETE',
+            success: function(data) {
+                // Handle success
+            }
+        });
+    });
+});
+</script>
+
+@endpush

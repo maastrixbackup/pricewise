@@ -22,5 +22,7 @@ class UserRequest extends Model
     //     'status'
     // ];
 
-   
+   public function userDetails(){
+    return $this->belongsTo(User::class, 'user_id', 'id');
+   }
 }

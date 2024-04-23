@@ -1,5 +1,5 @@
 @component('mail::message')
-# Dear {{$content['name']}},
+ Dear {{$content['name']}},
 
 {{$content['body']}}
 
