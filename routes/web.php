@@ -84,8 +84,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         //Route::post('/telephone-feature-update/{id}', 'TvInternetController@tele_feature_update')->name('tele_feature_update');
         //Route::post('/service-info-update/{id}', 'TvInternetController@service_info_update')->name('service_info_update');
 
+        //Requests
+        Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
+        Route::post('/update_status', 'RequestController@updateStatus')->name('request.update_status');
+        // Route::get('/requests/edit/', 'RequestController@index')->name('get.request');
+        Route::resource('requests', 'RequestController');
         //Energy
-        //Insurance
         Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
         Route::resource('energy', 'EnergyController');
         Route::post('/doc-update/{id}', 'EnergyController@energy_doc_update')->name('doc_update');

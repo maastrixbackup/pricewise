@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('save-user-request', [RequestController::class, 'store']);
     Route::post('get-user-request', [RequestController::class, 'index']);
     Route::get('show-user-request/{request_id}', [RequestController::class, 'show']);
+    Route::get('view-order/{order_no}', [RequestController::class, 'viewOrder']);
     //Reviews
     Route::post('review-list', [RequestController::class, 'reviewList']);
     Route::post('review-save', [RequestController::class, 'reviewSave']);

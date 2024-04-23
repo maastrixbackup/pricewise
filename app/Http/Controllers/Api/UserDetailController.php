@@ -22,6 +22,7 @@ class UserDetailController extends Controller
                 $user_arr[$key]['id'] =  $val->id;
                 $user_arr[$key]['name'] =  $val->name;
                 $user_arr[$key]['email'] =  $val->email;
+                $user_arr[$key]['gender'] =  $val->gender;
                 $user_arr[$key]['mobile'] =  $val->mobile;
                 $user_arr[$key]['address'] =  $val->address;
                 $user_arr[$key]['photo'] = asset('images/customers/' . $val->photo);
@@ -44,6 +45,8 @@ class UserDetailController extends Controller
         $objUser->gender =  $request->gender;
         $objUser->mobile =  $request->mobile;
         $objUser->address =  $request->address;
+        $objUser->acct_no =  $request->acct_no;
+        $objUser->landline_no =  $request->landline_no;
         if ($request->file('photo') == null) {
             $input['photo'] = $objUser->photo;
         } else {

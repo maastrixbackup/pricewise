@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\EmailTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Mail\MarkdownEmail;
+use App\Mail\CustomerRequestSubmit;
 use Illuminate\Support\Facades\Mail;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
@@ -68,10 +68,10 @@ class RequestController extends BaseController
             $commission_prct = $request->input('commission_prct');
             $commission_amt = $request->input('commission_amt');
             $request_status = $request->input('request_status');
-
+            $advantages = $request->input('advantages');
             // Create a new UserRequest instance
             $data = new UserRequest();
-
+            $data->order_no = $user_id;
             // Assign data to the properties of the $data object
             $data->user_id = $user_id;
             $data->user_type = $user_type;
@@ -79,6 +79,7 @@ class RequestController extends BaseController
             $data->sub_category = $sub_category_id;
             $data->post_id = $post_id;
             $data->combos = $combos;
+            $data->advantages = json_encode($advantages);
             $data->total_price = $total_price;
             $data->discounted_price = $discounted_price;
             $data->discount_prct = $discount_prct;
@@ -89,15 +90,21 @@ class RequestController extends BaseController
             $data->billing_address = json_encode($request->billing_address);
             // Save the data to the database
             if ($data->save()) {
-                $name = 'John Doe';
-                $orderNo = '12345';
-                $emailTemplate = EmailTemplate::where('email_of', 'Request Placed Successfully')->first();
-                $body = $emailTemplate->content;
-                $body = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->content);
+                // Calculate order number based on id + 1000
+                $orderNo = $data->id + 1000;
+                $data->order_no = $orderNo;
+                $name = $data->userDetails->name;
+                // Save the data to the database
+                $data->save();
+                $data->load('userDetails');                
+                $emailTemplate = EmailTemplate::where('email_of', '2')->first();
+                //dd($data->userDetails->name);
+                //$body = $emailTemplate->mail_body;
+                $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
+                $body['name'] = $data->userDetails->name;
+                $body['action_link'] = url('/').'/view-order/'.$orderNo;
 
-                $action_link = 'https://example.com';
-
-                Mail::to('bijay.behera85@gmail.com')->send(new MarkdownEmail($name, $body, $action_link));
+                Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
                 return response()->json(['success' => true, 'message' => 'User request saved successfully'], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
@@ -124,6 +131,12 @@ class RequestController extends BaseController
     public function show(UserRequest $userRequest)
     {
         return $this->sendResponse($userRequest, 'User request retrieved successfully.');
+    }
+
+    public function viewOrder( $order_no)
+    {
+        $order = UserRequest::where('order_no', $order_no)->first();
+        return $this->sendResponse($order, 'User request retrieved successfully.');
     }
 
     /**
