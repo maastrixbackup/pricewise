@@ -16,6 +16,11 @@ class InsuranceProduct extends Model
         'valid_till' => 'date:d-m-Y',
     ];
 
+    public function request()
+    {
+        return $this->morphOne(Request::class, 'service');
+    }
+
     public function postFeatures()
     {
         return $this->hasMany(PostFeature::class, 'post_id', 'id');

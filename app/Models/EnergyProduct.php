@@ -10,6 +10,11 @@ class EnergyProduct extends Model
     use HasFactory;
     protected $table = "energy_products";
 
+    public function request()
+    {
+        return $this->morphOne(Request::class, 'service');
+    }
+
     public function postFeatures()
     {
         return $this->hasMany(PostFeature::class, 'post_id', 'id');

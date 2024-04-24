@@ -11,6 +11,7 @@ use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
 use App\Models\Feature;
+use App\Models\PostRequest;
 use Validator;
 use App\Http\Resources\EnergyResource;
 use DB;
@@ -53,14 +54,16 @@ class RequestController extends BaseController
      * @return \Illuminate\Http\Response
      */ 
     public function store(Request $request)
-    {
+    {//dd($request->advantages);
       
         try {
             $user_id = $request->input('user_id');
             $user_type = $request->input('user_type');
             $category_id = $request->input('category');
             $sub_category_id = $request->input('sub_category');
-            $post_id = $request->input('post_id');
+            $service_id = $request->input('service_id');
+            $postal_code = $request->input('postal_code');
+            $service_type = $request->input('service_type');
             $combos = json_encode($request->input('combos'));
             $total_price = $request->input('total_price');
             $discounted_price = $request->input('discounted_price');
@@ -77,9 +80,11 @@ class RequestController extends BaseController
             $data->user_type = $user_type;
             $data->category = $category_id;
             $data->sub_category = $sub_category_id;
-            $data->post_id = $post_id;
+            $data->service_id = $service_id;
+            $data->service_type = $service_type;
             $data->combos = $combos;
-            $data->advantages = json_encode($advantages);
+            $data->postal_code = $postal_code;
+            //$data->advantages = json_encode($advantages);
             $data->total_price = $total_price;
             $data->discounted_price = $discounted_price;
             $data->discount_prct = $discount_prct;
@@ -90,19 +95,27 @@ class RequestController extends BaseController
             $data->billing_address = json_encode($request->billing_address);
             // Save the data to the database
             if ($data->save()) {
-                // Calculate order number based on id + 1000
+                
                 $orderNo = $data->id + 1000;
                 $data->order_no = $orderNo;
                 $name = $data->userDetails->name;
-                // Save the data to the database
+                
                 $data->save();
+                if($request->has('advantages')){
+                    foreach($request->advantages as $key => $value){
+                        PostRequest::updateOrCreate(['request_id' => $data->id, 'key' => $key],
+                            [
+                                'value' => $value
+                            ]);
+                    }
+                }
                 $data->load('userDetails');                
                 $emailTemplate = EmailTemplate::where('email_of', '2')->first();
                 //dd($data->userDetails->name);
                 //$body = $emailTemplate->mail_body;
                 $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
                 $body['name'] = $data->userDetails->name;
-                $body['action_link'] = url('/').'/view-order/'.$orderNo;
+                $body['action_link'] = url('/').'/api/view-order/'.$orderNo;
 
                 Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
                 return response()->json(['success' => true, 'message' => 'User request saved successfully'], 200);
@@ -133,11 +146,11 @@ class RequestController extends BaseController
         return $this->sendResponse($userRequest, 'User request retrieved successfully.');
     }
 
-    public function viewOrder( $order_no)
-    {
-        $order = UserRequest::where('order_no', $order_no)->first();
-        return $this->sendResponse($order, 'User request retrieved successfully.');
-    }
+    // public function viewOrder( $order_no)
+    // {
+    //     $order = UserRequest::where('order_no', $order_no)->first();
+    //     return $this->sendResponse($order, 'User request retrieved successfully.');
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -187,6 +200,11 @@ class RequestController extends BaseController
         //
     }
 
+    public function viewOrder(Request $request, $id)
+    {
+        $user_request = UserRequest::find($id);
+        return view('admin.requests.edit', compact('user_request'));
+    }
 
     public function getUserData(Request $request){
         $userData = UserData::where('user_id', $request->user_id)->get();

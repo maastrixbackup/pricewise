@@ -59,31 +59,34 @@
                             <!-- Right column content -->
                             <div class="card">
                                 <div class="card-header">
-                                    <h2>Subscription and One-Time Costs</h2><strong style="position: relative; right:5px">    Order Date: </strong>
+                                    <h2>Subscription and One-Time Costs</h2><strong style="float; right !important">    Order Date: </strong>{{$userRequest->created_at->format('d/m/Y')}}
+                                    <strong style="float; right !important">    Order No: </strong>{{$userRequest->order_no}}
                                 </div>
                                 <div class="card-body">
                                     <div class="row">  
                                     <div class="col-sm-6">
                                     <!-- Customer Details aligned to the left -->
                                     <h5>Subscriber Details</h5>                                
-                                    <strong>Name: </strong><br>
-                                    <strong>Address: </strong><br>
+                                    <strong>Name: </strong>{{$userRequest->userDetails->name}}<br>
+                                    <strong>Address: </strong>{{$userRequest->userDetails->address}}<br>
                                     <strong>Postal Code: </strong>
                                 </div>
                                 <div class="col-sm-6 text-right">
                                     <!-- Supplier Details aligned to the right -->
                                     <h5>Supplier Details    </h5>                                
-                                    <strong>Name: </strong><br>
-                                    <strong>Address: </strong><br>
-                                    <strong>Postal Code: </strong>
+                                    <strong>Name: </strong>{{$userRequest->providerDetails->name}}<br>
+                                    <strong>Address: </strong>{{$userRequest->providerDetails->address}}<br>
+                                    
                                 </div>
                             </div>
                                     <hr/>
                                     <h5>Subscription Details</h5>                                
                                     <ul class="list-group">
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Subscription Cost
-                                            <span class="">$100</span>
+                                            <strong>{{$userRequest->service->title}}</strong>
+                                            <span class="">{{$userRequest->total_price}}</span>
+                                            <span><br>Anual Cost</span>
+
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             One-Time Cost
