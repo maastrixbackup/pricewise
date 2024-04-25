@@ -235,10 +235,10 @@ class EnergyController extends Controller
             $objEnergy->no_of_person = $request->no_of_person;
             $objEnergy->category =  $request->category;
             $objEnergy->product_type = $request->product_type;
-            $objEnergy->manual_install = $request->manual_install;
+            $objEnergy->government_levies_gas = $request->government_levies_gas;
             $objEnergy->is_featured = $request->is_featured;
-            $objEnergy->mechanic_install = $request->mechanic_install;
-            $objEnergy->mechanic_charge = $request->mechanic_charge;            
+            $objEnergy->government_levies_electric = $request->government_levies_electric;
+            $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;            
             $objEnergy->slug = $request->link;
             $objEnergy->provider = $request->provider;
             $objEnergy->no_gas = $request->no_gas;
@@ -342,10 +342,10 @@ class EnergyController extends Controller
             $objEnergy->valid_till =  $request->valid_till;
             $objEnergy->category =  $request->category;
             $objEnergy->product_type = $request->product_type;
-            $objEnergy->manual_install = $request->manual_install;
+            $objEnergy->government_levies_gas = $request->government_levies_gas;
             $objEnergy->is_featured = $request->is_featured;
-            $objEnergy->mechanic_install = $request->mechanic_install;
-            $objEnergy->mechanic_charge = $request->mechanic_charge;            
+            $objEnergy->government_levies_electric = $request->government_levies_electric;
+            $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;            
             $objEnergy->slug = $request->link;
             $objEnergy->no_of_person = $request->no_of_person;
             $objEnergy->provider = $request->provider;

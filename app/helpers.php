@@ -4,10 +4,15 @@ use App\Models\WebsiteSetting;
 use App\Models\Banner;
 
 if (!function_exists('getSettings')) {
+    // function getSettings()
+    // {
+    //     $settings = Setting::all();
+    //     return $settings;
+    // }
     function getSettings()
     {
         $settings = Setting::all();
-        return $settings;
+        return $settings->pluck('value','key');
     }
 }
 if (!function_exists('siteSettings')) {

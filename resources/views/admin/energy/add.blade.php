@@ -187,30 +187,35 @@
                     </div>
                 </div>
                 <div class="row">
-                <div class="col-md-6 col-12">
-                    
-                    <label for="input35" class=" col-form-label">Installation options</label>
-                    <div class="mb-3 add-scroll">
-                    <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="manual_install" value="1" >
-                    <label class="form-check-label" for="manual_install">Manual Installation</label>
-                    </div>
-                    </div>
-                    <div class="mb-3 add-scroll">
-                    <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="mechanic_install" value="1" >
-                    <label class="form-check-label" for="mechanic_charge">Mechanic Installation</label>
-                    </div>
-                    </div>
-                
-                </div>
-                <div class="col-md-6 col-12">
-                    <div class=" mb-3">
-                        <label for="mechanic_charge" class=" col-form-label">Mechanic Charge
-                        </label>
-                        <input type="number" class="form-control" id="mechanic_charge" name="mechanic_charge">
-                    </div>
-                </div>
+                <div class="col-md-6 col-12">@php
+                    $businessGeneralSettings = getSettings('business_general');
+
+
+
+@endphp
+                                                        
+                                                        <label for="government_levies_gas" class=" col-form-label">Govt. Levies on Gas</label>
+                                                        <div class="mb-3 add-scroll">
+                                                        
+                                                        <input class="form-control" type="number" name="government_levies_gas" value="{{getSettings()}}">
+                                                        
+                                                        
+                                                        </div>
+                                                        <label for="government_levies_electric" class=" col-form-label">Govt. Levies on Electric</label>                         
+                                                        <div class="mb-3 add-scroll">
+                                                        
+                                                        <input class="form-control" type="number" name="government_levies_electric" value="">
+                                                        
+                                                        </div>
+                                                    
+                                                    </div>
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                            <label for="reduction_of_energy_tax" class=" col-form-label">Reduction of Energy Tax
+                                                            </label>
+                                                            <input type="number" class="form-control" id="reduction_of_energy_tax" name="reduction_of_energy_tax" value="">
+                                                        </div>
+                                                    </div>
                 </div>
                 
 

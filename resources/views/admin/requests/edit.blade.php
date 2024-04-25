@@ -1,6 +1,8 @@
 @extends('admin.layouts.app')
 @section('title','PriceWise- Energy Products Edit')
 @section('content')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
 <style type="text/css">
     .form-check-box {
     display: flex;
@@ -59,41 +61,245 @@
                             <!-- Right column content -->
                             <div class="card">
                                 <div class="card-header">
-                                    <h2>Subscription and One-Time Costs</h2><strong style="float; right !important">    Order Date: </strong>{{$userRequest->created_at->format('d/m/Y')}}
-                                    <strong style="float; right !important">    Order No: </strong>{{$userRequest->order_no}}
+                                    <h2>Subscription and One-Time Costs</h2>                                    
                                 </div>
                                 <div class="card-body">
+                                    <div class="container">
                                     <div class="row">  
-                                    <div class="col-sm-6">
-                                    <!-- Customer Details aligned to the left -->
-                                    <h5>Subscriber Details</h5>                                
-                                    <strong>Name: </strong>{{$userRequest->userDetails->name}}<br>
-                                    <strong>Address: </strong>{{$userRequest->userDetails->address}}<br>
-                                    <strong>Postal Code: </strong>
-                                </div>
-                                <div class="col-sm-6 text-right">
-                                    <!-- Supplier Details aligned to the right -->
-                                    <h5>Supplier Details    </h5>                                
-                                    <strong>Name: </strong>{{$userRequest->providerDetails->name}}<br>
-                                    <strong>Address: </strong>{{$userRequest->providerDetails->address}}<br>
+                                        <div class="col-sm-4">
+                                        <!-- Customer Details aligned to the left -->
+                                        <h5>Subscriber Details</h5>                                
+                                        <strong>Name: </strong>{{$userRequest->userDetails?$userRequest->userDetails->name:''}}<br>
+                                        <strong>Address: </strong>{{$userRequest->userDetails?$userRequest->userDetails->address:''}}<br>
+                                        <strong>Postal Code: </strong>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <!-- Supplier Details aligned to the right -->
+                                            <h5>Supplier Details    </h5>                                
+                                            <strong>Name: </strong>{{$userRequest->providerDetails?$userRequest->providerDetails->name:''}}<br>
+                                            <strong>Address: </strong>{{$userRequest->providerDetails?$userRequest->providerDetails->address:''}}<br>                                        
+                                        </div>
+                                        <div class="col-sm-4">
+                                        <strong>    Order Date: </strong>{{$userRequest->created_at->format('d/m/Y')}}
+                                        <strong>    Order No: </strong>{{$userRequest->order_no}}
+                                        </div>
+                                                                           
+                                    </div>
+                                    <hr/>                                  
                                     
-                                </div>
-                            </div>
-                                    <hr/>
-                                    <h5>Subscription Details</h5>                                
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>{{$userRequest->service->title}}</strong>
-                                            <span class="">{{$userRequest->total_price}}</span>
-                                            <span><br>Anual Cost</span>
+                                        <h5>Subscription Details</h5>
+                                      <div class="row">
+                                        <div class="col">
+                                          <div class="card">
+                                            <div class="card-body">
+                                              <h5 class="card-title d-flex justify-content-between">
+                                                Your Subscription
+                                                <a class="collapsed" data-toggle="collapse" href="#priceBreakdown" aria-expanded="false" aria-controls="priceBreakdown">
+                                                  <i class="fas fa-chevron-down"></i>
+                                                </a>
+                                              </h5>
+                                              <div class="row">
+                                                <div class="col-6">
+                                                  <p class="mb-0">Anual Cost</p>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                  <p class="mb-0">€ {{$userRequest->total_price}}</p>
+                                                </div>
+                                              </div>
+                                              <div class="collapse" id="priceBreakdown">
+                                                <hr>
+                                                <div class="row">
+                                                  <div class="col-6">
+                                                    <p class="mb-0">{{$userRequest->service?$userRequest->service->title:''}}</p>
+                                                  </div>
+                                                  <div class="col-6 text-right">
+                                                    <p class="mb-0">€ {{$userRequest->total_price}}</p>
+                                                  </div>
+                                                </div>
+                                                <div class="row">
+                                                  <div class="col-6">
+                                                    <small class="text-muted">12 months cost € 35,00</small>
+                                                  </div>
+                                                </div>
+                {{--@php
+                //$total = $request->normal_electric_consume * $product->prices->electric_rate
+                //+ $request->peak_electric_consume * $product->prices->off_peak_electric_rate
+                //+ $request->gas_consume * $product->prices->gas_rate
+                //+ $product->delivery_cost_electric
+                //+ $product->delivery_cost_gas
+                //+ ($product->feedInCost ? $product->feedInCost->normal_feed_in_cost : 0)
+                //+ ($product->feedInCost ? $product->feedInCost->off_peak_feed_in_cost : 0)
+                //- $product->cashback;
 
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            One-Time Cost
-                                            <span class="">$50</span>
-                                        </li>
-                                        <!-- Add more cost items as needed -->
-                                    </ul>
+                $advantages = json_decode($userRequest->advantages, true);
+
+                // Calculate gas cost
+                $gasCost = $advantages["gas_consume"] * $advantages["gas_price"];
+                $normalElectricCost = $advantages["normal_electric_consume"] * $advantages["normal_electric_price"];
+                $peakElectricCost = $advantages["peak_electric_consume"] * $advantages["peak_electric_price"];
+                $electricityCost = $normalElectricCost + $peakElectricCost;
+                $feedInPeakCost = $advantages["feed_in_peak"];
+                $feedInNormalCost = $advantages["feed_in_normal"];
+                $feedInCost = $feedInPeakCost + $feedInNormalCost;
+                $deliveryCostGas = $advantages["delivery_cost_gas"];
+                $deliveryCostElectric = $advantages["delivery_cost_electric"];
+                $deliveryCost = $deliveryCostGas + $deliveryCostElectric;
+                $networkCostGas = $advantages["network_cost_gas"];
+                $networkCostElectric = $advantages["network_cost_electric"];
+                $networkCost = $networkCostGas + $networkCostElectric;
+                $mechanicCharge = $advantages["mechanic_charge"];
+                $totalCost = $gasCost + $electricityCost - $feedInCost + $deliveryCost + $networkCost + $mechanicCharge;
+
+                // Output HTML
+                echo '<div class="container">';
+                echo '<div class="row">';
+                echo '<div class="col">';
+                echo '<div class="card">';
+                echo '<div class="card-body">';
+
+                foreach ($advantages as $key => $value) {
+                    $label = str_replace('_', ' ', $key);
+                    $label = ucwords($label);
+                    echo '<div class="row">';
+                    echo '<div class="col-6">';
+                    echo '<p class="mb-0">' . $label . ' ';
+
+                    switch ($key) {
+                        case 'gas_consume':
+                        case 'gas_price':
+                            echo '(' . $advantages["gas_consume"] . ' * ' . $advantages["gas_price"] . ')';
+                            break;
+                        case 'normal_electric_consume':
+                        case 'normal_electric_price':
+                            echo '(' . $advantages["normal_electric_consume"] . ' * ' . $advantages["normal_electric_price"] . ')';
+                            break;
+                        case 'peak_electric_consume':
+                        case 'peak_electric_price':
+                            echo '(' . $advantages["peak_electric_consume"] . ' * ' . $advantages["peak_electric_price"] . ')';
+                            break;
+                        case 'feed_in_peak':
+                        case 'feed_in_normal':
+                            echo '(' . $advantages["feed_in_peak"] . ' + ' . $advantages["feed_in_normal"] . ')';
+                            break;
+                        case 'delivery_cost_gas':
+                        case 'delivery_cost_electric':
+                            echo '(' . $advantages["delivery_cost_gas"] . ' + ' . $advantages["delivery_cost_electric"] . ')';
+                            break;
+                        case 'network_cost_gas':
+                        case 'network_cost_electric':
+                            echo '(' . $advantages["network_cost_gas"] . ' + ' . $advantages["network_cost_electric"] . ')';
+                            break;
+                    }
+
+                    echo '</p>';
+                    echo '</div>';
+                    echo '<div class="col-6 text-right">';
+
+                    switch ($key) {
+                        case 'gas_consume':
+                        case 'gas_price':
+                            echo '<p class="mb-0">€ ' . number_format($gasCost, 2, '.', '') . '</p>';
+                            break;
+                        case 'normal_electric_consume':
+                        case 'normal_electric_price':
+                            echo '<p class="mb-0">€ ' . number_format($normalElectricCost, 2, '.', '') . '</p>';
+                            break;
+                        case 'peak_electric_consume':
+                        case 'peak_electric_price':
+                            echo '<p class="mb-0">€ ' . number_format($peakElectricCost, 2, '.', '') . '</p>';
+                            break;
+                        case 'feed_in_peak':
+                        case 'feed_in_normal':
+                            echo '<p class="mb-0">€ ' . number_format($feedInCost, 2, '.', '') . '</p>';
+                            break;
+                        case 'delivery_cost_gas':
+                        case 'delivery_cost_electric':
+                            echo '<p class="mb-0">€ ' . number_format($deliveryCost, 2, '.', '') . '</p>';
+                            break;
+                        case 'network_cost_gas':
+                        case 'network_cost_electric':
+                            echo '<p class="mb-0">€ ' . number_format($networkCost, 2, '.', '') . '</p>';
+                            break;
+                        default:
+                            echo '<p class="mb-0">€ ' . number_format($value, 2, '.', '') . '</p>';
+                            break;
+                    }
+
+                    echo '</div>';
+                    echo '</div>';
+                }
+
+                echo '<hr>';
+                echo '<div class="row">';
+                echo '<div class="col-6">';
+                echo '<p class="mb-0">Total Cost</p>';
+                echo '</div>';
+                echo '<div class="col-6 text-right">';
+                echo '<p class="mb-0">€ ' . number_format($totalCost, 2, '.', '') . '</p>';
+                echo '</div>';
+                echo '</div>';
+
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
+                @endphp --}}
+
+@include('admin.partials.energy_request',['advantages'=>json_decode($userRequest->advantages, true)])
+                                        {{--@foreach($userRequest->advantagesData as $key => $value)
+                                                <div class="row">
+                                                  <div class="col-6">
+                                                    <p class="mb-0">{{$value->key}}</p>
+                                                  </div>
+                                                  <div class="col-6 text-right">
+                                                    <p class="mb-0">€ {{$value->value}}</p>
+                                                  </div>
+                                                </div>
+                                        @endforeach --}}
+                
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row mt-4">
+                                        <div class="col">
+                                          <div class="card">
+                                            <div class="card-body">
+                                              <h5 class="card-title">One-off costs</h5>
+                                              <p class="mb-2">The one-off costs are stated on the first invoice</p>
+                                              <div class="row">
+                                                <div class="col-6">
+                                                  <p class="mb-1">+ Connection costs</p>
+                                                  <small class="text-muted">One-time € 25,00 Discount</small>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                  <p class="mb-1">Free</p>
+                                                </div>
+                                              </div>
+                                              <div class="row">
+                                                <div class="col-6">
+                                                  <p class="mb-1">Shipping and handling charges</p>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                  <p class="mb-1">Free</p>
+                                                </div>
+                                              </div>
+                                              <div class="row">
+                                                <div class="col-6">
+                                                  <p class="mb-0">+ Order a technician directly</p>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                  <p class="mb-0">€ 75,00</p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>                              
+                                    
                                 </div>
                             </div>
                         </div>
@@ -115,6 +321,7 @@
 @endsection
 @push('scripts')
 <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 
 <script>
     tinymce.init({

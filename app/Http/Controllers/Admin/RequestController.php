@@ -137,24 +137,9 @@ class RequestController extends Controller
 	{
 		$serviceId = $request->query('service_id');
 		$category = $request->query('category');
-	    $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('id', $id)
-		    // ->whereHas('service', function ($query) use ($serviceId, $category) {
-		    //     $query->where('category', $category);
-		    // })
+	    $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('id', $id)		    
 		    ->first();
-		    //dd($userRequest);
-		// foreach ($requests as $request) {
-		   
-		//     $service = $request->service;
-
-		//     // Handle the service type (e.g., Insurance, Energy)
-		//     if ($service instanceof InsuranceProduct) {
-		//         // Handle Insurance service
-		//     } elseif ($service instanceof EnergyProduct) {
-		//         // Handle Energy service
-		//     }
-		//     // Add more conditions for other service types as needed
-		// }
+		    //dd(json_decode($userRequest->advantages, true));		    
 	    return view('admin.requests.edit', compact('userRequest'));
 	}
 

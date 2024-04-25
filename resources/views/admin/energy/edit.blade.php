@@ -251,26 +251,26 @@
                                                     <div class="row">
                                                     <div class="col-md-6 col-12">
                                                         
-                                                        <label for="input35" class=" col-form-label">Installation options</label>
+                                                        <label for="government_levies_gas" class=" col-form-label">Govt. Levies on Gas</label>
                                                         <div class="mb-3 add-scroll">
-                                                        <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="manual_install" value="1"  @if($objEnergy->manual_install == 1)checked @endif>
-                                                        <label class="form-check-label" for="manual_install">Manual Installation</label>
+                                                        
+                                                        <input class="form-control" type="number" name="government_levies_gas" value="{{$objEnergy->government_levies_gas}}">
+                                                        
+                                                        
                                                         </div>
-                                                        </div>
+                                                        <label for="government_levies_electric" class=" col-form-label">Govt. Levies on Electric</label>                         
                                                         <div class="mb-3 add-scroll">
-                                                        <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="mechanic_install" value="1"  @if($objEnergy->mechanic_install == 1)checked @endif>
-                                                        <label class="form-check-label" for="mechanic_charge">Mechanic Installation</label>
-                                                        </div>
+                                                        
+                                                        <input class="form-control" type="number" name="government_levies_electric" value="{{$objEnergy->government_levies_electric}}">
+                                                        
                                                         </div>
                                                     
                                                     </div>
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
-                                                            <label for="mechanic_charge" class=" col-form-label">Mechanic Charge
+                                                            <label for="reduction_of_energy_tax" class=" col-form-label">Reduction of Energy Tax
                                                             </label>
-                                                            <input type="number" class="form-control" id="mechanic_charge" name="mechanic_charge" value="{{$objEnergy->mechanic_charge}}">
+                                                            <input type="number" class="form-control" id="reduction_of_energy_tax" name="reduction_of_energy_tax" value="{{$objEnergy->reduction_of_energy_tax}}">
                                                         </div>
                                                     </div>
                                                     </div>
