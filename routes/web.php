@@ -42,7 +42,7 @@ require __DIR__ . '/auth.php';
 // 		    Lfm::routes();
 // 		});
 // Admin 
-
+Route::get('view-order/{order_no}', 'RequestController@viewOrder')->name('request.view_order');
 Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
     Route::namespace('Auth')->middleware('guest:admin')->group(function () {
@@ -54,6 +54,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('forgot-password', 'PasswordResetLinkController@store')->name('password.email');
         Route::get('reset-password/{token}', 'NewPasswordController@create')->name('password.reset');
         Route::post('reset-password', 'NewPasswordController@store')->name('password.update');
+
+        
     });
     Route::middleware('admin')->group(function () {
     	Route::get('file-manager', 'FileManagerController@index');
@@ -89,6 +91,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/update_status', 'RequestController@updateStatus')->name('request.update_status');
         // Route::get('/requests/edit/', 'RequestController@index')->name('get.request');
         Route::resource('requests', 'RequestController');
+
         //Energy
         Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
         Route::resource('energy', 'EnergyController');

@@ -56,8 +56,9 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>User ID</th>
-                                <th>User Type</th>
+                                <th>Product</th>
+                                <th>Customer</th>
+                                <th>Customer Type</th>
                                 <th>Request Status</th>
                                 <th>Action</th>
                             </tr>
@@ -91,7 +92,10 @@
                     data: 'id'
                 },
                 {
-                    data: 'user_id'
+                    data: 'product'
+                },
+                {
+                    data: 'user_name'
                 },
                 {
                     data: 'user_type'

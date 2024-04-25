@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
+use App\Models\InsuranceProduct;
+
 use App\Models\Provider;
 use App\Models\Feature;
 use Validator;
@@ -43,7 +45,8 @@ class RequestController extends Controller
             ->orWhere('user_type', 'like', '%' . $searchValue . '%')
             ->orWhere('category', 'like', '%' . $searchValue . '%')
             ->orWhere('sub_category', 'like', '%' . $searchValue . '%')
-            ->orWhere('post_id', 'like', '%' . $searchValue . '%')
+            ->orWhere('service_id', 'like', '%' . $searchValue . '%')
+            ->orWhere('service_type', 'like', '%' . $searchValue . '%')
             ->orWhere('combos', 'like', '%' . $searchValue . '%')
             ->orWhere('total_price', 'like', '%' . $searchValue . '%')
             ->orWhere('discounted_price', 'like', '%' . $searchValue . '%')
@@ -69,67 +72,77 @@ class RequestController extends Controller
 
     $totalRecordswithFilter = $totalRecordswithFilter->count();
 
-    $requestRecords = UserRequest::orderBy($columnName, $columnSortOrder);
+    $requestRecords = UserRequest::with('service')->select('user_requests.*', 'users.name as user_name')
+    ->leftJoin('users', 'user_requests.user_id', '=', 'users.id')
+    ->orderBy($columnName, $columnSortOrder);
 
-    if (isset($request->user_id)) {
-        $requestRecords = $requestRecords->where('user_id', 'like', '%' . $request->user_id . '%');
-    }
+	if (isset($request->user_id)) {
+	    $requestRecords = $requestRecords->where('user_requests.user_id', 'like', '%' . $request->user_id . '%');
+	}
 
-    if (isset($request->user_type)) {
-        $requestRecords = $requestRecords->where('user_type', 'like', '%' . $request->user_type . '%');
-    }
+	if (isset($request->user_type)) {
+	    $requestRecords = $requestRecords->where('user_requests.user_type', 'like', '%' . $request->user_type . '%');
+	}
 
-    if (isset($request->request_status)) {
-        $requestRecords = $requestRecords->where('request_status', 'like', '%' . $request->request_status . '%');
-    }
+	if (isset($request->request_status)) {
+	    $requestRecords = $requestRecords->where('user_requests.request_status', 'like', '%' . $request->request_status . '%');
+	}
 
-    $requestRecords = $requestRecords->skip($row)
-        ->take($rowperpage)
-        ->get();
+	$requestRecords = $requestRecords->skip($row)
+	    ->take($rowperpage)
+	    ->get();
 
-    $data = [];
+	$data = [];
 
-    foreach ($requestRecords as $key => $record) {
-        $editUrl = route('admin.requests.edit', $record->id);
-        $action = '<a href="' . $editUrl . '" class="btn btn-primary btn-sm">Edit</a>';
+	foreach ($requestRecords as $key => $record) {
+	    $editUrl = route('admin.requests.edit',$record->id). '?' . http_build_query(['category' => $record->category, 'service_id' => $record->service_id]);
+	    $action = '<a href="' . $editUrl . '" class="btn btn-primary btn-sm">Edit</a>';
 
-        $data[] = [
-            'id' => $record->id,
-            'user_id' => $record->user_id,
-            'user_type' => $record->user_type,
-            'category' => $record->category,
-            'sub_category' => $record->sub_category,
-            'post_id' => $record->post_id,
-            'combos' => $record->combos,
-            'total_price' => $record->total_price,
-            'discounted_price' => $record->discounted_price,
-            'discount_prct' => $record->discount_prct,
-            'commission_prct' => $record->commission_prct,
-            'commission_amt' => $record->commission_amt,
-            'shipping_address' => $record->shipping_address,
-            'billing_address' => $record->billing_address,
-            'request_status' => $record->request_status,
-            'created_at' => $record->created_at,
-            'updated_at' => $record->updated_at,
-            'action' => $action,
-        ];
-    }
+	    $data[] = [
+	        'id' => $record->id,
+	        'product' => $record->service->title,
+	        'user_name' => $record->user_name, // Displaying user's name instead of ID
+	        'user_type' => $record->user_type,
+	        'category' => $record->category,
+	        'sub_category' => $record->sub_category,
+	        'service_id' => $record->service_id,
+	        'service_type' => $record->service_type,
+	        'combos' => $record->combos,
+	        'total_price' => $record->total_price,
+	        'discounted_price' => $record->discounted_price,
+	        'discount_prct' => $record->discount_prct,
+	        'commission_prct' => $record->commission_prct,
+	        'commission_amt' => $record->commission_amt,
+	        'shipping_address' => $record->shipping_address,
+	        'billing_address' => $record->billing_address,
+	        'request_status' => $record->request_status,
+	        'created_at' => $record->created_at,
+	        'updated_at' => $record->updated_at,
+	        'action' => $action,
+	    ];
+	}
 
-    $response = [
-        "draw" => intval($draw),
-        "iTotalRecords" => $totalRecords,
-        "iTotalDisplayRecords" => $totalRecordswithFilter,
-        "data" => $data,
-    ];
+	$response = [
+	    "draw" => intval($draw),
+	    "iTotalRecords" => $totalRecords,
+	    "iTotalDisplayRecords" => $totalRecordswithFilter,
+	    "data" => $data,
+	];
 
-    return response()->json($response);
+	return response()->json($response);
+
 }
 
 	public function edit(Request $request, $id)
 	{
-	    $user_request = UserRequest::find($id);
-	    return view('admin.requests.edit', compact('user_request'));
+		$serviceId = $request->query('service_id');
+		$category = $request->query('category');
+	    $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('id', $id)		    
+		    ->first();
+		    //dd(json_decode($userRequest->advantages, true));		    
+	    return view('admin.requests.edit', compact('userRequest'));
 	}
+
 
 	public function updateStatus(Request $request, $id)
 	{
