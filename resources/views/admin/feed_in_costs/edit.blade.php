@@ -36,27 +36,27 @@
                                 @endforeach
                         </select>
                     </div>
-                    <label for="provider" class=" col-form-label"><b>Feed In Tariff</b></label>
+                    <label for="provider" class=" col-form-label"><b>Feed In Cost Range</b></label>
                     @php
-                    $return_tariff = json_decode($objFeedInCost->return_tariff);
-                    //dd($return_tariff);
+                    $feed_in_cost = json_decode($objFeedInCost->feed_in_cost);
+                    //dd($feed_in_cost);
                     @endphp
-                    @if($return_tariff && count($return_tariff) > 0)
-                    @foreach($return_tariff as $key => $tariff)
+                    @if($feed_in_cost && count($feed_in_cost) > 0)
+                    @foreach($feed_in_cost as $key => $tariff)
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$key}}][from_range]" placeholder="From Range" value="{{$tariff->from_range}}">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[{{$key}}][from_range]" placeholder="From Range" value="{{$tariff->from_range}}">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$key}}][to_range]" placeholder="To Range" value="{{$tariff->to_range}}">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[{{$key}}][to_range]" placeholder="To Range" value="{{$tariff->to_range}}">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$key}}][amount]" placeholder="Amount" value="{{$tariff->amount}}">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[{{$key}}][amount]" placeholder="Amount" value="{{$tariff->amount}}">
                         </div>
                     </div>
                     @endforeach
@@ -65,28 +65,28 @@
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$i}}][from_range]" placeholder="From Range" value="">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[{{$i}}][from_range]" placeholder="From Range" value="">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$i}}][to_range]" placeholder="To Range" value="">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[{{$i}}][to_range]" placeholder="To Range" value="">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[{{$i}}][amount]" placeholder="Amount" value="">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[{{$i}}][amount]" placeholder="Amount" value="">
                         </div>
                     </div>
                     @endfor
                     @endif
                     <div class=" mb-3">
-                        <label for="normal_feed_in_cost" class=" col-form-label">Normal Feed In Cost</label>
-                        <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" value="{{$objFeedInCost->normal_feed_in_cost}}">
+                        <label for="normal_return_delivery" class=" col-form-label">Normal Return Delivery</label>
+                        <input type="number" class="form-control" id="normal_return_delivery" name="normal_return_delivery" placeholder="Normal Return Delivery" value="{{$objFeedInCost->normal_return_delivery}}">
                     </div>
                     <div class=" mb-3">
-                        <label for="off_peak_feed_in_cost" class=" col-form-label">Off Peak Feed In Cost</label>
-                        <input type="number" class="form-control" id="off_peak_feed_in_cost" name="off_peak_feed_in_cost" placeholder="Off Peak Feed In Cost" value="{{$objFeedInCost->off_peak_feed_in_cost}}">
+                        <label for="off_peak_return_delivery" class=" col-form-label">Off Peak Return Delivery</label>
+                        <input type="number" class="form-control" id="off_peak_return_delivery" name="off_peak_return_delivery" placeholder="Off Peak Return Delivery" value="{{$objFeedInCost->off_peak_return_delivery}}">
                     </div>   
                         
 

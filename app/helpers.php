@@ -12,7 +12,7 @@ if (!function_exists('getSettings')) {
     function getSettings()
     {
         $settings = Setting::all();
-        return $settings->pluck('value','key');
+        return $settings->pluck('value','key')->toArray();
     }
 }
 if (!function_exists('siteSettings')) {

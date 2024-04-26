@@ -34,94 +34,94 @@
                         </select>
                     </div>
                     
-                    <label for="provider" class=" col-form-label"><b>Feed In Tariff</b></label>
+                    <label for="provider" class=" col-form-label"><b>Feed In Cost Range</b></label>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[0][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][from_range]" placeholder="From Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[0][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][to_range]" placeholder="To Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[0][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][amount]" placeholder="Amount">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[1][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][from_range]" placeholder="From Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[1][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][to_range]" placeholder="To Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[1][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][amount]" placeholder="Amount">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[2][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][from_range]" placeholder="From Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[2][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][to_range]" placeholder="To Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[2][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][amount]" placeholder="Amount">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[3][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][from_range]" placeholder="From Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[3][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][to_range]" placeholder="To Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[3][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][amount]" placeholder="Amount">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[4][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][from_range]" placeholder="From Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[4][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][to_range]" placeholder="To Range">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="return_tariff[4][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][amount]" placeholder="Amount">
                         </div>
                     </div>
                     <div class=" mb-3">
-                        <label for="normal_feed_in_cost" class=" col-form-label">Normal Feed In Tariff</label>
-                        <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost">
+                        <label for="normal_return_delivery" class=" col-form-label">Normal Return Delivery</label>
+                        <input type="number" class="form-control" id="normal_return_delivery" name="normal_return_delivery" placeholder="Normal Return Delivery">
                     </div>
                     <div class=" mb-3">
-                        <label for="off_peak_feed_in_cost" class=" col-form-label">Off Peak Feed In Tariff</label>
-                        <input type="number" class="form-control" id="off_peak_feed_in_cost" name="off_peak_feed_in_cost" placeholder="Off Peak Feed In Cost">
+                        <label for="off_peak_return_delivery" class=" col-form-label">Off Peak Return Delivery</label>
+                        <input type="number" class="form-control" id="off_peak_return_delivery" name="off_peak_return_delivery" placeholder="Off Peak Return Delivery">
                     </div>
                 <div class="row mb-3">
                     <div class="">

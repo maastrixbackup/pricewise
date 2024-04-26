@@ -65,12 +65,12 @@ class FeedInCostController extends Controller
      */
     public function store(Request $request)
     {        
-        $objCategory = new FeedInCost();
-        $objCategory->provider = $request->provider;
-        $objCategory->return_tariff = json_encode($request->return_tariff);   
-        $objCategory->normal_feed_in_cost = $request->normal_feed_in_cost;
-        $objCategory->off_peak_feed_in_cost = $request->off_peak_feed_in_cost;
-        if ($objCategory->save()) {
+        $objFeed = new FeedInCost();
+        $objFeed->provider = $request->provider;
+        $objFeed->feed_in_cost = json_encode($request->feed_in_cost);   
+        $objFeed->normal_return_delivery = $request->normal_return_delivery;
+        $objFeed->off_peak_return_delivery = $request->off_peak_return_delivery;
+        if ($objFeed->save()) {
             return redirect()->route('admin.feed-in-costs.index')->with(Toastr::success('Feed In Cost Created Successfully', '', ["positionClass" => "toast-top-right"]));
             
         } else {
@@ -113,12 +113,12 @@ class FeedInCostController extends Controller
     public function update(Request $request, $id)
     {
         //echo 123;exit;
-        $objCategory = FeedInCost::find($id);
-        $objCategory->provider = $request->provider;
-        $objCategory->return_tariff = json_encode($request->return_tariff);
-        $objCategory->normal_feed_in_cost = $request->normal_feed_in_cost;
-        $objCategory->off_peak_feed_in_cost = $request->off_peak_feed_in_cost;
-        if ($objCategory->save()) {
+        $objFeed = FeedInCost::find($id);
+        $objFeed->provider = $request->provider;
+        $objFeed->feed_in_cost = json_encode($request->feed_in_cost);   
+        $objFeed->normal_return_delivery = $request->normal_return_delivery;
+        $objFeed->off_peak_return_delivery = $request->off_peak_return_delivery;
+        if ($objFeed->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Feed In Cost Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.feed-in-costs.index")]);

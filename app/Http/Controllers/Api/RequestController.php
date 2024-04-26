@@ -84,13 +84,16 @@ class RequestController extends BaseController
             $data->service_type = $service_type;
             $data->combos = $combos;
             $data->postal_code = $postal_code;
-            //$data->advantages = json_encode($advantages);
+            $data->advantages = json_encode($advantages);
             $data->total_price = $total_price;
             $data->discounted_price = $discounted_price;
             $data->discount_prct = $discount_prct;
             $data->commission_prct = $commission_prct;
             $data->commission_amt = $commission_amt;
             $data->request_status = $request_status;
+            $data->provider_id = $request->provider_id;
+            $data->solar_panels = $request->solar_panels;
+            $data->no_gas = $request->no_gas;
             $data->shipping_address = json_encode($request->shipping_address);
             $data->billing_address = json_encode($request->billing_address);
             // Save the data to the database
