@@ -59,33 +59,24 @@ class ProviderController extends Controller
         $objProvider->about = $request->about;
         $objProvider->category = $request->category;
         $objProvider->status = $request->status;
-        // Access base64 encoded image data directly from the request
+        $objProvider->payment_options = $request->payment_options;
+        $objProvider->annual_accounts = $request->annual_accounts;
+        $objProvider->meter_readings = $request->meter_readings;
+        $objProvider->adjust_installments = $request->adjust_installments;
+        $objProvider->view_consumption = $request->view_consumption;
+        $objProvider->rose_scheme = $request->rose_scheme;        
         $croppedImage = $request->cropped_image;
-
-        // Extract base64 encoded image data and decode it
         $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
-        // Generate a unique file name for the image
         $imageName = 'provider_' . time() . '.png';
-
-        // Specify the destination directory where the image will be saved
         $destinationDirectory = 'public/images/providers';
-
-        // Create the directory if it doesn't exist
         Storage::makeDirectory($destinationDirectory);
-
-        // Save the image to the server using Laravel's file upload method
         $filePath = $destinationDirectory . '/' . $imageName;
         Storage::put($filePath, $imgData);
-
-        // Set the image file name for the provider
         $objProvider->image = $imageName;
-
-   
         if ($objProvider->save()) {
-            return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]));
-            // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
-            // return response()->json(["status" => true, "redirect_location" => route("admin.drivers.index")]);
+            //return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]));
+            Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]);
+            return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -131,7 +122,12 @@ class ProviderController extends Controller
         $objProvider->about = $request->about;
         $objProvider->status = $request->status;
         $objProvider->category = $request->category;        
-        $objProvider->status = $request->status;
+        $objProvider->payment_options = $request->payment_options;
+        $objProvider->annual_accounts = $request->annual_accounts;
+        $objProvider->meter_readings = $request->meter_readings;
+        $objProvider->adjust_installments = $request->adjust_installments;
+        $objProvider->view_consumption = $request->view_consumption;
+        $objProvider->rose_scheme = $request->rose_scheme;
         if ($request->has('cropped_image')) {
         // Access base64 encoded image data directly from the request
         $croppedImage = $request->cropped_image;

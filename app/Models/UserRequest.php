@@ -26,4 +26,8 @@ class UserRequest extends Model
    public function advantagesData(){
     return $this->hasMany(PostRequest::class, 'request_id', 'id');
    }
+   public function feedInCost()
+    {
+        return $this->hasOne(FeedInCost::class, 'provider', 'provider_id');
+    }
 }

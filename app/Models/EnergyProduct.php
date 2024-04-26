@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use DateTime;
 
 class EnergyProduct extends Model
 {
@@ -34,5 +35,13 @@ class EnergyProduct extends Model
     public function documents()
     {
         return $this->hasMany(Document::class, 'post_id', 'id');
+    }
+    public function getValidTillAttribute($value)
+    {
+        // Convert the valid_till string to a DateTime object
+        $dateTime = new DateTime($value);
+        
+        // Format the DateTime object as desired
+        return $dateTime->format('Y-m-d');
     }
 }

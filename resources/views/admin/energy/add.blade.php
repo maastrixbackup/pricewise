@@ -186,39 +186,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                <div class="col-md-6 col-12">@php
-                    $businessGeneralSettings = getSettings('business_general');
-
-
-
-@endphp
-                                                        
-                                                        <label for="government_levies_gas" class=" col-form-label">Govt. Levies on Gas</label>
-                                                        <div class="mb-3 add-scroll">
-                                                        
-                                                        <input class="form-control" type="number" name="government_levies_gas" value="{{getSettings()}}">
-                                                        
-                                                        
-                                                        </div>
-                                                        <label for="government_levies_electric" class=" col-form-label">Govt. Levies on Electric</label>                         
-                                                        <div class="mb-3 add-scroll">
-                                                        
-                                                        <input class="form-control" type="number" name="government_levies_electric" value="">
-                                                        
-                                                        </div>
-                                                    
-                                                    </div>
-                                                    <div class="col-md-6 col-12">
-                                                        <div class=" mb-3">
-                                                            <label for="reduction_of_energy_tax" class=" col-form-label">Reduction of Energy Tax
-                                                            </label>
-                                                            <input type="number" class="form-control" id="reduction_of_energy_tax" name="reduction_of_energy_tax" value="">
-                                                        </div>
-                                                    </div>
-                </div>
-                
-
 
                 <div class="">
                     <label class=" col-form-label"></label>

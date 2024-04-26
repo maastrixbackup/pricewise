@@ -35,8 +35,8 @@
                             <tr>
                                 <th>Sl</th>
                                 <th>Provider</th>                               
-                                <th>Feed In Normal</th>
-                                <th>Feed In Peak</th>                                
+                                <th>Normal Return Delivery</th>
+                                <th>Off Peak Return Delivery</th>                                
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -47,8 +47,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->providerDetail ? $val->providerDetail->name : "NA"}}</td>
-                                <td>{{ $val->normal_feed_in_cost }}</td>                            
-                                <td>{{ $val->off_peak_feed_in_cost }}</td>
+                                <td>{{ $val->normal_return_delivery }}</td>                            
+                                <td>{{ $val->off_peak_return_delivery }}</td>
                                 
                                 <td>
                                     <div class="col">

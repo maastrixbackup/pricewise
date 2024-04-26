@@ -139,6 +139,8 @@ class RequestController extends Controller
 		$category = $request->query('category');
 	    $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('id', $id)		    
 		    ->first();
+
+
 		    //dd(json_decode($userRequest->advantages, true));		    
 	    return view('admin.requests.edit', compact('userRequest'));
 	}

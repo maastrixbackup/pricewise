@@ -247,38 +247,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                    </div>
-                                                    <div class="row">
-                                                    <div class="col-md-6 col-12">
-                                                        
-                                                        <label for="government_levies_gas" class=" col-form-label">Govt. Levies on Gas</label>
-                                                        <div class="mb-3 add-scroll">
-                                                        
-                                                        <input class="form-control" type="number" name="government_levies_gas" value="{{$objEnergy->government_levies_gas}}">
-                                                        
-                                                        
-                                                        </div>
-                                                        <label for="government_levies_electric" class=" col-form-label">Govt. Levies on Electric</label>                         
-                                                        <div class="mb-3 add-scroll">
-                                                        
-                                                        <input class="form-control" type="number" name="government_levies_electric" value="{{$objEnergy->government_levies_electric}}">
-                                                        
-                                                        </div>
-                                                    
-                                                    </div>
-                                                    <div class="col-md-6 col-12">
-                                                        <div class=" mb-3">
-                                                            <label for="reduction_of_energy_tax" class=" col-form-label">Reduction of Energy Tax
-                                                            </label>
-                                                            <input type="number" class="form-control" id="reduction_of_energy_tax" name="reduction_of_energy_tax" value="{{$objEnergy->reduction_of_energy_tax}}">
-                                                        </div>
-                                                    </div>
-                                                    </div>
-                                
-                                                
-                                
-                                                
-                                
+                                                    </div>    
                                 
                                                 <div class="">
                                                     <label class=" col-form-label"></label>
@@ -415,13 +384,13 @@
                     
                         <div class="col-md-4 mb-3">
                             <label for="input37" class="col-form-label">Normal Feed In Cost/kWh</label>
-                            <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" readonly="readonly" value="{{$objEnergy->feedInCost?$objEnergy->feedInCost->normal_feed_in_cost:''}}">
+                            <input type="number" class="form-control" id="normal_feed_in_cost" name="normal_feed_in_cost" placeholder="Normal Feed In Cost" readonly="readonly" value="{{$objEnergy->feedInCost?$objEnergy->feedInCost->normal_return_delivery:''}}">
                         </div>
                    
                    
                         <div class="col-md-4 mb-3">
                             <label for="input37" class="col-form-label">Off Peak Feed In Cost/kWh</label>
-                            <input type="number" class="form-control" id="peak_feed_in_cost" name="peak_feed_in_cost" placeholder="Off Peak Feed In Cost" readonly="readonly" value="{{$objEnergy->feedInCost?$objEnergy->feedInCost->off_peak_feed_in_cost:''}}">
+                            <input type="number" class="form-control" id="peak_feed_in_cost" name="peak_feed_in_cost" placeholder="Off Peak Feed In Cost" readonly="readonly" value="{{$objEnergy->feedInCost?$objEnergy->feedInCost->off_peak_return_delivery:''}}">
                         </div>
                                         
                         <div class="col-md-4 mb-3">
@@ -440,6 +409,39 @@
                                 <label for="delivery_cost_gas" class="col-form-label">Fixed Delivery Cost Gas</label>
                                 <input type="number" class="form-control" id="delivery_cost_gas" name="delivery_cost_gas" placeholder="Fixed Delivery Cost Gas" value="{{$objEnergy->delivery_cost_gas}}">
                         </div>
+                    @php
+                    $businessGeneralSettings = getSettings('business_general'); 
+                    @endphp                                                      
+                                                       
+                
+
+                        <div class="col-md-4 col-12">
+                            
+                            <label for="government_levies_gas" class=" col-form-label">Govt. Levies on Gas</label>
+                            <div class="mb-3 add-scroll">
+                            
+                            <input class="form-control" type="number" name="government_levies_gas" value="{{$objEnergy->government_levies_gas??$businessGeneralSettings['governement_levies']}}">
+                            
+                            
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label for="government_levies_electric" class=" col-form-label">Govt. Levies on Electric</label>                         
+                            <div class="mb-3 add-scroll">
+                            
+                            <input class="form-control" type="number" name="government_levies_electric" value="{{$objEnergy->government_levies_electric??$businessGeneralSettings['governement_levies']}}">
+                            
+                            </div>
+                        
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class=" mb-3">
+                                <label for="reduction_of_energy_tax" class=" col-form-label">Reduction of Energy Tax
+                                </label>
+                                <input type="number" class="form-control" id="reduction_of_energy_tax" name="reduction_of_energy_tax" value="{{$objEnergy->reduction_of_energy_tax??$businessGeneralSettings['reduction_of_energy_tax']}}">
+                            </div>
+                        </div>
+                                                    
 
                         <div class="col-md-4 mb-3">
                                 <label for="input37" class="col-form-label">Cashback</label>
