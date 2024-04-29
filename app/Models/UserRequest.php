@@ -13,7 +13,7 @@ class UserRequest extends Model
     {
         return $this->morphTo();
     }
-
+   
    public function userDetails(){
     return $this->belongsTo(User::class, 'user_id', 'id');
    }

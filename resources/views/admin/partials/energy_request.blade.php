@@ -25,12 +25,17 @@ if($userRequest->no_gas == null){
 $gasTotal = ($advantages["gas_consume"] * $advantages["gas_price"]);
 $networkCostGas = $advantages["network_cost_gas"];
 $deliveryCostGas = $advantages["delivery_cost_gas"];
-$gasTotal = $gasTotal + $deliveryCostGas + $networkCostGas + ($advantages["government_levies_gas"]*$advantages["gas_consume"]/100);
+$gasTotal = $gasTotal + $deliveryCostGas + $networkCostGas + ($advantages["government_levies_gas"]*$advantages["gas_consume"]);
 }
 
 $normalElectricCost = $advantages["normal_electric_consume"] * $advantages["normal_electric_price"];
 $peakElectricCost = $advantages["peak_electric_consume"] * $advantages["peak_electric_price"];
-$feedInPeakCost = $advantages["feed_in_peak"]*$advantages["feed_in_peak_price"];
+
+$feedInNormalCost = 0;
+$feedInPeakCost = 0;
+$feedInCost = 0;
+if($userRequest->solar_panels && $userRequest->solar_panels > 0){
+  $feedInPeakCost = $advantages["feed_in_peak"]*$advantages["feed_in_peak_price"];
 $feedInNormalCost = $advantages["feed_in_normal"]*$advantages["feed_in_normal_price"];
 $feedInCost = $feedInPeakCost + $feedInNormalCost;
 
@@ -45,15 +50,12 @@ if (!empty($feedInCostValue)) {
     $feedInCostValue = reset($feedInCostValue);
     
 }
-if($userRequest->solar_panels && $userRequest->solar_panels > 0){
-  //$normalElectricCost = ($advantages["normal_electric_consume"] - $advantages["normal_electric_consume"]) * $advantages["normal_electric_price"];
-  //$normalElectricCost = $advantages["feed_in_peak"] + $advantages["feed_in_normal"] - $advantages["normal_electric_consume"] + $advantages["peak_electric_consume"];
 }
-
+$feedInCostRangeValue = $feedInCostValue['amount']??0;
 $reductionCostElectric = $advantages["reduction_of_energy_tax"];
 $deliveryCostElectric = $advantages["delivery_cost_electric"];
 $networkCostElectric = $advantages["network_cost_electric"];
-$electricityCost = $normalElectricCost + $peakElectricCost + $deliveryCostElectric + $networkCostElectric + $feedInCostValue['amount'] - $feedInPeakCost - $feedInNormalCost - $reductionCostElectric;
+$electricityCost = $normalElectricCost + $peakElectricCost + $deliveryCostElectric + $networkCostElectric + $feedInCostRangeValue - $feedInCost - $reductionCostElectric;
 
 $deliveryCost = $deliveryCostGas + $deliveryCostElectric;
 
@@ -111,14 +113,20 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
                   ),
                   array(
                       'label' => '<b>Electric Total</b>',
-                      'value' => $electricityCost
+                      'value' => '<b>' . $electricityCost . '</b>'
                   ),
               );
+              if(!$feedInNormalCost){
+
+              }
+              if(!$feedInPeakCost){
+
+              }
 
               foreach ($currentItems as $item) {
                   echo '<li class="d-flex justify-content-between">';
                   echo '<div>' . $item['label'] . '</div>';
-                  echo '<div>€ ' . number_format($item['value'], 2) . '</div>';
+                  echo '<div>€ ' . $item['value'] . '</div>';
                   echo '</li>';
               }
               ?>
@@ -137,12 +145,12 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
               <?php
               $gasItems = array(
                   array(
-                      'label' => 'Gas consumption (' . $advantages["gas_consume"] . 'm3 * €' . number_format($advantages["gas_price"] / 100, 2) . '/m3)',
-                      'value' => $advantages["gas_consume"] * ($advantages["gas_price"] / 100)
+                      'label' => 'Gas consumption (' . $advantages["gas_consume"] . 'm3 * €' . $advantages["gas_price"] . '/m3)',
+                      'value' => $advantages["gas_consume"] * ($advantages["gas_price"])
                   ),
                   array(
-                      'label' => 'Government levies* ' . $advantages["gas_consume"] . 'm3 x €' . number_format($advantages["government_levies_gas"] / 100, 2) . '/m3)',
-                      'value' => $advantages["government_levies_gas"]
+                      'label' => 'Government levies* ' . $advantages["gas_consume"] . 'm3 x €' . $advantages["government_levies_gas"] . '/m3)',
+                      'value' => $advantages["government_levies_gas"] * $advantages["gas_consume"]
                   ),
                   array(
                       'label' => 'Fixed delivery costs gas',
@@ -154,14 +162,14 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
                   ),
                   array(
                       'label' => '<b>Gas Total</b>',
-                      'value' => $gasTotal
+                      'value' => '<b>' . $gasTotal . '</b>'
                   ),
               );
               if($userRequest->no_gas == null){
               foreach ($gasItems as $item) {
                   echo '<li class="d-flex justify-content-between">';
                   echo '<div>' . $item['label'] . '</div>';
-                  echo '<div>€ ' . number_format($item['value'], 2) . '</div>';
+                  echo '<div>€ ' . $item['value'] . '</div>';
                   echo '</li>';
               }
             }
@@ -172,10 +180,10 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
           @endif
           <div class="row">
             <div class="col-6">
-              <p class="mb-0">Subtotal electricity @if($userRequest->no_gas == null) + gas @endif</p>
+              <p class="mb-0"><b>Subtotal electricity @if($userRequest->no_gas == null) + gas @endif</p></b>
             </div>
             <div class="col-6 text-right">
-              <p class="mb-0">€ <?php echo number_format($totalCost, 2); ?></p>
+              <p class="mb-0"><b>€ <?php echo $totalCost; ?></b></p>
             </div>
           </div>
         </div>
@@ -192,7 +200,15 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
               <p class="mb-0">&nbsp;</p>
             </div>
             <div class="col-6 text-right">
-              <p class="mb-0">€ -180.00</p>
+              <p class="mb-0">€ -{{$userRequest->cashback}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <p class="mb-0"><b>Total Per Year</b></p>
+            </div>
+            <div class="col-6 text-right">
+              <p class="mb-0"><b>€ {{$totalCost - $userRequest->cashback}}</b></p>
             </div>
           </div>
         </div>

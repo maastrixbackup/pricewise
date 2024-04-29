@@ -3,39 +3,6 @@
 @section('content')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
-<style type="text/css">
-    .form-check-box {
-    display: flex;
-    align-items: center;
-}
-
-.form-check-pr label {
-    position: relative;
-    cursor: pointer;
-}
-.form-check-pr input {
-    padding: 0;
-    height: initial;
-    width: initial;
-    margin-bottom: 0;
-    display: none;
-    cursor: pointer;
-}
-.form-check-pr label:before {
-    content: '';
-    -webkit-appearance: none;
-    background-color: transparent;
-    border: 2px solid #fa9f1d;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
-    padding: 10px;
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-right: 5px;
-}
-.form-check-pr input:checked + label:after {content: '';display: block;position: absolute;top: 7px;left: 9px;width: 6px;height: 14px;border: solid #0079bf;border-width: 0 2px 2px 0;transform: rotate(45deg);}
-</style>
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="ps-3">
@@ -54,8 +21,8 @@
         
         
 
-                <form action="{{route('admin.request.update_status')}}" method="post">
-                    @csrf                    
+                
+                                        
                     <div class="row">                      
                         <div class="col-12">
                             <!-- Right column content -->
@@ -82,6 +49,24 @@
                                         <div class="col-sm-4">
                                         <strong>    Order Date: </strong>{{$userRequest->created_at->format('d/m/Y')}}
                                         <strong>    Order No: </strong>{{$userRequest->order_no}}
+                                        <form action="{{route('admin.request.update_status', [$userRequest->id])}}" id="update_status">
+                                            @csrf
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label font-weight-bold">Status:</label>
+                                            <div class="col-sm-9">
+                                                <select id="request_status" name="request_status" class="select2 form-select">
+                                                    <option value="">Select</option>
+                                                    <option value="Under Process" @if($userRequest->request_status == 'Under Process')selected @endif>Under Process</option>
+                                                    <option value="Completed" @if($userRequest->request_status == 'Completed')selected @endif>Completed</option>
+                                                    <option value="Cancelled" @if($userRequest->request_status == 'Cancelled')selected @endif>Cancelled</option>
+                                                </select>
+                                            </div>
+                                        <div class="d-md-flex d-grid align-items-center gap-3">
+                                            <button type="submit" id="submitBtn4" class="btn btn-sm btn-primary px-2" value="Update">Update</button>
+                                            
+                                        </div>
+                                        </div>
+                                        </form>
                                         </div>
                                                                            
                                     </div>
@@ -99,16 +84,6 @@
                                                 </a>
                                               </h5>
                                               <div class="row">
-                                                <div class="col-6">
-                                                  <p class="mb-0">Anual Cost</p>
-                                                </div>
-                                                <div class="col-6 text-right">
-                                                  <p class="mb-0">€ {{$userRequest->total_price}}</p>
-                                                </div>
-                                              </div>
-                                              <div class="collapse" id="priceBreakdown">
-                                                <hr>
-                                                <div class="row">
                                                   <div class="col-6">
                                                     <p class="mb-0">{{$userRequest->service?$userRequest->service->title:''}}</p>
                                                   </div>
@@ -121,6 +96,9 @@
                                                     <small class="text-muted">12 months cost € {{$userRequest->total_price}}</small>
                                                   </div>
                                                 </div>
+                                              <div class="collapse" id="priceBreakdown">
+                                                <hr>
+                                                
                 
 
 @include('admin.partials.energy_request',['advantages'=>json_decode($userRequest->advantages, true) ])
@@ -140,7 +118,7 @@
                                               <div class="row">
                                                 <div class="col-6">
                                                   <p class="mb-1">+ Connection costs</p>
-                                                  <small class="text-muted">One-time € 25,00 Discount</small>
+                                                  <small class="text-muted">One-time € 25.00 Discount</small>
                                                 </div>
                                                 <div class="col-6 text-right">
                                                   <p class="mb-1">Free</p>
@@ -159,7 +137,7 @@
                                                   <p class="mb-0">+ Order a technician directly</p>
                                                 </div>
                                                 <div class="col-6 text-right">
-                                                  <p class="mb-0">€ 75,00</p>
+                                                  <p class="mb-0">€ 75.00</p>
                                                 </div>
                                               </div>
                                             </div>
@@ -172,13 +150,10 @@
                             </div>
                         </div>
                     </div>
-                            <div class="d-md-flex d-grid align-items-center gap-3">
-                                <button type="submit" id="submitBtn4" class="btn btn-primary px-4" value="Save">Save</button>
-                                <button type="reset" class="btn btn-light px-4">Reset</button>
-                            </div>
+                            
                         </div>
                     </div>
-                </form>
+                
             </div>
 
         </div>
@@ -519,6 +494,48 @@ $("#infoForm").validate({
         });
     });
 });
+
+    $("#update_status").validate({
+        errorElement: 'span',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass("has-error");
+            $(element).closest('.form-group').addClass("has-success");
+        },
+
+        
+        submitHandler: function(form) {
+            
+            $.ajax({
+
+                url: form.action,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $(form).serialize(),
+                // processData: false,
+                // contentType: false,
+                success: function(data) {
+                    //success
+
+                    if (data.status) {
+                        //location.href = data.redirect_location;
+                        toastr.success(data.message.message, '');
+                    } else {
+                        toastr.error(data.message.message, 'Something went wrong!');
+                    }
+                },
+                error: function(e) {
+                    toastr.error('Something went wrong . Please try again later!!', '');
+                }
+            });
+            return false;
+        }
+    });
 </script>
 
 @endpush

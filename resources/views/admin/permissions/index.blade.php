@@ -79,9 +79,36 @@
 <script>
 	$(document).ready(function() {
 		var table = $('#permissionTable').DataTable({
-			lengthChange: false,
-			buttons: ['excel', 'pdf', 'print']
-		});
+            lengthChange: false,
+            buttons: [{
+                    extend: 'excelHtml5',
+                    text: '<i class="far fa-file-excel"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fal fa-file-pdf"></i>',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="far fa-print"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+            ],
+            'columnDefs': [{
+                'targets': [2], // column index (start from 0)
+                'orderable': false, // set orderable false for selected columns
+            }]
+        });
 
 		table.buttons().container()
 			.appendTo('#permissionTable_wrapper .col-md-6:eq(0)');

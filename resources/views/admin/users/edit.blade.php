@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','NoPlan- Users Edit')
+@section('title','Energise- Users Edit')
 @section('content')
 
 <!--breadcrumb-->

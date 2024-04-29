@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\InsuranceProduct;
-
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use App\Models\Provider;
 use App\Models\Feature;
 use Validator;
@@ -55,11 +55,21 @@ class RequestController extends Controller
             ->orWhere('commission_amt', 'like', '%' . $searchValue . '%')
             ->orWhere('shipping_address', 'like', '%' . $searchValue . '%')
             ->orWhere('billing_address', 'like', '%' . $searchValue . '%')
-            ->orWhere('request_status', 'like', '%' . $searchValue . '%');
+            ->orWhere('request_status', 'like', '%' . $searchValue . '%')           
+            ->orWhereHas('providerDetails', function($query) use ($searchValue) {
+                $query->where('name', 'like', '%' . $searchValue . '%');
+                });            	  
+            
     }
 
     if (isset($request->user_id)) {
-        $totalRecordswithFilter = $totalRecordswithFilter->where('user_id', 'like', '%' . $request->user_id . '%');
+    	$usrDtl = $request->user_id;
+        $totalRecordswithFilter = $totalRecordswithFilter->orWhereHas('userDetails', function($query) use ($usrDtl) {
+                $query->where('users.name', 'like', '%' . $usrDtl . '%')
+                	  ->orWhere('users.email', 'like', '%' . $usrDtl . '%')
+                	  ->orWhere('users.mobile', 'like', '%' . $usrDtl . '%')
+                ;
+            });
     }
 
     if (isset($request->user_type)) {
@@ -72,12 +82,19 @@ class RequestController extends Controller
 
     $totalRecordswithFilter = $totalRecordswithFilter->count();
 
-    $requestRecords = UserRequest::with('service')->select('user_requests.*', 'users.name as user_name')
+    $requestRecords = UserRequest::with('service', 'userDetails')->select('user_requests.*', 'users.name as user_name')
     ->leftJoin('users', 'user_requests.user_id', '=', 'users.id')
     ->orderBy($columnName, $columnSortOrder);
 
 	if (isset($request->user_id)) {
-	    $requestRecords = $requestRecords->where('user_requests.user_id', 'like', '%' . $request->user_id . '%');
+	    //$requestRecords = $requestRecords->where('user_requests.user_id', 'like', '%' . $request->user_id . '%');
+	    $usrDtl = $request->user_id;
+        $requestRecords = $requestRecords->whereHas('userDetails', function($query) use ($usrDtl) {
+                $query->where('users.name', 'like', '%' . $usrDtl . '%')
+                	  ->orWhere('users.email', 'like', '%' . $usrDtl . '%')
+                	  ->orWhere('users.mobile', 'like', '%' . $usrDtl . '%')
+                ;
+            });
 	}
 
 	if (isset($request->user_type)) {
@@ -87,6 +104,22 @@ class RequestController extends Controller
 	if (isset($request->request_status)) {
 	    $requestRecords = $requestRecords->where('user_requests.request_status', 'like', '%' . $request->request_status . '%');
 	}
+
+	if ($searchValue) {
+    $requestRecords->where(function($query) use ($searchValue) {
+        $query->where('user_requests.user_type', 'like', '%' . $searchValue . '%');
+
+        // Get distinct morph types for the service relationship
+        $serviceMorphTypes = UserRequest::select('service_type')->distinct()->pluck('service_type');
+        
+        // Dynamically add whereHasMorph for each service type
+        foreach ($serviceMorphTypes as $morphType) {
+            $query->orWhereHasMorph('service', $morphType, function($query, $type) use ($searchValue) {
+                $query->where('title', 'like', '%' . $searchValue . '%');
+            });
+        }
+    });
+}
 
 	$requestRecords = $requestRecords->skip($row)
 	    ->take($rowperpage)
@@ -148,8 +181,19 @@ class RequestController extends Controller
 
 	public function updateStatus(Request $request, $id)
 	{
-	    $userRequest = UserRequest::findOrFail($id);
-	    $userRequest->update(['request_status' => $request->input('request_status')]);
-	    return redirect()->back()->with('success', 'Request status updated successfully.');
+	    $userRequest = UserRequest::where('id', $id)->first();
+	    try{
+	    $userRequest->request_status = $request->input('request_status');
+	    // return redirect()->back()->with('success', 'Request status updated successfully.');
+		$userRequest->save();
+	    }catch(\Exception $e){
+            $errorMessage = 'Failed to Update Request Status: ' . $e->getMessage();
+        // Log the error for further investigation
+        \Log::error($errorMessage);
+            $message = ['message' =>  $errorMessage, 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
+        }
+        $message = array('message' => 'Request Status Updated Successfully', 'title' => '');
+            return response()->json(["status" => true, 'message' => $message]);
 	}
 }

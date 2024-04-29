@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DateTime;
+use App\Models\Setting;
 
 class EnergyProduct extends Model
 {
@@ -27,6 +28,10 @@ class EnergyProduct extends Model
     public function feedInCost()
     {
         return $this->hasOne(FeedInCost::class, 'provider', 'provider');
+    }
+    public function govtTaxes()
+    {
+        return $this->belongsTo(Setting::class)->where('type', 'business_general')->whereIn('sub_type', ['gas', 'current']);
     }
     public function providerDetails()
     {
