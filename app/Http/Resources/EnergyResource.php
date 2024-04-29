@@ -8,6 +8,8 @@ use App\Models\PostFeature;
 use App\Models\EnergyRateChat;
 use App\Models\FeedInCost;
 use App\Http\Resources\PostFeatureResource;
+use App\Models\Setting;
+
 class EnergyResource extends JsonResource
 {
     /**
@@ -90,14 +92,14 @@ class EnergyResource extends JsonResource
                         'normal_electric_rate' => $this->prices->electric_rate,
                         'off_peak_electric_rate' => $this->prices->off_peak_electric_rate,
                         'gas_rate' => $this->prices->gas_rate,
-                        'total' => $request->normal_electric_consume * $this->prices->electric_rate
-                        + $request->peak_electric_consume * $this->prices->off_peak_electric_rate
-                        + $request->gas_consume * $this->prices->gas_rate
-                        + $this->delivery_cost_electric
-                        + $this->delivery_cost_gas
-                        + $this->feedInCost->normal_feed_in_cost
-                        + $this->feedInCost->off_peak_feed_in_cost
-                        - $this->cashback
+                        // 'total' => $request->normal_electric_consume * $this->prices->electric_rate
+                        // + $request->peak_electric_consume * $this->prices->off_peak_electric_rate
+                        // + $request->gas_consume * $this->prices->gas_rate
+                        // + $this->delivery_cost_electric
+                        // + $this->delivery_cost_gas
+                        // + $this->feedInCost->normal_feed_in_cost
+                        // + $this->feedInCost->off_peak_feed_in_cost
+                        // - $this->cashback
                     ];
                 
             }),
@@ -105,24 +107,14 @@ class EnergyResource extends JsonResource
             // Include feedInCost relationship if loaded
             'feed_in_cost' => $this->whenLoaded('feedInCost', function () {
                 return [
-                    'return_tariff' => json_decode($this->feedInCost->return_tariff),
-                    'normal_feed_in_cost' => $this->feedInCost->normal_feed_in_cost,
-                    'off_peak_feed_in_cost' => $this->feedInCost->off_peak_feed_in_cost,
+                    'feed_ranges' => json_decode($this->feedInCost->feed_in_cost),
+                    'normal_return_delivery' => $this->feedInCost->normal_return_delivery,
+                    'off_peak_return_delivery' => $this->feedInCost->off_peak_return_delivery,
                 ];
             }),
+            'govt_taxes' => Setting::select('key', 'value')->where('type', 'business_general')->whereIn('sub_type', ['gas', 'current'])->get(),
 
-// Normal rate per kWh              €0.26475
-// Off-peak rate per kWh            €0.26475
-// Fixed delivery costs per year   €83.88
-// Feed-in costs per year *       €120.45
-// Gas
-// Rate per m³                      €1.25902
-// Fixed delivery costs per year   €83.88
-// Total
-// Total amount per year          €421.79
-// Cashback                     € -170.00
-// Your costs per month            €20.98
-// Your costs per year            €251.79
+            
 
         ];
     }

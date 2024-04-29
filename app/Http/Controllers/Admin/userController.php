@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Brian2694\Toastr\Facades\Toastr;
 
-class userController extends Controller
+class UserController extends Controller
 {
     protected string $guard = 'admin';
     public function guard()

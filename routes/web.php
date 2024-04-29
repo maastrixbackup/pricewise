@@ -88,7 +88,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
         //Requests
         Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
-        Route::post('/update_status', 'RequestController@updateStatus')->name('request.update_status');
+        Route::post('/update_status/{id}', 'RequestController@updateStatus')->name('request.update_status');
         // Route::get('/requests/edit/', 'RequestController@index')->name('get.request');
         Route::resource('requests', 'RequestController');
 

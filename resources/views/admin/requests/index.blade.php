@@ -18,8 +18,8 @@
 <form method="GET" id="search-form" name="searchform">
     <div class="row">
         <div class="col-lg-3 mb-2">
-            <label for="input35" class=" col-form-label">User ID</label>
-            <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Search by User ID">
+            <label for="input35" class=" col-form-label">Customer</label>
+            <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Search by Customer Email/Mobile/Name">
         </div>
 
         <div class="col-lg-3 mb-2">

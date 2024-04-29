@@ -19,7 +19,7 @@ class EnergyController extends BaseController
 {
    public function index(Request $request)
     {
-        $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails');
+        $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails', 'govtTaxes');
         
         // Filter by postal code
         if ($request->has('postal_code')) {
