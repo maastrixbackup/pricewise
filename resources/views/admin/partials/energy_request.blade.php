@@ -25,7 +25,7 @@ if($userRequest->no_gas == null){
 $gasTotal = ($advantages["gas_consume"] * $advantages["gas_price"]);
 $networkCostGas = $advantages["network_cost_gas"];
 $deliveryCostGas = $advantages["delivery_cost_gas"];
-$gasTotal = $gasTotal + $deliveryCostGas + $networkCostGas + ($advantages["government_levies_gas"]*$advantages["gas_consume"]);
+$gasTotal = $gasTotal + $deliveryCostGas + $networkCostGas + ($advantages["government_levies_gas"] * $advantages["gas_consume"]);
 }
 
 $normalElectricCost = $advantages["normal_electric_consume"] * $advantages["normal_electric_price"];

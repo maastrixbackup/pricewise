@@ -420,7 +420,7 @@
                             <label for="government_levies_gas" class=" col-form-label">Govt. Levies on Gas</label>
                             <div class="mb-3 add-scroll">
                             
-                            <input class="form-control" type="number" name="government_levies_gas" value="{{$objEnergy->government_levies_gas??$businessGeneralSettings['governement_levies']}}">
+                            <input class="form-control" type="number" name="government_levies_gas" value="{{$objEnergy->government_levies_gas??$businessGeneralSettings['governement_levies_gas']}}">
                             
                             
                             </div>
@@ -429,7 +429,7 @@
                             <label for="government_levies_electric" class=" col-form-label">Govt. Levies on Electric</label>                         
                             <div class="mb-3 add-scroll">
                             
-                            <input class="form-control" type="number" name="government_levies_electric" value="{{$objEnergy->government_levies_electric??$businessGeneralSettings['governement_levies']}}">
+                            <input class="form-control" type="number" name="government_levies_electric" value="{{$objEnergy->government_levies_electric??$businessGeneralSettings['governement_levies_electric']}}">
                             
                             </div>
                         
