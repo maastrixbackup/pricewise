@@ -43,6 +43,7 @@ class EnergyController extends Controller
      */
     public function index(Request $request)
     {
+
     	$objEnergy = EnergyProduct::latest()->get();
         $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', 16)->get();
         
@@ -235,10 +236,10 @@ class EnergyController extends Controller
             $objEnergy->no_of_person = $request->no_of_person;
             $objEnergy->category =  $request->category;
             $objEnergy->product_type = $request->product_type;
-            //$objEnergy->government_levies_gas = $request->government_levies_gas;
+            $objEnergy->government_levies_gas = $request->government_levies_gas;
             $objEnergy->is_featured = $request->is_featured;
-            // $objEnergy->government_levies_electric = $request->government_levies_electric;
-            // $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;            
+            $objEnergy->government_levies_electric = $request->government_levies_electric;
+            $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;            
             $objEnergy->slug = $request->link;
             $objEnergy->provider = $request->provider;
             $objEnergy->no_gas = $request->no_gas;
