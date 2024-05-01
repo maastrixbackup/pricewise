@@ -328,6 +328,7 @@ class EnergyController extends Controller
 
     public function update(Request $request, $id)
     {
+        //dd($request->data);
         $objEnergy = EnergyProduct::where('id', $id)->first();        
             $objEnergy->title = $request->title;
             $objEnergy->description = $request->description;

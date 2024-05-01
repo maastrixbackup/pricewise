@@ -121,7 +121,11 @@
                         <label for="input35" class=" col-form-label">Title</label>
                         <input type="text" class="form-control" id="title" name="title" placeholder="Product Title" value="{{$objEnergy->title}}">
                     </div>
-
+        <input type="hidden" name="data[gas_consume]" value="200">
+        <input type="hidden" name="data[normal_electric_consume]" value="500">
+        <input type="hidden" name="data[peak_electric_consume]" value="500">
+        <input type="hidden" name="data[feed_in_peak]" value="700">
+        <input type="hidden" name="data[feed_in_normal]" value="800">
                     <div class=" mb-3">
                         <label for="input37" class="col-form-label">URL</label>
 
