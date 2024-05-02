@@ -30,7 +30,7 @@ class EnergyController extends BaseController
 
         // Filter by number of persons
         if ($request->has('no_of_person')) {
-            $products->where('no_of_person', '<=', $request->input('no_of_person'));
+            $products->where('no_of_person', '>=', $request->input('no_of_person'));
         }
 
         // Filter by house type
@@ -61,12 +61,12 @@ class EnergyController extends BaseController
             $products->whereRaw('JSON_CONTAINS(energy_label, ?)', [$energy_label]);
         }     
 
-        if ($request->has('features')) {
+        if ($request->has('features') && $request->features !== null) {
             $features = $request->input('features');
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
             });
-        }    
+        }  //dd($products->get());  
         // Retrieve filtered products and return response
         $filteredProducts = $products->get();
         
@@ -90,7 +90,7 @@ class EnergyController extends BaseController
                 })->toArray()
             ];
         }
-
+        //dd($request->advantages);
         $mergedData = [];
         $businessGeneralSettings = getSettings('business_general');
         $totalFeedIn = ($request->advantages['feed_in_normal']??1) + ($request->advantages['feed_in_peak']??1);
@@ -116,7 +116,7 @@ class EnergyController extends BaseController
             $reductionCostElectric = $product->reduction_of_energy_tax??$businessGeneralSettings['reduction_of_energy_tax'];
             $govt_levies_gas = $product->government_levies_gas??$businessGeneralSettings['governement_levies_gas'];
 
-            if($request->no_gas == 1){
+            if($request->no_gas === 1){
                 $gas_consume = 0;
                 $del_gas = 0;
                 $govt_levies_gas = 0;
@@ -169,6 +169,7 @@ class EnergyController extends BaseController
             'success' => true,
             'data' => $mergedData,
             'filters' => $filters,
+            //'advantages' => $advantages,
             'message' => 'Products retrieved successfully.'
         ]);
 

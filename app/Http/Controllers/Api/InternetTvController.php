@@ -27,7 +27,7 @@ class InternetTvController extends BaseController
 
         // Filter by number of persons
         if ($request->has('no_of_person')) {
-            $products->where('no_of_person', '<=', $request->input('no_of_person'));
+            $products->where('no_of_person', '>=', $request->input('no_of_person'));
         }
 
         // Filter by house type
@@ -36,37 +36,21 @@ class InternetTvController extends BaseController
         }
 
         // Filter by current supplier
-        if ($request->has('current_supplier')) {
-            $products->where('provider', $request->input('current_supplier'));
-        }
+        // if ($request->has('current_supplier')) {
+        //     $products->where('provider', $request->input('current_supplier'));
+        // }
 
       
-        if ($request->has('features')) {
+        if ($request->has('features') && $request->feature !== null) {
             $features = $request->input('features');
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
             });
         }    
-        // // Retrieve filtered products and return response
-        // $filteredProducts = $products->get();
-        // $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
-        //     ->from('features as f1')
-        //     ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-        //     ->where('f1.category', $filteredProducts[0]->category)
-        //     ->where('f1.is_preferred', 1)
-        //     ->get()
-        //     ->groupBy('parent');
-        //     $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
-
-        //     // Merge filteredProductsFormatted and objEnergyFeatures
-        //     $mergedData = $filteredProductsFormatted->merge(['filters' => $objEnergyFeatures]);
-
-        //     // Return the merged data
-        //     return $this->sendResponse($mergedData, 'Products retrieved successfully.');
-        // Retrieve filtered products and return response
+        
         $filteredProducts = $products->get();
         if ($filteredProducts->isNotEmpty()) {
-        $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+        $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
             ->from('features as f1')
             ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
             ->where('f1.category', $filteredProducts[0]->category)
@@ -74,31 +58,20 @@ class InternetTvController extends BaseController
             ->get()
             ->groupBy('parent');
             } else {
-            // Handle case when $filteredProducts is empty
-            $objEnergyFeatures = collect(); // Or any other default value or action
+            
+            $objFeatures = collect(); // Or any other default value or action
         }
         $mergedData = [];
 
             foreach ($filteredProducts as $product) {
-                $formattedProduct = (new InternetTvResource($product))->toArray($request);
-                
-                // $productFeatures = $objEnergyFeatures[$product->category] ?? [];
-                
-                // if ($productFeatures instanceof \Illuminate\Support\Collection) {
-                //     $formattedProduct['filters'] = $productFeatures->toArray();
-                // } else {
-                //     $formattedProduct['filters'] = [];
-                // }
-                
+                $formattedProduct = (new InternetTvResource($product))->toArray($request);                
                 $mergedData[] = $formattedProduct;
             }
-            //$mergedData['additional_filters'] = $objEnergyFeatures;
-            //dd(\DB::getQueryLog());
-            // Return the merged data
+            
             return response()->json([
                 'success' => true,
                 'data' => $mergedData,
-                'filters' => $objEnergyFeatures,
+                'filters' => $objFeatures,
                 'message' => 'Products retrieved successfully.'
             ]);
     }
