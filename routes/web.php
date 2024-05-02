@@ -104,7 +104,14 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         //Features
         Route::resource('features', 'FeatureController');
         //Route::resource('tv-contract-lengths', 'TvContractLengthController');
-        
+
+        //FAQ
+        Route::get('FAQ-list', 'FAQController@FAQList')->name('FAQ-list');
+        Route::get('FAQ-add', 'FAQController@FAQAdd')->name('FAQ-add');
+        Route::post('FAQ-store', 'FAQController@FAQStore')->name('FAQ-store');
+        Route::get('FAQ-edit/{id}', 'FAQController@FAQEdit')->name('FAQ-edit');
+        Route::post('FAQ-update', 'FAQController@FAQupdate')->name('FAQ-update');
+        Route::get('FAQ-delete/{id}', 'FAQController@FAQDelete')->name('FAQ-delete');
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');

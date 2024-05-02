@@ -207,7 +207,7 @@
                     </a>
                   </li>
                     <li class="nav-main-item">
-                    <a class="nav-main-link" href="">
+                    <a class="nav-main-link" href="{{route('admin.FAQ-list')}}">
                       <i class="nav-main-link-icon fa-regular fa-circle"></i>
                       <span class="nav-main-link-name">FAQ</span>
                     </a>
