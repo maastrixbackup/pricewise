@@ -252,7 +252,7 @@
                 <div class="col-lg-12"><div class="form-check-box"><div class="form-group form-check-pr"><input type="checkbox" id="a" name="energy_label[]" value="A"><label for="a">A</label></div><div class="form-group form-check-pr"><input type="checkbox" id="b" name="energy_label[]" value="B"><label for="b">B</label></div><div class="form-group form-check-pr"><input type="checkbox" id="c" name="energy_label[]" value="C"><label for="c">C</label></div><div class="form-group form-check-pr"><input type="checkbox" id="d" name="energy_label[]" value="D"><label for="d">D</label></div><div class="form-group form-check-pr"><input type="checkbox" id="e" name="energy_label[]" value="E"><label for="e">E</label></div><div class="form-group form-check-pr"><input type="checkbox" id="f" name="energy_label[]" value="F"><label for="f">F</label></div><div class="form-group form-check-pr"><input type="checkbox" id="g" name="energy_label[]" value="G"><label for="g">G</label></div></div></div>
                 <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
                 <div class="mb-3">
-                    <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
+                    
                         
                         <label for="upload_image">
                                 <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />

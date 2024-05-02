@@ -133,7 +133,7 @@ class RequestController extends Controller
 
 	    $data[] = [
 	        'id' => $record->id,
-	        'product' => $record->service->title,
+	        'product' => $record->service?$record->service->title:'',
 	        'user_name' => $record->user_name, // Displaying user's name instead of ID
 	        'user_type' => $record->user_type,
 	        'category' => $record->category,

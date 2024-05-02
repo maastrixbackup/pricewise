@@ -42,18 +42,30 @@
                         <label for="input35" class=" col-form-label">Description</label>
                         <textarea class="form-control" name="description2" id="description23" placeholder="Product Description"></textarea>
                     </div>
-
+                    <div class="row">
+                    <div class="col-md-12 col-12">
+                        <div class=" mb-3">
+                            <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
+                            <input type="text" class="form-control" id="pin_codes" name="pin_codes" placeholder="PIN codes with coma separated">
+                    </div>
+                    </div>
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
                             <label for="input37" class="col-form-label">Price</label>
                             <input type="number" class="form-control" id="price" name="price" placeholder="Price">
                     </div>
                     </div>
-                    <div class="row">
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
-                            <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
-                            <input type="text" class="form-control" id="pin_codes" name="pin_codes" placeholder="PIN codes with coma separated">
+                            <label for="input37" class="col-form-label">Discounted Price</label>
+                            <input type="number" class="form-control" id="price" name="discounted_price" placeholder="Discounted Price">
+                    </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-12">
+                        <div class=" mb-3">
+                            <label for="input37" class="col-form-label">Discounted Till</label>
+                            <input type="number" class="form-control" id="discounted_till" name="discounted_till" placeholder="Discounted Till">
                     </div>
                     </div>
 
@@ -233,7 +245,18 @@
                 </div>
                 <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
                 <div class="mb-3">
-                    <input type="file" class="form-control" name="image" id="image" accept="image/*">
+                    
+                        
+                        <label for="upload_image">
+                                <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+
+                                <div class="overlay">
+                                    <div>Click to Change Image</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
+
+                            </label>
                 </div>
                 <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                 <div class="mb-3 add-scroll">

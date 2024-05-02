@@ -30,9 +30,6 @@ class RequestController extends BaseController
      */
     public function index(Request $request)
     {
-        //$posts = EmailTemplate::whereAdminId(\Auth::guard('admin')->user()->id)->get();
-
-        //return view('customers.request.index');
         $userData = UserRequest::where('user_id', $request->user_id)->get();
         return $this->sendResponse($userData, 'User requests retrieved successfully.');
     }
@@ -54,7 +51,7 @@ class RequestController extends BaseController
      * @return \Illuminate\Http\Response
      */ 
     public function store(Request $request)
-    {//dd($request->advantages);
+    {//return response()->json($request->input());
       
         try {
             $user_id = $request->input('user_id');
@@ -72,10 +69,9 @@ class RequestController extends BaseController
             $commission_amt = $request->input('commission_amt');
             $request_status = $request->input('request_status');
             $advantages = $request->input('advantages');
-            // Create a new UserRequest instance
+            
             $data = new UserRequest();
-            $data->order_no = $user_id;
-            // Assign data to the properties of the $data object
+            
             $data->user_id = $user_id;
             $data->user_type = $user_type;
             $data->category = $category_id;
@@ -96,12 +92,12 @@ class RequestController extends BaseController
             $data->no_gas = $request->no_gas;
             $data->shipping_address = json_encode($request->shipping_address);
             $data->billing_address = json_encode($request->billing_address);
-            // Save the data to the database
+            
             if ($data->save()) {
-                
+                $data->load('userDetails'); 
                 $orderNo = $data->id + 1000;
                 $data->order_no = $orderNo;
-                $name = $data->userDetails->name;
+                $name = $data->userDetails?$data->userDetails->name:'';
                 
                 $data->save();
                 if($request->has('advantages')){
@@ -112,12 +108,11 @@ class RequestController extends BaseController
                             ]);
                     }
                 }
-                $data->load('userDetails');                
+                               
                 $emailTemplate = EmailTemplate::where('email_of', '2')->first();
-                //dd($data->userDetails->name);
-                //$body = $emailTemplate->mail_body;
+                
                 $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
-                $body['name'] = $data->userDetails->name;
+                $body['name'] = $name;
                 $body['action_link'] = url('/').'/api/view-order/'.$orderNo;
 
                 Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
@@ -148,12 +143,7 @@ class RequestController extends BaseController
     {
         return $this->sendResponse($userRequest, 'User request retrieved successfully.');
     }
-
-    // public function viewOrder( $order_no)
-    // {
-    //     $order = UserRequest::where('order_no', $order_no)->first();
-    //     return $this->sendResponse($order, 'User request retrieved successfully.');
-    // }
+   
 
     /**
      * Show the form for editing the specified resource.
@@ -163,9 +153,7 @@ class RequestController extends BaseController
      */
     public function edit(UserRequest $userRequest)
     {
-        // if(\Auth::guard('admin')->user()->id == $post->admin_id){
-        //     return view('admin.posts.edit',['post'=>$post]);
-        // }
+        
 
         // if(\Auth::guard('admin')->user()->can('view',$post)){
         //     return view('admin.posts.edit',['post'=>$post]);            
@@ -254,32 +242,31 @@ class RequestController extends BaseController
         try {
             $userRequest = UserRequest::where('user_id', $request->user_id)
                                     ->where('post_id', $request->post_id)->firstOrFail();
-            // Validate the incoming request data
+            
             $validatedData = $request->validate([
                 'user_id' => 'required',
                 'rating' => 'required|numeric',
                 'post_id' => 'required|numeric',
             ]);
 
-            // Loop through each key-value pair in the data array
-            
-                // Use updateOrCreate to update or create the record
+                    
+                
                 Review::updateOrCreate(
                     ['user_id' => $validatedData['user_id'], 'post_id' => $validatedData['post_id']],
                     ['rating' => $validatedData['rating'], 'category' => $request->category, 'sub_category' => $request->sub_category, 'user_type' => $request->user_type, 'rating_type' => $request->rating_type]
                 );
             
 
-            // Return a response indicating success
+            
             return response()->json(['success' => true, 'message' => 'Review saved successfully'], 200);
         } catch (ValidationException $e) {
-            // Handle validation errors
+            
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
         } catch (QueryException $e) {
-            // Handle other database errors
+            
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // User request not found, handle the error
+            
             return response()->json(['error' => 'User request not found'], 422);
         }
     }
