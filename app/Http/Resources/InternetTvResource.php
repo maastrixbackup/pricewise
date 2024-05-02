@@ -20,12 +20,13 @@ class InternetTvResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
+            'title' => $this->title,            
             'product_type' => $this->product_type, 
             'content' => $this->content, 
             'avg_delivery_time' => $this->avg_delivery_time, 
-            'price' => $this->price, 
+            'price' => $this->price,
+            'discounted_price' => $this->discounted_price,
+            'discounted_till' => $this->discounted_till,
             'commission' => $this->commission, 
             'commission_type' => $this->commission_type, 
             'image' => 'energy/'.$this->image, 
@@ -60,6 +61,18 @@ class InternetTvResource extends JsonResource
                         'path' => $document->path,
                     ];
                 });
+            }),
+            'provider_details' => $this->whenLoaded('providerDetails', function () {
+                return [
+                        'about' => $this->providerDetails->about,
+                        'payment_options' => $this->providerDetails->payment_options,
+                        'annual_accounts' => $this->providerDetails->annual_accounts,
+                        'meter_readings' => $this->providerDetails->meter_readings,
+                        'adjust_installments' => $this->providerDetails->adjust_installments,
+                        'view_consumption' => $this->providerDetails->view_consumption,
+                        'rose_scheme' => $this->providerDetails->rose_scheme,
+                    ];
+                
             }),
             'features' => PostFeatureResource::collection($features),            
             'created_at' => $this->created_at->format('d/m/Y'),

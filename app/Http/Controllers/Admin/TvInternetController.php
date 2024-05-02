@@ -15,7 +15,7 @@ use App\Models\PostFeature;
 use App\Models\Affiliate;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class TvInternetController extends Controller
@@ -223,15 +223,18 @@ class TvInternetController extends Controller
             $objTv->commission_type = $request->commission_type;
             $objTv->avg_delivery_time = $request->avg_delivery_time;
             $objTv->price = $request->price;
+            $objTv->discounted_price = $request->discounted_price;
+            $objTv->discounted_till = $request->discounted_till;
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
+            $objTv->combos = json_encode($request->combos ? $request->combos : []);            
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
             $objTv->product_type = $request->product_type;
+            $objTv->no_of_person = $request->no_of_person;
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
             $objTv->mechanic_install = $request->mechanic_install;
@@ -240,15 +243,46 @@ class TvInternetController extends Controller
             $objTv->provider = $request->provider;
             
             //$objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
-            if ($request->file('image') == null || $request->file('image') == '') {
-                $input['image'] = $objTv->image;
-            } else {
-                $destinationPath = '/images';
-                $imgfile = $request->file('image');
-                $imgFilename = $imgfile->getClientOriginalName();
-                $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-                $image = $imgFilename;
-                $objTv->image = $image;
+            // if ($request->file('image') == null || $request->file('image') == '') {
+            //     $input['image'] = $objTv->image;
+            // } else {
+            //     $destinationPath = '/images';
+            //     $imgfile = $request->file('image');
+            //     $imgFilename = $imgfile->getClientOriginalName();
+            //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
+            //     $image = $imgFilename;
+            //     $objTv->image = $image;
+            // }
+
+            if ($request->has('cropped_image')) {
+            // Access base64 encoded image data directly from the request
+            $croppedImage = $request->cropped_image;
+
+            // Extract base64 encoded image data and decode it
+            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+            // Generate a unique file name for the image
+            $imageName = 'tvInternet_' . time() . '.png';
+
+            // Specify the destination directory where the image will be saved
+            $destinationDirectory = 'public/images/tvinternet';
+
+            // Create the directory if it doesn't exist
+            Storage::makeDirectory($destinationDirectory);
+
+            // Save the image to the server using Laravel's file upload method
+            $filePath = $destinationDirectory . '/' . $imageName;
+
+            // Delete the old image if it exists
+            if ($objTv->image) {
+                Storage::delete($destinationDirectory . '/' . $objTv->image);
+            }
+
+            // Save the new image
+            Storage::put($filePath, $imgData);
+
+            // Set the image file name for the provider
+            $objTv->image = $imageName;
             }
             if ($objTv->save()) {
                 return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -283,6 +317,7 @@ class TvInternetController extends Controller
         $objTv = TvInternetProduct::find($id);
         $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
         $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', 9)->pluck('feature_value', 'feature_id')->toArray();
+        $providers = Provider::latest()->get();
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
         $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', 8)->pluck('feature_value', 'feature_id')->toArray();       
         $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
@@ -292,7 +327,7 @@ class TvInternetController extends Controller
         $objCategory = Category::latest()->get();
         $documents = Document::where('post_id', $id)->where('category', $objTv->category)->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents'));
+        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents', 'providers'));
     }
 
     /**
@@ -313,6 +348,8 @@ class TvInternetController extends Controller
             $objTv->commission_type = $request->commission_type;
             $objTv->avg_delivery_time = $request->avg_delivery_time;
             $objTv->price = $request->price;
+            $objTv->discounted_price = $request->discounted_price;
+            $objTv->discounted_till = $request->discounted_till;
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
@@ -322,23 +359,54 @@ class TvInternetController extends Controller
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
             $objTv->product_type = $request->product_type;
+            $objTv->no_of_person = $request->no_of_person;
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
             $objTv->mechanic_install = $request->mechanic_install;
             $objTv->mechanic_charge = $request->mechanic_charge;            
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
-        if ($request->file('image') == null || $request->file('image') == '') {
-            $image = $objTv->image;
-        } else {
-            $destinationPath = '/images';
-            $imgfile = $request->file('image');
-            $imgFilename = $imgfile->getClientOriginalName();
-            $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-            $image = $imgFilename;
+        // if ($request->file('image') == null || $request->file('image') == '') {
+        //     $image = $objTv->image;
+        // } else {
+        //     $destinationPath = '/images';
+        //     $imgfile = $request->file('image');
+        //     $imgFilename = $imgfile->getClientOriginalName();
+        //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
+        //     $image = $imgFilename;
            
-        }
-         $objTv->image = $image;
+        // }
+        //  $objTv->image = $image;
+            if ($request->has('cropped_image')) {
+            // Access base64 encoded image data directly from the request
+            $croppedImage = $request->cropped_image;
+
+            // Extract base64 encoded image data and decode it
+            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+            // Generate a unique file name for the image
+            $imageName = 'tvInternet_' . time() . '.png';
+
+            // Specify the destination directory where the image will be saved
+            $destinationDirectory = 'public/images/tvinternet';
+
+            // Create the directory if it doesn't exist
+            Storage::makeDirectory($destinationDirectory);
+
+            // Save the image to the server using Laravel's file upload method
+            $filePath = $destinationDirectory . '/' . $imageName;
+
+            // Delete the old image if it exists
+            if ($objTv->image) {
+                Storage::delete($destinationDirectory . '/' . $objTv->image);
+            }
+
+            // Save the new image
+            Storage::put($filePath, $imgData);
+
+            // Set the image file name for the provider
+            $objTv->image = $imageName;
+            }
         if ($objTv->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);

@@ -27,7 +27,7 @@ class InternetTvController extends BaseController
 
         // Filter by number of persons
         if ($request->has('no_of_person')) {
-            $products->where('no_of_person', '<=', $request->input('no_of_person'));
+            $products->where('no_of_person', '>=', $request->input('no_of_person'));
         }
 
         // Filter by house type
@@ -36,9 +36,9 @@ class InternetTvController extends BaseController
         }
 
         // Filter by current supplier
-        if ($request->has('current_supplier')) {
-            $products->where('provider', $request->input('current_supplier'));
-        }
+        // if ($request->has('current_supplier')) {
+        //     $products->where('provider', $request->input('current_supplier'));
+        // }
 
       
         if ($request->has('features') && $request->feature !== null) {
@@ -50,7 +50,7 @@ class InternetTvController extends BaseController
         
         $filteredProducts = $products->get();
         if ($filteredProducts->isNotEmpty()) {
-        $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+        $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
             ->from('features as f1')
             ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
             ->where('f1.category', $filteredProducts[0]->category)

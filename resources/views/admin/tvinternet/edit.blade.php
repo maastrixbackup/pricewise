@@ -109,24 +109,37 @@
                                 
                                                     <div class=" mb-3">
                                                         <label for="input35" class=" col-form-label">Description</label>
-                                                        <textarea class="form-control" name="description3" id="description3" placeholder="Product Description">{{$objTv->content}}</textarea>
+                                                        <textarea class="form-control" name="description3" id="description3" placeholder="Product Description">{!! $objTv->content !!}</textarea>
                                                     </div>
-                                
-                                                    <div class="col-md-6 col-12">
-                                                        <div class=" mb-3">
-                                                            <label for="input37" class="col-form-label">Price</label>
-                                                            <input type="number" class="form-control" id="price" name="price" placeholder="Price" value="{{$objTv->price}}">
-                                                    </div>
-                                                    </div>
-                                
                                                     <div class="row">
-                                                        <div class="col-md-6 col-12">
+                                                    <div class="col-md-12 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
                                                                 <input type="text" class="form-control" id="pin_codes" name="pin_codes" placeholder="PIN codes with coma separated" value="{{implode(',',json_decode($objTv->pin_codes))}}">
                                                         </div>
                                                         </div>
-                                    
+                                
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                            <label for="input37" class="col-form-label">Price</label>
+                                                            <input type="text" class="form-control" id="price" name="price" placeholder="Price" value="{{$objTv->price}}">
+                                                    </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                            <label for="input37" class="col-form-label">Discounted Price</label>
+                                                            <input type="text" class="form-control" id="discounted_price" name="discounted_price" placeholder="Discounted Price" value="{{$objTv->discounted_price}}">
+                                                    </div>
+                                                    </div>
+                                
+                                                    
+                                                        
+                                                        <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                            <label for="input37" class="col-form-label">Discounted Till</label>
+                                                            <input type="number" class="form-control" id="discounted_till" name="discounted_till" placeholder="Discounted Till" value="{{$objTv->discounted_till}}">
+                                                        </div>
+                                                        </div>
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="valid_till" class="col-form-label">Offer Valid Till</label>
@@ -272,7 +285,11 @@
                                                         
                                                     </select>
                                                 </div>
-                                
+                                                <div class="mb-3 form-group">
+                                                    <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
+                                                    </label>
+                                                    <input type="number" class="form-control" id="no_of_person" name="no_of_person" value="{{$objTv->no_of_person}}">
+                                                </div>
                                                 <div class="mb-3">
                                                     <label for="input40" class="col-form-label"><b>Category</b>
                                                     </label>
@@ -285,11 +302,31 @@
                                                         @endif
                                                     </select>
                                                 </div>
-                                
+                                                <div class="mb-3">
+                                                    <label for="provider" class="col-form-label"><b>Provider</b>
+                                                    </label>
+
+                                                    <select id="provider" name="provider" class="select2 form-select">
+                                                        <option>Select</option>
+                                                        @if($providers)
+                                                        @foreach($providers as $provider)
+                                                        <option value="{{$provider->id}}" @if($provider->id == $objTv->provider)selected @endif>{{$provider->name}}</option>
+                                                        @endforeach
+                                                        @endif
+                                                    </select>
+                                                </div>
                                                 <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
                                                 <div class="mb-3">
-                                                    <input type="file" class="form-control" name="image" id="image" accept="image/*" value="{{$objTv->image}}">
+                                                    <label for="upload_image">
+                                                <img src="{{asset('storage/images/tvinternet/'. $objTv->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+                                                <div class="overlay">
+                                                    <div>Click to Change Image</div>
                                                 </div>
+                                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                                <input type="hidden" name="cropped_image" id="cropped_image">
+
+                                                </label>
+                                                                </div>
                                                 
                                 
                                 

@@ -2,8 +2,8 @@
 
 if($userRequest->no_gas == null){
 $gasTotal = ($advantages["gas_consume"] * $advantages["gas_price"]);
-$networkCostGas = $advantages["network_cost_gas"];
-$deliveryCostGas = $advantages["delivery_cost_gas"];
+$networkCostGas = 0;//$advantages["network_cost_gas"];
+$deliveryCostGas = 0;//$advantages["delivery_cost_gas"];
 $gasTotal = $gasTotal + $deliveryCostGas + $networkCostGas + ($advantages["government_levies_gas"] * $advantages["gas_consume"]);
 }
 
@@ -137,7 +137,7 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
                   ),
                   array(
                       'label' => 'Network management costs',
-                      'value' => $advantages["network_cost_gas"]
+                      'value' => 0
                   ),
                   array(
                       'label' => '<b>Gas Total</b>',

@@ -100,10 +100,12 @@
                                                 <hr>
                                                 
                 
-
+@if($userRequest->service_type == 'App\Models\EnergyProduct')
 @include('admin.partials.energy_request',['advantages'=>json_decode($userRequest->advantages, true) ])
-                                        
-                
+@endif
+@if($userRequest->service_type == 'App\Models\TvInternetProduct')
+@include('admin.partials.tvinternet_request',['advantages'=>json_decode($userRequest->advantages, true) ])
+@endif
                                               </div>
                                             </div>
                                           </div>
