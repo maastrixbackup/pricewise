@@ -75,7 +75,18 @@
                             <input type="date" class="form-control" id="valid_till" name="valid_till" placeholder="Valid Till">
                     </div>
                     </div>
-
+                    <div class="col-md-6 col-12">
+                        <div class=" mb-3">
+                            <label for="connection_cost" class="col-form-label">Connection Cost</label>
+                            <input type="number" class="form-control" id="connection_cost" name="connection_cost" placeholder="Connection Cost">
+                    </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class=" mb-3">
+                            <label for="shipping_cost" class="col-form-label">Shipping Cost</label>
+                            <input type="number" class="form-control" id="shipping_cost" name="shipping_cost" placeholder="Shipping Cost">
+                    </div>
+                    </div>
                 
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
@@ -147,6 +158,12 @@
                                 <label class="form-check-label" for="flexCheckDefault">Feature Product</label>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class=" mb-3">
+                            <label for="discount" class="col-form-label">Discount</label>
+                            <input type="number" class="form-control" id="discount" name="discount" placeholder="Discount">
+                    </div>
                     </div>
                 </div>
                 <div class="row">
