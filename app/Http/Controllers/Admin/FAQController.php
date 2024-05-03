@@ -11,6 +11,14 @@ use Brian2694\Toastr\Facades\Toastr;
 
 class FAQController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:FAQ-list', ['only' => ['FAQList', 'FAQStore']]);
+        $this->middleware('permission:FAQ-add', ['only' => ['FAQAdd', 'FAQStore']]);
+        $this->middleware('permission:FAQ-edit', ['only' => ['FAQEdit', 'FAQupdate']]);
+        $this->middleware('permission:FAQ-delete', ['only' => ['FAQDelete']]);
+    }
     public function FAQList()
     {
         $data = FAQ::latest()->with('categoryDetails')->get();
