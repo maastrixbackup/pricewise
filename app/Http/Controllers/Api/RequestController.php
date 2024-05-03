@@ -30,7 +30,7 @@ class RequestController extends BaseController
      */
     public function index(Request $request)
     {
-        $userData = UserRequest::where('user_id', $request->user_id)->get();
+        $userData = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('service_type', 'App\Models\EnergyProduct')->where('user_id', $request->user_id)->get();
         return $this->sendResponse($userData, 'User requests retrieved successfully.');
     }
 
