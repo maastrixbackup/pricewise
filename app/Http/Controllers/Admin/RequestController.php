@@ -82,7 +82,7 @@ class RequestController extends Controller
 
     $totalRecordswithFilter = $totalRecordswithFilter->count();
 
-    $requestRecords = UserRequest::with('service', 'userDetails')->select('user_requests.*', 'users.name as user_name')
+    $requestRecords = UserRequest::with('service', 'userDetails','categoryDetails')->select('user_requests.*', 'users.name as user_name')
     ->leftJoin('users', 'user_requests.user_id', '=', 'users.id')
     ->orderBy($columnName, $columnSortOrder);
 
@@ -126,7 +126,7 @@ class RequestController extends Controller
 	    ->get();
 
 	$data = [];
-
+	
 	foreach ($requestRecords as $key => $record) {
 	    $editUrl = route('admin.requests.edit',$record->id). '?' . http_build_query(['category' => $record->category, 'service_id' => $record->service_id]);
 	    $action = '<a href="' . $editUrl . '" class="btn btn-primary btn-sm">Edit</a>';
@@ -136,7 +136,7 @@ class RequestController extends Controller
 	        'product' => $record->service?$record->service->title:'',
 	        'user_name' => $record->user_name, // Displaying user's name instead of ID
 	        'user_type' => $record->user_type,
-	        'category' => $record->category,
+			'category_name' => $record->categoryDetails->name,
 	        'sub_category' => $record->sub_category,
 	        'service_id' => $record->service_id,
 	        'service_type' => $record->service_type,
