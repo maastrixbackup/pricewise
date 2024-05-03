@@ -95,13 +95,33 @@
                   </li>                 
                   </ul>
                 </li>
-                  <li class="nav-main-item">
-                    <a class="nav-main-link" href="{{route('admin.internet-tv.index')}}">
-                      <i class="nav-main-link-icon fa-solid fa-globe"></i>
+
+                <li class="nav-main-item">
+                    <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="false" href="#">
+                      <i class="nav-main-link-icon fa fa-briefcase"></i>
                       <span class="nav-main-link-name">Internet, Tv & Telephone</span>
                     </a>
-                  </li>
-                   
+                    <ul class="nav-main-submenu">
+                    <li class="nav-main-item">
+                      <a class="nav-main-link" href="{{route('admin.internet-tv.index')}}">
+                        <i class="nav-main-link-icon fa-solid fa-bolt-lightning"></i>
+                        <span class="nav-main-link-name">Internet & Tv Products</span>
+                      </a>
+                    </li>
+                    <li class="nav-main-item">
+                      <a class="nav-main-link" href="{{route('admin.tv-channel.index')}}">
+                      <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                      <span class="nav-main-link-name">Tv Channels</span>
+                      </a>
+                    </li>
+                     <li class="nav-main-item">
+                      <a class="nav-main-link" href="">
+                      <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                      <span class="nav-main-link-name">Tv Packages</span>
+                      </a>
+                    </li>                 
+                    </ul>
+                </li>
                    
                     <li class="nav-main-item">
                     <a class="nav-main-link" href="{{route('admin.insurance.index')}}">

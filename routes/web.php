@@ -112,6 +112,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('FAQ-edit/{id}', 'FAQController@FAQEdit')->name('FAQ-edit');
         Route::post('FAQ-update', 'FAQController@FAQupdate')->name('FAQ-update');
         Route::get('FAQ-delete/{id}', 'FAQController@FAQDelete')->name('FAQ-delete');
+
+        //Tv Channel
+        Route::resource('tv-channel', 'TvChannelController');
+
+        
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');
