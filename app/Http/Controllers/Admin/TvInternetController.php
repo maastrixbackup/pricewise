@@ -225,6 +225,9 @@ class TvInternetController extends Controller
             $objTv->price = $request->price;
             $objTv->discounted_price = $request->discounted_price;
             $objTv->discounted_till = $request->discounted_till;
+            $objTv->shipping_cost = $request->shipping_cost;
+            $objTv->connection_cost = $request->connection_cost;
+            $objTv->discount = $request->discount;
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
@@ -350,6 +353,9 @@ class TvInternetController extends Controller
             $objTv->price = $request->price;
             $objTv->discounted_price = $request->discounted_price;
             $objTv->discounted_till = $request->discounted_till;
+            $objTv->shipping_cost = $request->shipping_cost;
+            $objTv->connection_cost = $request->connection_cost;
+            $objTv->discount = $request->discount;
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
