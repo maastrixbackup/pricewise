@@ -10,4 +10,9 @@ class TvPackage extends Model
     use HasFactory;
 
     protected $guarded;
+
+
+    public function providerDetails(){
+        return $this->belongsTo(Provider::class, 'provider_id'); 
+    }
 }

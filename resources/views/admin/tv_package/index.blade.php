@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'PriceWise- Tv Channels')
+@section('title', 'PriceWise- Tv Packages')
 @section('content')
 
     <!--breadcrumb-->
@@ -17,7 +17,7 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.tv-channel.create') }}" class="btn btn-primary">Create a New Tv Channel</a>
+                <a href="{{ route('admin.tv-packages.create') }}" class="btn btn-primary">Create a New Tv Package</a>
 
             </div>
 
@@ -27,19 +27,17 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">TV Channels</h6>
+            <h6 class="mb-0 text-uppercase">TV Packages</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="TvChannelTable" class="table table-striped table-bordered">
+                        <table id="TvPackageTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Channel Name</th>
-                                    <th>Description</th>
-                                    <th>Price</th>
-                                    <th>Type</th>
+                                    <th>Package Name</th>
+                                    <th>Providers</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -48,20 +46,18 @@
                                     @foreach ($records as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->channel_name }}</td>
-                                            <td>{{ $record->description ?? '' }}</td>
-                                            <td>{{ $record->price }}</td>
-                                            <td>{{ $record->type }}</td>
+                                            <td>{{ $record->package_name }}</td>
+                                            <td>{{ $record->providerDetails->name }}</td>
                                             <td>
                                                 <div class="col d-flex justify-content">
 
                                                     <a title="Edit"
-                                                        href="{{ route('admin.tv-channel.edit', $record->id) }}"
+                                                        href="{{ route('admin.tv-packages.edit', $record->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
-                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-channel"
+                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-package"
                                                         data-id="{{ $record->id }}"
-                                                        data-action="{{ route('admin.tv-channel.destroy', $record->id) }}"><i
+                                                        data-action="{{ route('admin.tv-packages.destroy', $record->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
                                                 </div>
                                             </td>
@@ -81,7 +77,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#TvChannelTable').DataTable({
+            var table = $('#TvPackageTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
@@ -116,7 +112,7 @@
             table.buttons().container()
                 .appendTo('#userTable_wrapper .col-md-6:eq(0)');
 
-            $("body").on("click", ".remove-channel", function() {
+            $("body").on("click", ".remove-package", function() {
                 var current_object = $(this);
                 swal({
                     title: "Are you sure?",

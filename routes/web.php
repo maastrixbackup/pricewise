@@ -116,7 +116,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         //Tv Channel
         Route::resource('tv-channel', 'TvChannelController');
 
-        
+        // Tv Package
+        Route::resource('tv-packages', 'TvPackageController');
+
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');

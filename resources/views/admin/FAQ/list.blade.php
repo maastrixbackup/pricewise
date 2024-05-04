@@ -35,7 +35,7 @@
                         <table id="FAQTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Sl</th>
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Icon</th>
