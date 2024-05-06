@@ -8,16 +8,19 @@ use App\Models\TvPackage;
 use App\Models\TvChannel;
 use App\Models\Provider;
 use Brian2694\Toastr\Facades\Toastr;
+
+use function PHPUnit\Framework\returnSelf;
+
 class TvPackageController extends Controller
 {
-    // function __construct()
-    // {
-    //     $this->middleware('auth:admin');
-    //     $this->middleware('permission:tv-packages', ['only' => ['index', 'store']]);
-    //     $this->middleware('permission:tv-packages.create', ['only' => ['create', 'store']]);
-    //     $this->middleware('permission:tv-packages.edit', ['only' => ['edit', 'update']]);
-    //     $this->middleware('permission:tv-packages.destroy', ['only' => ['destroy']]);
-    // }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:tv-packages', ['only' => ['index', 'store']]);
+        $this->middleware('permission:tv-packages.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:tv-packages.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:tv-packages.destroy', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *

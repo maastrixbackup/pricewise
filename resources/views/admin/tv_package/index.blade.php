@@ -83,7 +83,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2]
                         }
                     },
                     {
@@ -92,14 +92,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2]
                         }
                     },
                 ],
@@ -110,7 +110,7 @@
             });
 
             table.buttons().container()
-                .appendTo('#userTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#TvPackageTable_wrapper .col-md-6:eq(0)');
 
             $("body").on("click", ".remove-package", function() {
                 var current_object = $(this);

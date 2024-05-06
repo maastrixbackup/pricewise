@@ -49,10 +49,12 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Channels<sup class="text-danger">*</sup></label>
                             <div class="">
-                                <select name="channels[]" multiple>
+                                <select class="form-control choices-multiple" name="channels[]" multiple>
                                     <option value="">Select</option>
                                     @foreach ($channels as $channel)
-                                        <option value="{{ $channel->id }}" {{in_array($channel->id, $packageChannels) ? 'selected' : ''}}>{{ $channel->channel_name }}</option>
+                                        <option value="{{ $channel->id }}"
+                                            {{in_array($channel->id, $packageChannels) ? 'selected' : ''}}>
+                                            {{ $channel->channel_name }}</option>
                                     @endforeach
                                 </select>
                                 @error('channels')
@@ -90,3 +92,11 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            new Choices(document.querySelector(".choices-multiple"));
+        });
+        new Choices(document.querySelector(".choices-multiple"));
+    </script>
+@endpush

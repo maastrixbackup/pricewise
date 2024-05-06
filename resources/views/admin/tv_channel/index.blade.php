@@ -87,7 +87,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2 ,3, 4]
                         }
                     },
                     {
@@ -96,14 +96,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2 ,3, 4]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2 ,3, 4]
                         }
                     },
                 ],
@@ -114,7 +114,7 @@
             });
 
             table.buttons().container()
-                .appendTo('#userTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#TvChannelTable_wrapper .col-md-6:eq(0)');
 
             $("body").on("click", ".remove-channel", function() {
                 var current_object = $(this);
