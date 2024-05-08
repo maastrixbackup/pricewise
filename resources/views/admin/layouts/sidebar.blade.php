@@ -136,9 +136,9 @@
                     </a>
                   </li>
                    <li class="nav-main-item">
-                    <a class="nav-main-link" href="#">
+                    <a class="nav-main-link" href="{{route('admin.exclusive-deals.index')}}">
                       <i class="nav-main-link-icon fa-solid fa-hands-holding-circle"></i>
-                      <span class="nav-main-link-name">Exclusive Deal</span>
+                      <span class="nav-main-link-name">Exclusive Deals</span>
                     </a>
                   </li>
                 </ul>
