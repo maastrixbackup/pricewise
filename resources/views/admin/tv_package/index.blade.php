@@ -49,7 +49,7 @@
                                             <td>{{ $record->package_name }}</td>
                                             <td>{{ $record->providerDetails->name }}</td>
                                             <td>
-                                                <div class="col d-flex justify-content">
+                                                <div class="col d-flex justify-content-evenly">
 
                                                     <a title="Edit"
                                                         href="{{ route('admin.tv-packages.edit', $record->id) }}"

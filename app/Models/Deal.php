@@ -10,4 +10,8 @@ class Deal extends Model
     use HasFactory;
     
     protected $guarded;
+
+    public function categoryDetails(){
+        return $this->belongsTo(Category::class,'category','id');
+    }
 }

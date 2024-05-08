@@ -32,7 +32,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="TvPackageTable" class="table table-striped table-bordered">
+                        <table id="ExclusiveDealsTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
@@ -51,11 +51,11 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->title }}</td>
                                             <td>{{ $record->valid_till }}</td>
-                                            <td>{{ $record->icon }}</td>
-                                            <td>{{ $record->category }}</td>
+                                            <td><img width="50" height="50" src="{{asset('deal_icons/'.$record->icon)}}" alt=""> </td>
+                                            <td>{{ $record->categoryDetails->name }}</td>
                                             <td>{{ $record->status }}</td>
                                             <td>
-                                                <div class="col d-flex justify-content">
+                                                <div class="col d-flex col d-flex justify-content-evenly">
 
                                                     <a title="Edit"
                                                         href="{{ route('admin.exclusive-deals.edit', $record->id) }}"
@@ -83,13 +83,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#TvPackageTable').DataTable({
+            var table = $('#ExclusiveDealsTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2 ,3 ,4 , 5]
+                            columns: [0, 1 ,2 ,4 , 5]
                         }
                     },
                     {
@@ -98,14 +98,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1 ,2 ,3 ,4 , 5]
+                            columns: [0, 1 ,2  ,4 , 5]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2 ,3 ,4 , 5]
+                            columns: [0, 1 ,2 ,4 , 5]
                         }
                     },
                 ],
@@ -116,7 +116,7 @@
             });
 
             table.buttons().container()
-                .appendTo('#TvPackageTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#ExclusiveDealsTable_wrapper .col-md-6:eq(0)');
 
             $("body").on("click", ".remove-package", function() {
                 var current_object = $(this);

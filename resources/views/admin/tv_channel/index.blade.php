@@ -53,7 +53,7 @@
                                             <td>{{ $record->price }}</td>
                                             <td>{{ $record->type }}</td>
                                             <td>
-                                                <div class="col d-flex justify-content">
+                                                <div class="col d-flex justify-content-evenly">
 
                                                     <a title="Edit"
                                                         href="{{ route('admin.tv-channel.edit', $record->id) }}"

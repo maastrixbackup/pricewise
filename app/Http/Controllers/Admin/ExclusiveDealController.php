@@ -12,14 +12,14 @@ use Illuminate\Http\Request;
 
 class ExclusiveDealController extends Controller
 {
-    // function __construct()
-    // {
-    //     $this->middleware('auth:admin');
-    //     $this->middleware('permission:exclusive-deals', ['only' => ['index', 'store']]);
-    //     $this->middleware('permission:exclusive-deals.create', ['only' => ['create', 'store']]);
-    //     $this->middleware('permission:exclusive-deals.edit', ['only' => ['edit', 'update']]);
-    //     $this->middleware('permission:exclusive-deals.destroy', ['only' => ['destroy']]);
-    // }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:exclusive-deals', ['only' => ['index', 'store']]);
+        $this->middleware('permission:exclusive-deals.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:exclusive-deals.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:exclusive-deals.destroy', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -50,7 +50,33 @@ class ExclusiveDealController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'valid_till' => 'required',
+            'icon' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category' => 'required',
+            'products' => 'required|min:1',
+        ]);
+        try {
+            $newDeal = new Deal();
+            $newDeal->title=$request->title;
+            $newDeal->valid_till=$request->valid_till;
+
+            $filename = time().'.'.$request->icon->getClientOriginalExtension();  
+     
+            $request->icon->move(public_path('deal_icons'), $filename);
+            
+            $newDeal->icon = $filename;
+            $newDeal->category = $request->category;
+            $newDeal->products = json_encode($request->products);
+            $newDeal->status = $request->status;
+            $newDeal->save();
+            Toastr::success('Deal Added Successfully', '', ["positionClass" => "toast-top-right"]);
+            return redirect()->route('admin.exclusive-deals.index');
+        } catch (\Exception $e) {
+            Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
+            return back();
+        }
     }
 
     /**
@@ -72,7 +98,9 @@ class ExclusiveDealController extends Controller
      */
     public function edit($id)
     {
-        //
+        $categories = Category::latest()->get();
+        $deal = Deal::where('id', $id)->first();
+        return view('admin.exclusive_deals.edit',compact('categories','deal'));
     }
 
     /**
@@ -84,7 +112,33 @@ class ExclusiveDealController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // return $request;
+        $request->validate([
+            'title' => 'required',
+            'valid_till' => 'required',
+            'icon' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category' => 'required',
+            'products' => 'required|min:1',
+        ]);
+        try {
+            $deal = Deal::findOrFail($id);
+            $deal->title=$request->title;
+            $deal->valid_till=$request->valid_till;
+            if (isset($request->icon)) {
+                $filename = time().'.'.$request->icon->getClientOriginalExtension(); 
+                $request->icon->move(public_path('deal_icons'), $filename);
+            }
+            $deal->icon = $filename ?? $deal->icon;
+            $deal->category = $request->category;
+            $deal->products = json_encode($request->products);
+            $deal->status = $request->status;
+            $deal->save();
+            Toastr::success('Deal Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            return redirect()->route('admin.exclusive-deals.index');
+        } catch (\Exception $e) {
+            Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
+            return back();
+        }
     }
 
     /**
@@ -95,7 +149,13 @@ class ExclusiveDealController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Deal::where('id', $id)->delete();
+            return back()->with(Toastr::error(__('Deal deleted successfully!')));
+        } catch (\Exception $e) {
+            Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
+            return back();
+        }
     }
 
     public function getProductsCategoryWise(Request $request)

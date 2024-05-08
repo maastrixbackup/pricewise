@@ -18,7 +18,7 @@ class CreateDealsTable extends Migration
             $table->string('title');
             $table->dateTime('valid_till');
             $table->string('icon');
-            $table->string('category');
+            $table->integer('category');
             $table->json('products');
             $table->string('status')->comment('active , inactive');
             $table->timestamps();
