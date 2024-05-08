@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'PriceWise- Tv Packages')
+@section('title', 'PriceWise- Exclusive Deals')
 @section('content')
 
     <!--breadcrumb-->
@@ -17,7 +17,7 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.tv-packages.create') }}" class="btn btn-primary">Create a New Tv Package</a>
+                <a href="{{ route('admin.exclusive-deals.create') }}" class="btn btn-primary">Create a New Deal</a>
 
             </div>
 
@@ -27,17 +27,20 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">TV Packages</h6>
+            <h6 class="mb-0 text-uppercase">Exclusive Deals</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="TvPackageTable" class="table table-striped table-bordered">
+                        <table id="ExclusiveDealsTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Package Name</th>
-                                    <th>Providers</th>
+                                    <th>Title</th>
+                                    <th>Valid Till</th>
+                                    <th>Icon</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -46,18 +49,21 @@
                                     @foreach ($records as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->package_name }}</td>
-                                            <td>{{ $record->providerDetails->name }}</td>
+                                            <td>{{ $record->title }}</td>
+                                            <td>{{ $record->valid_till }}</td>
+                                            <td><img width="50" height="50" src="{{asset('deal_icons/'.$record->icon)}}" alt=""> </td>
+                                            <td>{{ $record->categoryDetails->name }}</td>
+                                            <td>{{ $record->status }}</td>
                                             <td>
-                                                <div class="col d-flex justify-content-evenly">
+                                                <div class="col d-flex col d-flex justify-content-evenly">
 
                                                     <a title="Edit"
-                                                        href="{{ route('admin.tv-packages.edit', $record->id) }}"
+                                                        href="{{ route('admin.exclusive-deals.edit', $record->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
                                                     <a title="Delete" class="btn1 btn-outline-danger trash remove-package"
                                                         data-id="{{ $record->id }}"
-                                                        data-action="{{ route('admin.tv-packages.destroy', $record->id) }}"><i
+                                                        data-action="{{ route('admin.exclusive-deals.destroy', $record->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
                                                 </div>
                                             </td>
@@ -77,13 +83,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#TvPackageTable').DataTable({
+            var table = $('#ExclusiveDealsTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1 ,2 ,4 , 5]
                         }
                     },
                     {
@@ -92,14 +98,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1 ,2  ,4 , 5]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1 ,2 ,4 , 5]
                         }
                     },
                 ],
@@ -110,7 +116,7 @@
             });
 
             table.buttons().container()
-                .appendTo('#TvPackageTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#ExclusiveDealsTable_wrapper .col-md-6:eq(0)');
 
             $("body").on("click", ".remove-package", function() {
                 var current_object = $(this);

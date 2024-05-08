@@ -95,8 +95,10 @@
 @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            new Choices(document.querySelector(".choices-multiple"));
+            new Choices(document.querySelector(".choices-multiple"),{
+                 removeItemButton: true
+                });
         });
-        new Choices(document.querySelector(".choices-multiple"));
+     
     </script>
 @endpush
