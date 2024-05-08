@@ -30,7 +30,13 @@ class RequestController extends BaseController
      */
     public function index(Request $request)
     {
-        $userData = UserRequest::where('user_id', $request->user_id)->get();
+        $userData = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('service_type', 'App\Models\EnergyProduct')->where('user_id', $request->user_id)->get();
+        $userData = $userData->map(function ($item) {
+            // Change the format of the desired columns here
+            $item->shipping_address = json_decode($item->shipping_address);
+            $item->advantages =  json_decode($item->advantages);
+            return $item;
+        });
         return $this->sendResponse($userData, 'User requests retrieved successfully.');
     }
 
@@ -139,8 +145,13 @@ class RequestController extends BaseController
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(UserRequest $userRequest)
+    public function show(Request $request,  $id)
     {
+        $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->find($id);
+
+        // Change the format of the desired columns here
+        $userRequest->shipping_address = json_decode($userRequest->shipping_address);
+        $userRequest->advantages = json_decode($userRequest->advantages);
         return $this->sendResponse($userRequest, 'User request retrieved successfully.');
     }
    
