@@ -50,7 +50,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->title }}</td>
-                                            <td>{{ $record->valid_till }}</td>
+                                            <td>{{  date('d-m-Y h:i:s A', strtotime($record->valid_till)) }}</td>
                                             <td><img width="50" height="50" src="{{asset('deal_icons/'.$record->icon)}}" alt=""> </td>
                                             <td>{{ $record->categoryDetails->name }}</td>
                                             <td>{{ $record->status }}</td>

@@ -57,7 +57,16 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Icon<sup class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="file" class="form-control" name="icon" placeholder="Icon">
+                                <label for="upload_image">
+                                    <img src="{{asset('deal_icons/'.$deal->icon)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+        
+                                    <div class="overlay">
+                                        <div>Click to Change Image</div>
+                                    </div>
+                                    <input type="file" name="icon" class="image" id="upload_image" style="display:none" />
+                                    <input type="hidden" name="cropped_image" id="cropped_image">
+        
+                                </label>
                                 @error('icon')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror

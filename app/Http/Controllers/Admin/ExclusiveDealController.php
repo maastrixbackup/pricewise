@@ -53,7 +53,7 @@ class ExclusiveDealController extends Controller
         $request->validate([
             'title' => 'required',
             'valid_till' => 'required',
-            'icon' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'icon' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'category' => 'required',
             'products' => 'required|min:1',
         ]);
@@ -116,7 +116,7 @@ class ExclusiveDealController extends Controller
         $request->validate([
             'title' => 'required',
             'valid_till' => 'required',
-            'icon' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'icon' => 'image|mimes:jpeg,png,jpg,gif,svg',
             'category' => 'required',
             'products' => 'required|min:1',
         ]);
