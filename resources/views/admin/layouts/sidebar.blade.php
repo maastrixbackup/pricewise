@@ -115,7 +115,7 @@
                       </a>
                     </li>
                      <li class="nav-main-item">
-                      <a class="nav-main-link" href="">
+                      <a class="nav-main-link" href="{{route('admin.tv-packages.index')}}">
                       <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                       <span class="nav-main-link-name">Tv Packages</span>
                       </a>

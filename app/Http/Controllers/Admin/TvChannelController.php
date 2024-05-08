@@ -15,7 +15,7 @@ class TvChannelController extends Controller
         $this->middleware('permission:tv-channel', ['only' => ['index', 'store']]);
         $this->middleware('permission:tv-channel.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:tv-channel.edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:tv-channel.delete', ['only' => ['destroy']]);
+        $this->middleware('permission:tv-channel.destroy', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -113,7 +113,7 @@ class TvChannelController extends Controller
             $channel->description = $request->description;
             $channel->price = (int)$request->price;
             $channel->type = $request->type;
-            $channel->features = isset($request->features) && count($request->features) > 0 ? json_encode($request->features) : $channel->features;
+            $channel->features = isset($request->features) && count($request->features) > 0 ? json_encode($request->features) : Null;
             $channel->save();
             Toastr::success('FAQ Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.tv-channel.index');

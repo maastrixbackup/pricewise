@@ -32,10 +32,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="FAQTable" class="table table-striped table-bordered">
+                        <table id="TvChannelTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Sl</th>
                                     <th>Channel Name</th>
                                     <th>Description</th>
                                     <th>Price</th>
@@ -47,23 +47,22 @@
                                 @if ($records)
                                     @foreach ($records as $record)
                                         <tr>
-                                            <td>{{$loop->iteration}}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->channel_name }}</td>
                                             <td>{{ $record->description ?? '' }}</td>
                                             <td>{{ $record->price }}</td>
                                             <td>{{ $record->type }}</td>
                                             <td>
-                                                <div class="col">
+                                                <div class="col d-flex justify-content">
 
-                                                    <a title="Edit" href="{{ route('admin.tv-channel.edit', $record->id) }}"
+                                                    <a title="Edit"
+                                                        href="{{ route('admin.tv-channel.edit', $record->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
-
-
-                                                    <a title="Delete" href="{{ route('admin.tv-channel.destroy', $record->id) }}"
-                                                        class="btn1 btn-outline-danger trash remove-channel"><i
+                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-channel"
+                                                        data-id="{{ $record->id }}"
+                                                        data-action="{{ route('admin.tv-channel.destroy', $record->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
-
                                                 </div>
                                             </td>
                                         </tr>
@@ -82,13 +81,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#FAQTable').DataTable({
+            var table = $('#TvChannelTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2 ,3, 4]
                         }
                     },
                     {
@@ -97,14 +96,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2 ,3, 4]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0, 1 ,2 ,3, 4]
                         }
                     },
                 ],
@@ -115,10 +114,9 @@
             });
 
             table.buttons().container()
-                .appendTo('#userTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#TvChannelTable_wrapper .col-md-6:eq(0)');
 
-            $("body").on("click", ".remove-channel", function(event) {
-                event.preventDefault();
+            $("body").on("click", ".remove-channel", function() {
                 var current_object = $(this);
                 swal({
                     title: "Are you sure?",
@@ -131,7 +129,20 @@
                     confirmButtonText: 'Delete!',
                 }, function(result) {
                     if (result) {
-                        location.href = current_object.attr('href');
+                        var action = current_object.attr('data-action');
+                        var token = jQuery('meta[name="csrf-token"]').attr('content');
+                        var id = current_object.attr('data-id');
+
+                        $('body').html(
+                            "<form class='form-inline remove-form' method='post' action='" +
+                            action + "'></form>");
+                        $('body').find('.remove-form').append(
+                            '<input name="_method" type="hidden" value="DELETE">');
+                        $('body').find('.remove-form').append(
+                            '<input name="_token" type="hidden" value="' + token + '">');
+                        $('body').find('.remove-form').append(
+                            '<input name="id" type="hidden" value="' + id + '">');
+                        $('body').find('.remove-form').submit();
                     }
                 });
             });
