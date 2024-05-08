@@ -317,14 +317,14 @@ class TvInternetController extends Controller
      */
     public function edit($id)
     {
-        $objTv = TvInternetProduct::find($id);
+        $objTv = TvInternetProduct::findOrFail($id);
         $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
-        $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', 9)->pluck('feature_value', 'feature_id')->toArray();
+        $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $providers = Provider::latest()->get();
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
-        $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', 8)->pluck('feature_value', 'feature_id')->toArray();       
+        $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();       
         $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
-        $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
+        $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
@@ -457,7 +457,7 @@ class TvInternetController extends Controller
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){
                 
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'category_id' => 8, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
             
         }
         }
@@ -478,7 +478,7 @@ class TvInternetController extends Controller
         try{
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 9, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 9, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
             
         }
         }
@@ -500,7 +500,7 @@ class TvInternetController extends Controller
         try{
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['feature_value' => $value]);
             
         }
         }
@@ -522,7 +522,7 @@ class TvInternetController extends Controller
         try{
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
             
         }
         }
