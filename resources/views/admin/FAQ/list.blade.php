@@ -35,7 +35,7 @@
                         <table id="FAQTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Sl</th>
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Icon</th>
@@ -89,7 +89,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0,1,2,4]
                         }
                     },
                     {
@@ -98,14 +98,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0,1,2,4]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0,1,2,4]
                         }
                     },
                 ],
@@ -116,7 +116,8 @@
             });
 
             table.buttons().container()
-                .appendTo('#userTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#FAQTable_wrapper .col-md-6:eq(0)');
+
         $("body").on("click", ".remove-faq", function(event) {
               event.preventDefault();
             var current_object = $(this);

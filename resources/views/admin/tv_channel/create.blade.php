@@ -71,6 +71,9 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <div class="">
+                            <label for="input_type" class=" col-form-label">Features</label>
+                        </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" name="features[]" value="At home via TV App">
                                 <label class="form-check-label">At home via TV App</label>

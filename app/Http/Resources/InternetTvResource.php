@@ -17,7 +17,7 @@ class InternetTvResource extends JsonResource
     public function toArray($request)
     {
         $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
-
+        $other_cost = 0;
         return [
             'id' => $this->id,
             'title' => $this->title,            
@@ -32,7 +32,8 @@ class InternetTvResource extends JsonResource
             'commission_type' => $this->commission_type, 
             'image' => 'tvtnternet/'.$this->image,            
             'connection_cost' => $this->connection_cost, 
-            'shipping_cost' => $this->shipping_cost,            
+            'shipping_cost' => $this->shipping_cost,
+            'other_cost' => $other_cost,           
             'status' => $this->status,            
             'contract_length' => $this->contract_length, 
             'contract_type' => $this->contract_type, 

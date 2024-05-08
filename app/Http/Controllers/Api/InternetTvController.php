@@ -47,7 +47,7 @@ class InternetTvController extends BaseController
                 $query->whereIn('feature_id', $features);
             });
         }    
-        
+        //dd($products->get());
         $filteredProducts = $products->get();
         if ($filteredProducts->isNotEmpty()) {
         $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
@@ -61,6 +61,7 @@ class InternetTvController extends BaseController
             
             $objFeatures = collect(); // Or any other default value or action
         }
+
         $mergedData = [];
 
             foreach ($filteredProducts as $product) {

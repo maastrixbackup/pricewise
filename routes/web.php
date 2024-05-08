@@ -116,7 +116,13 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         //Tv Channel
         Route::resource('tv-channel', 'TvChannelController');
 
-        
+        // Tv Package
+        Route::resource('tv-packages', 'TvPackageController');
+
+        // Exclusive Deals
+        Route::resource('exclusive-deals', 'ExclusiveDealController');
+        Route::post('get-products-categorywise', 'ExclusiveDealController@getProductsCategoryWise')->name('get-products-categorywise');
+            
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');
