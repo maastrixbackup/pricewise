@@ -13,6 +13,7 @@ use App\Models\ShopProduct;
 use App\Models\Category;
 use App\Models\PostFeature;
 use App\Models\TvPackage;
+use App\Models\Combo;
 use App\Models\Affiliate;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
@@ -56,13 +57,13 @@ class TvInternetController extends Controller
     public function create()
     {
         $tv_packages = TvPackage::latest()->get();
-        // $objCommission = CommissionType::latest()->get();
+        $combos = Combo::where('category', 1)->latest()->get();
         // $objAdditionalCategories = AdditionalCategory::latest()->get();
          $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
          $objCategory = Category::latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers', 'tv_packages'));
+        return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers', 'tv_packages', 'combos'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -233,7 +234,7 @@ class TvInternetController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? $request->combos : []);            
+            $objTv->combos = $request->combos ? json_encode($request->combos) : [];            
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -323,7 +324,8 @@ class TvInternetController extends Controller
         $objCategory = Category::latest()->get();
         $documents = Document::where('post_id', $id)->where('category', $objTv->category)->get();
         $tvPackages = TvPackage::latest()->get();
-        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents', 'providers', 'tvPackages'));
+        $combos = Combo::latest()->get();
+        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents', 'providers', 'tvPackages', 'combos'));
     }
 
     /**
@@ -337,7 +339,7 @@ class TvInternetController extends Controller
     public function update(Request $request, $id)
     {
         $objTv = TvInternetProduct::where('id', $id)->first();
-        //jhdjhddjhf
+        // dd($request->combos);
             $objTv->title = $request->title;
             $objTv->content = $request->description3;
             $objTv->commission = $request->commission;
@@ -353,7 +355,7 @@ class TvInternetController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos ? explode(",", $request->combos) : []);            
+            $objTv->combos = json_encode($request->combos?$request->combos : []);            
             $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;

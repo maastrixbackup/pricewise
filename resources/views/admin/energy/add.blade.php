@@ -268,11 +268,11 @@
                 
                 <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
                 <div class="mb-3 add-scroll">
-                    @if($objRelatedProducts)
-                    @foreach($objRelatedProducts as $val)
+                    @if($combos)
+                    @foreach($combos as $val)
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="combos[]" value="{{$val->id}}">
-                        <label class="form-check-label" for="flexCheckDefault">{{$val->title}}</label>
+                        <label class="form-check-label" for="flexCheckDefault">{{$val->title}} -  €{{$val->price}}</label>
                     </div>
                     @endforeach
                     @endif
