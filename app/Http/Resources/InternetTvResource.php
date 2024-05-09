@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Provider;
+use App\Models\Combo;
 use App\Models\PostFeature;
 use App\Http\Resources\PostFeatureResource;
 class InternetTvResource extends JsonResource
@@ -17,6 +18,10 @@ class InternetTvResource extends JsonResource
     public function toArray($request)
     {
         $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
+        $combos = Combo::where('category', $this->category)->get();
+        $filteredCombos = $combos->filter(function ($combo) {
+            return in_array($combo->id, json_decode($this->combos));
+        });
         $other_cost = 0;
         return [
             'id' => $this->id,
@@ -47,7 +52,8 @@ class InternetTvResource extends JsonResource
             'network_type' => $this->network_type,
             'category' => $this->category, 
             'provider' => $this->provider, 
-            'combos' => $this->combos, 
+            'combos' => $this->combos,
+            'combo_details' => $filteredCombos->toArray(),
             'manual_install' => $this->manual_install, 
             'mechanic_install' => $this->mechanic_install, 
             'mechanic_charge' => $this->mechanic_charge, 
