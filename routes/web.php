@@ -122,7 +122,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         // Exclusive Deals
         Route::resource('exclusive-deals', 'ExclusiveDealController');
         Route::post('get-products-categorywise', 'ExclusiveDealController@getProductsCategoryWise')->name('get-products-categorywise');
-            
+         
+        //Combos
+        Route::resource('combos', 'ComboController');
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');

@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\CustomerRequestSubmit;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Api\EnergyController;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
 use App\Models\Feature;
 use App\Models\PostRequest;
+use App\Models\InsuranceProduct;
 use Validator;
 use App\Http\Resources\EnergyResource;
+use App\Models\Deal;
 use DB;
 use App\Models\User;
 use App\Models\UserData;
@@ -286,5 +289,80 @@ class RequestController extends BaseController
     {
         $review = Review::find($id);
         return $this->sendResponse($review, 'User review retrieved successfully.');
+    }
+
+    public function getDealsData()
+    {
+        $deals = Deal::latest()->get();
+        $deals->map(function($deal) {
+            $deal->icon =  asset('deal_icons/'.$deal->icon);
+            $deal->categoryDetails;
+            $deal->products = json_decode($deal->products);
+            return $deal;
+        });
+        return $this->sendResponse($deals, 'Deals retrieved successfully.');
+    }
+    private function getProductsCategoryWise($product_ids,$category_id)
+    {
+            $request = new Request();
+            $request['category_id'] = $category_id;
+         
+        if ($request->category_id == 1) {
+            $products = TvInternetProduct::whereIn('id',$product_ids)->get();
+            return $products;
+
+        }elseif ($request->category_id == 2) {
+
+            $products = []; 
+            return $products;
+
+        }elseif ($request->category_id == 5) {
+
+            $products = InsuranceProduct::whereIn('id',$product_ids)->get(); 
+            return $products;
+
+        }elseif ($request->category_id == 6) {
+
+            $products = []; 
+            return $products;
+
+        }elseif ($request->category_id == 13) {
+
+            $products = []; 
+            return $products;
+
+        }elseif ($request->category_id == 14) {
+
+             $products = []; 
+             return $products;
+
+        }elseif ($request->category_id == 16) {
+              $energyObj = new EnergyController() ;
+              $request['callFromExclusiveDeal'] = 1 ; 
+              $products = $energyObj->index($request);
+              return $products; 
+        }
+    }
+    public function getExclusiveDeal(Request $request)
+    {
+        $deal = Deal::where('id',$request->id)->first();
+        if ($deal) {
+            $deal->icon =  asset('deal_icons/'.$deal->icon);
+            $deal->categoryDetails;
+            $dealData = $this->getProductsCategoryWise(json_decode($deal->products),$deal->category);
+            // $dealData['deal'] =$deal;
+            return response()->json([
+                'success' => true,
+                'data' => $dealData,
+                'message' => 'Deal retrieved successfully'
+            ]);
+        }else {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Deal not found in the requested id'
+            ]);
+        }
+      
     }
 }

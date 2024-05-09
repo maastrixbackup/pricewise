@@ -10,6 +10,7 @@ use App\Models\DefaultProduct;
 use App\Models\AdditionalInfo;
 use App\Models\ShopProduct;
 use App\Models\Category;
+use App\Models\Combo;
 use App\Models\Document;
 use App\Models\PostFeature;
 use App\Models\Affiliate;
@@ -59,12 +60,12 @@ class EnergyController extends Controller
     {
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
-        // $objAdditionalCategories = AdditionalCategory::latest()->get();
+         $combos = Combo::where('category', 16)->latest()->get();
          $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
          $objCategory = Category::latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
-        return view('admin.energy.add', compact('objCategory', 'objRelatedProducts', 'providers'));
+        return view('admin.energy.add', compact('objCategory', 'objRelatedProducts', 'providers','combos'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -293,6 +294,7 @@ class EnergyController extends Controller
      */
     public function edit($id)
     {
+        $combos = Combo::where('category', 16)->latest()->get();
         $objEnergy = EnergyProduct::find($id);
         $providers = Provider::all();
         $documents = Document::where('post_id', $id)->where('category', $objEnergy->category)->get();
@@ -315,7 +317,7 @@ class EnergyController extends Controller
         $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objEnergy->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
-        return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents'));
+        return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents', 'combos'));
     }
 
     /**
@@ -339,7 +341,7 @@ class EnergyController extends Controller
             $objEnergy->contract_type = $request->contract_type;
             $objEnergy->transfer_service = $request->transfer_service;
             $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objEnergy->combos = json_encode($request->combos ? $request->combos : []);            
+            $objEnergy->combos = $request->combos?json_encode($request->combos) : [];            
             $objEnergy->status = $request->online_status?$request->online_status:0;
             $objEnergy->valid_till =  $request->valid_till;
             $objEnergy->category =  $request->category;

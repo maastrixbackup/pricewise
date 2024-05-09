@@ -15,7 +15,8 @@ use DB;
 class InternetTvController extends BaseController
 {
    public function index(Request $request)
-    {\DB::enableQueryLog();
+    {
+        \DB::enableQueryLog();
         $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
         
         // Filter by postal code

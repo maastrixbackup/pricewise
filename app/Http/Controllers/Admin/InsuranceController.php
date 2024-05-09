@@ -12,6 +12,7 @@ use App\Models\PostReimbursement;
 use App\Models\DefaultProduct;
 use App\Models\AdditionalInfo;
 use App\Models\Category;
+use App\Models\Combo;
 use App\Models\PostFeature;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
@@ -56,12 +57,12 @@ class InsuranceController extends Controller
     {
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
-        // $objAdditionalCategories = AdditionalCategory::latest()->get();
+         $combos = Combo::where('category', 5)->latest()->get();
          $objRelatedProducts = InsuranceProduct::orderBy('id', 'asc')->get();
          $objCategory = Category::latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
-        return view('admin.insurance.add', compact('objCategory', 'objRelatedProducts', 'providers'));
+        return view('admin.insurance.add', compact('objCategory', 'objRelatedProducts', 'providers', 'combos'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -230,7 +231,7 @@ class InsuranceController extends Controller
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $combos = implode(",", $request->combos);
-            $objTv->combos = json_encode($request->combos ? explode(",", $combos) : []);            
+            $objTv->combos = $request->combos?json_encode($request->combos) : [];            
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -314,7 +315,7 @@ class InsuranceController extends Controller
         ->mapWithKeys(function ($item) {
             return [$item['feature_id'] => ['feature_value' => $item['feature_value'], 'details' => $item['details']]];
         })->toArray();
-        //$postInternetFeatures = PostFeature::where('post_id', $id)->pluck('feature_value', 'feature_id', 'details')->get()->toArray();
+        $combos = Combo::where('category', 5)->latest()->get();
         $objReimburseFeatures = Reimbursement::where('sub_category', $objTv->sub_category)->get();
         $postReimburseFeatures = PostFeature::where('post_id', $id)
         ->where('category_id', $objTv->category)
@@ -331,7 +332,7 @@ class InsuranceController extends Controller
         $objCategory = Category::latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'objReimburseFeatures', 'postReimburseFeatures', 'serviceInfo'));
+        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'objReimburseFeatures', 'postReimburseFeatures', 'serviceInfo', 'combos'));
     }
 
     /**
@@ -357,7 +358,7 @@ class InsuranceController extends Controller
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $combos = implode(",", $request->combos);
-            $objTv->combos = json_encode($request->combos ? explode(",", $combos) : []);            
+            $objTv->combos = $request->combos ? json_encode($request->combos) : [];            
             $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;

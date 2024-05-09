@@ -163,7 +163,9 @@ class EnergyController extends BaseController
         usort($mergedData, function ($a, $b) {
             return $a['total'] <=> $b['total'];
         });
-        
+        if($request->has('callFromExclusiveDeal')){
+            return array_merge($mergedData,['filters'=>$filters]) ;
+        }
         // Return the merged data
         return response()->json([
             'success' => true,
@@ -335,27 +337,108 @@ class EnergyController extends BaseController
         if (!empty($compareIds)) {
             $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails');
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
+        
+            $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
+                ->from('features as f1')
+                ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+                ->where('f1.category', 16)
+                ->where('f1.is_preferred', 1)
+                ->get()
+                ->groupBy('parent');
+       
 
-            if ($filteredProducts->isNotEmpty()) {
-                $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
-                    ->from('features as f1')
-                    ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-                    ->where('f1.category', $filteredProducts[0]->category)
-                    ->where('f1.is_preferred', 1)
-                    ->get()
-                    ->groupBy('parent');
-                
-                $filteredProductsFormatted = EnergyResource::collection($filteredProducts);
+        // Initialize an empty array to store the grouped filters
+        $filters = [];
 
-                // Merge filteredProductsFormatted and objEnergyFeatures
-                $mergedData = $filteredProductsFormatted->merge(['energy_filters' => $objEnergyFeatures]);
-
-                // Return the merged data
-                return $this->sendResponse($mergedData, 'Products retrieved successfully.');
-            } else {
-                return $this->sendError('No products found for comparison.', [], 404);
+        // Loop through the grouped features and convert them to the desired structure
+        foreach ($objEnergyFeatures as $parent => $items) {
+            $filters[] = [
+                $parent => $items->map(function ($item) {
+                    return (object) $item->toArray();
+                })->toArray()
+            ];
+        }
+        //dd($request->advantages);
+        $mergedData = [];
+        $businessGeneralSettings = getSettings('business_general');
+        $totalFeedIn = ($request->advantages['feed_in_normal']??1) + ($request->advantages['feed_in_peak']??1);
+        $normal_electric_consume = $request->advantages['normal_electric_consume']??1;
+        $peak_electric_consume = $request->advantages['peak_electric_consume']??1;
+        $feed_in_normal = $request->advantages['feed_in_normal']??1;
+        $feed_in_peak = $request->advantages['feed_in_peak']??1;
+        $gas_consume = $request->advantages['gas_consume']??1;
+        
+        foreach ($filteredProducts as $product) {
+            $formattedProduct = (new EnergyResource($product))->toArray($request);                
+            if($product->feedInCost){
+            $feedInCostRange = json_decode($product->feedInCost->feed_in_cost, true);
+            $feedInCostValue = array_filter($feedInCostRange, function($item) use ($totalFeedIn) {
+                return $totalFeedIn >= $item['from_range'] && $totalFeedIn <= $item['to_range'];
+            });
             }
-        } else {
+            if (!empty($feedInCostValue)) {
+                $feedInCostValue = reset($feedInCostValue);
+                
+            }
+            $feedInCostRangeValue = $feedInCostValue['amount']??0;
+            $reductionCostElectric = $product->reduction_of_energy_tax??$businessGeneralSettings['reduction_of_energy_tax'];
+            $govt_levies_gas = $product->government_levies_gas??$businessGeneralSettings['governement_levies_gas'];
+
+            if($request->no_gas === 1){
+                $gas_consume = 0;
+                $del_gas = 0;
+                $govt_levies_gas = 0;
+                $net_gas = 0;
+            }else{
+                $gas_consume = $request->advantages['gas_consume']??1;
+                $del_gas = 1;                
+                $net_gas = 1;
+            }
+            if($request->solar_panels > 0){
+                
+
+            }else{
+                $feed_in_normal = 0;
+                $feed_in_peak = 0;
+                $feedInCostRangeValue = 0;
+            }
+            
+            $total = (($product->normal_electric_price??$product->prices->electric_rate) * $normal_electric_consume)
+            + (($product->peak_electric_price??$product->prices->off_peak_electric_rate) * $peak_electric_consume)
+            + $product->delivery_cost_electric
+            + ($product->network_cost_electric??0)
+            + $feedInCostRangeValue
+            - ($product->feedInCost ? $product->feedInCost->normal_return_delivery * $feed_in_normal : 0)
+            - ($product->feedInCost ? $product->feedInCost->off_peak_return_delivery * $feed_in_peak : 0)
+            - $reductionCostElectric
+            + ($gas_consume * $product->prices->gas_rate)          
+            + ($product->delivery_cost_gas * $del_gas)
+            + ($govt_levies_gas * $govt_levies_gas)
+            + (($product->network_cost_gas??0) * $net_gas)
+            - $product->cashback;
+            $advantages = ['gas_consume' => $gas_consume,
+             'normal_electric_consume' => $normal_electric_consume,
+             'peak_electric_consume' => $peak_electric_consume,
+             'feed_in_peak' => $feed_in_peak,
+             'feed_in_normal' => $feed_in_normal,
+            ];
+            $formattedProduct['total'] = $total;
+            $formattedProduct['advantages'] = $advantages;
+            
+            $mergedData[] = $formattedProduct;
+        }
+        
+            usort($mergedData, function ($a, $b) {
+                return $a['total'] <=> $b['total'];
+            });
+         return response()->json([
+            'success' => true,
+            'data' => $mergedData,
+            'filters' => $filters,
+            //'advantages' => $advantages,
+            'message' => 'Products retrieved successfully.'
+        ]);
+        }else {
             return $this->sendError('No comparison IDs provided.', [], 400);
         }
     }
