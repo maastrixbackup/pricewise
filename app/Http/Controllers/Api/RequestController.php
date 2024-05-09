@@ -293,7 +293,7 @@ class RequestController extends BaseController
     {
         $deals = Deal::latest()->get();
         $deals->map(function($deal) {
-            $deal->icon =  asset('deal_icons/'.$deal->image);
+            $deal->icon =  asset('deal_icons/'.$deal->icon);
             $deal->categoryDetails;
             return $deal;
         });
