@@ -12,6 +12,7 @@ use App\Models\AdditionalInfo;
 use App\Models\ShopProduct;
 use App\Models\Category;
 use App\Models\PostFeature;
+use App\Models\TvPackage;
 use App\Models\Affiliate;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
@@ -54,14 +55,14 @@ class TvInternetController extends Controller
      */
     public function create()
     {
-        // $objContract = TvContractLength::latest()->get();
+        $tv_packages = TvPackage::latest()->get();
         // $objCommission = CommissionType::latest()->get();
         // $objAdditionalCategories = AdditionalCategory::latest()->get();
          $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
          $objCategory = Category::latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers'));
+        return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers', 'tv_packages'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -244,18 +245,10 @@ class TvInternetController extends Controller
             $objTv->mechanic_charge = $request->mechanic_charge;            
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
-            
-            //$objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
-            // if ($request->file('image') == null || $request->file('image') == '') {
-            //     $input['image'] = $objTv->image;
-            // } else {
-            //     $destinationPath = '/images';
-            //     $imgfile = $request->file('image');
-            //     $imgFilename = $imgfile->getClientOriginalName();
-            //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-            //     $image = $imgFilename;
-            //     $objTv->image = $image;
-            // }
+            $objTv->no_of_receivers = $request->no_of_receivers;
+            $objTv->telephone_extensions = $request->telephone_extensions;
+            $objTv->tv_packages = json_encode($request->tv_packages??[]);
+            $objTv->network_type = json_encode($request->network_type??[]);
 
             if ($request->has('cropped_image')) {
             // Access base64 encoded image data directly from the request
@@ -329,8 +322,8 @@ class TvInternetController extends Controller
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
         $documents = Document::where('post_id', $id)->where('category', $objTv->category)->get();
-        //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents', 'providers'));
+        $tvPackages = TvPackage::latest()->get();
+        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents', 'providers', 'tvPackages'));
     }
 
     /**
@@ -372,17 +365,10 @@ class TvInternetController extends Controller
             $objTv->mechanic_charge = $request->mechanic_charge;            
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
-        // if ($request->file('image') == null || $request->file('image') == '') {
-        //     $image = $objTv->image;
-        // } else {
-        //     $destinationPath = '/images';
-        //     $imgfile = $request->file('image');
-        //     $imgFilename = $imgfile->getClientOriginalName();
-        //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-        //     $image = $imgFilename;
-           
-        // }
-        //  $objTv->image = $image;
+            $objTv->no_of_receivers = $request->no_of_receivers;
+            $objTv->telephone_extensions = $request->telephone_extensions;
+            $objTv->tv_packages = json_encode($request->tv_packages??[]);
+            $objTv->network_type = json_encode($request->network_type??[]);
             if ($request->has('cropped_image')) {
             // Access base64 encoded image data directly from the request
             $croppedImage = $request->cropped_image;
