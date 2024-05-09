@@ -163,7 +163,9 @@ class EnergyController extends BaseController
         usort($mergedData, function ($a, $b) {
             return $a['total'] <=> $b['total'];
         });
-        
+        if($request->has('callFromExclusiveDeal')){
+            return array_merge($mergedData,['filters'=>$filters]) ;
+        }
         // Return the merged data
         return response()->json([
             'success' => true,

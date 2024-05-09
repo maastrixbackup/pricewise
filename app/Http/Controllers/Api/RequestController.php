@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\CustomerRequestSubmit;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Api\EnergyController;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
@@ -306,8 +307,8 @@ class RequestController extends BaseController
             $request = new Request();
             $request['category_id'] = $category_id;
          
-        if ($request->category_id==1) {
-            $products = TvInternetProduct::whereIn('id',$product_ids)->get(); 
+        if ($request->category_id == 1) {
+            $products = TvInternetProduct::whereIn('id',$product_ids)->get();
             return $products;
 
         }elseif ($request->category_id == 2) {
@@ -336,21 +337,32 @@ class RequestController extends BaseController
              return $products;
 
         }elseif ($request->category_id == 16) {
-
-              $products = []; 
+              $energyObj = new EnergyController() ;
+              $request['callFromExclusiveDeal'] = 1 ; 
+              $products = $energyObj->index($request);
               return $products; 
         }
     }
     public function getExclusiveDeal(Request $request)
     {
         $deal = Deal::where('id',$request->id)->first();
-        $deal->icon =  asset('deal_icons/'.$deal->icon);
-        $deal->categoryDetails;
-        $deal->products = $this->getProductsCategoryWise(json_decode($deal->products),$deal->category);
-        return response()->json([
-            'success' => true,
-            'data' => $deal,
-            'message' => 'Deal retrieved successfully.'
-        ]);
+        if ($deal) {
+            $deal->icon =  asset('deal_icons/'.$deal->icon);
+            $deal->categoryDetails;
+            $dealData = $this->getProductsCategoryWise(json_decode($deal->products),$deal->category);
+            // $dealData['deal'] =$deal;
+            return response()->json([
+                'success' => true,
+                'data' => $dealData,
+                'message' => 'Deal retrieved successfully'
+            ]);
+        }else {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Deal not found in the requested id'
+            ]);
+        }
+      
     }
 }
