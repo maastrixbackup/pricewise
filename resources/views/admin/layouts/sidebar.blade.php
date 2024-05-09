@@ -187,7 +187,7 @@
                 </a>
               </li>
               <li class="nav-main-item">
-                <a class="nav-main-link" href="#">
+                <a class="nav-main-link" href="{{route('admin.combos.index')}}">
                 <i class="nav-main-link-icon fa-regular fa-clone"></i>
                 <span class="nav-main-link-name">Combos</span>
                 </a>
