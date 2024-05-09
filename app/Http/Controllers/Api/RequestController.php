@@ -14,6 +14,7 @@ use App\Models\Feature;
 use App\Models\PostRequest;
 use Validator;
 use App\Http\Resources\EnergyResource;
+use App\Models\Deal;
 use DB;
 use App\Models\User;
 use App\Models\UserData;
@@ -287,4 +288,16 @@ class RequestController extends BaseController
         $review = Review::find($id);
         return $this->sendResponse($review, 'User review retrieved successfully.');
     }
+
+    public function getDealsData()
+    {
+        $deals = Deal::latest()->get();
+        $deals->map(function($deal) {
+            $deal->icon =  asset('deal_icons/'.$deal->image);
+            $deal->categoryDetails;
+            return $deal;
+        });
+        return $this->sendResponse($deals, 'Deals retrieved successfully.');
+    }
+    
 }

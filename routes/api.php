@@ -27,7 +27,7 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
-
+Route::get('get-deals-data', [RequestController::class, 'getDealsData']);
 //Frontend Guest
 //Internet Tv
     Route::post('internet-tv', [InternetTvController::class, 'index']);
