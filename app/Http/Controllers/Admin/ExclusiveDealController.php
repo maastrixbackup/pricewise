@@ -168,7 +168,7 @@ class ExclusiveDealController extends Controller
 
         }elseif ($request->category_id == 2) {
 
-            $response = TvInternetProduct::latest()->get(); 
+            $response = []; 
             return response()->json($response,200);
 
         }elseif ($request->category_id == 5) {
@@ -188,12 +188,12 @@ class ExclusiveDealController extends Controller
 
         }elseif ($request->category_id == 14) {
 
-            $response = TvInternetProduct::latest()->get(); 
+            $response = []; 
             return response()->json($response,200);
 
         }elseif ($request->category_id == 16) {
 
-            $response = TvInternetProduct::latest()->get(); 
+            $response = []; 
             return response()->json($response,200); 
         }
     }
