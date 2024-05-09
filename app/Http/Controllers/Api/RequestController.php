@@ -295,6 +295,7 @@ class RequestController extends BaseController
         $deals->map(function($deal) {
             $deal->icon =  asset('deal_icons/'.$deal->icon);
             $deal->categoryDetails;
+            $deal->products = json_decode($deal->products);
             return $deal;
         });
         return $this->sendResponse($deals, 'Deals retrieved successfully.');
