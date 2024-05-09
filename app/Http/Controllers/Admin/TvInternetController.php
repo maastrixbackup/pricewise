@@ -322,8 +322,8 @@ class TvInternetController extends Controller
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::latest()->get();
         $documents = Document::where('post_id', $id)->where('category', $objTv->category)->get();
-        //$objFeature = TvFeature::latest()->get();
-        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents', 'providers'));
+        $tvPackages = TvPackage::latest()->get();
+        return view('admin.tvinternet.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'objTvFeatures', 'postInternetFeatures', 'postTvFeatures', 'objTeleFeatures', 'postTeleFeatures', 'serviceInfo', 'documents', 'providers', 'tvPackages'));
     }
 
     /**

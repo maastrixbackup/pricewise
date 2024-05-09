@@ -203,14 +203,14 @@
                                                         </div>
                                                     </div>
                                 @php
-                                    $tv_packages=json_decode($objTv->tv_packages??[]);
+                                    $tv_packages=$objTv->tv_packages?json_decode($objTv->tv_packages):[];
                                 @endphp
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                     <label for="tv_packages" class=" col-form-label">Tv Packages</label>
                                                     <select class="form-control choices-multiple" name="tv_packages[]" multiple>
                                                                     <option value="">Select</option>
-                                                                    @foreach ($tv_packages as $package)
+                                                                    @foreach ($tvPackages as $package)
                                                                         <option value="{{ $package->id }}"
                                                                             {{in_array($package->id, $tv_packages) ? 'selected' : ''}}>
                                                                             {{ $package->package_name }}</option>
@@ -219,7 +219,7 @@
                                                             </div>
                                                         </div>
                                 @php
-                                    $network_types = $objTv->network_types?json_decode($objTv->network_types):[];
+                                    $network_types = $objTv->network_type?json_decode($objTv->network_type):[];
                                 @endphp
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
@@ -228,11 +228,11 @@
                                                             <div class="form-group form-check-pr">
                                                                 <input type="checkbox" id="a" name="network_type[]" value="Optical Fiber" @if(in_array('Optical Fiber',$network_types))checked @endif><label for="a">Optical Fiber</label></div>
                                                                 <div class="form-group form-check-pr">
-                                                                    <input type="checkbox" id="b" name="network_type[]" value="Cabel" @if(in_array('Cabel',$network_types)><label for="b">Cabel</label></div>
+                                                                    <input type="checkbox" id="b" name="network_type[]" value="Cabel" @if(in_array('Cabel',$network_types))checked @endif><label for="b">Cabel</label></div>
                                                                     <div class="form-group form-check-pr">
-                                                                        <input type="checkbox" id="c" name="network_type[]" value="ADSL/VDSL" @if(in_array('ADSL/VDSL',$network_types)><label for="c">ADSL/VDSL</label></div>
+                                                                        <input type="checkbox" id="c" name="network_type[]" value="ADSL/VDSL" @if(in_array('ADSL/VDSL',$network_types))checked @endif><label for="c">ADSL/VDSL</label></div>
                                                                         <div class="form-group form-check-pr">
-                                                                            <input type="checkbox" id="d" name="network_type[]" value="WiFI Booster" @if(in_array('WiFI Booster',$network_types)><label for="d">WiFI Booster</label></div>
+                                                                            <input type="checkbox" id="d" name="network_type[]" value="WiFI Booster" @if(in_array('WiFI Booster',$network_types))checked @endif><label for="d">WiFI Booster</label></div>
                                                                             
                                                                                     </div>
                                                                                     </div>
