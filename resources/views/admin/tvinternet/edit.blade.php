@@ -1,6 +1,38 @@
 @extends('admin.layouts.app')
 @section('title','PriceWise- Tv Internet Products Edit')
 @section('content')
+<style type="text/css">
+    .form-check-box {   
+    align-items: center;
+}
+
+.form-check-pr label {
+    position: relative;
+    cursor: pointer;
+}
+.form-check-pr input {
+    padding: 0;
+    height: initial;
+    width: initial;
+    margin-bottom: 0;
+    display: none;
+    cursor: pointer;
+}
+.form-check-pr label:before {
+    content: '';
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 2px solid #fa9f1d;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.form-check-pr input:checked + label:after {content: '';display: block;position: absolute;top: 7px;left: 9px;width: 6px;height: 14px;border: solid #0079bf;border-width: 0 2px 2px 0;transform: rotate(45deg);}
+</style>
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="ps-3">
@@ -158,7 +190,53 @@
                                                                 <input type="number" class="form-control" id="shipping_cost" name="shipping_cost" placeholder="Shipping Cost" value="{{$objTv->shipping_cost}}">
                                                         </div>
                                                         </div>
-                                                    
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                    <label for="no_of_receivers" class=" col-form-label">No of Tv Receivers</label>
+                                                    <input type="number" class="form-control" id="no_of_receivers" name="no_of_receivers" placeholder="No of Tv Receivers" value="{{$objTv->no_of_receivers}}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                    <label for="telephone_extensions" class=" col-form-label">No of Telephone Extensions</label>
+                                                    <input type="number" class="form-control" id="telephone_extensions" name="telephone_extensions" placeholder="No of Telephone Extensions" value="{{$objTv->telephone_extensions}}">
+                                                        </div>
+                                                    </div>
+                                @php
+                                    $tv_packages=$objTv->tv_packages?json_decode($objTv->tv_packages):[];
+                                @endphp
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                    <label for="tv_packages" class=" col-form-label">Tv Packages</label>
+                                                    <select class="form-control choices-multiple" name="tv_packages[]" multiple>
+                                                                    <option value="">Select</option>
+                                                                    @foreach ($tvPackages as $package)
+                                                                        <option value="{{ $package->id }}"
+                                                                            {{in_array($package->id, $tv_packages) ? 'selected' : ''}}>
+                                                                            {{ $package->package_name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                @php
+                                    $network_types = $objTv->network_type?json_decode($objTv->network_type):[];
+                                @endphp
+                                                    <div class="col-md-6 col-12">
+                                                        <div class=" mb-3">
+                                                        <label for="network_type" class=" col-form-label">Internet Network Type</label>
+                                                        <div class="form-check-box">
+                                                            <div class="form-group form-check-pr">
+                                                                <input type="checkbox" id="a" name="network_type[]" value="Optical Fiber" @if(in_array('Optical Fiber',$network_types))checked @endif><label for="a">Optical Fiber</label></div>
+                                                                <div class="form-group form-check-pr">
+                                                                    <input type="checkbox" id="b" name="network_type[]" value="Cabel" @if(in_array('Cabel',$network_types))checked @endif><label for="b">Cabel</label></div>
+                                                                    <div class="form-group form-check-pr">
+                                                                        <input type="checkbox" id="c" name="network_type[]" value="ADSL/VDSL" @if(in_array('ADSL/VDSL',$network_types))checked @endif><label for="c">ADSL/VDSL</label></div>
+                                                                        <div class="form-group form-check-pr">
+                                                                            <input type="checkbox" id="d" name="network_type[]" value="WiFI Booster" @if(in_array('WiFI Booster',$network_types))checked @endif><label for="d">WiFI Booster</label></div>
+                                                                            
+                                                                                    </div>
+                                                                                    </div>
+                                                                                    </div>
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                         <label for="avg_delivery_time" class=" col-form-label">Average delivery time</label>
@@ -298,8 +376,7 @@
                                                     <select id="product_type" name="product_type" class="select2 form-select">
                                                         <option value="personal" @if($objTv->product_type == "personal")selected @endif>Personal</option>
                                                         <option value="business" @if($objTv->product_type == "business")selected @endif>Business</option>
-                                                        <option value="large-business" @if($objTv->product_type == "large-business")selected @endif>Large Business</option>
-                                                        
+                                                        <option value="large-business" @if($objTv->product_type == "large-business")selected @endif>Large Business</option>                                                        
                                                     </select>
                                                 </div>
                                                 <div class="mb-3 form-group">
@@ -604,6 +681,11 @@
         allowedContent: true,
         extraPlugins: 'colorbutton'
     });
+    document.addEventListener("DOMContentLoaded", function() {
+            new Choices(document.querySelector(".choices-multiple"),{
+                 removeItemButton: true
+                });
+        });
 </script>
 
 <script type="text/javascript">
