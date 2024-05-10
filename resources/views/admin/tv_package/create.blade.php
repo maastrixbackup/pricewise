@@ -71,6 +71,19 @@
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            <div class="row mb-3">
+                            <label for="package_price" class=" col-form-label">Package Price<sup
+                                    class="text-danger">*</sup></label>
+                            <div class="">
+                                <input type="number" class="form-control" name="package_price"
+                                    value="{{ old('package_price') }}" placeholder="Package Price">
+                                @error('package_price')
+                                    <div class="alert alert-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            </div>
                         </div>
 
 

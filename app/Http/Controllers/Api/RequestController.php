@@ -17,6 +17,7 @@ use App\Models\InsuranceProduct;
 use Validator;
 use App\Http\Resources\EnergyResource;
 use App\Models\Deal;
+use App\Models\TvPackage;
 use DB;
 use App\Models\User;
 use App\Models\UserData;
@@ -364,5 +365,23 @@ class RequestController extends BaseController
             ]);
         }
       
+    }
+
+    public function getTvPackages(Request $request)
+    {
+    $records = TvPackage::latest()->with('providerDetails')->get();
+    if ($records) {
+        return response()->json([
+                'success' => true,
+                'data' => $records,
+                'message' => 'Deal retrieved successfully'
+            ]);
+    }else {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Packages not found'
+            ]);
+        }
     }
 }
