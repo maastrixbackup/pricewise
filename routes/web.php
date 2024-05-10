@@ -125,6 +125,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
          
         //Combos
         Route::resource('combos', 'ComboController');
+
+        //Tv Options
+        Route::resource('tv-options', 'TvOptionController');
+
         //Customers
         Route::resource('customers', 'CustomerController');
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');

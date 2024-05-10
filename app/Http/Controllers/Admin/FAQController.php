@@ -44,7 +44,7 @@ class FAQController extends Controller
             $newFAQ->category_id = $request->category;
             $newFAQ->save();
             Toastr::success('FAQ Added Successfully', '', ["positionClass" => "toast-top-right"]);
-            return redirect()->route('admin.tv-channel.index');
+            return redirect()->route('admin.FAQ-list');
         } catch (\Exception $e) {
             Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
             return back();

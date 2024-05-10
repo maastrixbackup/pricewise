@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'PriceWise- FAQS')
+@section('title', 'PriceWise- Tv Option')
 @section('content')
 
     <!--breadcrumb-->
@@ -17,7 +17,7 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.FAQ-add') }}" class="btn btn-primary">Create a New FAQ</a>
+                <a href="{{ route('admin.tv-options.create') }}" class="btn btn-primary">Create a New TV Option</a>
 
             </div>
 
@@ -27,46 +27,40 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">FAQS</h6>
+            <h6 class="mb-0 text-uppercase">TV Options</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="FAQTable" class="table table-striped table-bordered">
+                        <table id="TvOptionTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Icon</th>
-                                    <th>Category</th>
+                                    <th>Package Name</th>
+                                    <th>Providers</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($data)
-                                    @foreach ($data as $faq)
+                                @if ($records)
+                                    @foreach ($records as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $faq->title }}</td>
-                                            <td>@php echo $faq->description  @endphp </td>
-                                            <td>@if(isset($faq->icon))<i class="fa {{ $faq->icon }}" id="fa_icon"></i>@endif</td>
-                                            <td>{{ $faq->categoryDetails->name }}</td>
-
+                                            {{-- <td>{{ $record->package_name }}</td>
+                                            <td>{{ $record->providerDetails->name }}</td>
                                             <td>
-                                                <div class="col">
+                                                <div class="col d-flex justify-content-evenly">
 
-                                                    <a title="Edit" href="{{ route('admin.FAQ-edit', $faq->id) }}"
+                                                    <a title="Edit"
+                                                        href="{{ route('admin.tv-options.edit', $record->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
-
-
-                                                    <a title="Delete" href="{{ route('admin.FAQ-delete', $faq->id) }}" class="btn1 btn-outline-danger trash remove-faq"
-                                                       ><i
+                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-package"
+                                                        data-id="{{ $record->id }}"
+                                                        data-action="{{ route('admin.tv-options.destroy', $record->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
-
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @endforeach
                                 @endif
@@ -83,13 +77,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#FAQTable').DataTable({
+            var table = $('#TvPackageTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0,1,2,4]
+                            columns: [0, 1 ,2]
                         }
                     },
                     {
@@ -98,14 +92,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0,1,2,4]
+                            columns: [0, 1 ,2]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0,1,2,4]
+                            columns: [0, 1 ,2]
                         }
                     },
                 ],
@@ -116,26 +110,38 @@
             });
 
             table.buttons().container()
-                .appendTo('#FAQTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#TvOptionTable_wrapper .col-md-6:eq(0)');
 
-        $("body").on("click", ".remove-faq", function(event) {
-              event.preventDefault();
-            var current_object = $(this);
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this data!",
-                type: "error",
-                showCancelButton: true,
-                dangerMode: true,
-                cancelButtonClass: '#DD6B55',
-                confirmButtonColor: '#dc3545',
-                confirmButtonText: 'Delete!',
-            }, function(result) {
-                if (result) {
-                    location.href=current_object.attr('href') ;  
-                }
+            $("body").on("click", ".remove-package", function() {
+                var current_object = $(this);
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this data!",
+                    type: "error",
+                    showCancelButton: true,
+                    dangerMode: true,
+                    cancelButtonClass: '#DD6B55',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'Delete!',
+                }, function(result) {
+                    if (result) {
+                        var action = current_object.attr('data-action');
+                        var token = jQuery('meta[name="csrf-token"]').attr('content');
+                        var id = current_object.attr('data-id');
+
+                        $('body').html(
+                            "<form class='form-inline remove-form' method='post' action='" +
+                            action + "'></form>");
+                        $('body').find('.remove-form').append(
+                            '<input name="_method" type="hidden" value="DELETE">');
+                        $('body').find('.remove-form').append(
+                            '<input name="_token" type="hidden" value="' + token + '">');
+                        $('body').find('.remove-form').append(
+                            '<input name="id" type="hidden" value="' + id + '">');
+                        $('body').find('.remove-form').submit();
+                    }
+                });
             });
         });
-    });
     </script>
 @endpush

@@ -359,7 +359,6 @@ class RequestController extends BaseController
             $deal->icon =  asset('deal_icons/'.$deal->icon);
             $deal->categoryDetails;
             $dealData = $this->getProductsCategoryWise(json_decode($deal->products),$deal->category);
-            // $dealData['deal'] =$deal;
             return response()->json([
                 'success' => true,
                 'data' => $dealData[0],
@@ -370,6 +369,7 @@ class RequestController extends BaseController
             return response()->json([
                 'success' => false,
                 'data' => [],
+                'filters' =>[],
                 'message' => 'Deal not found in the requested id'
             ]);
         }

@@ -127,6 +127,9 @@ class TvInternetController extends Controller
             });
         }
         $productRecords = $productRecords->skip($row)->take($rowperpage)->get();
+        $productRecords = $productRecords->map(function ($product) {
+            return $product;
+        })->sortByDesc('id');
         $i = 1;
         foreach ($productRecords as $key => $record) {
 

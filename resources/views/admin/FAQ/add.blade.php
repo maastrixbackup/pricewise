@@ -41,7 +41,7 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Description</label>
                             <div class="">
-                                <textarea name="description" class="form-control" cols="30" rows="5">{{old('description')}}</textarea>
+                                <textarea name="description" id="description" class="form-control" cols="30" rows="5">{{old('description')}}</textarea>
                                 @error('description')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -91,3 +91,44 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script src="{{ asset('assets/plugins/tinymce/tinymce.min.js')}}"></script>
+<script>
+    tinymce.init({
+        selector: '#description',
+        plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+        toolbar_mode: 'floating',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
+            codesample_languages: [
+                { text: 'HTML/XML', value: 'markup' },
+                { text: 'JavaScript', value: 'javascript' },
+                { text: 'CSS', value: 'css' },
+                { text: 'PHP', value: 'php' },
+                { text: 'Ruby', value: 'ruby' },
+                { text: 'Python', value: 'python' },
+                { text: 'Java', value: 'java' },
+                { text: 'C', value: 'c' },
+                { text: 'C#', value: 'csharp' },
+                { text: 'C++', value: 'cpp' }
+            ],
+       
+         file_picker_callback (callback, value, meta) {
+        let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth
+        let y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight
+
+        tinymce.activeEditor.windowManager.openUrl({
+          url : '/file-manager/tinymce5',
+          title : 'Laravel File manager',
+          width : x * 0.8,
+          height : y * 0.8,
+          onMessage: (api, message) => {
+            callback(message.content, { text: message.text })
+          }
+        })
+      }
+    });
+    </script>
+@endpush

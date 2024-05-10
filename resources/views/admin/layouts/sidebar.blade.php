@@ -119,7 +119,13 @@
                       <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                       <span class="nav-main-link-name">Tv Packages</span>
                       </a>
-                    </li>                 
+                    </li>     
+                    <li class="nav-main-item">
+                      <a class="nav-main-link" href="{{route('admin.tv-options.index')}}">
+                      <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                      <span class="nav-main-link-name">Tv Options</span>
+                      </a>
+                    </li>            
                     </ul>
                 </li>
                    
