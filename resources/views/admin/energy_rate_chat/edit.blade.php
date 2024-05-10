@@ -23,7 +23,7 @@
         <div class="col-md-9 col-12">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Edit Reimbursement</h5>
+                    <h5 class="mb-0">Edit Energy Rate Chat</h5>
                 </div>
                 <div class="card-body p-4">
                     <div class="card-body p-4">

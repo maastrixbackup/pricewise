@@ -63,6 +63,7 @@ class TvPackageController extends Controller
             $newPackage->package_name = $request->package_name;
             $newPackage->tv_channels = json_encode($request->channels);
             $newPackage->provider_id = $request->provider;
+            $newPackage->package_price = $request->package_price;
             $newPackage->save();
             Toastr::success('Package Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.tv-packages.index');
@@ -111,12 +112,13 @@ class TvPackageController extends Controller
             'channels' => 'required|min:1',
             'provider' => 'required',
         ]);
- 
+    //dd($request->package_price);
         try {
             $package = TvPackage::findOrFail($id);
             $package->package_name = $request->package_name;
             $package->tv_channels = json_encode($request->channels);
             $package->provider_id = $request->provider;
+            $package->package_price = $request->package_price;
             $package->save();
             Toastr::success('Package Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.tv-packages.index');
