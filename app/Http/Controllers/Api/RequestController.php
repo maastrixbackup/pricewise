@@ -312,6 +312,9 @@ class RequestController extends BaseController
         if ($request->category_id == 1) {
             $internetTvObj = new InternetTvController();
             $products =  $internetTvObj->index($request);
+            $products[0] = collect($products[0])->filter(function($product) use ($product_ids){
+                return in_array($product['id'] , $product_ids);
+              });
             return $products;
 
         }elseif ($request->category_id == 2) {
@@ -342,6 +345,10 @@ class RequestController extends BaseController
         }elseif ($request->category_id == 16) {
               $energyObj = new EnergyController() ;
               $products = $energyObj->index($request);
+              $products[0] = collect($products[0])->filter(function($product) use ($product_ids){
+                return in_array($product['id'] ,$product_ids);
+              });
+            
               return $products;
         }
     }
