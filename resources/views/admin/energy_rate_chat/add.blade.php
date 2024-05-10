@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Energise - Reimbursement Create')
+@section('title','Energise - Energy Rate Chat Create')
 @section('content')
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
