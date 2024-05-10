@@ -164,7 +164,7 @@ class EnergyController extends BaseController
             return $a['total'] <=> $b['total'];
         });
         if($request->has('callFromExclusiveDeal')){
-            return array_merge($mergedData,['filters'=>$filters]) ;
+            return [$mergedData , $filters];
         }
         // Return the merged data
         return response()->json([

@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Mail\CustomerRequestSubmit;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Api\EnergyController;
+use App\Http\Controllers\Api\InternetTvController;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
@@ -306,9 +307,11 @@ class RequestController extends BaseController
     {
             $request = new Request();
             $request['category_id'] = $category_id;
-         
+            $request['callFromExclusiveDeal'] = 1 ; 
+
         if ($request->category_id == 1) {
-            $products = TvInternetProduct::whereIn('id',$product_ids)->get();
+            $internetTvObj = new InternetTvController();
+            $products =  $internetTvObj->index($request);
             return $products;
 
         }elseif ($request->category_id == 2) {
@@ -338,9 +341,8 @@ class RequestController extends BaseController
 
         }elseif ($request->category_id == 16) {
               $energyObj = new EnergyController() ;
-              $request['callFromExclusiveDeal'] = 1 ; 
               $products = $energyObj->index($request);
-              return $products; 
+              return $products;
         }
     }
     public function getExclusiveDeal(Request $request)
@@ -353,7 +355,8 @@ class RequestController extends BaseController
             // $dealData['deal'] =$deal;
             return response()->json([
                 'success' => true,
-                'data' => $dealData,
+                'data' => $dealData[0],
+                'filters' => $dealData[1],
                 'message' => 'Deal retrieved successfully'
             ]);
         }else {

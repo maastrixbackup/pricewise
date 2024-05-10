@@ -69,7 +69,9 @@ class InternetTvController extends BaseController
                 $formattedProduct = (new InternetTvResource($product))->toArray($request);                
                 $mergedData[] = $formattedProduct;
             }
-            
+            if($request->has('callFromExclusiveDeal')){
+                return [$mergedData , $objFeatures];
+            }
             return response()->json([
                 'success' => true,
                 'data' => $mergedData,
