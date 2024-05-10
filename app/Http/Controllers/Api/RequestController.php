@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Mail\CustomerRequestSubmit;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Api\EnergyController;
+use App\Http\Controllers\Api\InternetTvController;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
@@ -17,6 +18,7 @@ use App\Models\InsuranceProduct;
 use Validator;
 use App\Http\Resources\EnergyResource;
 use App\Models\Deal;
+use App\Models\TvPackage;
 use DB;
 use App\Models\User;
 use App\Models\UserData;
@@ -306,9 +308,14 @@ class RequestController extends BaseController
     {
             $request = new Request();
             $request['category_id'] = $category_id;
-         
+            $request['callFromExclusiveDeal'] = 1 ; 
+
         if ($request->category_id == 1) {
-            $products = TvInternetProduct::whereIn('id',$product_ids)->get();
+            $internetTvObj = new InternetTvController();
+            $products =  $internetTvObj->index($request);
+            $products[0] = collect($products[0])->filter(function($product) use ($product_ids){
+                return in_array($product['id'] , $product_ids);
+              });
             return $products;
 
         }elseif ($request->category_id == 2) {
@@ -338,9 +345,12 @@ class RequestController extends BaseController
 
         }elseif ($request->category_id == 16) {
               $energyObj = new EnergyController() ;
-              $request['callFromExclusiveDeal'] = 1 ; 
               $products = $energyObj->index($request);
-              return $products; 
+              $products[0] = collect($products[0])->filter(function($product) use ($product_ids){
+                return in_array($product['id'] ,$product_ids);
+              });
+            
+              return $products;
         }
     }
     public function getExclusiveDeal(Request $request)
@@ -353,7 +363,8 @@ class RequestController extends BaseController
             // $dealData['deal'] =$deal;
             return response()->json([
                 'success' => true,
-                'data' => $dealData,
+                'data' => $dealData[0],
+                'filters' => $dealData[1],
                 'message' => 'Deal retrieved successfully'
             ]);
         }else {
@@ -364,5 +375,23 @@ class RequestController extends BaseController
             ]);
         }
       
+    }
+
+    public function getTvPackages(Request $request)
+    {
+    $records = TvPackage::latest()->with('providerDetails')->get();
+    if ($records) {
+        return response()->json([
+                'success' => true,
+                'data' => $records,
+                'message' => 'Deal retrieved successfully'
+            ]);
+    }else {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Packages not found'
+            ]);
+        }
     }
 }

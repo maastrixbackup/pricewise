@@ -28,6 +28,7 @@ Route::post('/login', [RegisterController::class, 'login'])->name('customer-logi
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
 Route::get('get-deals-data', [RequestController::class, 'getDealsData']);
+Route::get('get-tv-packages/{provider_id}', [RequestController::class, 'getTvPackages']);
 Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDeal']);
 //Frontend Guest
 //Internet Tv
