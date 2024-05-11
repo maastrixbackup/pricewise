@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'PriceWise- Tv Option')
+@section('title', 'PriceWise- Tv Options')
 @section('content')
 
     <!--breadcrumb-->
@@ -36,7 +36,6 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Package Name</th>
                                     <th>Providers</th>
                                     <th>Action</th>
                                 </tr>
@@ -46,10 +45,9 @@
                                     @foreach ($records as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            {{-- <td>{{ $record->package_name }}</td>
                                             <td>{{ $record->providerDetails->name }}</td>
                                             <td>
-                                                <div class="col d-flex justify-content-evenly">
+                                                <div class="col d-flex gap-2">
 
                                                     <a title="Edit"
                                                         href="{{ route('admin.tv-options.edit', $record->id) }}"
@@ -60,7 +58,7 @@
                                                         data-action="{{ route('admin.tv-options.destroy', $record->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
                                                 </div>
-                                            </td> --}}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -77,7 +75,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#TvPackageTable').DataTable({
+            var table = $('#TvOptionTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
