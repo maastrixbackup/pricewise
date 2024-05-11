@@ -81,7 +81,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1 ]
                         }
                     },
                     {
@@ -90,14 +90,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1]
                         }
                     },
                 ],
