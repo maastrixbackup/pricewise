@@ -28,7 +28,7 @@ class PageController extends AdminController
      */
     public function index()
     {
-        $pages = Page::all();
+        $pages = Page::all()->sortByDesc('id');
 
         return view('admin.pages.index',['pages'=>$pages]);
     }

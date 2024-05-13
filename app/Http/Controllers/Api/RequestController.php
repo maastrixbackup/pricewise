@@ -19,6 +19,7 @@ use Validator;
 use App\Http\Resources\EnergyResource;
 use App\Models\Deal;
 use App\Models\TvPackage;
+use App\Models\TvOption;
 use DB;
 use App\Models\User;
 use App\Models\UserData;
@@ -381,6 +382,29 @@ class RequestController extends BaseController
     {
     $records = TvPackage::latest()->with('providerDetails')->get();
     if ($records) {
+        return response()->json([
+                'success' => true,
+                'data' => $records,
+                'message' => 'Deal retrieved successfully'
+            ]);
+    }else {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Packages not found'
+            ]);
+        }
+    }
+    public function getTvInternetOptions()
+    {
+    $records = TvOption::latest()->with('providerDetails')->get();
+    if ($records) {
+        $records->map(function($record){
+          $record->internet_options = json_decode($record->internet_options);
+          $record->tv_options = json_decode($record->tv_options);
+          $record->telephone_options = json_decode($record->telephone_options);
+          return $record;
+        });
         return response()->json([
                 'success' => true,
                 'data' => $records,

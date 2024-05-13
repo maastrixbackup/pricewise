@@ -159,7 +159,7 @@ class CategoryController extends Controller
 
         // Extract base64 encoded image data and decode it
         $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
+        return $imgData;
         // Generate a unique file name for the image
         $imageName = 'category_' . time() . '.png';
 

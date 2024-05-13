@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\EnergyController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\RequestController;
+use App\Http\Controllers\Api\HealthInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -30,8 +31,11 @@ Route::post('/reset-password/{token}', [RegisterController::class, 'resetPasswor
 Route::get('get-deals-data', [RequestController::class, 'getDealsData']);
 Route::get('get-tv-packages/{provider_id}', [RequestController::class, 'getTvPackages']);
 Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDeal']);
+Route::get('get-tv-internet-options', [RequestController::class, 'getTvInternetOptions']);
+//Health Insurance
+Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
 //Frontend Guest
-//Internet Tv
+//Internet TvR
     Route::post('internet-tv', [InternetTvController::class, 'index']);
     Route::post('internet-tv-compare', [InternetTvController::class, 'internetCompare']);
 //API routs for energy

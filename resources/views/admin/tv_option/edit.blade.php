@@ -25,7 +25,7 @@
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Edit Tv Package</h5>
+                    <h5 class="mb-0">Edit Tv Option</h5>
                 </div>
                 <div class="card-body p-4">
                     <form method="post" action="{{ route('admin.tv-options.update',$tv_option->id) }}">

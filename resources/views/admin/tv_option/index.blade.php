@@ -36,7 +36,7 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Providers</th>
+                                    <th>Provider</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
