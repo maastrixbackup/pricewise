@@ -98,13 +98,23 @@ class InternetTvController extends BaseController
                     ->groupBy('parent');
                 
                 $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
-                // Return the merged data
-               return response()->json([
+             
+                    $noParentCategory = $objEnergyFeatures['No Parent'];
+                    unset($objEnergyFeatures['No Parent']);
+                    $objEnergyFeatures =  $objEnergyFeatures->toArray();
+                    $objEnergyFeatures = array_merge(['No_Parent' => $noParentCategory], $objEnergyFeatures);
+                   
+     
+
+            // Return the merged data
+            return response()->json([
                 'success' => true,
                 'data'    => $filteredProductsFormatted,
-                'filters' => $objEnergyFeatures,
+                'filters' =>  $objEnergyFeatures,
                 'message' => 'Products retrieved successfully.',
-               ],200) ;
+            ], 200);
+                 
+                
             } else {
                 return $this->sendError('No products found for comparison.', [], 404);
             }
