@@ -98,12 +98,13 @@ class InternetTvController extends BaseController
                     ->groupBy('parent');
                 
                 $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
-
-                // Merge filteredProductsFormatted and objEnergyFeatures
-                $mergedData = $filteredProductsFormatted->merge(['energy_filters' => $objEnergyFeatures]);
-
                 // Return the merged data
-                return $this->sendResponse($mergedData, 'Products retrieved successfully.');
+               return response()->json([
+                'success' => true,
+                'data'    => $filteredProductsFormatted,
+                'filters' => $objEnergyFeatures,
+                'message' => 'Products retrieved successfully.',
+               ],200) ;
             } else {
                 return $this->sendError('No products found for comparison.', [], 404);
             }
