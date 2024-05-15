@@ -59,17 +59,6 @@ class HealthInsuranceResource extends JsonResource
             'mechanic_install' => $this->mechanic_install, 
             'mechanic_charge' => $this->mechanic_charge, 
             'is_featured' => $this->is_featured,
-            'documents' => $this->whenLoaded('documents', function () {
-                return $this->documents->filter(function ($document) {
-                    return $this->category == $document->category;
-                })->map(function ($document) {
-                    return [
-                        'id' => $document->id,
-                        'filename' => $document->filename,
-                        'path' => $document->path,
-                    ];
-                });
-            }),
             'provider_details' => $this->whenLoaded('providerDetails', function () {
                 return [
                         'about' => $this->providerDetails->about,

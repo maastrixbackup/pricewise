@@ -89,30 +89,50 @@ class InternetTvController extends BaseController
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
 
             if ($filteredProducts->isNotEmpty()) {
-                $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+                $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
                     ->from('features as f1')
                     ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
                     ->where('f1.category', $filteredProducts[0]->category)
                     ->where('f1.is_preferred', 1)
                     ->get()
                     ->groupBy('parent');
-                
-                $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
-             
-                    $noParentCategory = $objEnergyFeatures['No Parent'];
-                    unset($objEnergyFeatures['No Parent']);
-                    $objEnergyFeatures =  $objEnergyFeatures->toArray();
-                    $objEnergyFeatures = array_merge(['No_Parent' => $noParentCategory], $objEnergyFeatures);
-                   
-     
 
-            // Return the merged data
-            return response()->json([
-                'success' => true,
-                'data'    => $filteredProductsFormatted,
-                'filters' =>  $objEnergyFeatures,
-                'message' => 'Products retrieved successfully.',
-            ], 200);
+                // Initialize an empty array to store the grouped filters
+                $filters = [];
+
+                // Loop through the grouped features and convert them to the desired structure
+                foreach ($objEnergyFeatures as $parent => $items) {
+                    $filters[] = [
+                        $parent => $items->map(function ($item) {
+                            return (object) $item->toArray();
+                        })->toArray()
+                    ];
+                }                             
+            
+                $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
+                  
+                $noParentFilter = null;
+                foreach ($filters as $index => $filter) {
+                    if (isset($filter['No_Parent'])) {
+                        $noParentFilter = $filter;
+                        unset($filters[$index]);
+                        break;
+                    }
+                }
+                
+                // Insert the "No_Parent" filter at the beginning of the array of filters
+                if ($noParentFilter !== null) {
+                    array_unshift($filters, $noParentFilter);
+                }
+  
+
+    
+                return response()->json([
+                    'success' => true,
+                    'data'    => $filteredProductsFormatted,
+                    'filters' =>  $filters,
+                    'message' => 'Products retrieved successfully.',
+                ], 200);
                  
                 
             } else {
