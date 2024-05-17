@@ -81,4 +81,67 @@ class HealthInsuranceController extends Controller
                 'message' => $message
             ]);
     }
+    function healthInsuranceStore(Request $request) {
+        try {
+            $user_id = $request->input('user_id');
+            $user_type = $request->input('user_type');
+            $category_id = $request->input('category');
+            $sub_category_id = $request->input('sub_category');
+            $service_id = $request->input('service_id');
+            $postal_code = $request->input('postal_code');
+            $service_type = $request->input('service_type');
+            $combos = json_encode($request->input('combos'));
+            $total_price = $request->input('total_price');
+            $discounted_price = $request->input('discounted_price');
+            $discount_prct = $request->input('discount_prct');
+            $commission_prct = $request->input('commission_prct');
+            $commission_amt = $request->input('commission_amt');
+            $request_status = $request->input('request_status');
+            $advantages = $request->input('advantages');
+            
+            $data = new UserRequest();
+            
+            $data->user_id = $user_id;
+            $data->user_type = $user_type;
+            $data->category = $category_id;
+            $data->sub_category = $sub_category_id;
+            $data->service_id = $service_id;
+            $data->service_type = $service_type;
+            $data->combos = $combos;
+            $data->postal_code = $postal_code;
+            $data->advantages = json_encode($advantages);
+            $data->total_price = $total_price;
+            $data->discounted_price = $discounted_price;
+            $data->discount_prct = $discount_prct;
+            $data->commission_prct = $commission_prct;
+            $data->commission_amt = $commission_amt;
+            $data->request_status = $request_status;
+            $data->provider_id = $request->provider_id;
+            $data->solar_panels = $request->solar_panels;
+            $data->no_gas = $request->no_gas;
+            $data->shipping_address = json_encode($request->shipping_address);
+            $data->billing_address = json_encode($request->billing_address);
+            if ($data->save()) {
+                $data->load('userDetails'); 
+                $orderNo = $data->id + 1000;
+                $data->order_no = $orderNo;
+                $name = $data->userDetails?$data->userDetails->name:'';
+                
+                $data->save();
+                if($request->has('advantages')){
+                    foreach($request->advantages as $key => $value){
+                        PostRequest::updateOrCreate(['request_id' => $data->id, 'key' => $key],
+                            [
+                                'value' => $value
+                            ]);
+                    }
+                }
+                return response()->json(['success' => true, 'message' => 'User request saved successfully'], 200);
+            }
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+    }
 }

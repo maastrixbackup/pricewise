@@ -34,6 +34,7 @@ Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDe
 Route::get('get-tv-internet-options', [RequestController::class, 'getTvInternetOptions']);
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
+Route::post('health-insurance-store', [HealthInsuranceController::class, 'healthInsuranceStore']);
 //Frontend Guest
 //Internet TvR
     Route::post('internet-tv', [InternetTvController::class, 'index']);

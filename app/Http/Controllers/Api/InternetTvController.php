@@ -19,6 +19,10 @@ class InternetTvController extends BaseController
         \DB::enableQueryLog();
         $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
         
+        $pageno = $request->pageNo ?? 1;
+        $postsPerPage = $request->postsPerPage ?? 10;
+        $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
+
         // Filter by postal code
         if ($request->has('postal_code')) {
            $postalCode = json_encode($request->input('postal_code'));    
@@ -48,8 +52,10 @@ class InternetTvController extends BaseController
                 $query->whereIn('feature_id', $features);
             });
         }    
-        //dd($products->get());
-        $filteredProducts = $products->get();
+       
+        
+        $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
+        $recordsCount = $products->count();
         if ($filteredProducts->isNotEmpty()) {
         $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
             ->from('features as f1')
@@ -76,6 +82,7 @@ class InternetTvController extends BaseController
                 'success' => true,
                 'data' => $mergedData,
                 'filters' => $objFeatures,
+                'recordsCount'=> $recordsCount,
                 'message' => 'Products retrieved successfully.'
             ]);
     }
@@ -136,7 +143,7 @@ class InternetTvController extends BaseController
                  
                 
             } else {
-                return $this->sendError('No products found for comparison.', [], 404);
+                return $this->sendError('No products found -for comparison.', [], 404);
             }
         } else {
             return $this->sendError('No comparison IDs provided.', [], 400);
