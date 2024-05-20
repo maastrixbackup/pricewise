@@ -246,26 +246,25 @@ class EnergyController extends Controller
             $objEnergy->no_gas = $request->no_gas;
             $objEnergy->energy_label = json_encode($request->energy_label);
             $objEnergy->meter_type = $request->meter_type;
-            $croppedImage = $request->cropped_image;
+            
+            if ($request->image) {
 
-            // Extract base64 encoded image data and decode it
-            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
-            // Generate a unique file name for the image
-            $imageName = 'energy_' . time() . '.png';
-
-            // Specify the destination directory where the image will be saved
-            $destinationDirectory = 'public/images/energy';
-
-            // Create the directory if it doesn't exist
-            Storage::makeDirectory($destinationDirectory);
-
-            // Save the image to the server using Laravel's file upload method
-            $filePath = $destinationDirectory . '/' . $imageName;
-            Storage::put($filePath, $imgData);
-
-            // Set the image file name for the provider
-            $objEnergy->image = $imageName;
+                // Generate a unique file name for the image
+                $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+          
+                $destinationDirectory = public_path('storage/images/energy');
+        
+                if (!is_dir($destinationDirectory)) {
+                    mkdir($destinationDirectory, 0777, true);
+                }
+        
+                // Move the file to the public/uploads directory
+                $request->file('image')->move($destinationDirectory, $imageName);
+  
+                $objEnergy->image = $imageName ;
+      }
+            
+     
             if ($objEnergy->save()) {
                 return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));                
             } else {
@@ -356,36 +355,31 @@ class EnergyController extends Controller
             $objEnergy->no_gas = $request->no_gas;
             $objEnergy->energy_label = json_encode($request->energy_label);
             $objEnergy->meter_type = $request->meter_type;
-            if ($request->has('cropped_image')) {
-            // Access base64 encoded image data directly from the request
-            $croppedImage = $request->cropped_image;
-
-            // Extract base64 encoded image data and decode it
-            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
-            // Generate a unique file name for the image
-            $imageName = 'energy_' . time() . '.png';
-
-            // Specify the destination directory where the image will be saved
-            $destinationDirectory = 'public/images/energy';
-
-            // Create the directory if it doesn't exist
-            Storage::makeDirectory($destinationDirectory);
-
-            // Save the image to the server using Laravel's file upload method
-            $filePath = $destinationDirectory . '/' . $imageName;
-
-            // Delete the old image if it exists
-            if ($objEnergy->image) {
-                Storage::delete($destinationDirectory . '/' . $objEnergy->image);
+         
+            if ($request->image) {
+                // Generate a unique file name for the image
+                $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+          
+                $destinationDirectory = public_path('storage/images/categories');
+        
+                if (!is_dir($destinationDirectory)) {
+                    mkdir($destinationDirectory, 0777, true);
+                }
+        
+                // Move the file to the public/uploads directory
+                $request->file('image')->move($destinationDirectory, $imageName);
+    
+                $existingFilePath = $destinationDirectory.'/'.$objEnergy->image;
+    
+                if (file_exists($existingFilePath)) {
+                    // Delete the file
+                    unlink($existingFilePath);
+                }
+    
+                $objEnergy->image = $imageName ;
+                
             }
-
-            // Save the new image
-            Storage::put($filePath, $imgData);
-
-            // Set the image file name for the provider
-            $objEnergy->image = $imageName;
-            }
+            
         if ($objEnergy->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.energy.index")]);
