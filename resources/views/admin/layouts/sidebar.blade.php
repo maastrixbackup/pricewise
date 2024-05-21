@@ -364,12 +364,12 @@
                      </ul>
                  </li>
 
-                 <li class="nav-main-item">
+                 {{-- <li class="nav-main-item">
                      <a class="nav-main-link" href="{{ route('admin.reimbursement.index') }}">
                          <i class="nav-main-link-icon fa-solid fa-list"></i>
                          <span class="nav-main-link-name">Reimbursement</span>
                      </a>
-                 </li>
+                 </li> --}}
              </ul>
          </div>
          <!-- END Side Navigation -->
