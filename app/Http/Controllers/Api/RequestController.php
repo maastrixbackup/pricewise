@@ -22,6 +22,8 @@ use App\Models\User;
 use App\Models\UserData;
 use App\Models\UserRequest;
 use App\Models\Review;
+use App\Models\Event;
+
 
 class RequestController extends BaseController
 {
@@ -238,7 +240,7 @@ class RequestController extends BaseController
         } catch (ValidationException $e) {
             // Handle validation errors
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
-        } catch (QueryException $e) {
+        } catch (QueryException $e) { 
             // Handle other database errors
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
         }
@@ -359,10 +361,27 @@ class RequestController extends BaseController
         }else {
             return response()->json([
                 'success' => false,
-                'data' => [],
-                'message' => 'Deal not found in the requested id'
+                'data' => [],        //         'message' => 'Deal not found in the requested id'
+
             ]);
         }
       
     }
+
+      public function eventlist(Request $request){
+        {
+            // Fetch all event from the database
+            $events = Event::latest()->get();
+    
+            // Return the data as a JSON response
+
+           
+                return response()->json([
+                    'success' => true,
+                    'data' => $events,
+                    'message' => 'Deal retrieved successfully'
+                ]);
+        }
+
+}
 }

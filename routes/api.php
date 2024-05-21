@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\EnergyController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\RequestController;
+use App\Http\Controllers\Api\EventController;
+
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -29,6 +31,10 @@ Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
 Route::get('get-deals-data', [RequestController::class, 'getDealsData']);
 Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDeal']);
+
+// Api on events by satyajit
+Route::get('get-events-list', [RequestController::class, 'eventlist']);
+
 //Frontend Guest
 //Internet Tv
     Route::post('internet-tv', [InternetTvController::class, 'index']);

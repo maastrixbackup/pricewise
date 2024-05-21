@@ -92,6 +92,26 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         // Route::get('/requests/edit/', 'RequestController@index')->name('get.request');
         Route::resource('requests', 'RequestController');
 
+        //Caterer
+        Route::get('/caterer/list', 'CatererController@listcaterer')->name('list.caterer');
+        Route::get('/caterer/create', 'CatererController@addcaterer')->name('add.caterer');
+        Route::post('/caterer/post', 'CatererController@postcaterer')->name('post.caterer');
+        Route::any('/caterer/edit/{id}', 'CatererController@editcaterer')->name('edit.caterer');
+        Route::post('/caterer/update/{id}', 'CatererController@updatecaterer')->name('update.caterer');
+        Route::any('/caterer/delete/{id}', 'CatererController@deletecaterer')->name('delete.caterer');
+
+
+        // New Events
+        // Route::get('/events/list', 'CatererController@listcaterer')->name('list.caterer');
+        // Route::get('/caterer/create', 'CatererController@addcaterer')->name('add.caterer');
+        // Route::post('/caterer/post', 'CatererController@postcaterer')->name('post.caterer');
+        // Route::any('/caterer/edit/{id}', 'CatererController@editcaterer')->name('edit.caterer');
+        // Route::post('/caterer/update/{id}', 'CatererController@updatecaterer')->name('update.caterer');
+        // Route::any('/caterer/delete', 'CatererController@deletecaterer')->name('delete.caterer');
+
+
+
+
         //Energy
         Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
         Route::resource('energy', 'EnergyController');
