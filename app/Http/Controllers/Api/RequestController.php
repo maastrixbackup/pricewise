@@ -385,7 +385,7 @@ class RequestController extends BaseController
         return response()->json([
                 'success' => true,
                 'data' => $records,
-                'message' => 'Deal retrieved successfully'
+                'message' => 'Packages retrieved successfully'
             ]);
     }else {
             return response()->json([
@@ -400,21 +400,42 @@ class RequestController extends BaseController
     $records = TvOption::latest()->with('providerDetails')->get();
     if ($records) {
         $records->map(function($record){
-          $record->internet_options = json_decode($record->internet_options);
-          $record->tv_options = json_decode($record->tv_options);
-          $record->telephone_options = json_decode($record->telephone_options);
+
+          $record->internet_options = array_map(function($option){
+            $option->package_name = $option->name ;
+            $option->package_price = (int)$option->normal_cost;
+            unset($option->name);
+            unset($option->normal_cost);
+            return $option;
+          },json_decode($record->internet_options)) ;
+
+          $record->tv_options = array_map(function($option){
+            $option->package_name = $option->name ;
+            $option->package_price = (int)$option->normal_cost;
+            unset($option->name);
+            unset($option->normal_cost);
+            return $option;
+          },json_decode($record->tv_options)) ;
+
+          $record->telephone_options =array_map(function($option){
+            $option->package_name = $option->name ;
+            $option->package_price = (int)$option->normal_cost;
+            unset($option->name);
+            unset($option->normal_cost);
+            return $option;
+          },json_decode($record->telephone_options))  ;
           return $record;
         });
         return response()->json([
                 'success' => true,
                 'data' => $records,
-                'message' => 'Deal retrieved successfully'
+                'message' => 'TvInternetOptions retrieved successfully'
             ]);
     }else {
             return response()->json([
                 'success' => false,
                 'data' => [],
-                'message' => 'Packages not found'
+                'message' => 'TvInternetOptions not found'
             ]);
         }
     }
