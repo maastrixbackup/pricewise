@@ -11,6 +11,8 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\HealthInsuranceController;
+use App\Http\Controllers\Api\EventController;
+
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -35,6 +37,10 @@ Route::get('get-tv-internet-options', [RequestController::class, 'getTvInternetO
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
 Route::post('health-insurance-store', [HealthInsuranceController::class, 'healthInsuranceStore']);
+
+// Api on events by satyajit
+Route::get('get-events-list', [RequestController::class, 'eventlist']);
+
 //Frontend Guest
 //Internet TvR
     Route::post('internet-tv', [InternetTvController::class, 'index']);

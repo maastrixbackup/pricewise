@@ -27,7 +27,7 @@ class EnergyController extends BaseController
         , 'prices', 'feedInCost', 'documents', 'providerDetails', 'govtTaxes');
         
         // Filter by postal code
-        if ($request->has('postal_code')) {
+        if ($request->has('postal_code')) {  
            $postalCode = json_encode($request->input('postal_code'));    
             // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
             $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
