@@ -28,6 +28,7 @@ class ExclusiveDealController extends Controller
     public function index()
     {
         $records = Deal::latest()->get();
+        // dd($records);
         return view('admin.exclusive_deals.index',compact('records'));
     }
 
@@ -53,7 +54,7 @@ class ExclusiveDealController extends Controller
         $request->validate([
             'title' => 'required',
             'valid_till' => 'required',
-            'icon' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'icon' => 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
             'category' => 'required',
             'products' => 'required|min:1',
         ]);
@@ -116,7 +117,7 @@ class ExclusiveDealController extends Controller
         $request->validate([
             'title' => 'required',
             'valid_till' => 'required',
-            'icon' => 'image|mimes:jpeg,png,jpg,gif,svg',
+            'icon' => 'image|max:2048|mimes:jpeg,png,jpg,gif,svg',
             'category' => 'required',
             'products' => 'required|min:1',
         ]);

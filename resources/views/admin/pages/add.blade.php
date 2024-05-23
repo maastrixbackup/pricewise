@@ -34,7 +34,7 @@
                         
                         <div class="row mb-3">
                             <label class=" col-form-label">Title</label>
-                            <input type="text" class="form-control" placeholder="title" name="title" value="">
+                            <input type="text" class="form-control" placeholder="title" name="title" value="" required>
                         </div>
                         <div class="row mb-3">
                         <label for="input40" class="col-sm-6 col-form-label"><b>Image </b></label>
@@ -51,16 +51,14 @@
                         </div>
                         <div class="row mb-3">
                             <label class=" col-form-label">Description</label>
-                            <textarea type="text" rows="9" placeholder="description" name="description" id="description"></textarea>
+                            <textarea type="text" rows="9" placeholder="description" name="description" id="description" ></textarea>
                         </div>
                         <div class="row mb-3">
                         <label for="status" class=" col-form-label">Status</label>
                         <div class="">
                             <select class="form-control" id="status" name="status">
-                            <option value="">Select</option>
                             <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                            
+                            <option value="0" selected>Inactive</option>
                             </select>
                         </div>
                         </div>

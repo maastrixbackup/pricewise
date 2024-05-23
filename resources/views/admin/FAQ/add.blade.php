@@ -26,7 +26,7 @@
                     <h5 class="mb-0">Add New FAQ</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.FAQ-store') }}">
+                    <form method="post" action="{{ route('admin.FAQ-store') }}"> 
                         @csrf
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Title</label>

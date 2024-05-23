@@ -17,7 +17,7 @@
                 <input type="button" class="btn btn-danger delete-button" value="Delete"/>
             </td>
         </tr>
-    @endforeach
+         @endforeach
     </tbody>
 </table>
 

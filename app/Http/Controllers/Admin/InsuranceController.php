@@ -477,12 +477,19 @@ class InsuranceController extends Controller
         $sub_category = $request->sub_category;
         //dd($request->reimburse);
         try{
-        foreach($request->reimburse as $feature_id => $value){
+            $mainfereimburse = $request->input('reimburse');
+            if(is_array($mainfereimburse)){ 
+        foreach($mainfereimburse as $feature_id => $value){
             if($value != null && $post_category != null){                
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category], ['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'sub_category' =>$sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id]]);
             
+        } 
         }
+        }else{
+            $mainfeature = []; // Default to an empty array
         }
+
+
         }catch(\Exception $e){
             $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
         // Log the error for further investigation

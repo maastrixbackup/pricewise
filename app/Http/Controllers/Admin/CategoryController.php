@@ -88,7 +88,9 @@ class CategoryController extends Controller
         $imageName = 'category_' . time() . '.png';
 
         // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/categories';
+        $destinationDirectory = 'public/storage/images/categories';
+
+        
 
         // Create the directory if it doesn't exist
         Storage::makeDirectory($destinationDirectory);
@@ -130,7 +132,7 @@ class CategoryController extends Controller
     {
 
         $objCategory = Category::find($id);
-        $parents = Category::whereNull('parent')->latest()->get();
+        $parents = Category::whereNull('parent')->latest()->get(); 
         return view('admin.categories.edit', compact('objCategory', 'parents'));
     }
 
@@ -164,7 +166,7 @@ class CategoryController extends Controller
         $imageName = 'category_' . time() . '.png';
 
         // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/categories';
+        $destinationDirectory = 'public/storage/images/categories';
 
         // Create the directory if it doesn't exist
         Storage::makeDirectory($destinationDirectory);

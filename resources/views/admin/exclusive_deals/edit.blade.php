@@ -105,8 +105,8 @@
                             <label for="input_type" class=" col-form-label">Status<sup class="text-danger">*</sup></label>
                             <div class="">
                                 <select class="form-control" name="status">
-                                    <option value="active">active</option>
-                                    <option value="active" selected>inactive</option>
+                                    <option value="active"  {{$deal->status=='active'?'selected':''}}>active</option>
+                                    <option value="inactive" {{$deal->status=='inactive'?'selected':''}}>inactive</option> 
                                 </select>
                                 @error('status')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
