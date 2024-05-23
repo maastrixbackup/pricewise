@@ -16,7 +16,7 @@
                     </li>
                 </ol>
             </nav>
-        </div>
+        </div> 
     </div>
     <!--end breadcrumb-->
     <div class="row">
@@ -51,7 +51,7 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Price<sup class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="number" class="form-control" name="price" value="{{old('price')}}" placeholder="Price">
+                                <input type="number" class="form-control" name="price" value="{{old('price')}}" placeholder="Price" min="0">
                                 @error('price')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror

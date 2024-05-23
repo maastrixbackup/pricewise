@@ -97,19 +97,19 @@
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                             <label for="input37" class="col-form-label">Premium Amount</label>
-                                                            <input type="number" class="form-control" id="price" name="price" placeholder="Price" value="{{$objTv->price}}">
+                                                            <input type="number" class="form-control" id="price" name="price" placeholder="Price" value="{{$objTv->price}}" min="0">
                                                     </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                             <label for="family_extra_amount" class="col-form-label">Extra Per Head Cost</label>
-                                                            <input type="number" class="form-control" id="family_extra_amount" name="family_extra_amount" placeholder="Extra Per Head Cost" value="{{$objTv->family_extra_amount}}">
+                                                            <input type="number" class="form-control" id="family_extra_amount" name="family_extra_amount" placeholder="Extra Per Head Cost" value="{{$objTv->family_extra_amount}}" min="0">
                                                     </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                             <label for="own_risk" class="col-form-label">Own Risk Amount</label>
-                                                            <input type="number" class="form-control" id="own_risk" name="own_risk" placeholder="Own Risk Amount" value="{{$objTv->own_risk}}">
+                                                            <input type="number" class="form-control" id="own_risk" name="own_risk" placeholder="Own Risk Amount" value="{{$objTv->own_risk}}" min="0">
                                                     </div>
                                                     </div>
                                                     
@@ -131,7 +131,7 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                         <label for="avg_delivery_time" class=" col-form-label">Average Approval Time</label>
-                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Approval Time" value="{{$objTv->avg_delivery_time}}">
+                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Approval Time" value="{{$objTv->avg_delivery_time}}" min="0">
                                                             </div>
                                                         </div>
                                                    
@@ -142,7 +142,7 @@
                                                         <div class=" mb-3">
                                                             <label for="input40" class=" col-form-label">Premium Interval
                                                             </label>
-                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objTv->contract_length}}">
+                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objTv->contract_length}}" min="0">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
@@ -161,7 +161,7 @@
                                                             <div class=" mb-3">
                                                                 <label for="input40" class=" col-form-label">Commission
                                                                 </label>
-                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objTv->commission}}">
+                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objTv->commission}}" min="0">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-12">

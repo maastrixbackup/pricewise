@@ -112,7 +112,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
 
 
-        //Energy
+        //Energy 
         Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
         Route::resource('energy', 'EnergyController');
         Route::post('/doc-update/{id}', 'EnergyController@energy_doc_update')->name('doc_update');
@@ -121,7 +121,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/energy-price-update/{id}', 'EnergyController@energy_price_update')->name('energy.pricing');
         Route::get('/energy/{id}', 'EnergyController@default')->name('energy-default');
         Route::get('duplicate-energy/{id}', 'TvProductController@duplicate')->name('duplicate-energy');
-        //Features
+        //Features 
         Route::resource('features', 'FeatureController');
         //Route::resource('tv-contract-lengths', 'TvContractLengthController');
 
@@ -150,7 +150,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('tv-options', 'TvOptionController');
 
         //Customers
-        Route::resource('customers', 'CustomerController');
+        Route::resource('customers', 'CustomerController'); 
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');
         Route::get('approve-customers', 'CustomerController@approve')->name('approve-customers');
         Route::get('reject-customers', 'CustomerController@reject')->name('reject-customers');
@@ -195,7 +195,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('send-campaign', 'MailChimpController@sendCampaign')->name('send-campaign');
         Route::get('get-template', 'MailChimpController@getTemplate')->name('get-template');
 
-        //Website Setting
+        //Website Setting 
         Route::get('website-setting', 'SettingController@websiteEdit')->name('website-setting');        
         Route::post('website-store', 'SettingController@websiteStore')->name('website-store');
         Route::get('business-setting', 'SettingController@businessEdit')->name('business-setting');

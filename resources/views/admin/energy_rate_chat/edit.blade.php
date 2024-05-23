@@ -23,14 +23,14 @@
         <div class="col-md-9 col-12">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Edit Energy Rate Chat</h5>
+                    <h5 class="mb-0">Edit Energy Rate</h5>
                 </div>
                 <div class="card-body p-4">
                     <div class="card-body p-4">
                                                
                         <div class=" mb-3">
                         <label for="provider" class=" col-form-label">Provider</label>
-                        <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider">
+                        <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider" required>
                                 <option value="">Select</option>
                                 @foreach($providers as $provider)
                                 <option value="{{$provider->id}}" @if($provider->id == $rateChat->provider)selected @endif>{{$provider->name}}</option>
@@ -39,15 +39,15 @@
                     </div>
                     <div class=" mb-3">
                         <label for="gas_rate" class=" col-form-label">Gas Rate</label>
-                        <input type="text" class="form-control" id="gas_rate" name="gas_rate" placeholder="Gas Rate" value="{{$rateChat->gas_rate}}">
+                        <input type="text" class="form-control" id="gas_rate" name="gas_rate" placeholder="Gas Rate" value="{{$rateChat->gas_rate}}" required>
                     </div>
                     <div class=" mb-3">
                         <label for="electric_rate" class=" col-form-label">Normal Electric Rate</label>
-                        <input type="text" class="form-control" id="electric_rate" name="electric_rate" placeholder="Electric Rate" value="{{$rateChat->electric_rate}}">
+                        <input type="text" class="form-control" id="electric_rate" name="electric_rate" placeholder="Electric Rate" value="{{$rateChat->electric_rate}}" required>
                     </div>
                     <div class=" mb-3">
                         <label for="off_peak_electric_rate" class=" col-form-label">Off Peak Electric Rate</label>
-                        <input type="text" class="form-control" id="electric_rate" name="off_peak_electric_rate" placeholder="Off Peak Electric Rate" value="{{$rateChat->off_peak_electric_rate}}">
+                        <input type="text" class="form-control" id="electric_rate" name="off_peak_electric_rate" placeholder="Off Peak Electric Rate" value="{{$rateChat->off_peak_electric_rate}}" required>
                     </div>
                         
 

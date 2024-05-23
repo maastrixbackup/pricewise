@@ -37,14 +37,14 @@
                     <div class="row mb-3">
                         <label for="input35" class="col-form-label">Email</label>
                         <div class="">
-                            <input type="text" class="form-control" id="email" name="email" placeholder="Email Id" value="{{$objUser->email}}">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email Id" value="{{$objUser->email}}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="input35" class="col-form-label">Mobile No</label>
                         <div class="">
-                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile No" value="{{$objUser->mobile}}">
+                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile No" value="{{$objUser->mobile}}" oninput="validateMobile(this)">
                         </div>
                     </div>
 
@@ -144,6 +144,22 @@
 
 @endsection
 @push('scripts')
+<!-- validation for letter and number in mobile number -->
+<script>
+function validateMobile(input) {
+    // Remove non-numeric characters
+    input.value = input.value.replace(/\D/g, '');
+    
+   // Ensure input length is exactly 10 digits
+   if (input.value.length !== 10) {
+        input.setCustomValidity('Mobile number must be exactly 10 digits');
+    } else {
+        input.setCustomValidity('');
+    }
+}
+</script>
+
+<!-- end -->
 <script type="text/javascript">
     $("#customerForm").validate({
         errorElement: 'span',

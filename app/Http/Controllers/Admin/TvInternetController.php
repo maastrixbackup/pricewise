@@ -508,12 +508,20 @@ class TvInternetController extends Controller
     {
         $post_category = $request->category_id;
         try{
-        foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
-            
-        }
-        }
+          $infeature = $request->input('features');
+         if(is_array($infeature)){
+            foreach($infeature as $feature_id => $value){
+                if($value != null && $post_category != null){                
+                    PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                
+            }
+            }
+         } else {
+            $infeature = []; // Default to an empty array
+        } 
+        
+
+
         }catch(\Exception $e){
             $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
         // Log the error for further investigation

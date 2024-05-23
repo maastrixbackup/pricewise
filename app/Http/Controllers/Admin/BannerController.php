@@ -98,7 +98,7 @@ class BannerController extends Controller
         $banner->image = $imageName;
         if ($banner->save()) {
             Toastr::success('Banner Created Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.banners.index")]);
+            return redirect()->route("admin.banners.index");
            
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
@@ -139,56 +139,48 @@ class BannerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // echo($request->description);exit;
-        $banner = Banner::find($id);
-        $banner->title = $request->title;
-        $banner->description = $request->description;
-        $banner->type = $request->type;
-        $banner->status = $request->status;
-        $banner->slider_id = $request->slider_id;
-        $banner->page = $request->page;
-        $banner->section = $request->section;
-        $banner->link = $request->link;
-        if ($request->has('cropped_image')) {
-        // Access base64 encoded image data directly from the request
-        $croppedImage = $request->cropped_image;
-
-        // Extract base64 encoded image data and decode it
-        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
-        // Generate a unique file name for the image
-        $imageName = 'customer_' . time() . '.png';
-        //dd($imgData);
-        // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/banners';
-
-        // Create the directory if it doesn't exist
-        Storage::makeDirectory($destinationDirectory);
-
-        // Save the image to the server using Laravel's file upload method
-        $filePath = $destinationDirectory . '/' . $imageName;
-
-        // Delete the old image if it exists
-        if ($banner->image) {
-            Storage::delete($destinationDirectory . '/' . $objUser->photo);
-        }
-
-        // Save the new image
-        Storage::put($filePath, $imgData);
-
-        // Set the image file name for the provider
-        $banner->image = $imageName;
-        }
-        if ($banner->save()) {
-            // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-            Toastr::success('Banner Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.banners.index")]);
-        } else {
+        try {
+            $banner = Banner::find($id);
+            $banner->title = $request->title;
+            $banner->description = $request->description;
+            $banner->type = $request->type;
+            $banner->status = $request->status;
+            $banner->slider_id = $request->slider_id;
+            $banner->page = $request->page;
+            $banner->section = $request->section;
+            $banner->link = $request->link;
+    
+            if ($request->has('cropped_image')) {
+                $croppedImage = $request->cropped_image;
+                $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+                $imageName = 'banner_' . time() . '.png';
+                $destinationDirectory = 'public/images/banners';
+    
+                Storage::makeDirectory($destinationDirectory);
+    
+                $filePath = $destinationDirectory . '/' . $imageName;
+    
+                if ($banner->image) {
+                    Storage::delete($destinationDirectory . '/' . $banner->image);
+                }
+    
+                Storage::put($filePath, $imgData);
+                $banner->image = $imageName;
+            }
+    
+            if ($banner->save()) {
+                Toastr::success('Banner Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+                return response()->json(["status" => true, "redirect_location" => route("admin.banners.index")]);
+            } else {
+                $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
+                return response()->json(["status" => true, 'message' => $message]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error updating banner: ' . $e->getMessage());
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         }
     }
-
     /**
      * Remove the specified resource from storage.
      *

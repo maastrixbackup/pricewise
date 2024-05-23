@@ -58,7 +58,7 @@ class ComboController extends Controller
             $newCombo->title=$request->title;
             $filename = time().'.'.$request->image->getClientOriginalExtension();  
      
-            $request->image->move(public_path('combo_images'), $filename);
+            $request->image->move(public_path('combo_images'), $filename); 
             
             $newCombo->image = $filename;
             $newCombo->category = $request->category;

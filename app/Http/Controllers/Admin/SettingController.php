@@ -22,56 +22,53 @@ class SettingController extends Controller
 
     public function websiteStore(Request $request)
     {
-
-        $website = WebsiteSetting::find(1);
-        $website->site_title = $request->site_title;        
-        $website->description = $request->description;
-        $website->address = $request->address;
-        $website->phone = $request->phone;
-        $website->email = $request->email;
-        $website->facebook = $request->facebook;
-        $website->twitter = $request->twitter;
-        $website->instagram = $request->instagram;
-        $website->linkedin = $request->linkedin;
-        $website->telegram = $request->telegram;
-        $website->youTube = $request->youTube;
-        // $website->status = $request->status;
-        if ($request->has('cropped_image')) {
-        // Access base64 encoded image data directly from the request
-        $croppedImage = $request->cropped_image;
-
-        // Extract base64 encoded image data and decode it
-        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
-        // Generate a unique file name for the image
-        $imageName = 'logo_' . time() . '.png';
-
-        // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/website';
-
-        // Create the directory if it doesn't exist
-        Storage::makeDirectory($destinationDirectory);
-
-        // Save the image to the server using Laravel's file upload method
-        $filePath = $destinationDirectory . '/' . $imageName;
-
-        // Delete the old image if it exists
-        if ($website->logo) {
-            Storage::delete($destinationDirectory . '/' . $objCategory->image);
-        }
-
-        // Save the new image
-        Storage::put($filePath, $imgData);
-
-        // Set the image file name for the provider
-        $website->logo = $imageName;
-        }
-        if ($website->save()) {
-            $message = array('message' => 'Website Settings Updated Successfully', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
-        } else {
-            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            return response()->json(["status" => false, 'message' => $message]);
+        try {
+            $website = WebsiteSetting::find(1); // Assuming there's only one website setting record
+            
+            $website->site_title = $request->site_title;        
+            $website->description = $request->description;
+            $website->address = $request->address;
+            $website->phone = $request->phone;
+            $website->email = $request->email;
+            $website->facebook = $request->facebook;
+            $website->twitter = $request->twitter;
+            $website->instagram = $request->instagram;
+            $website->linkedin = $request->linkedin;
+            $website->telegram = $request->telegram;
+            $website->youTube = $request->youTube;
+    
+            // Handle uploaded logo image
+            if ($request->has('cropped_image')) {
+                $croppedImage = $request->cropped_image;
+                $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+                $imageName = 'logo_' . time() . '.png';
+                $destinationDirectory = 'public/images/website';
+    
+                // Save the image to the server
+                $filePath = $destinationDirectory . '/' . $imageName;
+                Storage::put($filePath, $imgData);
+    
+                // Delete the old logo image if it exists
+                if ($website->logo) {
+                    Storage::delete($destinationDirectory . '/' . $website->logo);
+                }
+    
+                // Set the new logo image
+                $website->logo = $imageName;
+            }
+    
+            // Save the updated website settings
+            if ($website->save()) {
+                Toastr::success('Website Settings Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+                return response()->json(["status" => true]);
+            } else {
+                Toastr::error('Something went wrong. Please try again later.', '', ["positionClass" => "toast-top-right"]);
+                return response()->json(["status" => false]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error updating website settings: ' . $e->getMessage());
+            Toastr::error('Something went wrong. Please try again later.', '', ["positionClass" => "toast-top-right"]);
+            return response()->json(["status" => false]);
         }
     }
 
@@ -171,7 +168,7 @@ class SettingController extends Controller
     }
     }
 
-    public function businessEdit()
+    public function businessEdit() 
     {
         $businessSetting  = Setting::where('type', 'business_general')->orderBy('key', 'asc')->get()->groupBy('sub_type');
         return view('admin.settings.business_edit', compact('businessSetting'));

@@ -130,7 +130,7 @@ class CategoryController extends Controller
     {
 
         $objCategory = Category::find($id);
-        $parents = Category::whereNull('parent')->latest()->get();
+        $parents = Category::whereNull('parent')->latest()->get(); 
         return view('admin.categories.edit', compact('objCategory', 'parents'));
     }
 

@@ -56,7 +56,7 @@ class EnergyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create() 
     {
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
@@ -419,27 +419,39 @@ class EnergyController extends Controller
 
     public function energy_doc_update(Request $request, $post_id)
     {
-        // Validate the uploaded file
         $request->validate([
             'file' => 'required|file|mimes:pdf,doc,docx|max:2048', // Example validation rules
         ]);
-
-        // Store the uploaded file
+        
+        // Check if the file is uploaded and valid
         if ($request->file('file')->isValid()) {
-            $fileName = $request->file('file')->getClientOriginalName();
-            $timestamp = time(); // Get the current Unix timestamp
-            $fileName = $timestamp . '_' . $fileName;
-            //$destinationDirectory = 'public/images/documents';
-            // Create the directory if it doesn't exist
-            //Storage::makeDirectory($destinationDirectory);
-            $request->file('file')->storeAs('public/documents/', $fileName); // Store the file in the 'uploads' directory
-            Document::create(['filename' => $fileName, 'category' => $request->category_id, 'post_id' => $request->post_id, 'path' => "public/documents/"]);
-            // Optionally, you can save the file details to the database or perform any other logic here
-            
-            return response()->json(['success' => true, 'message' => 'File uploaded successfully']);
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+        
+            // Store the file in the 'public/documents' directory
+            $filePath = $file->storeAs('public/documents', $fileName);
+        
+            // Check if the file was stored successfully
+            if ($filePath) {
+                // Insert file details into the database
+                Document::create([
+                    'filename' => $fileName,
+                    'category' => $request->category_id,
+                    'post_id' => $request->post_id,
+                    'path' => $filePath // Store the file path in the database
+                ]);
+        
+                // Return success response
+                return response()->json(['success' => true, 'message' => 'File uploaded successfully']);
+            } else {
+                // Return error response if file storage failed
+                return response()->json(['success' => false, 'message' => 'Failed to store the file'], 500);
+            }
         } else {
-            return response()->json(['success' => false, 'message' => 'File upload failed'], 400);
+            // Return error response if file upload failed
+            return response()->json(['success' => false, 'message' => 'Invalid file'], 400);
         }
+        
         
     }
     public function energy_doc_delete(Request $request, $post_id)
@@ -500,12 +512,20 @@ class EnergyController extends Controller
         $sub_category = $request->sub_category;
         //dd($post_category);
         try{
-        foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $post_category, 'sub_category' => $sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id], 'post_category' => $post_category]);
-            
-        }
-        }
+            $mainfeature = $request->input('features');
+            if(is_array($mainfeature)){ 
+                foreach($mainfeature as $feature_id => $value){
+                    if($value != null && $post_category != null){                
+                        PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $post_category, 'sub_category' => $sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id], 'post_category' => $post_category]);
+                    
+                }
+                }
+            }else{
+                $mainfeature = []; // Default to an empty array
+            }
+       
+
+
         }catch(\Exception $e){
             $errorMessage = 'Failed to update energy features: ' . $e->getMessage();
         // Log the error for further investigation
