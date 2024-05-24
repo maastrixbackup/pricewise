@@ -36,7 +36,7 @@ Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDe
 Route::get('get-tv-internet-options', [RequestController::class, 'getTvInternetOptions']);
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
-Route::post('health-insurance-store', [HealthInsuranceController::class, 'healthInsuranceStore']);
+
 
 // Api on events by satyajit
 Route::get('get-events-list', [RequestController::class, 'eventlist']);
