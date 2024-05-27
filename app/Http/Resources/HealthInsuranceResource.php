@@ -52,6 +52,7 @@ class HealthInsuranceResource extends JsonResource
             'tv_packages' => $this->tv_packages,
             'network_type' => $this->network_type,
             'category' => $this->category, 
+            'sub_category'=>$this->sub_category,
             'provider' => $this->provider, 
             'combos' => $this->combos,
             'combo_details' => $filteredCombos->toArray(),
@@ -59,18 +60,7 @@ class HealthInsuranceResource extends JsonResource
             'mechanic_install' => $this->mechanic_install, 
             'mechanic_charge' => $this->mechanic_charge, 
             'is_featured' => $this->is_featured,
-            'provider_details' => $this->whenLoaded('providerDetails', function () {
-                return [
-                        'about' => $this->providerDetails->about,
-                        'payment_options' => $this->providerDetails->payment_options,
-                        'annual_accounts' => $this->providerDetails->annual_accounts,
-                        'meter_readings' => $this->providerDetails->meter_readings,
-                        'adjust_installments' => $this->providerDetails->adjust_installments,
-                        'view_consumption' => $this->providerDetails->view_consumption,
-                        'rose_scheme' => $this->providerDetails->rose_scheme,
-                    ];
-                
-            }),
+            'coverages' => $this->coverages,
             'features' => PostFeatureResource::collection($features),            
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),

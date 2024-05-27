@@ -43,4 +43,8 @@ class InsuranceProduct extends Model
     {
         return $this->belongsTo(Provider::class, 'category', 'category');
     }
+    public function coverages()
+    {
+        return $this->hasMany(insuranceProductCoverage::class, 'insurance_product_id', 'id');
+    }
 }
