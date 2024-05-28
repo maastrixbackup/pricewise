@@ -149,11 +149,6 @@ class HealthInsuranceController extends BaseController
     }
 
 
-    public function getSupliers()
-    {
-        $providers = Provider::get();
-    
-        return $this->sendResponse($providers, 'Suppliers retrieved successfully.');
-    }
+
    
 }

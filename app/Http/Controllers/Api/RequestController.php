@@ -83,7 +83,12 @@ class RequestController extends BaseController
             $commission_amt = $request->input('commission_amt');
             $request_status = $request->input('request_status');
             $advantages = $request->input('advantages');
-            
+            $contact_details = $request->input('contactDetails');
+            $additional_information = $request->input('additionalInfo');
+            $additional_questions = $request->input('additionalQuestion');
+            $delivery = $request->input('delivery');
+            $verification = $request->input('verification');
+
             $data = new UserRequest();
             
             $data->user_id = $user_id;
@@ -106,7 +111,11 @@ class RequestController extends BaseController
             $data->no_gas = $request->no_gas;
             $data->shipping_address = json_encode($request->shipping_address);
             $data->billing_address = json_encode($request->billing_address);
-            
+            $data->contact_details = json_encode($contact_details);
+            $data->additional_information = json_encode($additional_information);
+            $data->additional_questions = json_encode($additional_questions);
+            $data->delivery = json_encode($delivery);
+            $data->verification = json_encode($verification);
             if ($data->save()) {
                 $data->load('userDetails'); 
                 $orderNo = $data->id + 1000;
@@ -129,7 +138,7 @@ class RequestController extends BaseController
                 $body['name'] = $name;
                 $body['action_link'] = url('/').'/api/view-order/'.$orderNo;
 
-                Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
+                // Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
                 return response()->json(['success' => true, 'message' => 'User request saved successfully'], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
@@ -458,12 +467,15 @@ class RequestController extends BaseController
         public function getTopFourDeals(Request $request)
         {
             $deals = Deal::latest()->take(4)->get();
-            $deals->map(function($deal) {
-            $deal->icon =  asset('deal_icons/'.$deal->icon);
-            $deal->categoryDetails;
-            $deal->products = json_decode($deal->products);
-            return $deal;
-        });
+            if (count($deals) > 0) {
+                $deals->map(function($deal) {
+                    $deal->icon =  asset('deal_icons/'.$deal->icon);
+                    $deal->categoryDetails;
+                    $deal->products = json_decode($deal->products);
+                    return $deal;
+                });
+            }
+      
         return $this->sendResponse($deals, 'Deals retrieved successfully.');
         }
     }
