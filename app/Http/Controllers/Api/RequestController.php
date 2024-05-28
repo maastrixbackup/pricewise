@@ -441,7 +441,7 @@ class RequestController extends BaseController
             ]);
         }
     }
-      public function eventlist(Request $request){
+      public function eventlist(Request $request)
         {
             // Fetch all event from the database
             $events = Event::latest()->get();
@@ -455,6 +455,16 @@ class RequestController extends BaseController
                     'message' => 'Deal retrieved successfully'
                 ]);
         }
-
+        public function getTopFourDeals(Request $request)
+        {
+            $deals = Deal::latest()->take(4)->get();
+            $deals->map(function($deal) {
+            $deal->icon =  asset('deal_icons/'.$deal->icon);
+            $deal->categoryDetails;
+            $deal->products = json_decode($deal->products);
+            return $deal;
+        });
+        return $this->sendResponse($deals, 'Deals retrieved successfully.');
+        }
     }
-}
+
