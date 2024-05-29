@@ -15,6 +15,10 @@ class HealthInsuranceController extends BaseController
 {
     public function index(Request $request)
     {
+        $pageno = $request->pageNo ?? 1;
+        $postsPerPage = $request->postsPerPage ?? 10;
+        $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
+
         DB::enableQueryLog();
 
         $postalCode = $request->postal_code;
@@ -70,7 +74,9 @@ class HealthInsuranceController extends BaseController
 
   
         
-        $filteredProducts = $products->get();
+        $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
+
+        $recordsCount = $products->count();
 
         $providers = $products->count() > 0  ? Provider::where('category',$products->first('category')->category)->get(): []  ;
        
@@ -96,6 +102,7 @@ class HealthInsuranceController extends BaseController
                 'data' => $mergedData,
                 'providers' => $providers,
                 'coverages'=>$coverages,
+                'recordsCount'=>$recordsCount,
                 'filters' => $filters,
                 'message' => $message
             ],200);

@@ -35,7 +35,7 @@ class InternetTvResource extends JsonResource
             'discount' => $this->discount,
             'commission' => $this->commission, 
             'commission_type' => $this->commission_type, 
-            'image' => 'tvtnternet/'.$this->image,            
+            'image' => asset('storage/images/tvinternet/'.$this->image),           
             'connection_cost' => $this->connection_cost, 
             'shipping_cost' => $this->shipping_cost,
             'other_cost' => $other_cost,           

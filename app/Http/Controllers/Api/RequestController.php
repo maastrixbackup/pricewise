@@ -307,7 +307,7 @@ class RequestController extends BaseController
 
     public function getDealsData()
     {
-        $deals = Deal::latest()->get();
+        $deals = Deal::latest()->take(3)->get();
         $deals->map(function($deal) {
             $deal->icon =  asset('deal_icons/'.$deal->icon);
             $deal->categoryDetails;
@@ -477,6 +477,36 @@ class RequestController extends BaseController
             }
       
         return $this->sendResponse($deals, 'Deals retrieved successfully.');
+        }
+        public function getEnergyDeals(Request $request)
+        {
+            $deals = Deal::where(['category'=>16,'status'=>'active'])->latest()->take(4)->get();
+            if (count($deals) > 0) {
+                $deals->map(function($deal) {
+                    $deal->icon =  asset('deal_icons/'.$deal->icon);
+                    $deal->categoryDetails;
+                    $deal->products = json_decode($deal->products);
+                    return $deal;
+                });
+                return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            }
+      
+            return $this->sendError('Deals not found.');
+        }
+        public function getInternetTvDeals(Request $request)
+        {
+            $deals = Deal::where(['category'=>1,'status'=>'active'])->latest()->take(4)->get();
+            if (count($deals) > 0) {
+                $deals->map(function($deal) {
+                    $deal->icon =  asset('deal_icons/'.$deal->icon);
+                    $deal->categoryDetails;
+                    $deal->products = json_decode($deal->products);
+                    return $deal;
+                });
+                return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            }
+      
+            return $this->sendError('Deals not found.');
         }
     }
 
