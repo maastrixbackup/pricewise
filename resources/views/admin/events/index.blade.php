@@ -23,7 +23,7 @@
 <!--end breadcrumb-->
 <div class="row">
     <div class="col-12 col-lg-12">
-        <h6 class="mb-0 text-uppercase">Events</h6>
+        <h6 class="mb-0 text-uppercase">Events ({{$objEvent->count()}})</h6>
         <hr />
         <div class="card">
             <div class="card-body">
@@ -33,8 +33,11 @@
                             <tr>
                                 <th>Sl</th>
                                 <th>Name</th>
-                                <th>Location</th>
-                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Total Budget</th>
+                                <th>Start Date</th>
+                                <th>End date</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -44,9 +47,27 @@
                            
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{$val->name ? $val->name : "NA"}}</td>
-                                <td>{{$val->location ? $val->location : "NA"}}</td>
-                                <td></td>
+                                <td>{{$val->name}}</td>
+                                <td>
+                                 @if($val->event_type==1)
+                                    Engagement
+                                 @elseif($val->event_type==2)
+                                    Baby shower
+                                 @elseif($val->event_type==3)
+                                    Wedding
+                                 @else
+                                 @endif
+                                </td>
+                                <td>{{$val->catering_price + $val->decoration_price + $val->photoshop_price}}</td>
+                                <td>{{$val->start_date}}</td>
+                                <td>{{$val->end_date}}</td>
+                                <td>
+                                @if($val->status==1)
+                                    <div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Published</div>
+                                @else
+                                    <div class="badge rounded-pill text-info bg-light-info p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Draft</div>
+                                @endif    
+                                </td>
                                 <td>
                                     <div class="col">
                                         <a title="Edit" href="{{route('admin.events.edit',$val->id)}}" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
@@ -91,7 +112,7 @@
                 cancelButtonClass: '#DD6B55',
                 confirmButtonColor: '#dc3545',
                 confirmButtonText: 'Delete!',
-            }, function(result) {
+            }, function(result) { 
                 if (result) {
                     var action = current_object.attr('data-action');
                     var token = jQuery('meta[name="csrf-token"]').attr('content');

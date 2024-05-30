@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 @section('title','POPTelecom- Driver Edit')
 @section('content')
+
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
     <div class="ps-3">
@@ -9,7 +10,7 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.categories.index')}}">Driver</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.categories.index')}}">Categories</a></li>
             </ol>
         </nav>
     </div>
@@ -22,7 +23,7 @@
         <div class="col-md-9 col-12">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Edit Driver</h5>
+                    <h5 class="mb-0">Edit Category</h5>
                 </div>
                 <div class="card-body p-4">
                     <div class="card-body p-4">
@@ -30,7 +31,42 @@
                             <label for="input35" class=" col-form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{$objCategory->name}}">
                         </div>
+                        <div class=" mb-3">
+                        <label for="parent" class=" col-form-label">Parent Category</label>
+                        <select class="form-control selectpicker" data-live-search="true" name="parent" id="parent">
+                                <option value="">Select</option>
+                                @foreach($parents as $parent)
+                                <option value="{{$parent->id}}" @if($objCategory->parent == $parent->id)selected @endif>{{$parent->name}}</option>
+                                @endforeach
+                        </select>
+                        </div>
+                        <div class="mb-3">
+                        <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
+                        
+                        <label for="upload_image">
+                                <img src="{{asset('storage/images/categories/'. $objCategory->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+                                <div class="overlay">
+                                    <div>Click to Change Image</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
 
+                            </label>
+                        </div>
+                        <div class="row mb-3">
+                        <label for="input_type" class=" col-form-label">Select Icon</label>
+                        <div class="form-group">
+                            <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa {{$objCategory->icon}}" id="fa_icon"></i></span>
+                            </div>
+                            <select class="form-control selectpicker" data-live-search="true" name="icon" id="icon">
+                                <option value="">Select</option>
+                                @include('admin.layouts.icons')
+                            </select>
+                        </div>
+                        </div>
+                    </div>
                         
 
                         <div class="row mb-3">
@@ -52,27 +88,10 @@
     </div>
 
 </form>
+  
 @endsection
 @push('scripts')
-<script>
-    // Get relevant element
-    checkBox = document.getElementById('own_vehicle');
-    // Check if the element is selected/checked
-    if (checkBox.checked) {
-        // Respond to the result
-        $(".model").show();
-    } else {
-        $(".model").hide();
-    }
 
-    $("#own_vehicle").click(function() {
-        if ($(this).is(":checked")) {
-            $(".model").show();
-        } else {
-            $(".model").hide();
-        }
-    });
-</script>
 <script type="text/javascript">
     $("#productForm").validate({
         errorElement: 'span',
@@ -100,7 +119,7 @@
 
             $.ajax({
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' 
                 },
                 url: form.action,
                 method: "post",
@@ -123,5 +142,7 @@
             return false;
         }
     });
+
+
 </script>
 @endpush

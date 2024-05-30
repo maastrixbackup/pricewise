@@ -17,6 +17,7 @@ class EventController extends Controller
      */
     public function index()
     {
+        
         $objEvent = Event::latest()->get();
         return view('admin.events.index', compact('objEvent'));
     }
@@ -39,30 +40,44 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+
+        // dd($request->all());
         $objEvent = new Event();
         $objEvent->name = $request->name;
+        $objEvent->event_type = $request->event_type;
+        $objEvent->catererid = $request->catererid;
         $objEvent->description = $request->description;
+        $objEvent->location = $request->location;
+        $objEvent->postcode = $request->postcode;
+        $objEvent->houseno = $request->houseno;
+        $objEvent->room = $request->room;
         $objEvent->start_date = $request->start_date;
         $objEvent->end_date = $request->end_date;
         $objEvent->start_time = $request->start_time;
         $objEvent->end_time = $request->end_time;
-        $objEvent->location = $request->location;
-        $objEvent->price = $request->price;
+        $objEvent->catering_price = $request->cateringprice;
+        $objEvent->decoration_price = $request->decorationprice;
+        $objEvent->photoshop_price = $request->photoshopprice;
         $objEvent->status = $request->status;
+        $objEvent->stateid = $request->stateid;
+        $objEvent->created_at = NOW();
+        $objEvent->updated_at = NOW();
+        $objEvent->save();
+
       
         if ($objEvent->save()) {
-            if($request->hasfile('image'))
-            {
-               foreach($request->file('image') as $key => $file)
-               {
-                   $path = $file->store('public/event_documents');
-                   $name = $file->getClientOriginalName();
-                   $insert[$key]['event_id'] = $objEvent->id;
-                   $insert[$key]['name'] = $name;
-                   $insert[$key]['path'] = $path;
-               }
-               EventDoc::insert($insert);
-            }
+            // if($request->hasfile('image'))
+            // {
+            //    foreach($request->file('image') as $key => $file)
+            //    {
+            //        $path = $file->store('public/event_documents');
+            //        $name = $file->getClientOriginalName();
+            //        $insert[$key]['event_id'] = $objEvent->id;
+            //        $insert[$key]['name'] = $name;
+            //        $insert[$key]['path'] = $path;
+            //    }
+            //    EventDoc::insert($insert);
+            // }
            
             return redirect()->route('admin.events.index')->with(Toastr::success('Event Created Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
@@ -103,34 +118,44 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {     
         //echo 123;exit;
         $objEvent = Event::find($id);
-         $objEvent->name = $request->name;
+        $objEvent->name = $request->name;
+        $objEvent->event_type = $request->event_type;
+        $objEvent->catererid = $request->catererid;
         $objEvent->description = $request->description;
+        $objEvent->location = $request->location;
+        $objEvent->postcode = $request->postcode;
+        $objEvent->houseno = $request->houseno;
+        $objEvent->room = $request->room;
         $objEvent->start_date = $request->start_date;
         $objEvent->end_date = $request->end_date;
         $objEvent->start_time = $request->start_time;
         $objEvent->end_time = $request->end_time;
-        $objEvent->location = $request->location;
-        $objEvent->price = $request->price;
+        $objEvent->catering_price = $request->cateringprice;
+        $objEvent->decoration_price = $request->decorationprice;
+        $objEvent->photoshop_price = $request->photoshopprice;
         $objEvent->status = $request->status;
+        $objEvent->stateid = $request->stateid;
+        $objEvent->updated_at = NOW();
+        $objEvent->save();
        
         if ($objEvent->save()) {
-            EventDoc::where('event_id',$id)->delete();
-            if($request->hasfile('image'))
-            {
-               foreach($request->file('image') as $key => $file)
-               {
-                   $path = $file->store('public/event_documents');
-                   $name = $file->getClientOriginalName();
-                   $insert[$key]['event_id'] = $objEvent->id;
-                   $insert[$key]['name'] = $name;
-                   $insert[$key]['path'] = $path;
-               }
+            // EventDoc::where('id',$id)->delete();
+            // if($request->hasfile('image'))
+            // {
+            //    foreach($request->file('image') as $key => $file)
+            //    {
+            //        $path = $file->store('public/event_documents');
+            //        $name = $file->getClientOriginalName();
+            //        $insert[$key]['event_id'] = $objEvent->id;
+            //        $insert[$key]['name'] = $name;
+            //        $insert[$key]['path'] = $path;
+            //    }
                
-               EventDoc::insert($insert);
-            }
+            //    EventDoc::insert($insert);
+            // }
             // return redirect()->route('admin.events.index')->with(Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.events.index")]);
@@ -146,7 +171,7 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, $id) 
     {
         $id = $request->id;
         $getEvent = Event::find($id);

@@ -33,6 +33,7 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
                         <label for="input_type" class=" col-form-label">Status</label>
                         <div class="">
                             <select class="form-control" id="input_type" name="status">
@@ -43,7 +44,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="input_type" class=" col-form-label">Category</label>
                         <div class="">
                             <select class="form-control" id="category" name="category">
@@ -55,9 +56,75 @@
                             </select>
                         </div>
                     </div>
-                    <label for="input40" class="col-sm-6 col-form-label"><b>Provider Image </b></label>
-                    <div class="mb-3">
-                        <input type="file" class="form-control" name="image" id="image" accept="image/*">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 mb-3">
+                    	<label for="input40" class="col-sm-6 col-form-label"><b>Provider Image </b></label>
+                    	
+                        <label for="upload_image">
+								<img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+
+								<div class="overlay">
+									<div>Click to Change Profile Image</div>
+								</div>
+								<input type="file" name="image" class="image" id="upload_image" style="display:none" />
+								<input type="hidden" name="cropped_image" id="cropped_image">
+
+							</label>
+                    </div>
+                    <div class="col-md-9 mb-3">
+                        <label for="payment_options" class=" col-form-label">Payment Options</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="payment_options" name="payment_options" placeholder="Payment Options">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="input_type" class=" col-form-label">About</label>
+                        <div class="">
+                            <textarea name="about" id="about" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                        <label for="meter_readings" class=" col-form-label">Meter Readings</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="meter_readings" name="meter_readings" placeholder="Meter Readings">
+                        </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="annual_accounts" class=" col-form-label">Anual Accounts</label>
+                            <div class="">
+                                <input type="text" class="form-control" id="annual_accounts" name="annual_accounts" placeholder="Anual Accounts">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                        <label for="adjust_installments" class=" col-form-label">Adjust Installments</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="adjust_installments" name="adjust_installments" placeholder="Adjust Installments">
+                        </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="view_consumption" class=" col-form-label">View Consumption</label>
+                            <div class="">
+                                <input type="text" class="form-control" id="view_consumption" name="view_consumption" placeholder="View Consumption">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                        <label for="rose_scheme" class=" col-form-label">Rose Scheme</label>
+                        
+                        <div class="mb-3 add-scroll">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="rose_scheme" value="1" >
+                                <label class="form-check-label" for="flexCheckDefault">Active</label>
+                            </div>
+                        </div>
+                        </div>
+                        
                     </div>
                     <div class="row">
                         <label class=" col-form-label"></label>
@@ -73,6 +140,7 @@
         </div>
     </div>
 </div>
+
 @endsection
 @push('scripts')
 <script type="text/javascript">
@@ -114,5 +182,10 @@
             return false;
         }
     });
+
+
+
+
+
 </script>
 @endpush

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','POPTelecom- Profile Edit')
+@section('title','Energise- Profile Edit')
 @section('content')
 <!--breadcrumb-->
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">

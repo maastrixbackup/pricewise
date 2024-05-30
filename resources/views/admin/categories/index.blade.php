@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
-@section('title','NoPlan- Drivers')
+@section('title','Energise- Categories')
 @section('content')
 
 <!--breadcrumb-->
-<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
     <div class="ps-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
@@ -15,8 +15,9 @@
     </div>
     <div class="ms-auto">
         <div class="btn-group">
+            @if(Auth::guard('admin')->user()->can('category-create'))
             <a href="{{route('admin.categories.create')}}" class="btn btn-primary">Create a New Category</a>
-
+            @endif
         </div>
     </div>
 </div>
@@ -28,13 +29,13 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="userTable" class="table table-striped table-bordered">
+                    <table id="userTable" class="table table-bordered table-striped table-vcenter">
+                   <!-- DataTables init on table by adding .js-dataTable-buttons class, functionality is initialized in js/pages/be_tables_datatables.min.js which was auto compiled from _js/pages/be_tables_datatables.js -->             
                         <thead>
                             <tr>
                                 <th>Sl</th>
-                                <th>Name</th>
+                                <th>Name</th>                               
                                 <th>Parent</th>
-                                <th>Type</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -45,13 +46,16 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->name ? $val->name : "NA"}}</td>
-                                <td>{{$val->parent ? $val->parent : "NA"}}</td>
-                                <td>{{$val->type ? $val->type : "NA"}}</td>
+                                <td>{{$val->parentCat ? $val->parentCat->name : "NA"}}</td>                            
+                                
                                 <td>
                                     <div class="col">
-                                        <a title="Edit" href="{{route('admin.categories.edit',$val->id)}}" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
-                                        <a title="Delete" class="btn1 btn-outline-danger trash remove-category" data-id="{{ $val->id }}" data-action="{{route('admin.categories.destroy', $val->id)}}"><i class="bx bx-trash me-0"></i></a>
-
+                                        @if(Auth::guard('admin')->user()->can('category-edit'))
+                                        <a title="Edit" data-bs-toggle="tooltip" data-bs-placement="top" href="{{route('admin.categories.edit',$val->id)}}" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
+                                        @endif
+                                        @if(Auth::guard('admin')->user()->can('category-delete'))
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="btn1 btn-outline-danger trash remove-category" data-id="{{ $val->id }}" data-action="{{route('admin.categories.destroy', $val->id)}}"><i class="bx bx-trash me-0"></i></a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -73,7 +77,34 @@
     $(document).ready(function() {
         var table = $('#userTable').DataTable({
             lengthChange: false,
-            buttons: ['excel', 'pdf', 'print']
+            buttons: [{
+                    extend: 'excelHtml5',
+                    text: '<i class="far fa-file-excel"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fal fa-file-pdf"></i>',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="far fa-print"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+            ],
+            'columnDefs': [{
+                'targets': [2], // column index (start from 0)
+                'orderable': false, // set orderable false for selected columns
+            }]
         });
 
         table.buttons().container()

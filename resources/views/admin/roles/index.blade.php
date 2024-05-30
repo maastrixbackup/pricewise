@@ -54,10 +54,9 @@
 								<td>{{$role->code}}</td>
 								<td>
 									<div class="col">
-										@if(Gate::check('role-edit'))
-										<a title="Edit" href="{{route('admin.roles.edit', $role->id)}}" class="btn btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
+										@if(Auth::guard('admin')->user()->can('role-list'))
+										<a title="Edit" href="{{route('admin.roles.edit', $role->id)}}" class="btn btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>						
 										@endif
-
 										@if(Gate::check('role-delete'))
 										<a title="Delete" class="btn btn-outline-danger trash remove-role" data-id="{{ $role->id }}" data-action="{{route('admin.roles.destroy')}}"><i class="bx bx-trash me-0"></i></a>
 										@endif
@@ -81,9 +80,36 @@
 <script>
 	$(document).ready(function() {
 		var table = $('#roleTable').DataTable({
-			lengthChange: false,
-			buttons: ['excel', 'pdf', 'print']
-		});
+            lengthChange: false,
+            buttons: [{
+                    extend: 'excelHtml5',
+                    text: '<i class="far fa-file-excel"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fal fa-file-pdf"></i>',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="far fa-print"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+            ],
+            'columnDefs': [{
+                'targets': [2], // column index (start from 0)
+                'orderable': false, // set orderable false for selected columns
+            }]
+        });
 
 		table.buttons().container()
 			.appendTo('#roleTable_wrapper .col-md-6:eq(0)');

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','POPTelecom- Customers Edit')
+@section('title','Price Compare- Customers Edit')
 @section('content')
 
 <!--breadcrumb-->
@@ -17,15 +17,17 @@
     </div>
 </div>
 <!--end breadcrumb-->
+<form id="customerForm" method="PUT" action="{{route('admin.customers.update',$objUser->id)}}">
 <div class="row">
+
+                    @csrf
     <div class="col-12 col-lg-8">
         <div class="card">
             <div class="card-header px-4 py-3">
                 <h5 class="mb-0">Edit Customer</h5>
             </div>
             <div class="card-body p-4">
-                <form id="customerForm" method="PUT" action="{{route('admin.customers.update',$objUser->id)}}">
-                    @csrf
+                
                     <div class="row mb-3">
                         <label for="input35" class=" col-form-label">Name</label>
                         <div class="">
@@ -35,14 +37,14 @@
                     <div class="row mb-3">
                         <label for="input35" class="col-form-label">Email</label>
                         <div class="">
-                            <input type="text" class="form-control" id="email" name="email" placeholder="Email Id" value="{{$objUser->email}}">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email Id" value="{{$objUser->email}}">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="input35" class="col-form-label">Mobile No</label>
                         <div class="">
-                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile No" value="{{$objUser->phone}}">
+                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile No" value="{{$objUser->mobile}}" oninput="validateMobile(this)">
                         </div>
                     </div>
 
@@ -74,7 +76,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                
 
             </div>
         </div>
@@ -89,8 +91,21 @@
                     <input type="text" class="form-control" id="status" name="status" placeholder="Status" value="{{$objUser->status}}" readonly>
 
                 </div>
-                <form id="statusForm" method="post" action="{{route('admin.statusChange',$objUser->id)}}">
-                    @csrf
+                <div class="mb-3">
+                <label for="input40" class="col-sm-6 col-form-label"><b>Profile Picture </b></label>
+                        
+                        <label for="upload_image">
+                                <img src="{{asset('storage/images/customers/'. $objUser->photo)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+
+                                <div class="overlay">
+                                    <div>Click to Change Profile Picture</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
+
+                            </label>
+                </div>
+                
                     <div class="row">
                         <label class=" col-form-label"></label>
                         <div class="">
@@ -118,14 +133,33 @@
                             @endif
                         </div>
                     </div>
-                </form>
+                
 
             </div>
         </div>
     </div>
+    
 </div>
+</form>
+
 @endsection
 @push('scripts')
+<!-- validation for letter and number in mobile number -->
+<script>
+function validateMobile(input) {
+    // Remove non-numeric characters
+    input.value = input.value.replace(/\D/g, '');
+    
+   // Ensure input length is exactly 10 digits
+   if (input.value.length !== 10) {
+        input.setCustomValidity('Mobile number must be exactly 10 digits');
+    } else {
+        input.setCustomValidity('');
+    }
+}
+</script>
+
+<!-- end -->
 <script type="text/javascript">
     $("#customerForm").validate({
         errorElement: 'span',
@@ -155,7 +189,7 @@
                 data: $(form).serialize(),
                 success: function(data) {
                     //success
-                    $("#customerForm").trigger("reset");
+                    //$("#customerForm").trigger("reset");
                     if (data.status) {
                         location.href = data.redirect_location;
                     } else {
@@ -169,5 +203,7 @@
             return false;
         }
     });
+
+
 </script>
 @endpush

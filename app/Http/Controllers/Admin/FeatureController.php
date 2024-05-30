@@ -5,21 +5,38 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\TvFeature;
+use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\TvProduct;
 
 class FeatureController extends Controller
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:feature-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:feature-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:feature-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:feature-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $objFeatures = TvFeature::latest()->get();
-        return view('admin.tvfeatures.index', compact('objFeatures'));
+        if($request->category_id && $request->category_id != null){
+            $parentFeatures = Feature::where('category', $request->category_id)->where('parent', null)->latest()->get();
+            return response()->json(['status' => true, 'data' => $parentFeatures]);
+        }
+        $objFeatures = Feature::latest()->get();
+        return view('admin.features.index', compact('objFeatures'));
     }
 
     /**
@@ -30,7 +47,7 @@ class FeatureController extends Controller
     public function create()
     {
         $categories = Category::latest()->get();
-        return view('admin.tvfeatures.add', compact('categories'));
+        return view('admin.features.add', compact('categories'));
     }
 
     /**
@@ -41,10 +58,14 @@ class FeatureController extends Controller
      */
     public function store(Request $request)
     {
-        $objFeature = new TvFeature();
+        $objFeature = new Feature();
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
+        $objFeature->sub_category = $request->sub_category;
+        $objFeature->parent = $request->parent;
+        $objFeature->is_preferred = $request->is_preferred;
+        $objFeature->icon = $request->icon;
         if ($objFeature->save()) {
             Toastr::success('Feature Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.features.index")]);
@@ -73,9 +94,9 @@ class FeatureController extends Controller
      */
     public function edit($id)
     {
-        $objFeature = TvFeature::find($id);
+        $objFeature = Feature::find($id);
         $categories = Category::latest()->get();
-        return view('admin.tvfeatures.edit', compact('objFeature', 'categories'));
+        return view('admin.features.edit', compact('objFeature', 'categories'));
     }
 
     /**
@@ -87,10 +108,14 @@ class FeatureController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $objFeature = TvFeature::find($id);
+        $objFeature = Feature::find($id);
         $objFeature->features = $request->name;
         $objFeature->input_type = $request->input_type;
         $objFeature->category = $request->category;
+        $objFeature->sub_category = $request->sub_category;
+        $objFeature->icon = $request->icon;
+        $objFeature->parent = $request->parent;
+        $objFeature->is_preferred = $request->is_preferred;
         if ($objFeature->save()) {
             Toastr::success('Feature Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => true, "redirect_location" => route("admin.features.index")]);
@@ -109,18 +134,18 @@ class FeatureController extends Controller
     public function destroy(Request $request,$id)
     {
         $id = $request->id;
-        $getFeature = TvFeature::find($id);
+        $getFeature = Feature::find($id);
         try {
-            $check = TvProduct::where('feature_id', $getFeature->id)->first();
-            if ($check) {
-                return back()->with(Toastr::error(__('Sorry we could not delete this Feature .This Feature is assigned to some topdeal service')));
-            } else {
-                TvFeature::find($id)->delete();
+            // $check = Feature::where('id', $id)->first();
+            // if ($check) {
+            //     return back()->with(Toastr::error(__('Sorry we could not delete this Feature .This Feature is assigned to some topdeal service')));
+            // } else {
+                Feature::find($id)->delete();
                 return back()->with(Toastr::error(__('Feature deleted successfully!')));
-            }
+            
         } catch (Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
-            return redirect()->route('admin.tv-features.index')->with($error_msg);
+            return redirect()->route('admin.features.index')->with($error_msg);
         }
     }
 }

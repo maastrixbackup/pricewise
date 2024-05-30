@@ -41,9 +41,13 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'throttle:api',
+            // 'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+        // 'api' => [
+        //     \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        // ],
     ];
 
     /**
@@ -67,6 +71,7 @@ class Kernel extends HttpKernel
         'role'              => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission'        => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission'=> \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
-        'api_secure' =>  \App\Http\Middleware\ApisecureMiddleware::class
+        'api_secure' =>  \App\Http\Middleware\ApisecureMiddleware::class,
+        'jwt-auth' => \App\Http\Middleware\authJWT::class,
     ];
 }

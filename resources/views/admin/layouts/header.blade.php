@@ -1,112 +1,162 @@
- <!--start header -->
- <header>
-     <div class="topbar d-flex align-items-center">
-         <nav class="navbar navbar-expand">
-             <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
-             </div>
-             <!-- <div class="search-bar flex-grow-1">
-                 <div class="position-relative search-bar-box">
-                     <input type="text" class="form-control search-control" placeholder="Type to search..."> <span class="position-absolute top-50 search-show translate-middle-y"><i class='bx bx-search'></i></span>
-                     <span class="position-absolute top-50 search-close translate-middle-y"><i class='bx bx-x'></i></span>
-                 </div>
-             </div> -->
-             <div class="top-menu ms-auto">
-                 <ul class="navbar-nav align-items-center">
-                     <li class="nav-item mobile-search-icon">
-                         <a class="nav-link" href="#"> <i class='bx bx-search'></i>
-                         </a>
-                     </li>
+<!-- Header -->
+      <header id="page-header">
+        <!-- Header Content -->
+        <div class="content-header">
+          <!-- Left Section -->
+          <div>
+            <!-- Toggle Sidebar -->
+            <!-- Layout API, functionality initialized in Template._uiApiLayout()-->
+            <button type="button" class="btn btn-alt-secondary d-lg-none" data-toggle="layout" data-action="sidebar_toggle">
+              <i class="fa fa-fw fa-bars"></i>
+            </button>
+            <!-- END Toggle Sidebar -->
 
-                     <li class="nav-item dropdown dropdown-large">
-                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span class="alert-count">0</span>
-                             <i class='bx bx-bell'></i>
-                         </a>
-                         <div class="dropdown-menu dropdown-menu-end">
-                             <a href="javascript:;">
-                                 <div class="msg-header">
-                                     <p class="msg-header-title">Notifications</p>
-                                     <p class="msg-header-clear ms-auto">Marks all as read</p>
-                                 </div>
-                             </a>
-                             <div class="header-notifications-list">
-                                 <!-- <a class="dropdown-item" href="javascript:;">
-                                     <div class="d-flex align-items-center">
-                                         <div class="notify bg-light-primary text-primary"><i class="bx bx-group"></i>
-                                         </div>
-                                         <div class="flex-grow-1">
-                                             <h6 class="msg-name">New Customers<span class="msg-time float-end">14 Sec
-                                                     ago</span></h6>
-                                             <p class="msg-info">5 new user registered</p>
-                                         </div>
-                                     </div>
-                                 </a> -->
-                                
-                             </div>
-                             <a href="javascript:;">
-                                 <div class="text-center msg-footer">View All Notifications</div>
-                             </a>
-                         </div>
-                     </li>
-                     <li class="nav-item dropdown dropdown-large" style="display: none">
-                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span class="alert-count">8</span>
-                             <i class='bx bx-comment'></i>
-                         </a>
-                         <div class="dropdown-menu dropdown-menu-end">
-                             <a href="javascript:;">
-                                 <div class="msg-header">
-                                     <p class="msg-header-title">Messages</p>
-                                     <p class="msg-header-clear ms-auto">Marks all as read</p>
-                                 </div>
-                             </a>
-                             <div class="header-message-list">
+            <!-- Open Search Section -->
+            <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+            <button type="button" class="btn btn-alt-secondary" data-toggle="layout" data-action="header_search_on">
+              <i class="fa fa-fw fa-search"></i> <span class="ms-1 d-none d-sm-inline-block">Search..</span>
+            </button>
+            <!-- END Open Search Section -->
+          </div>
+          <!-- END Left Section -->
 
-                             </div>
-                         </div>
-                     </li>
-                 </ul>
-             </div>
-             <div class="user-box dropdown">
-                 <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                 @if (Auth::guard('admin')->user()->profileImage != null || Auth::guard('admin')->user()->profileImage != '')
-                     <img src="{{asset('images/'.Auth::guard('admin')->user()->profileImage)}}" alt="image" id="pImage" class="user-img">
+          <!-- Right Section -->
+          <div>
+            <!-- Notifications Dropdown -->
+            <div class="dropdown d-inline-block">
+              <button type="button" class="btn btn-alt-secondary" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="far fa-fw fa-flag"></i>
+                <span class="badge bg-primary rounded-pill">3</span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
+                <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-3">
+                  Notifications
+                </div>
+                <ul class="nav-items my-2">
+                  <li>
+                    <a class="d-flex text-dark py-2" href="javascript:void(0)">
+                      <div class="flex-shrink-0 mx-3">
+                        <i class="fa fa-fw fa-check-circle text-success"></i>
+                      </div>
+                      <div class="flex-grow-1 fs-sm pe-2">
+                        <div class="fw-semibold">App was updated to v5.6!</div>
+                        <div class="text-muted">3 min ago</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="d-flex text-dark py-2" href="javascript:void(0)">
+                      <div class="flex-shrink-0 mx-3">
+                        <i class="fa fa-fw fa-user-plus text-info"></i>
+                      </div>
+                      <div class="flex-grow-1 fs-sm pe-2">
+                        <div class="fw-semibold">New Subscriber was added! You now have 2580!</div>
+                        <div class="text-muted">10 min ago</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="d-flex text-dark py-2" href="javascript:void(0)">
+                      <div class="flex-shrink-0 mx-3">
+                        <i class="fa fa-times-circle text-danger"></i>
+                      </div>
+                      <div class="flex-grow-1 fs-sm pe-2">
+                        <div class="fw-semibold">Server backup failed to complete!</div>
+                        <div class="text-muted">30 min ago</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <div class="p-2 border-top">
+                  <a class="btn btn-alt-primary w-100 text-center" href="javascript:void(0)">
+                    <i class="fa fa-fw fa-eye opacity-50 me-1"></i> View All
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- END Notifications Dropdown -->
+
+            <!-- User Dropdown -->
+            <div class="dropdown d-inline-block">
+              <button type="button" class="btn btn-alt-secondary" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="far fa-fw fa-user-circle"></i>
+                <i class="fa fa-fw fa-angle-down ms-1 d-none d-sm-inline-block"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="page-header-user-dropdown">
+                <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-3">
+                  @if (Auth::guard('admin')->user()->profileImage != null || Auth::guard('admin')->user()->profileImage != '')
+                     <img src="{{asset('images/'.Auth::guard('admin')->user()->profileImage)}}" alt="image" id="pImage" class="img-avatar img-avatar48 img-avatar-thumb">
                      @else
-                     <img src="{{asset('assets/images/default.jpg')}}" class="user-img" alt="user avatar">
+                     <img src="{{asset('assets/media/avatars/avatar10.jpg')}}" class="img-avatar img-avatar48 img-avatar-thumb" alt="user avatar">
                      @endif
-                     <div class="user-info ps-3">
-                         <p class="user-name mb-0">{{Auth::guard('admin')->user()->name}}</p>
-                         <!-- <p class="designattion mb-0">Web Designer</p> -->
-                     </div>
-                 </a>
-                 <ul class="dropdown-menu dropdown-menu-end">
-                     <!-- <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>
-                     </li>
-                     <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-cog"></i><span>Settings</span></a>
-                     </li>
-                     <li><a class="dropdown-item" href="javascript:;"><i class='bx bx-home-circle'></i><span>Dashboard</span></a>
-                     </li>
-                     <li><a class="dropdown-item" href="javascript:;"><i class='bx bx-dollar-circle'></i><span>Earnings</span></a>
-                     </li>
-                     <li><a class="dropdown-item" href="javascript:;"><i class='bx bx-download'></i><span>Downloads</span></a>
-                     </li>
-                     <li>
-                         <div class="dropdown-divider mb-0"></div>
-                     </li> -->
-                     <li><a class="dropdown-item" href="{{route('admin.edit-profile',['id' => Auth::guard('admin')->user()->id])}}"><i class="bx bx-user"></i><span>Profile</span></a>
-                     </li>
-                     <li><a class="dropdown-item" href="{{route('admin.change-password',['id' => Auth::guard('admin')->user()->id])}}"><i class="lni lni-key"></i><span>Change Password</span></a>
-                     </li>
-                     <li>
-                         <form method="POST" action="{{ route('admin.logout') }}">
+                  <!-- <img class="img-avatar img-avatar48 img-avatar-thumb" src="assets/media/avatars/avatar10.jpg" alt=""> -->
+                  <div class="pt-2">
+                    <a class="text-white fw-semibold" href="be_pages_generic_profile.html">{{Auth::guard('admin')->user()->name}}</a>
+                  </div>
+                </div>
+                <div class="p-2">
+                  <a class="dropdown-item" href="{{route('admin.edit-profile',['id' => Auth::guard('admin')->user()->id])}}">
+                    <i class="far fa-fw fa-user me-1"></i> Profile
+                  </a>
+                  <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{route('admin.change-password',['id' => Auth::guard('admin')->user()->id])}}">
+                    <span><i class="far fa-fw fa-key me-1"></i> Change Password</span>
+                    
+                  </a>
+                  
+                  <!-- END Side Overlay -->
+
+                  <div role="separator" class="dropdown-divider"></div>
+                  <form method="POST" action="{{ route('admin.logout') }}">
                              @csrf
                              <a class="dropdown-item" href="{{ route('admin.logout') }}" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                  <i class='bx bx-log-out-circle'></i><span>Logout</span>
                              </a>
                          </form>
-                     </li>
-                 </ul>
-             </div>
-         </nav>
-     </div>
- </header>
- <!--end header -->
+                  <!-- <a class="dropdown-item" href="op_auth_signin.html">
+                    <i class="far fa-fw fa-arrow-alt-circle-left me-1"></i> Sign Out
+                  </a> -->
+                </div>
+              </div>
+            </div>
+            <!-- END User Dropdown -->
+
+            <!-- Toggle Side Overlay -->
+            <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+            <button type="button" class="btn btn-alt-secondary" data-toggle="layout" data-action="side_overlay_toggle">
+              <i class="far fa-fw fa-bookmark"></i>
+            </button>
+            <!-- END Toggle Side Overlay -->
+          </div>
+          <!-- END Right Section -->
+        </div>
+        <!-- END Header Content -->
+
+        <!-- Header Search -->
+        <div id="page-header-search" class="overlay-header bg-sidebar-dark">
+          <div class="content-header">
+            <form class="w-100" action="be_pages_generic_search.html" method="POST">
+              <div class="input-group">
+                <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                <button type="button" class="btn btn-dark" data-toggle="layout" data-action="header_search_off">
+                  <i class="fa fa-fw fa-times-circle"></i>
+                </button>
+                <input type="text" class="form-control border-0" placeholder="Search Application.." id="page-header-search-input" name="page-header-search-input">
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- END Header Search -->
+
+        <!-- Header Loader -->
+        <!-- Please check out the Loaders page under Components category to see examples of showing/hiding it -->
+        <div id="page-header-loader" class="overlay-header bg-primary-darker">
+          <div class="content-header">
+            <div class="w-100 text-center">
+              <i class="fa fa-fw fa-2x fa-sun fa-spin text-white"></i>
+            </div>
+          </div>
+        </div>
+        <!-- END Header Loader -->
+      </header>
+      <!-- END Header -->

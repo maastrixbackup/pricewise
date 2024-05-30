@@ -5,7 +5,8 @@
                 <!-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> -->
 
                 <a href="/">
-                    <img src="{{ asset('assets/images/logo.png')}}" />
+                    <!-- <img src="" /> -->
+                    PriceCompare
                 </a>
             </a>
         </x-slot>

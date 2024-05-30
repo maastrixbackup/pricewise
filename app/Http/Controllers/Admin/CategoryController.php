@@ -6,17 +6,48 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
+    protected string $guard = 'admin';
+    public function guard()
+    {
+        return Auth::guard($this->guard);
+    }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:category-list', ['only' => ['index', 'store']]);
+        $this->middleware('permission:category-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:category-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:category-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $objCategory = Category::latest()->get();
+//if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
+//dd(\Auth::guard('admin')->user()->roles);
+// foreach (Auth::guard('admin')->user()->roles as $role) {
+//         $permissions = $role->permissions;
+//          echo $permission->name . "\n";
+//     }
+    // $permissions = Permission::all();
+
+    // foreach ($permissions as $permission) {
+    //     echo $permission->name . "\n";
+    // }
+        if($request->category_id && $request->category_id != null){
+            $subCategory = Category::where('parent', $request->category_id)->latest()->get();
+            return response()->json(['status' => true, 'data' => $subCategory]);
+        }
         return view('admin.categories.index', compact('objCategory'));
     }
 
@@ -27,7 +58,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-       return view('admin.categories.add');
+        $parents = Category::whereNull('parent')->latest()->get();
+       return view('admin.categories.add', compact('parents'));
     }
 
     /**
@@ -38,31 +70,36 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $objDriver = new Category();
-        $objDriver->name = $request->name;
-        $objDriver->slug = $request->slug;
-        $objDriver->parent = $request->parent;
-        $objDriver->type = $request->type;
-        // $objDriver->passport = $request->passport;
-        // $objDriver->driving_license = $request->driving_license;
-        // $objDriver->own_vehicle = $request->own_vehicle;
-        // $objDriver->vehicle_model = $request->vehicle_model;
-        // $objDriver->black_suit = $request->black_suit;
-        // $objDriver->to_time = $request->to_time;
-        // $objDriver->from_time = $request->from_time;
-        // $objDriver->booking_responsible = $request->booking_responsible;
-        // $objDriver->status = $request->status;
-        // if ($request->file('cv') == null || $request->file('cv') == null) {
-        //     $input['cv'] = $objDriver->cv;
-        // } else {
-        //     $destinationPath = '/driver_documents';
-        //     $imgfile = $request->file('cv');
-        //     $imgFilename = $imgfile->getClientOriginalName();
-        //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-        //     $cvFile = $imgFilename;
-        //     $objDriver->cv = $cvFile;
-        // }
-        if ($objDriver->save()) {
+        $objCategory = new Category();
+        $objCategory->name = $request->name;
+        $objCategory->slug = $request->slug;
+        $objCategory->parent = $request->parent;
+        $objCategory->type = $request->type;
+        $objCategory->image = $request->image;
+        $objCategory->icon = $request->icon;
+        
+        $objCategory->status = $request->status;
+        $croppedImage = $request->cropped_image;
+
+      
+    if ($request->image) {
+              // Generate a unique file name for the image
+              $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+        
+              $destinationDirectory = public_path('storage/images/categories');
+      
+              if (!is_dir($destinationDirectory)) {
+                  mkdir($destinationDirectory, 0777, true);
+              }
+      
+              // Move the file to the public/uploads directory
+              $request->file('image')->move($destinationDirectory, $imageName);
+
+              $objCategory->image = $imageName ;
+    }
+       
+        
+        if ($objCategory->save()) {
             return redirect()->route('admin.categories.index')->with(Toastr::success('Category Created Successfully', '', ["positionClass" => "toast-top-right"]));
             // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
             // return response()->json(["status" => true, "redirect_location" => route("admin.drivers.index")]);
@@ -93,7 +130,8 @@ class CategoryController extends Controller
     {
 
         $objCategory = Category::find($id);
-        return view('admin.categories.edit', compact('objCategory'));
+        $parents = Category::whereNull('parent')->latest()->get(); 
+        return view('admin.categories.edit', compact('objCategory', 'parents'));
     }
 
     /**
@@ -111,16 +149,33 @@ class CategoryController extends Controller
         $objCategory->slug = $request->slug;
         $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
-        // if ($request->file('cv') == null || $request->file('cv') == null) {
-        //     $input['cv'] = $objDriver->cv;
-        // } else {
-        //     $destinationPath = '/driver_documents';
-        //     $imgfile = $request->file('cv');
-        //     $imgFilename = $imgfile->getClientOriginalName();
-        //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
-        //     $cvFile = $imgFilename;
-        //     $objDriver->cv = $cvFile;
-        // }
+        $objCategory->icon = $request->icon;
+        $objCategory->status = $request->status;
+
+        if ($request->image) {
+            // Generate a unique file name for the image
+            $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+      
+            $destinationDirectory = public_path('storage/images/categories');
+    
+            if (!is_dir($destinationDirectory)) {
+                mkdir($destinationDirectory, 0777, true);
+            }
+    
+            // Move the file to the public/uploads directory
+            $request->file('image')->move($destinationDirectory, $imageName);
+
+            $existingFilePath = $destinationDirectory.'/'.$objCategory->image;
+
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
+            }
+
+            $objCategory->image = $imageName ;
+            
+        }
+
         if ($objCategory->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Category Updated Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -143,7 +198,7 @@ class CategoryController extends Controller
         $getCategory = Category::find($id);
         try {
             Category::find($id)->delete();
-            return back()->with(Toastr::error(__('Driver deleted successfully!')));
+            return back()->with(Toastr::error(__('Category deleted successfully!')));
         } catch (Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.categories.index')->with($error_msg);
