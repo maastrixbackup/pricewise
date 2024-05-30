@@ -92,7 +92,27 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         // Route::get('/requests/edit/', 'RequestController@index')->name('get.request');
         Route::resource('requests', 'RequestController');
 
-        //Energy
+        //Caterer
+        Route::get('/caterer/list', 'CatererController@listcaterer')->name('list.caterer');
+        Route::get('/caterer/create', 'CatererController@addcaterer')->name('add.caterer');
+        Route::post('/caterer/post', 'CatererController@postcaterer')->name('post.caterer');
+        Route::any('/caterer/edit/{id}', 'CatererController@editcaterer')->name('edit.caterer');
+        Route::post('/caterer/update/{id}', 'CatererController@updatecaterer')->name('update.caterer');
+        Route::any('/caterer/delete/{id}', 'CatererController@deletecaterer')->name('delete.caterer');
+
+
+        // New Events
+        // Route::get('/events/list', 'CatererController@listcaterer')->name('list.caterer');
+        // Route::get('/caterer/create', 'CatererController@addcaterer')->name('add.caterer');
+        // Route::post('/caterer/post', 'CatererController@postcaterer')->name('post.caterer');
+        // Route::any('/caterer/edit/{id}', 'CatererController@editcaterer')->name('edit.caterer');
+        // Route::post('/caterer/update/{id}', 'CatererController@updatecaterer')->name('update.caterer');
+        // Route::any('/caterer/delete', 'CatererController@deletecaterer')->name('delete.caterer');
+
+
+
+
+        //Energy 
         Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
         Route::resource('energy', 'EnergyController');
         Route::post('/doc-update/{id}', 'EnergyController@energy_doc_update')->name('doc_update');
@@ -101,7 +121,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/energy-price-update/{id}', 'EnergyController@energy_price_update')->name('energy.pricing');
         Route::get('/energy/{id}', 'EnergyController@default')->name('energy-default');
         Route::get('duplicate-energy/{id}', 'TvProductController@duplicate')->name('duplicate-energy');
-        //Features
+        //Features 
         Route::resource('features', 'FeatureController');
         //Route::resource('tv-contract-lengths', 'TvContractLengthController');
 
@@ -125,8 +145,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
          
         //Combos
         Route::resource('combos', 'ComboController');
+
+        //Tv Options
+        Route::resource('tv-options', 'TvOptionController');
+
         //Customers
-        Route::resource('customers', 'CustomerController');
+        Route::resource('customers', 'CustomerController'); 
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');
         Route::get('approve-customers', 'CustomerController@approve')->name('approve-customers');
         Route::get('reject-customers', 'CustomerController@reject')->name('reject-customers');
@@ -171,7 +195,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('send-campaign', 'MailChimpController@sendCampaign')->name('send-campaign');
         Route::get('get-template', 'MailChimpController@getTemplate')->name('get-template');
 
-        //Website Setting
+        //Website Setting 
         Route::get('website-setting', 'SettingController@websiteEdit')->name('website-setting');        
         Route::post('website-store', 'SettingController@websiteStore')->name('website-store');
         Route::get('business-setting', 'SettingController@businessEdit')->name('business-setting');

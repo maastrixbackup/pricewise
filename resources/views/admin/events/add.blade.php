@@ -8,7 +8,7 @@
     }
 </style>
 <!--breadcrumb-->
-<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3"> 
     <div class="ps-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
@@ -36,12 +36,56 @@
                     </div>
 
                     <div class=" mb-3">
+                        <label for="input35" class=" col-form-label">Event Type</label>
+                        <select name="event_type" id="event_type" class="form-control">
+                            <option value="">--Select--</option>
+                            <option value="1">Engagement</option>
+                            <option value="2">Baby shower</option>
+                            <option value="3">Wedding</option>
+
+                        </select>
+                    </div>
+
+                    <div class=" mb-3">
+                        <label for="input35" class=" col-form-label">Caterer</label>
+                        <select name="catererid" id="catererid" class="form-control">
+                            <option value="">--Select--</option>
+                            @foreach (App\Models\Caterer::all() as $caterer )
+                            <option value="{{$caterer->id}}">{{$caterer->caterer_name}}</option>
+                            @endforeach
+                           
+
+                        </select>
+                    </div>
+
+                    <div class=" mb-3">
                         <label for="input35" class=" col-form-label">Description</label>
                         <textarea type="text" class="form-control" id="description" name="description" placeholder="Description.." rows="3"></textarea>
                     </div>
                     <div class=" mb-3">
                         <label for="input35" class=" col-form-label">Location</label>
                         <input type="text" class="form-control" id="location" name="location" placeholder="Location">
+                    </div>
+                    <div class=" mb-3">
+                        <label for="input35" class=" col-form-label">Post Code</label>
+                        <input type="number" class="form-control" id="postcode" name="postcode" placeholder="Post Code">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12 mb-3">
+                            <label for="input35" class=" col-form-label">House No.</label>
+                            <input type="text" class="form-control" id="houseno" name="houseno" placeholder="House No.">
+                        </div>
+
+                        <div class="col-md-6 col-12 mb-3">
+                            <label for="input35" class=" col-form-label">Room</label>
+                           <select name="room" id="room" class="form-control">
+                            <option value="">--Select--</option>
+                            <option value="1">1 Room</option>
+                            <option value="2">2 Room</option>
+                            <option value="3">3 Room</option>
+                            <option value="4">4 Room</option>
+                           </select>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-12 mb-3">
@@ -58,33 +102,50 @@
 
                         <div class="col-md-6 col-12 mb-3">
                             <label for="input35" class=" col-form-label">End Date</label>
-                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="End Date">
+                            <div class="date-box date" id="enddatepicker">
+                                <input type="text" class="form-control" id="end_date" name="end_date" placeholder="select" />
+                                <span class="input-group-append">
+                                    <span class="date-icon d-block">
+                                        <i class="fal fa-calendar-alt"></i>
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 col-12 mb-3">
                             <label for="input35" class=" col-form-label">Start Time</label>
-                            <input type="text" class="form-control" id="start_time" name="start_time" placeholder="Start Time">
+                            <input type="time" class="form-control" id="start_time" name="start_time" placeholder="Start Time">
                         </div>
 
                         <div class="col-md-6 col-12 mb-3">
                             <label for="input35" class=" col-form-label">End Time</label>
-                            <input type="text" class="form-control" id="end_time" name="end_time" placeholder="End Time">
+                            <input type="time" class="form-control" id="end_time" name="end_time" placeholder="End Time">
                         </div>
                     </div>
 
                     <div class=" mb-3">
-                        <label for="input35" class=" col-form-label">Price</label>
-                        <input type="text" class="form-control" id="price" name="price" placeholder="Price">
+                        <label for="input35" class=" col-form-label">Catering Price</label>
+                        <input type="number" class="form-control" id="cateringprice" name="cateringprice" placeholder="Catering price">
                     </div>
 
-                    <div class="mb-3">
-                        <label for="input40" class="col-sm-3 col-form-label">Image</label>
+                    <div class=" mb-3">
+                        <label for="input35" class=" col-form-label">Decoration Price</label>
+                        <input type="number" class="form-control" id="decorationprice" name="decorationprice" placeholder="Decoration price">
+                    </div>
+
+                    <div class=" mb-3">
+                        <label for="input35" class=" col-form-label">Photoshop Price</label>
+                        <input type="number" class="form-control" id="photoshopprice" name="photoshopprice" placeholder="Photoshop price">
+                    </div>
+
+                    <!-- <div class="mb-3">last comment by satya
+                        <label for="input40" class="col-sm-3 col-form-label">Image</label> -->
                         <!-- <input type="file" class="form-control" name="image[]" id="image" accept="images/*" multiple/> -->
                         <!-- <input type="file" name="image[]" id="files" class="form-control" placeholder="Choose Images" multiple> -->
 
-                    </div>
+                    <!-- </div> last comment by satya -->
                     <!-- <div class="input-group control-group increment">
                         <input type="file" name="image[]" class="form-control">
                         <div class="input-group-btn">
@@ -128,16 +189,28 @@
                         <label for="input40" class="col-form-label"><b>Publish Status</b>
                         </label>
                         <select id="status" name="status" class="select2 form-select">
-
                             <option value="1">Publish</option>
                             <option value="0">Draft</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label for="input40" class="col-form-label"><b>State</b>
+                        </label>
+                        <select id="stateid" name="stateid" class="select2 form-select">
+                            <option value="">--Select--</option>
+                            <option value=""></option>
                         </select>
                     </div>
 
 
                 </div>
             </div>
+
+           
         </div>
+
+        
     </div>
 
     </div>
@@ -154,6 +227,11 @@
 <script type="text/javascript">
     $(function() {
         $('#datepicker').datepicker();
+    });
+</script>
+<script type="text/javascript">
+    $(function() {
+        $('#enddatepicker').datepicker();
     });
 </script>
 <script>
@@ -232,4 +310,30 @@
       });
     });
 </script>
+
+<!-- Start and end date validate -->
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('start_date').addEventListener('change', function() {
+            validateEndDate();
+        });
+
+        document.getElementById('end_date').addEventListener('change', function() {
+            validateEndDate();
+        });
+
+        function validateEndDate() {
+            var startDate = new Date(document.getElementById('start_date').value);
+            var endDate = new Date(document.getElementById('end_date').value);
+
+            if (endDate <= startDate) {
+                alert('End date must be greater than start date.');
+                document.getElementById('end_date').value = ''; // Clear the end date
+                return false;
+            }
+
+            return true;
+        }
+    });
+</script> -->
 @endpush

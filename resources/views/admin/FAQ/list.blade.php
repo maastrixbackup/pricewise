@@ -49,7 +49,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $faq->title }}</td>
-                                            <td>{{ $faq->description }}</td>
+                                            <td>@php echo $faq->description  @endphp </td>
                                             <td>@if(isset($faq->icon))<i class="fa {{ $faq->icon }}" id="fa_icon"></i>@endif</td>
                                             <td>{{ $faq->categoryDetails->name }}</td>
 

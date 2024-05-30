@@ -31,7 +31,7 @@ class EnergyResource extends JsonResource
             'normal_electric_price' => $this->normal_electric_price, 
             'peak_electric_price' => $this->peak_electric_price, 
             'gas_price' => $this->gas_price, 
-            'image' => 'energy/'.$this->image, 
+            'image' => asset('storage/images/energy/'.$this->image),
             'feed_in_normal' => $this->feed_in_normal, 
             'feed_in_peak' => $this->feed_in_peak, 
             'type_of_current' => $this->type_of_current, 

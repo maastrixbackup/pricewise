@@ -46,14 +46,14 @@
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
                             <label for="input37" class="col-form-label">Premium Amount</label>
-                            <input type="number" class="form-control" id="price" name="price" placeholder="Price">
+                            <input type="number" class="form-control" id="price" name="price" placeholder="Price" min="0">
                     </div>
                     </div>
 
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
                             <label for="family_extra_amount" class="col-form-label">Family Per Head Extra Amount</label>
-                            <input type="number" class="form-control" id="family_extra_amount" name="family_extra_amount" placeholder="Price">
+                            <input type="number" class="form-control" id="family_extra_amount" name="family_extra_amount" placeholder="Price" min="0">
                     </div>
                     </div>
 
@@ -76,7 +76,7 @@
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
                     <label for="avg_delivery_time" class=" col-form-label">Average Aproval Time</label>
-                    <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time">
+                    <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" min="0">
                         </div>
                     </div>
                 <div class="col-md-6 col-12">
@@ -95,7 +95,7 @@
                     <div class=" mb-3">
                         <label for="input40" class=" col-form-label">Premium Interval
                         </label>
-                        <input type="number" class="form-control" id="contract_length" name="contract_length">
+                        <input type="number" class="form-control" id="contract_length" name="contract_length" min="0">
                     </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -173,7 +173,7 @@
                 <div class="mb-3 form-group">
                     <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
                     </label>
-                    <input type="number" class="form-control" id="no_of_person" name="no_of_person">
+                    <input type="number" class="form-control" id="no_of_person" name="no_of_person" min="0">
                 </div>
                 <div class="mb-3">
                     <label for="category" class="col-form-label"><b>Category</b>

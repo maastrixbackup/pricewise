@@ -62,6 +62,20 @@
     gap: 20px;
 }
 </style>
+
+<!-- added by satyajit for white background toastr message -->
+<style>
+        /* Custom style for success message */
+        .toast-success {
+            background-color: #4CAF50;
+        }
+
+        /* Custom style for error message */
+        .toast-error {
+            background-color: #FF5722;
+        }
+</style>
+<!-- end -->
     <div class="row">
 
 

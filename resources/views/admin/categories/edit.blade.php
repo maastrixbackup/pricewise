@@ -119,7 +119,7 @@
 
             $.ajax({
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' 
                 },
                 url: form.action,
                 method: "post",

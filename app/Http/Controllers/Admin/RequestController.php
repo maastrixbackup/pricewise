@@ -175,7 +175,7 @@ class RequestController extends Controller
 
 
 		    //dd(json_decode($userRequest->advantages, true));		    
-	    return view('admin.requests.edit', compact('userRequest'));
+	    return view('admin.requests.edit', compact('userRequest')); 
 	}
 
 

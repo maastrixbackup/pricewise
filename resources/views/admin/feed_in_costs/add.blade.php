@@ -26,7 +26,7 @@
                 <div class="card-body p-4">
                     <div class=" mb-3">
                         <label for="provider" class=" col-form-label">Provider</label>
-                        <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider">
+                        <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider" required>
                                 <option value="">Select</option>
                                 @foreach($providers as $parent)
                                 <option value="{{$parent->id}}">{{$parent->name}}</option>
@@ -38,90 +38,90 @@
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][from_range]" placeholder="From Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][to_range]" placeholder="To Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[0][amount]" placeholder="Amount" min="0">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][from_range]" placeholder="From Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][to_range]" placeholder="To Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[1][amount]" placeholder="Amount" min="0">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][from_range]" placeholder="From Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][to_range]" placeholder="To Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[2][amount]" placeholder="Amount" min="0">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][from_range]" placeholder="From Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][to_range]" placeholder="To Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[3][amount]" placeholder="Amount" min="0">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-2 col-form-label">From Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][from_range]" placeholder="From Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][from_range]" placeholder="From Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">To Range</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][to_range]" placeholder="To Range">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][to_range]" placeholder="To Range" min="0">
                         </div>
                     
                         <label for="" class="col-md-2 col-form-label">Amount</label>
                         <div class="col-md-2">
-                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][amount]" placeholder="Amount">
+                        <input type="number" class="col-md-2 form-control" id="" name="feed_in_cost[4][amount]" placeholder="Amount" min="0">
                         </div>
                     </div>
                     <div class=" mb-3">
                         <label for="normal_return_delivery" class=" col-form-label">Normal Return Delivery</label>
-                        <input type="number" class="form-control" id="normal_return_delivery" name="normal_return_delivery" placeholder="Normal Return Delivery">
+                        <input type="number" class="form-control" id="normal_return_delivery" name="normal_return_delivery" placeholder="Normal Return Delivery" min="0">
                     </div>
                     <div class=" mb-3">
                         <label for="off_peak_return_delivery" class=" col-form-label">Off Peak Return Delivery</label>
-                        <input type="number" class="form-control" id="off_peak_return_delivery" name="off_peak_return_delivery" placeholder="Off Peak Return Delivery">
+                        <input type="number" class="form-control" id="off_peak_return_delivery" name="off_peak_return_delivery" placeholder="Off Peak Return Delivery" min="0">
                     </div>
                 <div class="row mb-3">
                     <div class="">

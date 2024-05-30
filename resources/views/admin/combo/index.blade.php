@@ -49,8 +49,8 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->title }}</td>
                                             <td><img width="50" height="50" src="{{asset('combo_images/'.$record->image)}}" alt=""> </td>
-                                            <td>{{ $record->price }}</td>
                                             <td>{{ $record->categoryDetails->name }}</td>
+                                            <td>{{ $record->price }}</td>
                                             <td>
                                                 <div class="col d-flex col d-flex justify-content-evenly">
 

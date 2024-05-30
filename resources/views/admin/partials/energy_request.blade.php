@@ -1,14 +1,18 @@
 @php
 
 if($userRequest->no_gas == null){
-$gasTotal = ($advantages["gas_consume"] * $advantages["gas_price"]);
-$networkCostGas = $advantages["network_cost_gas"];
-$deliveryCostGas = $advantages["delivery_cost_gas"];
-$gasTotal = $gasTotal + $deliveryCostGas + $networkCostGas + ($advantages["government_levies_gas"] * $advantages["gas_consume"]);
+$gasTotal =  (isset($advantages["gas_consume"]) ? $advantages["gas_consume"] : null) * 
+ (isset($advantages["gas_price"]) ? $advantages["gas_price"] : null);
+$networkCostGas = (isset($advantages["network_cost_gas"]) ? $advantages["network_cost_gas"] : null);
+$deliveryCostGas = (isset($advantages["delivery_cost_gas"]) ? $advantages["delivery_cost_gas"] : null);
+$gasTotal = $gasTotal + $deliveryCostGas + $networkCostGas + ((isset($advantages["government_levies_gas"]) ? $advantages["government_levies_gas"] : null) * (isset($advantages["gas_consume"]) ? $advantages["gas_consume"] : null));
 }
 
-$normalElectricCost = $advantages["normal_electric_consume"] * $advantages["normal_electric_price"];
-$peakElectricCost = $advantages["peak_electric_consume"] * $advantages["peak_electric_price"];
+
+$normalElectricCost = (isset($advantages["normal_electric_consume"]) ? $advantages["normal_electric_consume"] : null) * (isset($advantages["normal_electric_price"]) ? $advantages["normal_electric_price"] : null);
+$peakElectricCost = (isset($advantages["peak_electric_consume"]) ? $advantages["peak_electric_consume"] : null) * (isset($advantages["peak_electric_price"]) ? $advantages["peak_electric_price"] : null);
+
+ 
 
 $feedInNormalCost = 0;
 $feedInPeakCost = 0;
@@ -31,9 +35,9 @@ if (!empty($feedInCostValue)) {
 }
 }
 $feedInCostRangeValue = $feedInCostValue['amount']??0;
-$reductionCostElectric = $advantages["reduction_of_energy_tax"];
-$deliveryCostElectric = $advantages["delivery_cost_electric"];
-$networkCostElectric = $advantages["network_cost_electric"];
+$reductionCostElectric = (isset($advantages["reduction_of_energy_tax"]) ? $advantages["reduction_of_energy_tax"] : null);
+$deliveryCostElectric = (isset($advantages["delivery_cost_electric"]) ? $advantages["delivery_cost_electric"] : null);
+$networkCostElectric = (isset($advantages["network_cost_electric"]) ? $advantages["network_cost_electric"] : null);
 $electricityCost = $normalElectricCost + $peakElectricCost + $deliveryCostElectric + $networkCostElectric + $feedInCostRangeValue - $feedInCost - $reductionCostElectric;
 
 $deliveryCost = $deliveryCostGas + $deliveryCostElectric;
@@ -41,7 +45,7 @@ $deliveryCost = $deliveryCostGas + $deliveryCostElectric;
 
 $networkCost = $networkCostGas + $networkCostElectric;
 $totalCost = $gasTotal + $electricityCost;
-$reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
+$reductionOfEnergyTax = (isset($advantages["reduction_of_energy_tax"]) ? $advantages["reduction_of_energy_tax"] : null);
 @endphp
 <div class="container">
   <div class="row">
@@ -57,21 +61,26 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
           <div class="collapse" id="currentCollapse">
             <ul class="list-unstyled">
               <?php
+              
+              
               $currentItems = array(
                   array(
-                        'label' => 'Normal electric cost (' . $advantages["normal_electric_consume"] . 'kWh x €' . $advantages["normal_electric_price"] . '/kWh)',
+                        'label' => 'Normal electric cost (' . (isset($advantages["normal_electric_consume"]) ? $advantages["normal_electric_consume"] : null) . 'kWh x €' . (isset($advantages["normal_electric_price"]) ? $advantages["normal_electric_price"] : null) . '/kWh)',
                         'value' => $normalElectricCost
                     ),
+
                   array(
-                        'label' => 'Off peak electric cost (' . $advantages["peak_electric_consume"] . 'kWh x €' . $advantages["peak_electric_price"] . '/kWh)',
+                        'label' => 'Off peak electric cost (' . 
+                        (isset($advantages["peak_electric_consume"]) ? $advantages["peak_electric_consume"] : null) . 'kWh x €' . 
+                        (isset($advantages["peak_electric_price"]) ? $advantages["peak_electric_price"] : null) . '/kWh)',
                         'value' => $peakElectricCost
                     ),
                   array(
-                      'label' => 'Normal return delivery (-' . $advantages["feed_in_normal"] . 'kWh x €' . $advantages["feed_in_normal_price"] . '/kWh)',
+                      'label' => 'Normal return delivery (-' . (isset($advantages["feed_in_normal"]) ? $advantages["feed_in_normal"] : null) . 'kWh x €' . (isset($advantages["feed_in_normal_price"]) ? $advantages["feed_in_normal_price"] : null) . '/kWh)',
                       'value' => -$feedInNormalCost
                   ),
                   array(
-                      'label' => 'Off-peak return delivery (-' . $advantages["feed_in_peak"] . 'kWh x €' . $advantages["feed_in_peak_price"] . '/kWh)',
+                      'label' => 'Off-peak return delivery (-' . (isset($advantages["feed_in_peak"]) ? $advantages["feed_in_peak"] : null) . 'kWh x €' . (isset($advantages["feed_in_peak_price"]) ? $advantages["feed_in_peak_price"] : null) . '/kWh)',
                       'value' => -$feedInPeakCost
                   ),
                   array(
@@ -124,20 +133,20 @@ $reductionOfEnergyTax = $advantages["reduction_of_energy_tax"];
               <?php
               $gasItems = array(
                   array(
-                      'label' => 'Gas consumption (' . $advantages["gas_consume"] . 'm3 * €' . $advantages["gas_price"] . '/m3)',
-                      'value' => $advantages["gas_consume"] * ($advantages["gas_price"])
+                      'label' => 'Gas consumption (' . (isset($advantages["gas_consume"]) ? $advantages["gas_consume"] : null) . 'm3 * €' . (isset($advantages["gas_price"]) ? $advantages["gas_price"] : null) . '/m3)',
+                      'value' => (isset($advantages["gas_consume"]) ? $advantages["gas_consume"] : null) * ((isset($advantages["gas_price"]) ? $advantages["gas_price"] : null))
                   ),
                   array(
-                      'label' => 'Government levies* ' . $advantages["gas_consume"] . 'm3 x €' . $advantages["government_levies_gas"] . '/m3)',
-                      'value' => $advantages["government_levies_gas"] * $advantages["gas_consume"]
+                      'label' => 'Government levies* ' . (isset($advantages["gas_consume"]) ? $advantages["gas_consume"] : null) . 'm3 x €' . (isset($advantages["government_levies_gas"]) ? $advantages["government_levies_gas"] : null) . '/m3)',
+                      'value' => (isset($advantages["government_levies_gas"]) ? $advantages["government_levies_gas"] : null) * (isset($advantages["gas_consume"]) ? $advantages["gas_consume"] : null)
                   ),
                   array(
                       'label' => 'Fixed delivery costs gas',
-                      'value' => $advantages["delivery_cost_gas"]
+                      'value' => (isset($advantages["delivery_cost_gas"]) ? $advantages["delivery_cost_gas"] : null)
                   ),
                   array(
                       'label' => 'Network management costs',
-                      'value' => $advantages["network_cost_gas"]
+                      'value' => (isset($advantages["network_cost_gas"]) ? $advantages["network_cost_gas"] : null)
                   ),
                   array(
                       'label' => '<b>Gas Total</b>',

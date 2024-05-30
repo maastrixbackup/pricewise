@@ -154,13 +154,13 @@
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                             <label for="input37" class="col-form-label">Price</label>
-                                                            <input type="text" class="form-control" id="price" name="price" placeholder="Price" value="{{$objTv->price}}">
+                                                            <input type="number" class="form-control" id="price" name="price" placeholder="Price" value="{{$objTv->price}}" min="0">
                                                     </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                             <label for="input37" class="col-form-label">Discounted Price</label>
-                                                            <input type="text" class="form-control" id="discounted_price" name="discounted_price" placeholder="Discounted Price" value="{{$objTv->discounted_price}}">
+                                                            <input type="number" class="form-control" id="discounted_price" name="discounted_price" placeholder="Discounted Price" value="{{$objTv->discounted_price}}" min="0">
                                                     </div>
                                                     </div>
                                 
@@ -169,7 +169,7 @@
                                                         <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                             <label for="input37" class="col-form-label">Discounted Till</label>
-                                                            <input type="number" class="form-control" id="discounted_till" name="discounted_till" placeholder="Discounted Till" value="{{$objTv->discounted_till}}">
+                                                            <input type="number" class="form-control" id="discounted_till" name="discounted_till" placeholder="Discounted Till" value="{{$objTv->discounted_till}}" min="0">
                                                         </div>
                                                         </div>
                                                         <div class="col-md-6 col-12">
@@ -181,25 +181,25 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="connection_cost" class="col-form-label">Connection Cost</label>
-                                                                <input type="number" class="form-control" id="connection_cost" name="connection_cost" placeholder="Connection Cost" value="{{$objTv->connection_cost}}">
+                                                                <input type="number" class="form-control" id="connection_cost" name="connection_cost" placeholder="Connection Cost" value="{{$objTv->connection_cost}}" min="0">
                                                         </div>
                                                         </div>
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="shipping_cost" class="col-form-label">Shipping Cost</label>
-                                                                <input type="number" class="form-control" id="shipping_cost" name="shipping_cost" placeholder="Shipping Cost" value="{{$objTv->shipping_cost}}">
+                                                                <input type="number" class="form-control" id="shipping_cost" name="shipping_cost" placeholder="Shipping Cost" value="{{$objTv->shipping_cost}}" min="0">
                                                         </div>
                                                         </div>
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                     <label for="no_of_receivers" class=" col-form-label">No of Tv Receivers</label>
-                                                    <input type="number" class="form-control" id="no_of_receivers" name="no_of_receivers" placeholder="No of Tv Receivers" value="{{$objTv->no_of_receivers}}">
+                                                    <input type="number" class="form-control" id="no_of_receivers" name="no_of_receivers" placeholder="No of Tv Receivers" value="{{$objTv->no_of_receivers}}" min="0">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
                                                         <div class=" mb-3">
                                                     <label for="telephone_extensions" class=" col-form-label">No of Telephone Extensions</label>
-                                                    <input type="number" class="form-control" id="telephone_extensions" name="telephone_extensions" placeholder="No of Telephone Extensions" value="{{$objTv->telephone_extensions}}">
+                                                    <input type="number" class="form-control" id="telephone_extensions" name="telephone_extensions" placeholder="No of Telephone Extensions" value="{{$objTv->telephone_extensions}}" min="0">
                                                         </div>
                                                     </div>
                                 @php
@@ -240,7 +240,7 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                         <label for="avg_delivery_time" class=" col-form-label">Average delivery time</label>
-                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" value="{{$objTv->avg_delivery_time}}">
+                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" value="{{$objTv->avg_delivery_time}}" min="0">
                                                             </div>
                                                         </div>
                                                     <div class="col-md-6 col-12">
@@ -263,7 +263,7 @@
                                                         <div class=" mb-3">
                                                             <label for="input40" class=" col-form-label">Contract Length
                                                             </label>
-                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objTv->contract_length}}">
+                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objTv->contract_length}}" min="0">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
@@ -282,7 +282,7 @@
                                                             <div class=" mb-3">
                                                                 <label for="input40" class=" col-form-label">Commission
                                                                 </label>
-                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objTv->commission}}">
+                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objTv->commission}}" min="0">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-12">
@@ -311,7 +311,7 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="discount" class="col-form-label">Discount</label>
-                                                                <input type="number" class="form-control" id="discount" name="discount" placeholder="Discount" value="{{$objTv->discount}}">
+                                                                <input type="number" class="form-control" id="discount" name="discount" placeholder="Discount" value="{{$objTv->discount}}" min="0">
                                                         </div>
                                                         </div>
                                                     </div>
@@ -337,7 +337,7 @@
                                                         <div class=" mb-3">
                                                             <label for="mechanic_charge" class=" col-form-label">Mechanic Charge
                                                             </label>
-                                                            <input type="number" class="form-control" id="mechanic_charge" name="mechanic_charge" value="{{$objTv->mechanic_charge}}">
+                                                            <input type="number" class="form-control" id="mechanic_charge" name="mechanic_charge" value="{{$objTv->mechanic_charge}}" min="0">
                                                         </div>
                                                     </div>
                                                     </div>
@@ -382,7 +382,7 @@
                                                 <div class="mb-3 form-group">
                                                     <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
                                                     </label>
-                                                    <input type="number" class="form-control" id="no_of_person" name="no_of_person" value="{{$objTv->no_of_person}}">
+                                                    <input type="number" class="form-control" id="no_of_person" name="no_of_person" value="{{$objTv->no_of_person}}" min="0">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="input40" class="col-form-label"><b>Category</b>

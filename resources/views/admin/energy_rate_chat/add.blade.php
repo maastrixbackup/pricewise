@@ -26,8 +26,8 @@
                 <div class="card-body p-4">
                     <div class=" mb-3">
                         <label for="provider" class=" col-form-label">Provider</label>
-                        <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider">
-                                <option value="">Select</option>
+                        <select class="form-control selectpicker" data-live-search="true" name="provider" id="provider" required>
+                                <option value="" >Select</option>
                                 @foreach($providers as $provider)
                                 <option value="{{$provider->id}}">{{$provider->name}}</option>
                                 @endforeach
@@ -35,15 +35,15 @@
                     </div>
                     <div class=" mb-3">
                         <label for="gas_rate" class=" col-form-label">Gas Rate</label>
-                        <input type="text" class="form-control" id="gas_rate" name="gas_rate" placeholder="Gas Rate">
+                        <input type="text" class="form-control" id="gas_rate" name="gas_rate" placeholder="Gas Rate" required>
                     </div>
                     <div class=" mb-3">
                         <label for="electric_rate" class=" col-form-label">Normal Electric Rate</label>
-                        <input type="text" class="form-control" id="electric_rate" name="electric_rate" placeholder="Electric Rate">
+                        <input type="text" class="form-control" id="electric_rate" name="electric_rate" placeholder="Electric Rate" required>
                     </div>
                     <div class=" mb-3">
                         <label for="off_peak_electric_rate" class=" col-form-label">Off Peak Electric Rate</label>
-                        <input type="text" class="form-control" id="electric_rate" name="off_peak_electric_rate" placeholder="Off Peak Electric Rate">
+                        <input type="text" class="form-control" id="electric_rate" name="off_peak_electric_rate" placeholder="Off Peak Electric Rate" required>
                     </div>
 
                 <div class="row mb-3">

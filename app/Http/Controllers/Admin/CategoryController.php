@@ -81,24 +81,24 @@ class CategoryController extends Controller
         $objCategory->status = $request->status;
         $croppedImage = $request->cropped_image;
 
-        // Extract base64 encoded image data and decode it
-        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+      
+    if ($request->image) {
+              // Generate a unique file name for the image
+              $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+        
+              $destinationDirectory = public_path('storage/images/categories');
+      
+              if (!is_dir($destinationDirectory)) {
+                  mkdir($destinationDirectory, 0777, true);
+              }
+      
+              // Move the file to the public/uploads directory
+              $request->file('image')->move($destinationDirectory, $imageName);
 
-        // Generate a unique file name for the image
-        $imageName = 'category_' . time() . '.png';
-
-        // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/categories';
-
-        // Create the directory if it doesn't exist
-        Storage::makeDirectory($destinationDirectory);
-
-        // Save the image to the server using Laravel's file upload method
-        $filePath = $destinationDirectory . '/' . $imageName;
-        Storage::put($filePath, $imgData);
-
-        // Set the image file name for the provider
-        $objCategory->image = $imageName;
+              $objCategory->image = $imageName ;
+    }
+       
+        
         if ($objCategory->save()) {
             return redirect()->route('admin.categories.index')->with(Toastr::success('Category Created Successfully', '', ["positionClass" => "toast-top-right"]));
             // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -130,7 +130,7 @@ class CategoryController extends Controller
     {
 
         $objCategory = Category::find($id);
-        $parents = Category::whereNull('parent')->latest()->get();
+        $parents = Category::whereNull('parent')->latest()->get(); 
         return view('admin.categories.edit', compact('objCategory', 'parents'));
     }
 
@@ -149,40 +149,33 @@ class CategoryController extends Controller
         $objCategory->slug = $request->slug;
         $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
-        $objCategory->image = $request->image;
         $objCategory->icon = $request->icon;
-        
         $objCategory->status = $request->status;
-        if ($request->has('cropped_image')) {
-        // Access base64 encoded image data directly from the request
-        $croppedImage = $request->cropped_image;
 
-        // Extract base64 encoded image data and decode it
-        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+        if ($request->image) {
+            // Generate a unique file name for the image
+            $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+      
+            $destinationDirectory = public_path('storage/images/categories');
+    
+            if (!is_dir($destinationDirectory)) {
+                mkdir($destinationDirectory, 0777, true);
+            }
+    
+            // Move the file to the public/uploads directory
+            $request->file('image')->move($destinationDirectory, $imageName);
 
-        // Generate a unique file name for the image
-        $imageName = 'category_' . time() . '.png';
+            $existingFilePath = $destinationDirectory.'/'.$objCategory->image;
 
-        // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/categories';
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
+            }
 
-        // Create the directory if it doesn't exist
-        Storage::makeDirectory($destinationDirectory);
-
-        // Save the image to the server using Laravel's file upload method
-        $filePath = $destinationDirectory . '/' . $imageName;
-
-        // Delete the old image if it exists
-        if ($objCategory->image) {
-            Storage::delete($destinationDirectory . '/' . $objCategory->image);
+            $objCategory->image = $imageName ;
+            
         }
 
-        // Save the new image
-        Storage::put($filePath, $imgData);
-
-        // Set the image file name for the provider
-        $objCategory->image = $imageName;
-        }
         if ($objCategory->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             Toastr::success('Category Updated Successfully', '', ["positionClass" => "toast-top-right"]);

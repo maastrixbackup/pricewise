@@ -203,4 +203,5 @@ class InsuranceController extends BaseController
    
         return $this->sendResponse([], 'Product deleted successfully.');
     }
+  
 }

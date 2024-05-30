@@ -121,11 +121,11 @@
                         <label for="input35" class=" col-form-label">Title</label>
                         <input type="text" class="form-control" id="title" name="title" placeholder="Product Title" value="{{$objEnergy->title}}">
                     </div>
-        <input type="hidden" name="data[gas_consume]" value="200">
-        <input type="hidden" name="data[normal_electric_consume]" value="500">
-        <input type="hidden" name="data[peak_electric_consume]" value="500">
-        <input type="hidden" name="data[feed_in_peak]" value="700">
-        <input type="hidden" name="data[feed_in_normal]" value="800">
+                        <input type="hidden" name="data[gas_consume]" value="200">
+                        <input type="hidden" name="data[normal_electric_consume]" value="500">
+                        <input type="hidden" name="data[peak_electric_consume]" value="500">
+                        <input type="hidden" name="data[feed_in_peak]" value="700">
+                        <input type="hidden" name="data[feed_in_normal]" value="800">
                     <div class=" mb-3">
                         <label for="input37" class="col-form-label">URL</label>
 
@@ -174,7 +174,7 @@
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                         <label for="avg_delivery_time" class=" col-form-label">Average delivery time</label>
-                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" value="{{$objEnergy->avg_delivery_time}}">
+                                                        <input type="number" class="form-control" id="avg_delivery_time" name="avg_delivery_time" placeholder="Average Delivery Time" value="{{$objEnergy->avg_delivery_time}}" min="0">
                                                             </div>
                                                         </div>
                                                     <div class="col-md-6 col-12">
@@ -197,7 +197,7 @@
                                                         <div class=" mb-3">
                                                             <label for="input40" class=" col-form-label">Contract Length
                                                             </label>
-                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objEnergy->contract_length}}">
+                                                            <input type="number" class="form-control" id="contract_length" name="contract_length" value="{{$objEnergy->contract_length}}" min="0">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6 col-12">
@@ -216,7 +216,7 @@
                                                             <div class=" mb-3">
                                                                 <label for="input40" class=" col-form-label">Commission
                                                                 </label>
-                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objEnergy->commission}}">
+                                                                <input type="number" class="form-control" id="commission" name="commission" value="{{$objEnergy->commission}}" min="0">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-12">
@@ -299,7 +299,7 @@
                                                 <div class="mb-3 form-group">
                                                     <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
                                                     </label>
-                                                    <input type="number" class="form-control" id="no_of_person" name="no_of_person" value="{{$objEnergy->no_of_person}}">
+                                                    <input type="number" class="form-control" id="no_of_person" name="no_of_person" value="{{$objEnergy->no_of_person}}" min="0">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="input40" class="col-form-label"><b>Category</b>
@@ -317,7 +317,39 @@
                                 $energyLabel = $objEnergy->energy_label?json_decode($objEnergy->energy_label):[];
                                 @endphp
                                                 <label for="input40" class="col-sm-6 col-form-label"><b>Energy Label </b></label>
-                <div class="col-lg-12"><div class="form-check-box"><div class="form-group form-check-pr"><input type="checkbox" id="a" name="energy_label[]" value="A" @if(in_array('A',$energyLabel))checked @endif><label for="a">A</label></div><div class="form-group form-check-pr"><input type="checkbox" id="b" name="energy_label[]" value="B" @if(in_array('B',$energyLabel))checked @endif><label for="b">B</label></div><div class="form-group form-check-pr"><input type="checkbox" id="c" name="energy_label[]" value="C" @if(in_array('C',$energyLabel))checked @endif><label for="c">C</label></div><div class="form-group form-check-pr"><input type="checkbox" id="d" name="energy_label[]" value="D" @if(in_array('D',$energyLabel))checked @endif><label for="d">D</label></div><div class="form-group form-check-pr"><input type="checkbox" id="e" name="energy_label[]" value="E" @if(in_array('E',$energyLabel))checked @endif><label for="e">E</label></div><div class="form-group form-check-pr"><input type="checkbox" id="f" name="energy_label[]" value="F" @if(in_array('F',$energyLabel))checked @endif><label for="f">F</label></div><div class="form-group form-check-pr"><input type="checkbox" id="g" name="energy_label[]" value="G" @if(in_array('G',$energyLabel))checked @endif><label for="g">G</label></div></div></div>
+                                                <div class="col-lg-12">
+    <div class="form-check-box">
+        <div class="form-group form-check-pr">
+            <input type="checkbox" id="a" name="energy_label[]" value="A" @if(is_array($energyLabel) && in_array('A', $energyLabel)) checked @endif>
+            <label for="a">A</label>
+        </div>
+        <div class="form-group form-check-pr">
+            <input type="checkbox" id="b" name="energy_label[]" value="B" @if(is_array($energyLabel) && in_array('B', $energyLabel)) checked @endif>
+            <label for="b">B</label>
+        </div>
+        <div class="form-group form-check-pr">
+            <input type="checkbox" id="c" name="energy_label[]" value="C" @if(is_array($energyLabel) && in_array('C', $energyLabel)) checked @endif>
+            <label for="c">C</label>
+        </div>
+        <div class="form-group form-check-pr">
+            <input type="checkbox" id="d" name="energy_label[]" value="D" @if(is_array($energyLabel) && in_array('D', $energyLabel)) checked @endif>
+            <label for="d">D</label>
+        </div>
+        <div class="form-group form-check-pr">
+            <input type="checkbox" id="e" name="energy_label[]" value="E" @if(is_array($energyLabel) && in_array('E', $energyLabel)) checked @endif>
+            <label for="e">E</label>
+        </div>
+        <div class="form-group form-check-pr">
+            <input type="checkbox" id="f" name="energy_label[]" value="F" @if(is_array($energyLabel) && in_array('F', $energyLabel)) checked @endif>
+            <label for="f">F</label>
+        </div>
+        <div class="form-group form-check-pr">
+            <input type="checkbox" id="g" name="energy_label[]" value="G" @if(is_array($energyLabel) && in_array('G', $energyLabel)) checked @endif>
+            <label for="g">G</label>
+        </div>
+    </div>
+</div>
+
                                                 <div class="mb-3">
                                                     <label for="upload_image">
                                 <img src="{{asset('storage/images/energy/'. $objEnergy->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
@@ -399,19 +431,19 @@
                                         
                         <div class="col-md-4 mb-3">
                             <label for="network_cost_gas" class="col-form-label">Network Management Cost Gas</label>
-                            <input type="number" class="form-control" id="network_cost_gas" name="network_cost_gas" placeholder="Network Management Cost Gas" value="{{$objEnergy->network_cost_gas}}">
+                            <input type="number" class="form-control" id="network_cost_gas" name="network_cost_gas" placeholder="Network Management Cost Gas" value="{{$objEnergy->network_cost_gas}}" min="0">
                         </div>
                         <div class="col-md-4 mb-3">
                                 <label for="input37" class="col-form-label">Network Management Cost Electric</label>
-                                <input type="number" class="form-control" id="network_cost_electric" name="network_cost_electric" placeholder="Network Management Cost Gas" value="{{$objEnergy->network_cost_electric}}">
+                                <input type="number" class="form-control" id="network_cost_electric" name="network_cost_electric" placeholder="Network Management Cost Gas" value="{{$objEnergy->network_cost_electric}}" min="0">
                         </div>
                         <div class="col-md-4 mb-3">
                                 <label for="delivery_cost_electric" class="col-form-label">Fixed Delivery Cost Electric</label>
-                                <input type="number" class="form-control" id="delivery_cost_electric" name="delivery_cost_electric" placeholder="Fixed Delivery Cost Electric" value="{{$objEnergy->delivery_cost_electric}}">
+                                <input type="number" class="form-control" id="delivery_cost_electric" name="delivery_cost_electric" placeholder="Fixed Delivery Cost Electric" value="{{$objEnergy->delivery_cost_electric}}" min="0">
                         </div>
                         <div class="col-md-4 mb-3">
                                 <label for="delivery_cost_gas" class="col-form-label">Fixed Delivery Cost Gas</label>
-                                <input type="number" class="form-control" id="delivery_cost_gas" name="delivery_cost_gas" placeholder="Fixed Delivery Cost Gas" value="{{$objEnergy->delivery_cost_gas}}">
+                                <input type="number" class="form-control" id="delivery_cost_gas" name="delivery_cost_gas" placeholder="Fixed Delivery Cost Gas" value="{{$objEnergy->delivery_cost_gas}}" min="0">
                         </div>
                     @php
                     $businessGeneralSettings = getSettings('business_general'); 
@@ -424,7 +456,7 @@
                             <label for="government_levies_gas" class=" col-form-label">Govt. Levies on Gas</label>
                             <div class="mb-3 add-scroll">
                             
-                            <input class="form-control" type="number" name="government_levies_gas" value="{{$objEnergy->government_levies_gas??$businessGeneralSettings['governement_levies_gas']}}">
+                            <input class="form-control" type="number" name="government_levies_gas" value="{{$objEnergy->government_levies_gas??$businessGeneralSettings['governement_levies_gas']}}" min="0">
                             
                             
                             </div>
@@ -433,7 +465,7 @@
                             <label for="government_levies_electric" class=" col-form-label">Govt. Levies on Electric</label>                         
                             <div class="mb-3 add-scroll">
                             
-                            <input class="form-control" type="number" name="government_levies_electric" value="{{$objEnergy->government_levies_electric??$businessGeneralSettings['governement_levies_electric']}}">
+                            <input class="form-control" type="number" name="government_levies_electric" value="{{$objEnergy->government_levies_electric??$businessGeneralSettings['governement_levies_electric']}}" min="0">
                             
                             </div>
                         
@@ -442,14 +474,14 @@
                             <div class=" mb-3">
                                 <label for="reduction_of_energy_tax" class=" col-form-label">Reduction of Energy Tax
                                 </label>
-                                <input type="number" class="form-control" id="reduction_of_energy_tax" name="reduction_of_energy_tax" value="{{$objEnergy->reduction_of_energy_tax??$businessGeneralSettings['reduction_of_energy_tax']}}">
+                                <input type="number" class="form-control" id="reduction_of_energy_tax" name="reduction_of_energy_tax" value="{{$objEnergy->reduction_of_energy_tax??$businessGeneralSettings['reduction_of_energy_tax']}}" min="0">
                             </div>
                         </div>
                                                     
 
                         <div class="col-md-4 mb-3">
                                 <label for="input37" class="col-form-label">Cashback</label>
-                                <input type="number" class="form-control" id="cashback" name="cashback" placeholder="Cashback" value="{{$objEnergy->cashback}}">
+                                <input type="number" class="form-control" id="cashback" name="cashback" placeholder="Cashback" value="{{$objEnergy->cashback}}" min="0">
                         </div>
                         
                             
@@ -597,7 +629,7 @@
 
                         </div>
 
-                    </div>
+                    </div> 
                     <div class="row">
                         <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-8">                           

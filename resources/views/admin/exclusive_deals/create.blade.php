@@ -105,7 +105,7 @@
                             <div class="">
                                 <select class="form-control" name="status">
                                     <option value="active">active</option>
-                                    <option value="active" selected>inactive</option>
+                                    <option value="inactive" selected>inactive</option>
                                 </select>
                                 @error('status')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>

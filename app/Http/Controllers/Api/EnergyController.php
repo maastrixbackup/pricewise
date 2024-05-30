@@ -19,10 +19,15 @@ class EnergyController extends BaseController
 {
    public function index(Request $request)
     {
-        $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails', 'govtTaxes');
+        $pageno = $request->pageNo ?? 1;
+        $postsPerPage = $request->postsPerPage ?? 10;
+        $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
+
+        $products = EnergyProduct::with('postFeatures'
+        , 'prices', 'feedInCost', 'documents', 'providerDetails', 'govtTaxes');
         
         // Filter by postal code
-        if ($request->has('postal_code')) {
+        if ($request->has('postal_code')) {  
            $postalCode = json_encode($request->input('postal_code'));    
             // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
             $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
@@ -66,9 +71,11 @@ class EnergyController extends BaseController
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
             });
-        }  //dd($products->get());  
-        // Retrieve filtered products and return response
-        $filteredProducts = $products->get();
+        }  
+        
+  
+        $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
+        $recordsCount = $products->count();
         
             $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
                 ->from('features as f1')
@@ -166,12 +173,14 @@ class EnergyController extends BaseController
         if($request->has('callFromExclusiveDeal')){
             return [$mergedData , $filters];
         }
+ 
         // Return the merged data
         return response()->json([
             'success' => true,
             'data' => $mergedData,
             'filters' => $filters,
             //'advantages' => $advantages,
+            'recordsCount'=> $recordsCount,
             'message' => 'Products retrieved successfully.'
         ]);
 

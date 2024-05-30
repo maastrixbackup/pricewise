@@ -19,6 +19,10 @@ class InternetTvController extends BaseController
         \DB::enableQueryLog();
         $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
         
+        $pageno = $request->pageNo ?? 1;
+        $postsPerPage = $request->postsPerPage ?? 10;
+        $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
+
         // Filter by postal code
         if ($request->has('postal_code')) {
            $postalCode = json_encode($request->input('postal_code'));    
@@ -48,8 +52,10 @@ class InternetTvController extends BaseController
                 $query->whereIn('feature_id', $features);
             });
         }    
-        //dd($products->get());
-        $filteredProducts = $products->get();
+       
+        
+        $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
+        $recordsCount = $products->count();
         if ($filteredProducts->isNotEmpty()) {
         $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
             ->from('features as f1')
@@ -76,6 +82,7 @@ class InternetTvController extends BaseController
                 'success' => true,
                 'data' => $mergedData,
                 'filters' => $objFeatures,
+                'recordsCount'=> $recordsCount,
                 'message' => 'Products retrieved successfully.'
             ]);
     }
@@ -89,23 +96,54 @@ class InternetTvController extends BaseController
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
 
             if ($filteredProducts->isNotEmpty()) {
-                $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
+                $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
                     ->from('features as f1')
                     ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
                     ->where('f1.category', $filteredProducts[0]->category)
                     ->where('f1.is_preferred', 1)
                     ->get()
                     ->groupBy('parent');
-                
+
+                // Initialize an empty array to store the grouped filters
+                $filters = [];
+
+                // Loop through the grouped features and convert them to the desired structure
+                foreach ($objEnergyFeatures as $parent => $items) {
+                    $filters[] = [
+                        $parent => $items->map(function ($item) {
+                            return (object) $item->toArray();
+                        })->toArray()
+                    ];
+                }                             
+            
                 $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
+                  
+                $noParentFilter = null;
+                foreach ($filters as $index => $filter) {
+                    if (isset($filter['No_Parent'])) {
+                        $noParentFilter = $filter;
+                        unset($filters[$index]);
+                        break;
+                    }
+                }
+                
+                // Insert the "No_Parent" filter at the beginning of the array of filters
+                if ($noParentFilter !== null) {
+                    array_unshift($filters, $noParentFilter);
+                }
+  
 
-                // Merge filteredProductsFormatted and objEnergyFeatures
-                $mergedData = $filteredProductsFormatted->merge(['energy_filters' => $objEnergyFeatures]);
-
-                // Return the merged data
-                return $this->sendResponse($mergedData, 'Products retrieved successfully.');
+    
+                return response()->json([
+                    'success' => true,
+                    'data'    => $filteredProductsFormatted,
+                    'filters' =>  $filters,
+                    'message' => 'Products retrieved successfully.',
+                ], 200);
+                 
+                
             } else {
-                return $this->sendError('No products found for comparison.', [], 404);
+                return $this->sendError('No products found -for comparison.', [], 404);
             }
         } else {
             return $this->sendError('No comparison IDs provided.', [], 400);

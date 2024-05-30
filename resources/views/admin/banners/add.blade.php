@@ -27,14 +27,22 @@
                 <form id="featureForm" method="post" action="{{route('admin.banners.store')}}" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
-                        <label for="title" class=" col-form-label">Title</label>
-                        <div class="">
+                        <label for="title" class="col-sm-3 col-form-label">Title</label>
+                        <div class="col-sm-9">
                             <input type="text" class="form-control" id="title" name="title" placeholder="Title">
                         </div>
                     </div>
+                    <!-- Add the mobile number field -->
                     <div class="row mb-3">
-                        <label for="title" class=" col-form-label">Link</label>
-                        <div class="">
+                        <label for="mobile" class="col-sm-3 col-form-label">Mobile No</label>
+                        <div class="col-sm-9">
+                            <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Mobile No" pattern="[0-9]{10}" title="Mobile number must be exactly 10 digits">
+                        </div>
+                    </div>
+                    <!-- End mobile number field -->
+                    <div class="row mb-3">
+                        <label for="title" class="col-sm-3 col-form-label">Link</label>
+                        <div class="col-sm-9">
                             <input type="text" class="form-control" id="link" name="link" placeholder="Link">
                         </div>
                     </div>
@@ -56,8 +64,8 @@
                     <textarea id="description" name="description" placeholder="Description"></textarea>
                     </div>                    
                     <div class="row mb-3">
-                        <label for="type" class=" col-form-label">Type</label>
-                        <div class="">
+                        <label for="type" class="col-sm-3 col-form-label">Type</label>
+                        <div class="col-sm-9">
                             <select class="form-control" id="type" name="type">
                             <option value="">Select</option>
                             <option value="banner">Banner</option>
@@ -66,14 +74,14 @@
                         </div>
                     </div>                    
                     <div class="row mb-3">
-                        <label for="slider_id" class="col-sm-6 col-form-label"><b>Slider Id </b></label>
-                        <div class="mb-3">
+                        <label for="slider_id" class="col-sm-3 col-form-label"><b>Slider Id </b></label>
+                        <div class="col-sm-9">
                             <input type="text" class="form-control" name="slider_id" id="slider_id">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="type" class=" col-form-label">Page</label>
-                        <div class="">
+                        <label for="type" class="col-sm-3 col-form-label">Page</label>
+                        <div class="col-sm-9">
                             <select class="form-control" id="page" name="page">
                             <option value="">Select</option>
                             @foreach($pages as $page)
@@ -83,26 +91,25 @@
                         </div>
                     </div> 
                     <div class="row mb-3">
-                        <label for="section" class=" col-form-label">Section</label>
-                        <div class="mb-3">
+                        <label for="section" class="col-sm-3 col-form-label">Section</label>
+                        <div class="col-sm-9">
                             <input type="number" class="form-control" name="section" id="section">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="status" class=" col-form-label">Status</label>
-                        <div class="">
+                        <label for="status" class="col-sm-3 col-form-label">Status</label>
+                        <div class="col-sm-9">
                             <select class="form-control" id="status" name="status">
-                            <option value="">Select</option>
                             <option value="1">Active</option>
-                            <option value="0">Inactive</option>
+                            <option value="0" selected>Inactive</option>
                             
                             </select>
                         </div>
                     </div>
                     
                     <div class="row">
-                        <label class=" col-form-label"></label>
-                        <div class="">
+                        <label class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
                             <div class="d-md-flex d-grid align-items-center gap-3">
                                 <button type="submit" class="btn btn-primary px-4" name="submit2">Submit</button>
                                 <button type="reset" class="btn btn-light px-4">Reset</button>
@@ -170,10 +177,18 @@
         rules: {
             title: "required",
             type: "required",
+            mobile: {
+                required: true,
+                pattern: /[0-9]{10}/,
+            }
         },
         messages: {
-            name: "Title is missing",
-            type: "Type is missing",
+            title: "Title is required",
+            type: "Type is required",
+            mobile: {
+                required: "Mobile number is required",
+                pattern: "Please enter a valid 10-digit mobile number"
+            }
         },
         submitHandler: function(form) {
             tinymce.triggerSave();
@@ -191,7 +206,7 @@
                     }
                 },
                 error: function(e) {
-                    toastr.error('Something went wrong . Please try again later!!', '');
+                    toastr.error('Something went wrong. Please try again later!', '');
                 }
             });
             return false;

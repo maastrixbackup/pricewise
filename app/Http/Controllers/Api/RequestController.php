@@ -19,11 +19,14 @@ use Validator;
 use App\Http\Resources\EnergyResource;
 use App\Models\Deal;
 use App\Models\TvPackage;
+use App\Models\TvOption;
 use DB;
 use App\Models\User;
 use App\Models\UserData;
 use App\Models\UserRequest;
 use App\Models\Review;
+use App\Models\Event;
+
 
 class RequestController extends BaseController
 {
@@ -80,7 +83,12 @@ class RequestController extends BaseController
             $commission_amt = $request->input('commission_amt');
             $request_status = $request->input('request_status');
             $advantages = $request->input('advantages');
-            
+            $contact_details = $request->input('contactDetails');
+            $additional_information = $request->input('additionalInfo');
+            $additional_questions = $request->input('additionalQuestion');
+            $delivery = $request->input('delivery');
+            $verification = $request->input('verification');
+
             $data = new UserRequest();
             
             $data->user_id = $user_id;
@@ -103,7 +111,11 @@ class RequestController extends BaseController
             $data->no_gas = $request->no_gas;
             $data->shipping_address = json_encode($request->shipping_address);
             $data->billing_address = json_encode($request->billing_address);
-            
+            $data->contact_details = json_encode($contact_details);
+            $data->additional_information = json_encode($additional_information);
+            $data->additional_questions = json_encode($additional_questions);
+            $data->delivery = json_encode($delivery);
+            $data->verification = json_encode($verification);
             if ($data->save()) {
                 $data->load('userDetails'); 
                 $orderNo = $data->id + 1000;
@@ -126,7 +138,7 @@ class RequestController extends BaseController
                 $body['name'] = $name;
                 $body['action_link'] = url('/').'/api/view-order/'.$orderNo;
 
-                Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
+                // Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
                 return response()->json(['success' => true, 'message' => 'User request saved successfully'], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
@@ -240,7 +252,7 @@ class RequestController extends BaseController
         } catch (ValidationException $e) {
             // Handle validation errors
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
-        } catch (QueryException $e) {
+        } catch (QueryException $e) { 
             // Handle other database errors
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
         }
@@ -295,7 +307,7 @@ class RequestController extends BaseController
 
     public function getDealsData()
     {
-        $deals = Deal::latest()->get();
+        $deals = Deal::latest()->take(3)->get();
         $deals->map(function($deal) {
             $deal->icon =  asset('deal_icons/'.$deal->icon);
             $deal->categoryDetails;
@@ -360,7 +372,6 @@ class RequestController extends BaseController
             $deal->icon =  asset('deal_icons/'.$deal->icon);
             $deal->categoryDetails;
             $dealData = $this->getProductsCategoryWise(json_decode($deal->products),$deal->category);
-            // $dealData['deal'] =$deal;
             return response()->json([
                 'success' => true,
                 'data' => $dealData[0],
@@ -371,6 +382,7 @@ class RequestController extends BaseController
             return response()->json([
                 'success' => false,
                 'data' => [],
+                'filters' =>[],
                 'message' => 'Deal not found in the requested id'
             ]);
         }
@@ -382,9 +394,9 @@ class RequestController extends BaseController
     $records = TvPackage::latest()->with('providerDetails')->get();
     if ($records) {
         return response()->json([
-                'success' => true,
-                'data' => $records,
-                'message' => 'Deal retrieved successfully'
+                'success' => true ,
+                'data' => $records ,
+                'message' => 'Packages retrieved successfully'
             ]);
     }else {
             return response()->json([
@@ -394,4 +406,107 @@ class RequestController extends BaseController
             ]);
         }
     }
-}
+    public function getTvInternetOptions()
+    {
+    $records = TvOption::latest()->with('providerDetails')->get();
+    if ($records) {
+        $records->map(function($record){
+
+          $record->internet_options = array_map(function($option){
+            $option->package_name = $option->name ;
+            $option->package_price = (int)$option->normal_cost;
+            unset($option->name);
+            unset($option->normal_cost);
+            return $option;
+          },json_decode($record->internet_options)) ;
+
+          $record->tv_options = array_map(function($option){
+            $option->package_name = $option->name ;
+            $option->package_price = (int)$option->normal_cost;
+            unset($option->name);
+            unset($option->normal_cost);
+            return $option;
+          },json_decode($record->tv_options)) ;
+
+          $record->telephone_options =array_map(function($option){
+            $option->package_name = $option->name ;
+            $option->package_price = (int)$option->normal_cost;
+            unset($option->name);
+            unset($option->normal_cost);
+            return $option;
+          },json_decode($record->telephone_options))  ;
+          return $record;
+        });
+        return response()->json([
+                'success' => true,
+                'data' => $records,
+                'message' => 'TvInternetOptions retrieved successfully'
+            ]);
+    }else {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'TvInternetOptions not found'
+            ]);
+        }
+    }
+      public function eventlist(Request $request)
+        {
+            // Fetch all event from the database
+            $events = Event::latest()->get();
+    
+            // Return the data as a JSON response
+
+           
+                return response()->json([
+                    'success' => true,
+                    'data' => $events,
+                    'message' => 'Deal retrieved successfully'
+                ]);
+        }
+        public function getTopFourDeals(Request $request)
+        {
+            $deals = Deal::latest()->take(4)->get();
+            if (count($deals) > 0) {
+                $deals->map(function($deal) {
+                    $deal->icon =  asset('deal_icons/'.$deal->icon);
+                    $deal->categoryDetails;
+                    $deal->products = json_decode($deal->products);
+                    return $deal;
+                });
+            }
+      
+        return $this->sendResponse($deals, 'Deals retrieved successfully.');
+        }
+        public function getEnergyDeals(Request $request)
+        {
+            $deals = Deal::where(['category'=>16,'status'=>'active'])->latest()->take(4)->get();
+            if (count($deals) > 0) {
+                $deals->map(function($deal) {
+                    $deal->icon =  asset('deal_icons/'.$deal->icon);
+                    $deal->categoryDetails;
+                    $deal->products = json_decode($deal->products);
+                    return $deal;
+                });
+                return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            }
+      
+            return $this->sendError('Deals not found.');
+        }
+        public function getInternetTvDeals(Request $request)
+        {
+            $deals = Deal::where(['category'=>1,'status'=>'active'])->latest()->take(4)->get();
+            if (count($deals) > 0) {
+                $deals->map(function($deal) {
+                    $deal->icon =  asset('deal_icons/'.$deal->icon);
+                    $deal->categoryDetails;
+                    $deal->products = json_decode($deal->products);
+                    return $deal;
+                });
+                return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            }
+      
+            return $this->sendError('Deals not found.');
+        }
+    }
+

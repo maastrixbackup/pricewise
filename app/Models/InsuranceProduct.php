@@ -16,7 +16,7 @@ class InsuranceProduct extends Model
         'valid_till' => 'date:d-m-Y',
     ];
 
-    public function request()
+    public function InsuranceProduct()
     {
         return $this->morphOne(Request::class, 'service');
     }
@@ -38,5 +38,13 @@ class InsuranceProduct extends Model
     public function getValidTillAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d');
+    }
+    public function providerDetails()
+    {
+        return $this->belongsTo(Provider::class, 'category', 'category');
+    }
+    public function coverages()
+    {
+        return $this->hasMany(insuranceProductCoverage::class, 'insurance_product_id', 'id');
     }
 }
