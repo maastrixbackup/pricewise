@@ -394,8 +394,8 @@ class RequestController extends BaseController
     $records = TvPackage::latest()->with('providerDetails')->get();
     if ($records) {
         return response()->json([
-                'success' => true,
-                'data' => $records,
+                'success' => true ,
+                'data' => $records ,
                 'message' => 'Packages retrieved successfully'
             ]);
     }else {

@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\HealthInsuranceController;
 use App\Http\Controllers\Api\EventController;
-
+use App\Http\Controllers\API\HomeInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -32,7 +32,7 @@ Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
 Route::get('get-energy-deals', [RequestController::class, 'getEnergyDeals']);
 Route::get('get-deals-data', [RequestController::class, 'getDealsData']);
-Route::get('get-tv-packages/{provider_id}', [RequestController::class, 'getTvPackages']);
+Route::get('get-tv-packages', [RequestController::class, 'getTvPackages']);
 Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDeal']);
 Route::get('get-top-four-deals', [RequestController::class, 'getTopFourDeals']);
 Route::get('get-internet-tv-deals', [RequestController::class, 'getInternetTvDeals']);
@@ -40,6 +40,10 @@ Route::get('get-internet-tv-deals', [RequestController::class, 'getInternetTvDea
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
 Route::post('health-insurance-compare', [HealthInsuranceController::class, 'healthInsuranceCompare']);
+
+
+//Home Insurance
+Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
 
 // Api on events by satyajit
 Route::get('get-events-list', [RequestController::class, 'eventlist']);
