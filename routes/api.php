@@ -44,6 +44,7 @@ Route::post('health-insurance-compare', [HealthInsuranceController::class, 'heal
 
 //Home Insurance
 Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
+Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
 
 // Api on events by satyajit
 Route::get('get-events-list', [RequestController::class, 'eventlist']);
