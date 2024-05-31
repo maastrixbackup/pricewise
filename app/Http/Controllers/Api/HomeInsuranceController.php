@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\HomeInsuranceResource;
+use App\Models\Feature;
+use App\Models\insuranceCoverage;
 use App\Models\InsuranceProduct;
+use App\Models\Provider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -80,14 +84,14 @@ class HomeInsuranceController extends Controller
            $mergedData = [];
 
             foreach ($filteredProducts as $product) {
-                $formattedProduct = (new HealthInsuranceResource($product))->toArray($request);                
+                $formattedProduct = (new HomeInsuranceResource($product))->toArray($request);                
                 $mergedData[] = $formattedProduct;
             }
 
         $message= $products->count() > 0 ? 'Products retrieved successfully.' : 'Products not found.';
         
   
-        $coverages = insuranceCoverage::where('subcategory_id',13)->get();
+        $coverages = insuranceCoverage ::where('subcategory_id',13)->get();
         $coverages = $coverages->map(function ($coverage)  {
             $coverage->image = asset('storage/images/insurance_coverages/'.$coverage->image);
             return $coverage;
