@@ -122,12 +122,26 @@
                                  </li>
                              </ul>
                          </li>
-
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.insurance.index') }}">
-                                 <i class="nav-main-link-icon fa-solid fa-user-shield"></i>
-                                 <span class="nav-main-link-name">Insurances</span>
+                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                                 aria-expanded="false" href="#">
+                                 <i class="nav-main-link-icon fa fa-briefcase"></i>
+                                 <span class="nav-main-link-name">Insurance</span>
                              </a>
+                             <ul class="nav-main-submenu">
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.insurance.index') }}">
+                                         <i class="nav-main-link-icon fa-solid fa-user-shield"></i>
+                                         <span class="nav-main-link-name">Insurance Products</span>
+                                     </a>
+                                 </li>
+                                 <li class="nav-main-item">
+                                    <a class="nav-main-link" href="{{ route('admin.insurance-coverages.index') }}">
+                                        <i class="nav-main-link-icon fa-solid fa-user-shield"></i>
+                                        <span class="nav-main-link-name">Insurance Coverages</span>
+                                    </a>
+                                </li>
+                             </ul>
                          </li>
                          <li class="nav-main-item">
                              <a class="nav-main-link" href="service.html">
