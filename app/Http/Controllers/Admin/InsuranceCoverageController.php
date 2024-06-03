@@ -9,14 +9,14 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 class InsuranceCoverageController extends Controller
 {
-    // function __construct()
-    // {
-    //     $this->middleware('auth:admin');
-    //     $this->middleware('permission:insurance-coverages', ['only' => ['index', 'store']]);
-    //     $this->middleware('permission:insurance-coverages.create', ['only' => ['create', 'store']]);
-    //     $this->middleware('permission:insurance-coverages.edit', ['only' => ['edit', 'update']]);
-    //     $this->middleware('permission:insurance-coverages.destroy', ['only' => ['destroy']]);
-    // }
+    function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:insurance-coverages', ['only' => ['index', 'store']]);
+        $this->middleware('permission:insurance-coverages.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:insurance-coverages.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:insurance-coverages.destroy', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -54,17 +54,17 @@ class InsuranceCoverageController extends Controller
             'sub_category' => 'required',
         ]);
         try {
-            $newDeal = new insuranceCoverage();
-            $newDeal->name=$request->name;
-            $newDeal->description=$request->description;
+            $newCoverage = new insuranceCoverage();
+            $newCoverage->name=$request->name;
+            $newCoverage->description=$request->description;
 
             $filename = time().'.'.$request->image->getClientOriginalExtension();  
      
             $request->image->move(public_path('storage/images/insurance_coverages/'), $filename);
             
-            $newDeal->image = $filename;
-            $newDeal->subcategory_id = $request->sub_category;
-            $newDeal->save();
+            $newCoverage->image = $filename;
+            $newCoverage->subcategory_id = $request->sub_category;
+            $newCoverage->save();
             Toastr ::success('Coverage Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.insurance-coverages.index');
         } catch (\Exception $e) {
@@ -81,9 +81,7 @@ class InsuranceCoverageController extends Controller
      */
     public function show($id)
     {
-        $subCategories = Category::where('parent',5)->get();
-        $coverage = insuranceCoverage::where('id', $id)->first();
-        return view('admin.insurance_coverage.edit',compact('subCategories','coverage'));
+
     }
 
     /**
@@ -94,25 +92,9 @@ class InsuranceCoverageController extends Controller
      */
     public function edit($id)
     {
-        // try {
-        //     $deal = Deal::findOrFail($id);
-        //     $deal->title=$request->title;
-        //     $deal->valid_till=$request->valid_till;
-        //     if (isset($request->icon)) {
-        //         $filename = time().'.'.$request->icon->getClientOriginalExtension(); 
-        //         $request->icon->move(public_path('deal_icons'), $filename);
-        //     }
-        //     $deal->icon = $filename ?? $deal->icon;
-        //     $deal->category = $request->category;
-        //     $deal->products = json_encode($request->products);
-        //     $deal->status = $request->status;
-        //     $deal->save();
-        //     Toastr::success('Deal Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-        //     return redirect()->route('admin.exclusive-deals.index');
-        // } catch (\Exception $e) {
-        //     Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
-        //     return back();
-        // }
+        $subCategories = Category::where('parent',5)->get();
+        $coverage = insuranceCoverage::where('id', $id)->first();
+        return view('admin.insurance_coverage.edit',compact('subCategories','coverage'));
     }
 
     /**
@@ -124,7 +106,23 @@ class InsuranceCoverageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $coverage = insuranceCoverage::findOrFail($id);
+            $coverage->name=$request->name;
+            $coverage->description=$request->description;
+            if (isset($request->image)) {
+                $filename = time().'.'.$request->image->getClientOriginalExtension(); 
+                $request->image->move(public_path('storage/images/insurance_coverages/'), $filename);
+            }
+            $coverage->image = $filename ?? $coverage->image;
+            $coverage->subcategory_id =  $request->sub_category;
+            $coverage->save();
+            Toastr::success('Coverage Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            return redirect()->route('admin.insurance-coverages.index');
+        } catch (\Exception $e) {
+            Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
+            return back();
+        }
     }
 
     /**
@@ -135,6 +133,12 @@ class InsuranceCoverageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            insuranceCoverage::where('id', $id)->delete();
+            return back()->with(Toastr::error(__('Coverage deleted successfully!')));
+        } catch (\Exception $e) {
+            Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
+            return back();
+        }
     }
 }

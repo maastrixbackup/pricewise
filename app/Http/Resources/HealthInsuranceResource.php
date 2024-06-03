@@ -59,7 +59,10 @@ class HealthInsuranceResource extends JsonResource
             'mechanic_install' => $this->mechanic_install, 
             'mechanic_charge' => $this->mechanic_charge, 
             'is_featured' => $this->is_featured,
-            'coverages' => $this->coverages,
+            'coverages' => collect($this->coverages)->map(function ($coverage) {
+                $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
+                return $coverage;
+            }),
             'provider' => $this->providerDetails,
             'features' => PostFeatureResource::collection($features),            
             'created_at' => $this->created_at->format('d/m/Y'),

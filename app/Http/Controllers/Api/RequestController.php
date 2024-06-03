@@ -508,5 +508,20 @@ class RequestController extends BaseController
       
             return $this->sendError('Deals not found.');
         }
+        public function getHomeInsuranceDeals(Request $request)
+        {
+            $deals = Deal::where(['sub_category'=>config('constant.subcategory.HomeInsurance'),'status'=>'active'])->latest()->take(4)->get();
+            if (count($deals) > 0) {
+                $deals->map(function($deal) {
+                    $deal->icon =  asset('deal_icons/'.$deal->icon);
+                    $deal->categoryDetails;
+                    $deal->products = json_decode($deal->products);
+                    return $deal;
+                });
+                return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            }
+      
+            return $this->sendError('Deals not found.');
+        }
     }
 

@@ -7,6 +7,8 @@ use App\Models\Provider;
 use App\Models\Combo;
 use App\Models\PostFeature;
 use App\Http\Resources\PostFeatureResource;
+use App\Models\FAQ;
+
 class HomeInsuranceResource extends JsonResource
 {
     /**
@@ -59,7 +61,11 @@ class HomeInsuranceResource extends JsonResource
             'mechanic_install' => $this->mechanic_install, 
             'mechanic_charge' => $this->mechanic_charge, 
             'is_featured' => $this->is_featured,
-            'coverages' => $this->coverages,
+            'coverages' => collect($this->coverages)->map(function ($coverage) {
+                $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
+                return $coverage;
+            }),
+            'FAQs'=> FAQ::where('sub_category_id',config('constant.subcategory.HomeInsurance'))->get(),
             'features' => PostFeatureResource::collection($features),            
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
