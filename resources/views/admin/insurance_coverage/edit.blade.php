@@ -23,16 +23,16 @@
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New Insurance Coverage</h5>
+                    <h5 class="mb-0">Edit New Insurance Coverage</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.insurance-coverages.store') }}" enctype="multipart/form-data">
+                    <form method="post" action="{{ route('admin.insurance-coverages.update',$coverage->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Coverage Name<sup class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="text" class="form-control" name="name" value="{{old('name')}}" placeholder="Coverage Name">
+                                <input type="text"  class="form-control" name="name" value="{{$coverage->name}}" placeholder="Coverage Name">
                                 @error('name')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -42,7 +42,7 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Description</label>
                             <div class="">
-                                <textarea name="description" class="form-control" cols="30" rows="5">{{old('description')}}</textarea>
+                                <textarea name="description" class="form-control" cols="30" rows="5">{{ $coverage->description}}</textarea>
                                 @error('description')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -53,7 +53,7 @@
                             <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
                             
                             <label for="upload_image">
-                                    <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
+                                    <img src="{{asset('storage/images/insurance_coverages/'. $coverage->image)}}" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
     
                                     <div class="overlay">
                                         <div>Click to Change Image</div>
@@ -73,7 +73,7 @@
                                     <option value="">Select</option>
                                     @foreach ($subCategories as $subCategory)
                                         <option value="{{ $subCategory->id }}"
-                                            {{ old('sub_category') == $subCategory->id ? 'selected' : '' }}>
+                                            {{ $coverage->subcategory_id == $subCategory->id ? 'selected' : '' }}>
                                             {{ $subCategory->name }}</option>
                                     @endforeach
                                 </select>
@@ -87,8 +87,7 @@
                             <label class=" col-form-label"></label>
                             <div class="">
                                 <div class="d-md-flex d-grid align-items-center gap-3">
-                                    <button type="submit" class="btn btn-primary px-4" name="submit2">Submit</button>
-                                    <button type="reset" class="btn btn-light px-4">Reset</button>
+                                    <button type="submit" class="btn btn-primary px-4">Update</button>
                                 </div>
                             </div>
                         </div>
