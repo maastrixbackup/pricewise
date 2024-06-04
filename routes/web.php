@@ -150,7 +150,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('tv-options', 'TvOptionController');
 
         //Insurance Coverages
-        Route::resource('insurance-coverages', 'insuranceCoverageController');
+        Route::resource('insurance-coverages', 'InsuranceCoverageController');
 
         //Customers
         Route::resource('customers', 'CustomerController'); 

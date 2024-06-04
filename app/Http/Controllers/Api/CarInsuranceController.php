@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CarInsuranceResource;
+use App\Models\Feature;
+use App\Models\insuranceCoverage;
+use App\Models\InsuranceProduct;
+use App\Models\Provider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CarInsuranceController extends Controller
 {
     public function index(Request $request)
     {
+
         $pageno = $request->pageNo ?? 1;
         $postsPerPage = $request->postsPerPage ?? 10;
         $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
@@ -20,11 +27,10 @@ class CarInsuranceController extends Controller
         $provider = $request->current_supplier;
         $ownRiskRange = $request->voluntary_deductible;
         $coverages = $request->coverages;
-        $insuredAmount = $request->insured_amount;
-        $theftAmount =  $request->theft_amount;
-        $homeType  = $request->home_type;
-        
-        $products = InsuranceProduct::where('sub_category', 21)->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails');
+        $damageFreeYear = $request->damage_free_year;
+        $numberOfKilometer = $request->number_of_kilometer;
+
+        $products = InsuranceProduct::where('sub_category', config('constant.subcategory.CarInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails');
 
         $products->when($postalCode, function ($query) use ($postalCode) {
             $query->whereJsonContains('pin_codes', $postalCode);
@@ -37,23 +43,20 @@ class CarInsuranceController extends Controller
             ->when($provider, function ($query) use ($provider) {
                 $query->where('provider', $provider);
             })
-            ->when($ownRiskRange, function ($query) use ($ownRiskRange) {
-                $query->whereBetween('own_risk', $ownRiskRange);
-            })
-             ->when($homeType, function ($query) use ($homeType) {
-                $query->where('home_type', $homeType);
-            })
             ->when($coverages, function ($query) use ($coverages) {
                 $query->whereHas('coverages', function ($query) use ($coverages) {
                     $query->whereIn('insurance_coverage_id', $coverages);
                 });
             })
-            ->when($insuredAmount, function ($query) use ($insuredAmount) {
-                $query->whereBetween('insured_amount', $insuredAmount);
+            ->when($ownRiskRange, function ($query) use ($ownRiskRange) {
+                $query->whereBetween('own_risk', $ownRiskRange);
             })
-            ->when($theftAmount, function ($query) use ($theftAmount) {
-                $query->whereBetween('theft_amount', $theftAmount);
-            }) ;
+            ->when($damageFreeYear, function ($query) use ($damageFreeYear) {
+                $query->whereBetween('damage_free_year', $damageFreeYear);
+            })
+            ->when($numberOfKilometer, function ($query) use ($numberOfKilometer) {
+                $query->whereBetween('number_of_kilometers', $numberOfKilometer);
+            });
 
 
 
@@ -90,7 +93,7 @@ class CarInsuranceController extends Controller
         $mergedData = [];
 
         foreach ($filteredProducts as $product) {
-            $formattedProduct = (new HomeInsuranceResource($product))->toArray($request);
+            $formattedProduct = (new CarInsuranceResource($product))->toArray($request);
             $mergedData[] = $formattedProduct;
         }
 

@@ -11,7 +11,8 @@ return [
         'HealthInsurance'=> 13 ,
         'HomeInsurance' => 21 ,
         'TermInsurance' => 19 ,
-        'Telephone' => 2
+        'Telephone' => 2 ,
+        'CarInsurance' => 22
     ]
 ];
 
