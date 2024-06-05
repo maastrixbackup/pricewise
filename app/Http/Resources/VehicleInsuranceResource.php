@@ -9,7 +9,7 @@ use App\Models\PostFeature;
 use App\Http\Resources\PostFeatureResource;
 use App\Models\FAQ;
 
-class CarInsuranceResource extends JsonResource
+class VehicleInsuranceResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -25,7 +25,10 @@ class CarInsuranceResource extends JsonResource
         $filteredCombos = $combos->filter(function ($combo) {
             return in_array($combo->id, json_decode($this->combos));
         });
-        $other_cost = 0;
+        $other_cost = 0;   
+        
+     
+       
         return [
             'id' => $this->id,
             'title' => $this->title,            
@@ -36,7 +39,7 @@ class CarInsuranceResource extends JsonResource
             'discounted_till' => $this->discounted_till,            
             'discount_percentage' => $this->discount_percentage,
             'commission' => $this->commission, 
-            'commission_type' => $this->commission_type, 
+            'commission_type' => $this->commission_type , 
             'image' => asset('storage/images/car_insurance/'.$this->image),            
             'connection_cost' => $this->connection_cost, 
             'shipping_cost' => $this->shipping_cost,

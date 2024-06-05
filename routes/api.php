@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\HealthInsuranceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\HomeInsuranceController;
+use App\Http\Controllers\API\VehicleInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -48,7 +49,8 @@ Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
 Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
 
 
-Route::post('car-insurance', [CarInsuranceController::class, 'index']); 
+Route::post('vehicle-insurance', [VehicleInsuranceController::class, 'index']); 
+Route::post('vehicle-insurance-compare', [VehicleInsuranceController::class, 'vehicleInsuranceCompare']);
 
 // Api on events by satyajit
 Route::get('get-events-list', [RequestController::class, 'eventlist']);

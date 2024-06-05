@@ -52,7 +52,7 @@ class HealthInsuranceResource extends JsonResource
             'network_type' => $this->network_type,
             'category' => $this->category, 
             'sub_category'=>$this->sub_category,
-            'provider' => $this->provider, 
+            'provider' =>$this->providerDetails,
             'combos' => $this->combos,
             'combo_details' => $filteredCombos->toArray(),
             'manual_install' => $this->manual_install, 

@@ -4,7 +4,7 @@ return [
     'category' => [
         'energy'=> 16 ,
         'Internet & Tv' => 1 ,
-        'Insurances' => 5 ,
+        'Insurance' => 5 ,
         'Smartphones' =>6 ,
     ],
     'subcategory' => [
@@ -12,7 +12,7 @@ return [
         'HomeInsurance' => 21 ,
         'TermInsurance' => 19 ,
         'Telephone' => 2 ,
-        'CarInsurance' => 22
+        'VehicleInsurance' => 22
     ]
 ];
 
