@@ -7,7 +7,9 @@ use App\Models\Provider;
 use App\Models\Combo;
 use App\Models\PostFeature;
 use App\Http\Resources\PostFeatureResource;
-class HealthInsuranceResource extends JsonResource
+use App\Models\FAQ;
+
+class HomeInsuranceResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -35,7 +37,7 @@ class HealthInsuranceResource extends JsonResource
             'discount_percentage' => $this->discount_percentage,
             'commission' => $this->commission, 
             'commission_type' => $this->commission_type, 
-            'image' => asset('storage/images/health_insurance/'.$this->image),           
+            'image' => asset('storage/images/home_insurance/'.$this->image),            
             'connection_cost' => $this->connection_cost, 
             'shipping_cost' => $this->shipping_cost,
             'other_cost' => $other_cost,           
@@ -63,7 +65,7 @@ class HealthInsuranceResource extends JsonResource
                 $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
                 return $coverage;
             }),
-            'provider' => $this->providerDetails,
+            'FAQs'=> FAQ::where('sub_category_id',config('constant.subcategory.HomeInsurance'))->get(),
             'features' => PostFeatureResource::collection($features),            
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),

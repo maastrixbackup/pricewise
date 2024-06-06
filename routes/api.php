@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CarInsuranceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\HealthInsuranceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\HomeInsuranceController;
+use App\Http\Controllers\API\VehicleInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -36,7 +38,7 @@ Route::get('get-tv-packages', [RequestController::class, 'getTvPackages']);
 Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDeal']);
 Route::get('get-top-four-deals', [RequestController::class, 'getTopFourDeals']);
 Route::get('get-internet-tv-deals', [RequestController::class, 'getInternetTvDeals']);
-
+Route::get('get-home-insurance-deals', [RequestController::class, 'getHomeInsuranceDeals']);
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
 Route::post('health-insurance-compare', [HealthInsuranceController::class, 'healthInsuranceCompare']);
@@ -44,6 +46,11 @@ Route::post('health-insurance-compare', [HealthInsuranceController::class, 'heal
 
 //Home Insurance
 Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
+Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
+
+//Vehicle Insurance
+Route::post('vehicle-insurance', [VehicleInsuranceController::class, 'index']); 
+Route::post('vehicle-insurance-compare', [VehicleInsuranceController::class, 'vehicleInsuranceCompare']);
 
 // Api on events by satyajit
 Route::get('get-events-list', [RequestController::class, 'eventlist']);
