@@ -30,7 +30,7 @@ class VehicleInsuranceController extends Controller
         $damageFreeYear = $request->damage_free_year;
         $numberOfKilometer = $request->number_of_kilometer;
 
-        $products = InsuranceProduct::where('sub_category',config('constant.subcategory.VehicleInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
+        $products = InsuranceProduct::where('sub_category', config('constant.subcategory.VehicleInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails', 'providerDetails');
 
         $products->when($postalCode, function ($query) use ($postalCode) {
             $query->whereJsonContains('pin_codes', $postalCode);
@@ -63,7 +63,7 @@ class VehicleInsuranceController extends Controller
         $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
             ->from('features as f1')
             ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-            ->where(['f1.category'=> config('constant.category.Insurance') ,'f1.sub_category'=>config('constant.subcategory.VehicleInsurance')])
+            ->where(['f1.category' => config('constant.category.Insurance'), 'f1.sub_category' => config('constant.subcategory.VehicleInsurance')])
             ->where('f1.is_preferred', 1)
             ->get()
             ->groupBy('parent');
@@ -120,21 +120,21 @@ class VehicleInsuranceController extends Controller
 
     public function vehicleInsuranceCompare(Request $request)
     {
-        
+
         $compareIds = $request->compare_ids;
 
         if (!empty($compareIds)) {
-            $products = InsuranceProduct::where('sub_category',config('constant.subcategory.VehicleInsurance'))->with('postFeatures', 'categoryDetail','coverages.coverageDetails');
+            $products = InsuranceProduct::where('sub_category', config('constant.subcategory.VehicleInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails');
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
             return 1;
             if ($filteredProducts->isNotEmpty()) {
                 $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
-                ->from('features as f1')
-                ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-                ->where(['f1.category'=> config('constant.category.Insurance') ,'f1.sub_category'=>config('constant.subcategory.VehicleInsurance')])
-                ->where('f1.is_preferred', 1)
-                ->get()
-                ->groupBy('parent');
+                    ->from('features as f1')
+                    ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+                    ->where(['f1.category' => config('constant.category.Insurance'), 'f1.sub_category' => config('constant.subcategory.VehicleInsurance')])
+                    ->where('f1.is_preferred', 1)
+                    ->get()
+                    ->groupBy('parent');
 
                 // Initialize an empty array to store the grouped filters
                 $filters = [];
@@ -146,19 +146,17 @@ class VehicleInsuranceController extends Controller
                             return (object) $item->toArray();
                         })->toArray()
                     ];
-                }                             
-            
+                }
+
                 $filteredProductsFormatted = VehicleInsuranceResource::collection($filteredProducts);
 
-    
+
                 return response()->json([
                     'success' => true,
                     'data'    => $filteredProductsFormatted,
                     'filters' =>  $filters,
                     'message' => 'Products retrieved successfully.',
                 ], 200);
-                 
-                
             } else {
                 return $this->sendError('No products found -for comparison.', [], 404);
             }
@@ -166,6 +164,4 @@ class VehicleInsuranceController extends Controller
             return $this->sendError('No comparison IDs provided.', [], 400);
         }
     }
-
-
 }

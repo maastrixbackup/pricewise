@@ -48,7 +48,7 @@ Route::post('health-insurance-compare', [HealthInsuranceController::class, 'heal
 Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
 Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
 
-
+//Vehicle Insurance
 Route::post('vehicle-insurance', [VehicleInsuranceController::class, 'index']); 
 Route::post('vehicle-insurance-compare', [VehicleInsuranceController::class, 'vehicleInsuranceCompare']);
 
