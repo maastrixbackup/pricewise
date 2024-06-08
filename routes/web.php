@@ -150,8 +150,14 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('tv-options', 'TvOptionController');
 
         //Insurance Coverages
-        Route::resource('insurance-coverages', 'insuranceCoverageController');
+        Route::resource('insurance-coverages', 'InsuranceCoverageController');
 
+        //Brands
+        Route::resource('brands', 'BrandController');
+
+       //Brands
+        Route::resource('models', 'ModelController');
+        
         //Customers
         Route::resource('customers', 'CustomerController'); 
         Route::post('status-change/{id}', 'CustomerController@statusChange')->name('statusChange');

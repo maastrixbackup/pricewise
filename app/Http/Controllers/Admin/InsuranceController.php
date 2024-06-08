@@ -230,7 +230,7 @@ class InsuranceController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $combos = implode(",", $request->combos);
+            $combos =$request->combos ? implode(",", $request->combos) : Null ;
             $objTv->combos = $request->combos?json_encode($request->combos) : [];            
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
@@ -255,26 +255,23 @@ class InsuranceController extends Controller
             //     $image = $imgFilename;
             //     $objTv->image = $image;
             // }
-            $croppedImage = $request->cropped_image;
 
-            // Extract base64 encoded image data and decode it
-            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
-            // Generate a unique file name for the image
-            $imageName = 'category_' . time() . '.png';
-
-            // Specify the destination directory where the image will be saved
-            $destinationDirectory = 'public/images/insurance';
-
-            // Create the directory if it doesn't exist
-            Storage::makeDirectory($destinationDirectory);
-
-            // Save the image to the server using Laravel's file upload method
-            $filePath = $destinationDirectory . '/' . $imageName;
-            Storage::put($filePath, $imgData);
-
-            // Set the image file name for the provider
-            $objTv->image = $imageName;
+            if ($request->image) {
+                // Generate a unique file name for the image
+                $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+          
+                $destinationDirectory = public_path('storage/images/categories');
+        
+                if (!is_dir($destinationDirectory)) {
+                    mkdir($destinationDirectory, 0777, true);
+                }
+        
+                // Move the file to the public/uploads directory
+                $request->file('image')->move($destinationDirectory, $imageName);
+    
+                $objTv->image = $imageName ;
+      }
+    
             if ($objTv->save()) {
                 return redirect()->route('admin.insurance.index')->with(Toastr::success('Insurance Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
                 //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -357,7 +354,7 @@ class InsuranceController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $combos = implode(",", $request->combos);
+            $combos =$request->combos ? implode(",", $request->combos): Null;
             $objTv->combos = $request->combos ? json_encode($request->combos) : [];            
             $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
