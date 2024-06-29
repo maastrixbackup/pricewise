@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\HomeInsuranceResource;
+use App\Http\Resources\TravelInsuranceResource;
 use App\Models\Feature;
 use App\Models\insuranceCoverage;
 use App\Models\InsuranceProduct;
@@ -11,10 +11,11 @@ use App\Models\Provider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HomeInsuranceController extends Controller
+class TravelInsuranceController extends Controller
 {
     public function index(Request $request)
     {
+        // return 1234;
         $pageno = $request->pageNo ?? 1;
         $postsPerPage = $request->postsPerPage ?? 10;
         $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
@@ -30,7 +31,7 @@ class HomeInsuranceController extends Controller
         $theftAmount =  $request->theft_amount;
         $homeType  = $request->home_type;
         
-        $products = InsuranceProduct::where('sub_category', 21)->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
+        $products = InsuranceProduct::where('sub_category', config('constant.subcategory.TravelInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
 
         $products->when($postalCode, function ($query) use ($postalCode) {
             $query->whereJsonContains('pin_codes', $postalCode);
@@ -96,14 +97,14 @@ class HomeInsuranceController extends Controller
         $mergedData = [];
 
         foreach ($filteredProducts as $product) {
-            $formattedProduct = (new HomeInsuranceResource($product))->toArray($request);
+            $formattedProduct = (new TravelInsuranceResource($product))->toArray($request);
             $mergedData[] = $formattedProduct;
         }
 
         $message = $products->count() > 0 ? 'Products retrieved successfully.' : 'Products not found.';
 
 
-        $coverages = insuranceCoverage::where('subcategory_id', config('constant.subcategory.HomeInsurance'))->get();
+        $coverages = insuranceCoverage::where('subcategory_id', config('constant.subcategory.TravelInsurance'))->get();
 
         $coverages = $coverages->map(function ($coverage) {
             $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
@@ -113,8 +114,8 @@ class HomeInsuranceController extends Controller
         return response()->json([
             'success' => true,
             'data' => $mergedData,
-            // 'providers' => $providers,
-            // 'coverages' => $coverages,
+            'providers' => $providers,
+            'coverages' => $coverages,
             'recordsCount' => $recordsCount,
             'filters' => $filters,
             'message' => $message
@@ -122,12 +123,12 @@ class HomeInsuranceController extends Controller
     }
 
 
-    public function homeInsuranceCompare(Request $request)
+    public function travelInsuranceCompare(Request $request)
     {
         $compareIds = $request->compare_ids;
 
         if (!empty($compareIds)) {
-            $products = InsuranceProduct::where('sub_category',21)->with('postFeatures', 'categoryDetail','coverages.coverageDetails');
+            $products = InsuranceProduct::where('sub_category',config('constant.subcategory.TravelInsurance'))->with('postFeatures', 'categoryDetail','coverages.coverageDetails');
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
 
             if ($filteredProducts->isNotEmpty()) {
@@ -151,7 +152,7 @@ class HomeInsuranceController extends Controller
                     ];
                 }                             
             
-                $filteredProductsFormatted = HomeInsuranceResource::collection($filteredProducts);
+                $filteredProductsFormatted = TravelInsuranceResource::collection($filteredProducts);
 
     
                 return response()->json([
@@ -168,5 +169,19 @@ class HomeInsuranceController extends Controller
         } else {
             return $this->sendError('No comparison IDs provided.', [], 400);
         }
+    }
+
+    public function sendError($error, $errorMessages = [], $code = 404)
+    {
+        $response = [
+            'success' => false,
+            'message' => $error,
+        ];
+
+        if (!empty($errorMessages)) {
+            $response['data'] = $errorMessages;
+        }
+
+        return response()->json($response, $code);
     }
 }

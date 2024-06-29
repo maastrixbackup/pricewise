@@ -48,7 +48,7 @@
              <ul class="nav-main">
 
                  <li class="nav-main-item">
-                     <a class="nav-main-link active" href="{{ asset('admin/dashboard') }}">
+                     <a class="nav-main-link active" href="{{ asset('pricewise/admin/dashboard') }}">
                          <i class="nav-main-link-icon fa fa-chart-bar"></i>
                          <span class="nav-main-link-name">Dashboard</span>
                      </a>
