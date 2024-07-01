@@ -36,19 +36,26 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Product Name</th>
-                                    <th>Product Category</th>
-                                    <th>Providers</th>
+                                    <th>Provider Name</th>
+                                    <th>Url</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @if ($records)
-                                    @foreach ($records as $record)
+                                @if ($sp_records)
+                                    @foreach ($sp_records as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->package_name }}</td>
-                                            <td>{{ $record->providerDetails->name }}</td>
+                                            <td>{{ $record->provider_name }}</td>
+                                            <td>{{ $record->slug }}</td>
+                                            <td>
+                                                @if ($record->status == 'active')
+                                                <span class="badge rounded-pill text-success bg-light-success text-uppercase">Published</span>
+                                                @else
+                                                <span class="badge rounded-pill text-primary bg-light-success  text-uppercase" >Draft</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <div class="col d-flex justify-content-evenly">
 
@@ -64,7 +71,7 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                @endif --}}
+                                @endif
 
                             </tbody>
                         </table>

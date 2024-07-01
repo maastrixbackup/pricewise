@@ -62,7 +62,7 @@ class LiabilityInsuranceResource extends JsonResource
             'mechanic_charge' => $this->mechanic_charge,
             'is_featured' => $this->is_featured,
             'coverages' => collect($this->coverages)->map(function ($coverage) {
-                $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
+                $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->coverageDetails->image);
                 return $coverage;
             }),
             'provider' => $this->providerDetails,

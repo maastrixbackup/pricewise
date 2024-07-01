@@ -65,7 +65,7 @@ class VehicleInsuranceResource extends JsonResource
             'mechanic_charge' => $this->mechanic_charge,
             'is_featured' => $this->is_featured,
             'coverages' => collect($this->coverages)->map(function ($coverage) {
-                $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
+                $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->coverageDetails->image);
                 return $coverage;
             }),
             'FAQs' => FAQ::where('sub_category_id', config('constant.subcategory.CarInsurance'))->get(),

@@ -87,7 +87,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             // Smartphone
             Route::resource('smartphone', 'SmartPhoneController');
 
-            
+
             //Requests
             Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
             Route::post('/update_status/{id}', 'RequestController@updateStatus')->name('request.update_status');

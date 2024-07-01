@@ -143,11 +143,27 @@
                                 </li>
                              </ul>
                          </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.smartphone.index') }}">
+                         <li class="nav-main-item ">
+                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                                 aria-expanded="false" href="#">
                                  <i class="nav-main-link-icon fa-solid fa-mobile-screen"></i>
                                  <span class="nav-main-link-name">Smartphones</span>
                              </a>
+                             <ul class="nav-main-submenu">
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.smartphone.index') }}">
+                                         <i class="nav-main-link-icon fa-solid fa-users"></i>
+                                         <span class="nav-main-link-name">SmartPhone Providers</span>
+                                     </a>
+                                 </li>
+                                 <li class="nav-main-item">
+                                    <a class="nav-main-link" href="#">
+                                        {{-- {{ route('admin.insurance-coverages.index') }} --}}
+                                        <i class="nav-main-link-icon fa-solid fa-percent"></i>
+                                        <span class="nav-main-link-name">Provider Discounts</span>
+                                    </a>
+                                </li>
+                             </ul>
                          </li>
                          <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.exclusive-deals.index') }}">

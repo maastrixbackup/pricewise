@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SmartPhoneController extends Controller
 {
-    
+
     protected string $guard = 'admin';
     public function guard()
     {
@@ -44,7 +44,8 @@ class SmartPhoneController extends Controller
     public function index()
     {
         // dd('Ok');
-        return view('admin.smartphone.index');
+        $sp_records = SmartPhone::orderBy('id', 'desc')->get();
+        return view('admin.smartphone.index', compact('sp_records'));
         //
     }
 
@@ -68,7 +69,22 @@ class SmartPhoneController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+
+        try {
+            $smP = new SmartPhone();
+            $smP->provider_name = $request->provider_name;
+            $smP->description= $request->description;
+            $smP->slug = $request->provider_url;
+            $smP->status = $request->type;
+
+            if ($smP->save()) {
+                return redirect()->back()->with(Toastr::success('Provider Successfully Stored', '', ["positionClass" => "toast-top-right"]));
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+
+        }
     }
 
     /**
@@ -90,7 +106,8 @@ class SmartPhoneController extends Controller
      */
     public function edit($id)
     {
-        //
+        $sp_record = SmartPhone::find($id);
+        return view('admin.smartphone.edit', compact('sp_record'));
     }
 
     /**
@@ -102,7 +119,19 @@ class SmartPhoneController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $sp_update = SmartPhone::where('id', $id)->first();
+        try {
+            $sp_update->provider_name = $request->provider_name;
+            $sp_update->description = $request->description;
+            $sp_update->status = $request->type;
+            $sp_update->slug = $request->provider_url;
+            if ($sp_update->save()) {
+                return redirect()->back()->with(Toastr::success('Provide Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with( Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+        }
     }
 
     /**
@@ -113,6 +142,12 @@ class SmartPhoneController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            SmartPhone::where('id', $id)->delete();
+            return back()->with(Toastr::success('Provider deleted successfully!', '', ["positionClass" => "toast-top-right"]));
+        } catch (\Exception $e) {
+            Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
+            return back();
+        }
     }
 }

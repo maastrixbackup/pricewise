@@ -29,7 +29,7 @@ class CyberSecurityController extends Controller
         $insuredAmount = $request->insured_amount;
         $theftAmount =  $request->theft_amount;
         $homeType  = $request->home_type;
-        
+
         $products = InsuranceProduct::where('sub_category', config('constant.subcategory.CyberSecurity'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
 
         $products->when($postalCode, function ($query) use ($postalCode) {
@@ -121,7 +121,7 @@ class CyberSecurityController extends Controller
         ], 200);
     }
 
-    
+
     public function cybersecurityInsuranceCompare(Request $request)
     {
         $compareIds = $request->compare_ids;
@@ -149,25 +149,41 @@ class CyberSecurityController extends Controller
                             return (object) $item->toArray();
                         })->toArray()
                     ];
-                }                             
-            
+                }
+
                 $filteredProductsFormatted = CyberSecurityResource::collection($filteredProducts);
 
-    
+
                 return response()->json([
                     'success' => true,
                     'data'    => $filteredProductsFormatted,
                     'filters' =>  $filters,
                     'message' => 'Products retrieved successfully.',
                 ], 200);
-                 
-                
+
+
             } else {
                 return $this->sendError('No products found -for comparison.', [], 404);
             }
         } else {
             return $this->sendError('No comparison IDs provided.', [], 400);
         }
+    }
+
+
+
+    public function sendError($error, $errorMessages = [], $code = 404)
+    {
+        $response = [
+            'success' => false,
+            'message' => $error,
+        ];
+
+        if (!empty($errorMessages)) {
+            $response['data'] = $errorMessages;
+        }
+
+        return response()->json($response, $code);
     }
 
     // /**
