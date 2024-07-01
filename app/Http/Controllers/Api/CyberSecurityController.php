@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\HomeInsuranceResource;
+use App\Http\Resources\CyberSecurityResource;
 use App\Models\Feature;
 use App\Models\insuranceCoverage;
 use App\Models\InsuranceProduct;
@@ -11,7 +11,7 @@ use App\Models\Provider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HomeInsuranceController extends Controller
+class CyberSecurityController extends Controller
 {
     public function index(Request $request)
     {
@@ -30,7 +30,7 @@ class HomeInsuranceController extends Controller
         $theftAmount =  $request->theft_amount;
         $homeType  = $request->home_type;
         
-        $products = InsuranceProduct::where('sub_category', 21)->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
+        $products = InsuranceProduct::where('sub_category', config('constant.subcategory.CyberSecurity'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
 
         $products->when($postalCode, function ($query) use ($postalCode) {
             $query->whereJsonContains('pin_codes', $postalCode);
@@ -66,7 +66,7 @@ class HomeInsuranceController extends Controller
         $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
             ->from('features as f1')
             ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-            ->where(['f1.category'=> config('constant.category.Insurance') , 'f1.sub_category'=>config('constant.subcategory.HomeInsurance')])
+            ->where(['f1.category'=> config('constant.category.Insurance') , 'f1.sub_category'=>config('constant.subcategory.CyberSecurity')])
             ->where('f1.is_preferred', 1)
             ->get()
             ->groupBy('parent');
@@ -96,14 +96,14 @@ class HomeInsuranceController extends Controller
         $mergedData = [];
 
         foreach ($filteredProducts as $product) {
-            $formattedProduct = (new HomeInsuranceResource($product))->toArray($request);
+            $formattedProduct = (new CyberSecurityResource($product))->toArray($request);
             $mergedData[] = $formattedProduct;
         }
 
         $message = $products->count() > 0 ? 'Products retrieved successfully.' : 'Products not found.';
 
 
-        $coverages = insuranceCoverage::where('subcategory_id', config('constant.subcategory.HomeInsurance'))->get();
+        $coverages = insuranceCoverage::where('subcategory_id', config('constant.subcategory.CyberSecurity'))->get();
 
         $coverages = $coverages->map(function ($coverage) {
             $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
@@ -121,8 +121,8 @@ class HomeInsuranceController extends Controller
         ], 200);
     }
 
-
-    public function homeInsuranceCompare(Request $request)
+    
+    public function cybersecurityInsuranceCompare(Request $request)
     {
         $compareIds = $request->compare_ids;
 
@@ -151,7 +151,7 @@ class HomeInsuranceController extends Controller
                     ];
                 }                             
             
-                $filteredProductsFormatted = HomeInsuranceResource::collection($filteredProducts);
+                $filteredProductsFormatted = CyberSecurityResource::collection($filteredProducts);
 
     
                 return response()->json([
@@ -169,4 +169,70 @@ class HomeInsuranceController extends Controller
             return $this->sendError('No comparison IDs provided.', [], 400);
         }
     }
+
+    // /**
+    //  * Show the form for creating a new resource.
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function create()
+    // {
+    //     //
+    // }
+
+    // /**
+    //  * Store a newly created resource in storage.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function store(Request $request)
+    // {
+    //     //
+    // }
+
+    // /**
+    //  * Display the specified resource.
+    //  *
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function show($id)
+    // {
+    //     //
+    // }
+
+    // /**
+    //  * Show the form for editing the specified resource.
+    //  *
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function edit($id)
+    // {
+    //     //
+    // }
+
+    // /**
+    //  * Update the specified resource in storage.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function update(Request $request, $id)
+    // {
+    //     //
+    // }
+
+    // /**
+    //  * Remove the specified resource from storage.
+    //  *
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function destroy($id)
+    // {
+    //     //
+    // }
 }

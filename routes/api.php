@@ -15,6 +15,11 @@ use App\Http\Controllers\Api\HealthInsuranceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\HomeInsuranceController;
 use App\Http\Controllers\API\VehicleInsuranceController;
+use App\Http\Controllers\API\AccidentalInsuranceController;
+use App\Http\Controllers\API\TravelInsuranceController;
+use App\Http\Controllers\API\FuneralInsuranceController;
+use App\Http\Controllers\API\CyberSecurityController;
+use App\Http\Controllers\API\LiabilityInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -39,6 +44,8 @@ Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDe
 Route::get('get-top-four-deals', [RequestController::class, 'getTopFourDeals']);
 Route::get('get-internet-tv-deals', [RequestController::class, 'getInternetTvDeals']);
 Route::get('get-home-insurance-deals', [RequestController::class, 'getHomeInsuranceDeals']);
+
+
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
 Route::post('health-insurance-compare', [HealthInsuranceController::class, 'healthInsuranceCompare']);
@@ -49,8 +56,28 @@ Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
 Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
 
 //Vehicle Insurance
-Route::post('vehicle-insurance', [VehicleInsuranceController::class, 'index']); 
+Route::post('vehicle-insurance', [VehicleInsuranceController::class, 'index']);
 Route::post('vehicle-insurance-compare', [VehicleInsuranceController::class, 'vehicleInsuranceCompare']);
+
+//Accidental Insurance
+Route::post('accidental-insurance', [AccidentalInsuranceController::class, 'index']);
+Route::post('accidental-insurance-compare', [AccidentalInsuranceController::class, 'accidentalInsuranceCompare']);
+
+//Travel Insurance
+Route::post('travel-insurance', [TravelInsuranceController::class, 'index']);
+Route::post('travel-insurance-compare', [TravelInsuranceController::class, 'travelInsuranceCompare']);
+
+//Funeral Insurance
+Route::post('funeral-insurance', [FuneralInsuranceController::class, 'index']);
+Route::post('funeral-insurance-compare', [FuneralInsuranceController::class, 'funeralInsuranceCompare']);
+
+//CyeberSecurity Insurance
+Route::post('cyber-security-insurance', [CyberSecurityController::class, 'index']);
+Route::post('cyber-security-insurance-compare', [CyberSecurityController::class, 'cybersecurityInsuranceCompare']);
+
+//CyeberSecurity Insurance
+Route::post('liability-insurance', [LiabilityInsuranceController::class, 'index']);
+Route::post('liability-insurance-compare', [LiabilityInsuranceController::class, 'liabilityInsuranceCompare']);
 
 // Api on events by satyajit
 Route::get('get-events-list', [RequestController::class, 'eventlist']);
@@ -65,8 +92,8 @@ Route::get('get-events-list', [RequestController::class, 'eventlist']);
     Route::get('suppliers', [SettingsController::class, 'getSupliers']);
     Route::get('house-type', [SettingsController::class, 'houseTypes']);
     Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
-//Frontent === Auth    
-Route::group(['middleware' => 'auth:sanctum'], function () {   
+//Frontent === Auth
+Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
     //API route for user profile
     Route::get('/profile-details', [UserDetailController::class, 'index']);
