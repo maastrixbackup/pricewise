@@ -30,14 +30,6 @@ class SmartPhoneController extends Controller
     {
         return Auth::guard($this->guard);
     }
-    // function __construct()
-    // {
-    //     $this->middleware('auth:admin');
-    //     $this->middleware('permission:smartphone-list', ['only' => ['index', 'store']]);
-    //     $this->middleware('permission:smartphone-create', ['only' => ['create', 'store']]);
-    //     $this->middleware('permission:smartphone-edit', ['only' => ['edit', 'update']]);
-    //     $this->middleware('permission:smartphone-delete', ['only' => ['destroy']]);
-    // }
     /**
      * Display a listing of the resource.
      *
@@ -74,6 +66,12 @@ class SmartPhoneController extends Controller
     {
         // dd($request->all());
 
+        $request->validate([
+            'provider_name' => 'required | unique:smart_phones,provider_name',
+            'description' => 'required',
+            'status' => 'required',
+        ]);
+        DB::beginTransaction();
         try {
             $smP = new SmartPhone();
             $smP->provider_name = $request->provider_name;
@@ -83,9 +81,11 @@ class SmartPhoneController extends Controller
             $smP->status = $request->type;
 
             if ($smP->save()) {
+                DB::commit();
                 return redirect()->back()->with(Toastr::success('Provider Successfully Stored', '', ["positionClass" => "toast-top-right"]));
             }
         } catch (\Exception $e) {
+            DB::rollback();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
     }
@@ -123,7 +123,13 @@ class SmartPhoneController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request->all());
+
+        $request->validate([
+            'provider_name' => 'required',
+        ]);
         $sp_update = SmartPhone::where('id', $id)->first();
+        DB::beginTransaction();
         try {
             $sp_update->provider_name = $request->provider_name;
             $sp_update->description = $request->description;
@@ -131,9 +137,11 @@ class SmartPhoneController extends Controller
             $sp_update->status = $request->type;
             $sp_update->slug = $request->provider_url;
             if ($sp_update->save()) {
+                DB::commit();
                 return redirect()->back()->with(Toastr::success('Provide Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             }
         } catch (\Exception $e) {
+            DB::rollback();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
     }
