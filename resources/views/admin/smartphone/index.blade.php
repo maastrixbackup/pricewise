@@ -17,7 +17,7 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.smartphone.create') }}" class="btn btn-primary">Create a Smartphone</a>
+                <a href="{{ route('admin.smartphone.create') }}" class="btn btn-primary">Create a Provider</a>
 
             </div>
 
@@ -27,7 +27,7 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">Smartphone</h6>
+            <h6 class="mb-0 text-uppercase">Smartphone Provider</h6>
             <hr />
             <div class="card">
                 <div class="card-body">

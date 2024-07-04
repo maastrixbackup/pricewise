@@ -178,7 +178,8 @@
             })
         }
     });
-</script><script>
+</script>
+<script>
     $("#title").keyup(function() {
         var title_val = $("#title").val();
         $("#title_url").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));

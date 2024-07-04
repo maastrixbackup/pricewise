@@ -136,15 +136,16 @@
                                      </a>
                                  </li>
                                  <li class="nav-main-item">
-                                    <a class="nav-main-link" href="{{ route('admin.insurance-coverages.index') }}">
-                                        <i class="nav-main-link-icon fa-solid fa-user-shield"></i>
-                                        <span class="nav-main-link-name">Insurance Coverages</span>
-                                    </a>
-                                </li>
+                                     <a class="nav-main-link" href="{{ route('admin.insurance-coverages.index') }}">
+                                         <i class="nav-main-link-icon fa-solid fa-user-shield"></i>
+                                         <span class="nav-main-link-name">Insurance Coverages</span>
+                                     </a>
+                                 </li>
                              </ul>
                          </li>
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="#">
+                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                             aria-expanded="false" href="#">
                                  <i class="nav-main-link-icon fa-solid fa-mobile-screen"></i>
                                  <span class="nav-main-link-name">Smartphones</span>
                              </a>
@@ -156,23 +157,23 @@
                                      </a>
                                  </li>
                                  <li class="nav-main-item">
-                                    <a class="nav-main-link" href="{{ route('admin.provider-discount.index') }}">
-                                        <i class="nav-main-link-icon fa-solid fa-percent"></i>
-                                        <span class="nav-main-link-name">Provider Discounts</span>
-                                    </a>
-                                </li>
-                                <li class="nav-main-item">
-                                   <a class="nav-main-link" href="{{ route('admin.provider-feature.index') }}">
-                                       <i class="nav-main-link-icon fa-solid fa-file-text"></i>
-                                       <span class="nav-main-link-name">Provider Features</span>
-                                   </a>
-                               </li>
-                               <li class="nav-main-item">
-                                  <a class="nav-main-link" href="{{ route('admin.smartphone-faq.index') }}">
-                                      <i class="nav-main-link-icon fa-solid fa-comments "></i>
-                                      <span class="nav-main-link-name">FAQ</span>
-                                  </a>
-                              </li>
+                                     <a class="nav-main-link" href="{{ route('admin.provider-discount.index') }}">
+                                         <i class="nav-main-link-icon fa-solid fa-percent"></i>
+                                         <span class="nav-main-link-name">Provider Discounts</span>
+                                     </a>
+                                 </li>
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.provider-feature.index') }}">
+                                         <i class="nav-main-link-icon fa-solid fa-file-text"></i>
+                                         <span class="nav-main-link-name">Provider Features</span>
+                                     </a>
+                                 </li>
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.smartphone-faq.index') }}">
+                                         <i class="nav-main-link-icon fa-solid fa-comments "></i>
+                                         <span class="nav-main-link-name">FAQ</span>
+                                     </a>
+                                 </li>
                              </ul>
                          </li>
                          <li class="nav-main-item">
