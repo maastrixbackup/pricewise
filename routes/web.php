@@ -86,6 +86,9 @@ Route::group(['prefix' => 'pricewise'], function () {
 
             // Smartphone
             Route::resource('smartphone', 'SmartPhoneController');
+            Route::resource('smartphone-faq', 'SmartPhoneFaqController');
+            Route::resource('provider-discount', 'ProviderDiscountController');
+            Route::resource('provider-feature', 'ProviderFeatureController');
 
             
             //Requests

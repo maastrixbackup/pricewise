@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'PriceWise- Smartphone')
+@section('title', 'PriceWise- Provider Discount')
 @section('content')
 
     <!--breadcrumb-->
@@ -17,7 +17,7 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.smartphone.create') }}" class="btn btn-primary">Create a Smartphone</a>
+                <a href="{{ route('admin.provider-feature.create') }}" class="btn btn-primary">Create a Feature</a>
 
             </div>
 
@@ -27,47 +27,53 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">Smartphone</h6>
+            <h6 class="mb-0 text-uppercase">Provider Feature</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="SmartPhoneTable" class="table table-striped table-bordered">
+                        <table id="SmartPhoneFeatureTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
                                     <th>Provider Name</th>
-                                    <th>Url</th>
-                                    <th>Category</th>
+                                    <th>Mobile Data</th>
+                                    <th>Calling/Texting</th>
+                                    <th>Price</th>
+                                    <th>Valid Till</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($sp_records)
-                                    @foreach ($sp_records as $record)
+                                @if ($sp_features)
+                                    @foreach ($sp_features as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->provider_name }}</td>
-                                            <td>{{ $record->slug }}</td>
-                                            <td>{{ $record->categoryDetails->name }}</td>
+                                            <td>{{ $record->providerDetails->provider_name }}</td>
+                                            <td>{{ $record->mobile_data }}</td>
+                                            <td>{{ $record->call_text }}</td>
+                                            <td>{{ $record->price }}</td>
+                                            <td>{{ $record->valid_till }}</td>
                                             <td>
                                                 @if ($record->status == 'active')
-                                                <span class="badge rounded-pill text-success bg-light-success text-uppercase">Published</span>
+                                                    <span
+                                                        class="badge rounded-pill text-success bg-light-success text-uppercase">Published</span>
                                                 @else
-                                                <span class="badge rounded-pill text-primary bg-light-success  text-uppercase" >Draft</span>
+                                                    <span
+                                                        class="badge rounded-pill text-primary bg-light-success  text-uppercase">Draft</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 <div class="col d-flex justify-content-evenly">
 
                                                     <a title="Edit"
-                                                        href="{{ route('admin.smartphone.edit', $record->id) }}"
+                                                        href="{{ route('admin.provider-feature.edit', $record->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
                                                     <a title="Delete" class="btn1 btn-outline-danger trash remove-package"
                                                         data-id="{{ $record->id }}"
-                                                        data-action="{{ route('admin.smartphone.destroy', $record->id) }}"><i
+                                                        data-action="{{ route('admin.provider-feature.destroy', $record->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
                                                 </div>
                                             </td>
@@ -87,13 +93,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#SmartPhoneTable').DataTable({
+            var table = $('#SmartPhoneFeatureTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
@@ -102,14 +108,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                 ],

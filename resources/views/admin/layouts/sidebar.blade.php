@@ -144,10 +144,36 @@
                              </ul>
                          </li>
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.smartphone.index') }}">
+                             <a class="nav-main-link" href="#">
                                  <i class="nav-main-link-icon fa-solid fa-mobile-screen"></i>
                                  <span class="nav-main-link-name">Smartphones</span>
                              </a>
+                             <ul class="nav-main-submenu">
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.smartphone.index') }}">
+                                         <i class="nav-main-link-icon fa-solid fa-users"></i>
+                                         <span class="nav-main-link-name">SmartPhone Providers</span>
+                                     </a>
+                                 </li>
+                                 <li class="nav-main-item">
+                                    <a class="nav-main-link" href="{{ route('admin.provider-discount.index') }}">
+                                        <i class="nav-main-link-icon fa-solid fa-percent"></i>
+                                        <span class="nav-main-link-name">Provider Discounts</span>
+                                    </a>
+                                </li>
+                                <li class="nav-main-item">
+                                   <a class="nav-main-link" href="{{ route('admin.provider-feature.index') }}">
+                                       <i class="nav-main-link-icon fa-solid fa-file-text"></i>
+                                       <span class="nav-main-link-name">Provider Features</span>
+                                   </a>
+                               </li>
+                               <li class="nav-main-item">
+                                  <a class="nav-main-link" href="{{ route('admin.smartphone-faq.index') }}">
+                                      <i class="nav-main-link-icon fa-solid fa-comments "></i>
+                                      <span class="nav-main-link-name">FAQ</span>
+                                  </a>
+                              </li>
+                             </ul>
                          </li>
                          <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.exclusive-deals.index') }}">
