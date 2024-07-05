@@ -49,7 +49,7 @@
                                     @foreach ($sp_records as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->title }} <small>({{ $record->providerDetails->provider_name }})</small>
+                                            <td>{{ $record->title }} <small>({{ $record->providerDetails->provider_name ?? '' }})</small>
                                             </td>
                                             <td>{{ $record->discount }}</td>
                                             <td>{{ $record->valid_from }}</td>
