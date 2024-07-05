@@ -83,6 +83,8 @@ Route::post('liability-insurance-compare', [LiabilityInsuranceController::class,
 Route::get('get-events-list', [RequestController::class, 'eventlist']);
 
 //Frontend Guest
+    // SmartPhone Deals
+    Route::any('get-smart-phone-deals', [RequestController::class,'getSmartPhoneDeals']);
 //Internet TvR
     Route::post('internet-tv', [InternetTvController::class, 'index']);
     Route::post('internet-tv-compare', [InternetTvController::class, 'internetCompare']);

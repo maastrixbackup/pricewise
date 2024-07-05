@@ -40,6 +40,7 @@ class RequestController extends BaseController
      */
     public function index(Request $request)
     {
+        // return $request->input('user_id');
         $userData = UserRequest::with('service', 'advantagesData', 'userDetails', 'providerDetails', 'categoryDetails')->where('service_type', 'App\Models\EnergyProduct')->where('user_id', $request->user_id)->get();
         $userData = $userData->map(function ($item) {
             // Change the format of the desired columns here
@@ -47,7 +48,11 @@ class RequestController extends BaseController
             $item->advantages =  json_decode($item->advantages);
             return $item;
         });
-        return $this->sendResponse($userData, 'User requests retrieved successfully.');
+        if (!$userData->isEmpty()) {
+            return $this->sendResponse($userData, 'User requests retrieved successfully.');
+        } else {
+            return response()->json(['success' => false, 'data' => [], 'message' => 'Failed to get user request.'], 404);
+        }
     }
 
     /**
@@ -141,7 +146,6 @@ class RequestController extends BaseController
             "delivery" => $delivery,
             "company_details" => $company_details,
             "contact_details" => $contact_details
-
         ];
 
         return json_encode($final_data);
