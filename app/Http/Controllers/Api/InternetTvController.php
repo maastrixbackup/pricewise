@@ -18,14 +18,14 @@ class InternetTvController extends BaseController
     {
         \DB::enableQueryLog();
         $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
-        
+
         $pageno = $request->pageNo ?? 1;
         $postsPerPage = $request->postsPerPage ?? 10;
         $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
 
         // Filter by postal code
         if ($request->has('postal_code')) {
-           $postalCode = json_encode($request->input('postal_code'));    
+           $postalCode = json_encode($request->input('postal_code'));
             // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
             $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
         }
@@ -45,15 +45,15 @@ class InternetTvController extends BaseController
         //     $products->where('provider', $request->input('current_supplier'));
         // }
 
-      
+
         if ($request->has('features') && $request->feature !== null) {
             $features = $request->input('features');
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
             });
-        }    
-       
-        
+        }
+
+
         $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
         $recordsCount = $products->count();
         if ($filteredProducts->isNotEmpty()) {
@@ -65,14 +65,14 @@ class InternetTvController extends BaseController
             ->get()
             ->groupBy('parent');
             } else {
-            
+
             $objFeatures = collect(); // Or any other default value or action
         }
 
         $mergedData = [];
 
             foreach ($filteredProducts as $product) {
-                $formattedProduct = (new InternetTvResource($product))->toArray($request);                
+                $formattedProduct = (new InternetTvResource($product))->toArray($request);   
                 $mergedData[] = $formattedProduct;
             }
             if($request->has('callFromExclusiveDeal')){
@@ -114,10 +114,10 @@ class InternetTvController extends BaseController
                             return (object) $item->toArray();
                         })->toArray()
                     ];
-                }                             
-            
+                }
+
                 $filteredProductsFormatted = InternetTvResource::collection($filteredProducts);
-                  
+
                 $noParentFilter = null;
                 foreach ($filters as $index => $filter) {
                     if (isset($filter['No_Parent'])) {
@@ -126,22 +126,22 @@ class InternetTvController extends BaseController
                         break;
                     }
                 }
-                
+
                 // Insert the "No_Parent" filter at the beginning of the array of filters
                 if ($noParentFilter !== null) {
                     array_unshift($filters, $noParentFilter);
                 }
-  
 
-    
+
+
                 return response()->json([
                     'success' => true,
                     'data'    => $filteredProductsFormatted,
                     'filters' =>  $filters,
                     'message' => 'Products retrieved successfully.',
                 ], 200);
-                 
-                
+
+
             } else {
                 return $this->sendError('No products found -for comparison.', [], 404);
             }
@@ -154,7 +154,7 @@ class InternetTvController extends BaseController
     public function getSupliers()
     {
         $providers = Provider::get();
-    
+
         return $this->sendResponse($providers, 'Suppliers retrieved successfully.');
     }
     /**
@@ -166,21 +166,21 @@ class InternetTvController extends BaseController
     public function store(Request $request)
     {
         $input = $request->all();
-   
+
         $validator = Validator::make($input, [
             'name' => 'required',
             'detail' => 'required'
         ]);
-   
+
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors());
         }
-   
+
         $product = TvInternetProduct::create($input);
-   
+
         return $this->sendResponse(new InternetTvResource($product), 'Product created successfully.');
-    } 
-   
+    }
+
     /**
      * Display the specified resource.
      *
@@ -190,14 +190,14 @@ class InternetTvController extends BaseController
     public function show($id)
     {
         $product = TvInternetProduct::find($id);
-  
+
         if (is_null($product)) {
             return $this->sendError('Product not found.');
         }
-   
+
         return $this->sendResponse(new InternetTvResource($product), 'Product retrieved successfully.');
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -208,23 +208,23 @@ class InternetTvController extends BaseController
     public function update(Request $request, TvInternetProduct $product)
     {
         $input = $request->all();
-   
+
         $validator = Validator::make($input, [
             'name' => 'required',
             'detail' => 'required'
         ]);
-   
+
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors());
         }
-   
+
         $product->name = $input['name'];
         $product->detail = $input['detail'];
         $product->save();
-   
+
         return $this->sendResponse(new InternetTvResource($product), 'Product updated successfully.');
     }
-   
+
     /**
      * Remove the specified resource from storage.
      *
@@ -234,7 +234,7 @@ class InternetTvController extends BaseController
     public function destroy(TvInternetProduct $product)
     {
         $product->delete();
-   
+
         return $this->sendResponse([], 'Product deleted successfully.');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\EmailTemplate;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Api\InternetTvController;
 use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
+use App\Models\SmartPhone;
 use App\Models\Feature;
 use App\Models\PostRequest;
 use App\Models\InsuranceProduct;
@@ -30,7 +32,7 @@ use App\Models\Event;
 
 class RequestController extends BaseController
 {
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -38,7 +40,7 @@ class RequestController extends BaseController
      */
     public function index(Request $request)
     {
-        $userData = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('service_type', 'App\Models\EnergyProduct')->where('user_id', $request->user_id)->get();
+        $userData = UserRequest::with('service', 'advantagesData', 'userDetails', 'providerDetails', 'categoryDetails')->where('service_type', 'App\Models\EnergyProduct')->where('user_id', $request->user_id)->get();
         $userData = $userData->map(function ($item) {
             // Change the format of the desired columns here
             $item->shipping_address = json_decode($item->shipping_address);
@@ -63,34 +65,113 @@ class RequestController extends BaseController
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */ 
+     */
     public function store(Request $request)
-    {//return response()->json($request->input());
-      
-        try {
-            $user_id = $request->input('user_id');
-            $user_type = $request->input('user_type');
-            $category_id = $request->input('category');
-            $sub_category_id = $request->input('sub_category');
-            $service_id = $request->input('service_id');
-            $postal_code = $request->input('postal_code');
-            $service_type = $request->input('service_type');
-            $combos = json_encode($request->input('combos'));
-            $total_price = $request->input('total_price');
-            $discounted_price = $request->input('discounted_price');
-            $discount_prct = $request->input('discount_prct');
-            $commission_prct = $request->input('commission_prct');
-            $commission_amt = $request->input('commission_amt');
-            $request_status = $request->input('request_status');
-            $advantages = $request->input('advantages');
-            $contact_details = $request->input('contactDetails');
-            $additional_information = $request->input('additionalInfo');
-            $additional_questions = $request->input('additionalQuestion');
-            $delivery = $request->input('delivery');
-            $verification = $request->input('verification');
+    {
+        $additional_questions = [];
+        $verification = [];
+        $delivery = [];
+        $contact_details = [];
+        $company_details = [];
+        $final_data = [];
 
+        $additional_questions = [
+            "living_start" => $request->input('living_start'),
+            "living_description" => $request->input('living_description'),
+            "home_feature_valid" => $request->input('home_feature_valid'),
+            "home_feature_description" => $request->input('home_feature_description'),
+            "garden_garage_valid" => $request->input('garden_garage_valid'),
+            "garden_garage_description" => $request->input('garden_garage_description'),
+            "fire_hazard_valid" => $request->input('fire_hazard_valid'),
+            "office_distance" => $request->input('office_distance'),
+            "fire_hazard_description" => $request->input('fire_hazard_description'),
+            "renovate_home" => $request->input('renovate_home'),
+            "deal_with" => $request->input('deal_with'),
+            "injury_validation" => $request->input('injury_validation'),
+            "damage_amount" => $request->input('damage_amount'),
+            "injury_damage_description" => $request->input('injury_damage_description'),
+            "previous_insurance_validation" => $request->input('previous_insurance_validation'),
+            "previous_insurance_description" => $request->input('previous_insurance_description'),
+            "punishment_validation" => $request->input('punishment_validation'),
+            "punishment_description" => $request->input('punishment_description'),
+
+        ];
+
+        $verification = [
+            "verification" => $request->input('verification'),
+            "get_notified" => $request->input('get_notified'),
+            "payment_method" => $request->input('payment_method'),
+            "verification_message" => $request->input('verification_message')
+        ];
+
+        $delivery = [
+            "postalAddressDifferent" => $request->input('postalAddressDifferent'),
+            "differ_postal_addrr" => $request->input('differ_postal_addrr'),
+            "starting_date" => $request->input('starting_date'),
+            "service_cancel" => $request->input('service_cancel'),
+            "house_tel" => $request->input('house_tel')
+
+        ];
+
+        $company_details = [
+            "company_name" => $request->input('company_name'),
+            "chamber_of_commerce" => $request->input('chamber_of_commerce'),
+            "function" => $request->input('function'),
+            "branch" => $request->input('branch')
+
+        ];
+
+        $contact_details = [
+            "sex" => $request->input('sex'),
+            "initials" => $request->input('initials'),
+            "first_name" => $request->input('first_name'),
+            "interjections" => $request->input('interjections'),
+            "surname" => $request->input('surname'),
+            "age" => $request->input('age'),
+            "dob" => $request->input('dob'),
+            "email" => $request->input('email'),
+            "account_number" => $request->input('account_number'),
+            "mobile_number" => $request->input('mobile_number'),
+            "landline_number" => $request->input('landline_number'),
+        ];
+
+        $final_data = [
+            "additional_questions" => $additional_questions,
+            "verification" => $verification,
+            "delivery" => $delivery,
+            "company_details" => $company_details,
+            "contact_details" => $contact_details
+
+        ];
+
+        return json_encode($final_data);
+        exit;
+
+        $user_id = $request->input('user_id');
+        $user_type = $request->input('user_type');
+        $category_id = $request->input('category');
+        $sub_category_id = $request->input('sub_category');
+        $service_id = $request->input('service_id');
+        $postal_code = $request->input('postal_code');
+        $service_type = $request->input('service_type');
+        $combos = json_encode($request->input('combos'));
+        $total_price = $request->input('total_price');
+        $discounted_price = $request->input('discounted_price');
+        $discount_prct = $request->input('discount_prct');
+        $commission_prct = $request->input('commission_prct');
+        $commission_amt = $request->input('commission_amt');
+        $request_status = $request->input('request_status');
+        $advantages = $request->input('advantages');
+        $contact_details = $contact_details;
+        $company_details = $company_details;
+        $additional_information = $request->input('additionalInfo');
+        $additional_questions = $additional_questions;
+        $delivery = $delivery;
+        $verification = $verification;
+
+        try {
             $data = new UserRequest();
-            
+
             $data->user_id = $user_id;
             $data->user_type = $user_type;
             $data->category = $category_id;
@@ -117,34 +198,34 @@ class RequestController extends BaseController
             $data->delivery = json_encode($delivery);
             $data->verification = json_encode($verification);
             if ($data->save()) {
-                $data->load('userDetails'); 
+                $data->load('userDetails');
                 $orderNo = $data->id + 1000;
                 $data->order_no = $orderNo;
-                $name = $data->userDetails?$data->userDetails->name:'';
-                
+                $name = $data->userDetails ? $data->userDetails->name : '';
+
                 $data->save();
-                if($request->has('advantages')){
-                    foreach($request->advantages as $key => $value){
-                        PostRequest::updateOrCreate(['request_id' => $data->id, 'key' => $key],
+                if ($request->has('advantages')) {
+                    foreach ($request->advantages as $key => $value) {
+                        PostRequest::updateOrCreate(
+                            ['request_id' => $data->id, 'key' => $key],
                             [
                                 'value' => $value
-                            ]);
+                            ]
+                        );
                     }
                 }
-                               
+
                 $emailTemplate = EmailTemplate::where('email_of', '2')->first();
-                
+
                 $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
                 $body['name'] = $name;
-                $body['action_link'] = url('/').'/api/view-order/'.$orderNo;
+                $body['action_link'] = url('/') . '/api/view-order/' . $orderNo;
 
                 // Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
                 return response()->json(['success' => true, 'message' => 'User request saved successfully'], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
             }
-
-            
         } catch (ValidationException $e) {
             // Handle validation errors
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
@@ -152,8 +233,6 @@ class RequestController extends BaseController
             // Handle other database errors
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
         }
-    
-        
     }
 
     /**
@@ -164,14 +243,14 @@ class RequestController extends BaseController
      */
     public function show(Request $request,  $id)
     {
-        $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->find($id);
+        $userRequest = UserRequest::with('service', 'advantagesData', 'userDetails', 'providerDetails', 'categoryDetails')->find($id);
 
         // Change the format of the desired columns here
         $userRequest->shipping_address = json_decode($userRequest->shipping_address);
         $userRequest->advantages = json_decode($userRequest->advantages);
         return $this->sendResponse($userRequest, 'User request retrieved successfully.');
     }
-   
+
 
     /**
      * Show the form for editing the specified resource.
@@ -181,14 +260,14 @@ class RequestController extends BaseController
      */
     public function edit(UserRequest $userRequest)
     {
-        
+
 
         // if(\Auth::guard('admin')->user()->can('view',$post)){
-        //     return view('admin.posts.edit',['post'=>$post]);            
+        //     return view('admin.posts.edit',['post'=>$post]);
         // }
-        
-        $this->authorize('view',$post);
-        return view('admin.posts.edit',['post'=>$post]);            
+
+        $this->authorize('view', $post);
+        return view('admin.posts.edit', ['post' => $post]);
     }
 
     /**
@@ -200,10 +279,10 @@ class RequestController extends BaseController
      */
     public function update(Request $request, Post $post)
     {
-        $this->authorize('update',$post);
+        $this->authorize('update', $post);
         $post->update([
-            'title'=>$request->title,
-            'description'=>$request->description
+            'title' => $request->title,
+            'description' => $request->description
         ]);
         return redirect()->back();
     }
@@ -225,11 +304,13 @@ class RequestController extends BaseController
         return view('admin.requests.edit', compact('user_request'));
     }
 
-    public function getUserData(Request $request){
+    public function getUserData(Request $request)
+    {
         $userData = UserData::where('user_id', $request->user_id)->get();
         return $this->sendResponse($userData, 'User data retrieved successfully.');
     }
-    public function saveUserData(Request $request){
+    public function saveUserData(Request $request)
+    {
         try {
             // Validate the incoming request data
             $validatedData = $request->validate([
@@ -252,49 +333,51 @@ class RequestController extends BaseController
         } catch (ValidationException $e) {
             // Handle validation errors
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
-        } catch (QueryException $e) { 
+        } catch (QueryException $e) {
             // Handle other database errors
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
         }
     }
 
-    public function reviewList(Request $request){
+    public function reviewList(Request $request)
+    {
         $userData = Review::where('user_id', $request->user_id)->get();
-        if($request->has('post_id')){
+        if ($request->has('post_id')) {
             $userData = Review::where('user_id', $request->user_id)
-            ->where('post_id', $request->post_id)->latest()->get();
+                ->where('post_id', $request->post_id)->latest()->get();
         }
         return $this->sendResponse($userData, 'Review data retrieved successfully.');
     }
-    public function reviewSave(Request $request){
+    public function reviewSave(Request $request)
+    {
         try {
             $userRequest = UserRequest::where('user_id', $request->user_id)
-                                    ->where('post_id', $request->post_id)->firstOrFail();
-            
+                ->where('post_id', $request->post_id)->firstOrFail();
+
             $validatedData = $request->validate([
                 'user_id' => 'required',
                 'rating' => 'required|numeric',
                 'post_id' => 'required|numeric',
             ]);
 
-                    
-                
-                Review::updateOrCreate(
-                    ['user_id' => $validatedData['user_id'], 'post_id' => $validatedData['post_id']],
-                    ['rating' => $validatedData['rating'], 'category' => $request->category, 'sub_category' => $request->sub_category, 'user_type' => $request->user_type, 'rating_type' => $request->rating_type]
-                );
-            
 
-            
+
+            Review::updateOrCreate(
+                ['user_id' => $validatedData['user_id'], 'post_id' => $validatedData['post_id']],
+                ['rating' => $validatedData['rating'], 'category' => $request->category, 'sub_category' => $request->sub_category, 'user_type' => $request->user_type, 'rating_type' => $request->rating_type]
+            );
+
+
+
             return response()->json(['success' => true, 'message' => 'Review saved successfully'], 200);
         } catch (ValidationException $e) {
-            
+
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
         } catch (QueryException $e) {
-            
+
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            
+
             return response()->json(['error' => 'User request not found'], 422);
         }
     }
@@ -308,97 +391,90 @@ class RequestController extends BaseController
     public function getDealsData()
     {
         $deals = Deal::latest()->take(3)->get();
-        $deals->map(function($deal) {
-            $deal->icon =  asset('deal_icons/'.$deal->icon);
+        $deals->map(function ($deal) {
+            $deal->icon =  asset('deal_icons/' . $deal->icon);
             $deal->categoryDetails;
             $deal->products = json_decode($deal->products);
             return $deal;
         });
         return $this->sendResponse($deals, 'Deals retrieved successfully.');
     }
-    private function getProductsCategoryWise($product_ids,$category_id)
+    private function getProductsCategoryWise($product_ids, $category_id)
     {
-            $request = new Request();
-            $request['category_id'] = $category_id;
-            $request['callFromExclusiveDeal'] = 1 ; 
+        $request = new Request();
+        $request['category_id'] = $category_id;
+        $request['callFromExclusiveDeal'] = 1;
 
         if ($request->category_id == 1) {
             $internetTvObj = new InternetTvController();
             $products =  $internetTvObj->index($request);
-            $products[0] = collect($products[0])->filter(function($product) use ($product_ids){
-                return in_array($product['id'] , $product_ids);
-              });
+            $products[0] = collect($products[0])->filter(function ($product) use ($product_ids) {
+                return in_array($product['id'], $product_ids);
+            });
             return $products;
+        } elseif ($request->category_id == 2) {
 
-        }elseif ($request->category_id == 2) {
-
-            $products = []; 
+            $products = [];
             return $products;
+        } elseif ($request->category_id == 5) {
 
-        }elseif ($request->category_id == 5) {
-
-            $products = InsuranceProduct::whereIn('id',$product_ids)->get(); 
+            $products = InsuranceProduct::whereIn('id', $product_ids)->get();
             return $products;
+        } elseif ($request->category_id == 6) {
 
-        }elseif ($request->category_id == 6) {
-
-            $products = []; 
+            $products = [];
             return $products;
+        } elseif ($request->category_id == 13) {
 
-        }elseif ($request->category_id == 13) {
-
-            $products = []; 
+            $products = [];
             return $products;
+        } elseif ($request->category_id == 14) {
 
-        }elseif ($request->category_id == 14) {
+            $products = [];
+            return $products;
+        } elseif ($request->category_id == 16) {
+            $energyObj = new EnergyController();
+            $products = $energyObj->index($request);
+            $products[0] = collect($products[0])->filter(function ($product) use ($product_ids) {
+                return in_array($product['id'], $product_ids);
+            });
 
-             $products = []; 
-             return $products;
-
-        }elseif ($request->category_id == 16) {
-              $energyObj = new EnergyController() ;
-              $products = $energyObj->index($request);
-              $products[0] = collect($products[0])->filter(function($product) use ($product_ids){
-                return in_array($product['id'] ,$product_ids);
-              });
-            
-              return $products;
+            return $products;
         }
     }
     public function getExclusiveDeal(Request $request)
     {
-        $deal = Deal::where('id',$request->id)->first();
+        $deal = Deal::where('id', $request->id)->first();
         if ($deal) {
-            $deal->icon =  asset('deal_icons/'.$deal->icon);
+            $deal->icon =  asset('deal_icons/' . $deal->icon);
             $deal->categoryDetails;
-            $dealData = $this->getProductsCategoryWise(json_decode($deal->products),$deal->category);
+            $dealData = $this->getProductsCategoryWise(json_decode($deal->products), $deal->category);
             return response()->json([
                 'success' => true,
                 'data' => $dealData[0],
                 'filters' => $dealData[1],
                 'message' => 'Deal retrieved successfully'
             ]);
-        }else {
+        } else {
             return response()->json([
                 'success' => false,
                 'data' => [],
-                'filters' =>[],
+                'filters' => [],
                 'message' => 'Deal not found in the requested id'
             ]);
         }
-      
     }
 
     public function getTvPackages(Request $request)
     {
-    $records = TvPackage::latest()->with('providerDetails')->get();
-    if ($records) {
-        return response()->json([
-                'success' => true ,
-                'data' => $records ,
+        $records = TvPackage::latest()->with('providerDetails')->get();
+        if ($records) {
+            return response()->json([
+                'success' => true,
+                'data' => $records,
                 'message' => 'Packages retrieved successfully'
             ]);
-    }else {
+        } else {
             return response()->json([
                 'success' => false,
                 'data' => [],
@@ -408,41 +484,41 @@ class RequestController extends BaseController
     }
     public function getTvInternetOptions()
     {
-    $records = TvOption::latest()->with('providerDetails')->get();
-    if ($records) {
-        $records->map(function($record){
+        $records = TvOption::latest()->with('providerDetails')->get();
+        if ($records) {
+            $records->map(function ($record) {
 
-          $record->internet_options = array_map(function($option){
-            $option->package_name = $option->name ;
-            $option->package_price = (int)$option->normal_cost;
-            unset($option->name);
-            unset($option->normal_cost);
-            return $option;
-          },json_decode($record->internet_options)) ;
+                $record->internet_options = array_map(function ($option) {
+                    $option->package_name = $option->name;
+                    $option->package_price = (int)$option->normal_cost;
+                    unset($option->name);
+                    unset($option->normal_cost);
+                    return $option;
+                }, json_decode($record->internet_options));
 
-          $record->tv_options = array_map(function($option){
-            $option->package_name = $option->name ;
-            $option->package_price = (int)$option->normal_cost;
-            unset($option->name);
-            unset($option->normal_cost);
-            return $option;
-          },json_decode($record->tv_options)) ;
+                $record->tv_options = array_map(function ($option) {
+                    $option->package_name = $option->name;
+                    $option->package_price = (int)$option->normal_cost;
+                    unset($option->name);
+                    unset($option->normal_cost);
+                    return $option;
+                }, json_decode($record->tv_options));
 
-          $record->telephone_options =array_map(function($option){
-            $option->package_name = $option->name ;
-            $option->package_price = (int)$option->normal_cost;
-            unset($option->name);
-            unset($option->normal_cost);
-            return $option;
-          },json_decode($record->telephone_options))  ;
-          return $record;
-        });
-        return response()->json([
+                $record->telephone_options = array_map(function ($option) {
+                    $option->package_name = $option->name;
+                    $option->package_price = (int)$option->normal_cost;
+                    unset($option->name);
+                    unset($option->normal_cost);
+                    return $option;
+                }, json_decode($record->telephone_options));
+                return $record;
+            });
+            return response()->json([
                 'success' => true,
                 'data' => $records,
                 'message' => 'TvInternetOptions retrieved successfully'
             ]);
-    }else {
+        } else {
             return response()->json([
                 'success' => false,
                 'data' => [],
@@ -450,78 +526,97 @@ class RequestController extends BaseController
             ]);
         }
     }
-      public function eventlist(Request $request)
-        {
-            // Fetch all event from the database
-            $events = Event::latest()->get();
-    
-            // Return the data as a JSON response
+    public function eventlist(Request $request)
+    {
+        // Fetch all event from the database
+        $events = Event::latest()->get();
 
-           
-                return response()->json([
-                    'success' => true,
-                    'data' => $events,
-                    'message' => 'Deal retrieved successfully'
-                ]);
+        // Return the data as a JSON response
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $events,
+            'message' => 'Deal retrieved successfully'
+        ]);
+    }
+    public function getTopFourDeals(Request $request)
+    {
+        $deals = Deal::latest()->take(4)->get();
+        if (count($deals) > 0) {
+            $deals->map(function ($deal) {
+                $deal->icon =  asset('deal_icons/' . $deal->icon);
+                $deal->categoryDetails;
+                $deal->products = json_decode($deal->products);
+                return $deal;
+            });
         }
-        public function getTopFourDeals(Request $request)
-        {
-            $deals = Deal::latest()->take(4)->get();
-            if (count($deals) > 0) {
-                $deals->map(function($deal) {
-                    $deal->icon =  asset('deal_icons/'.$deal->icon);
-                    $deal->categoryDetails;
-                    $deal->products = json_decode($deal->products);
-                    return $deal;
-                });
-            }
-      
+
         return $this->sendResponse($deals, 'Deals retrieved successfully.');
+    }
+    public function getEnergyDeals(Request $request)
+    {
+        $deals = Deal::where(['category' => 16, 'status' => 'active'])->latest()->take(4)->get();
+        if (count($deals) > 0) {
+            $deals->map(function ($deal) {
+                $deal->icon =  asset('deal_icons/' . $deal->icon);
+                $deal->categoryDetails;
+                $deal->products = json_decode($deal->products);
+                return $deal;
+            });
+            return $this->sendResponse($deals, 'Deals retrieved successfully.');
         }
-        public function getEnergyDeals(Request $request)
-        {
-            $deals = Deal::where(['category'=>16,'status'=>'active'])->latest()->take(4)->get();
-            if (count($deals) > 0) {
-                $deals->map(function($deal) {
-                    $deal->icon =  asset('deal_icons/'.$deal->icon);
-                    $deal->categoryDetails;
-                    $deal->products = json_decode($deal->products);
-                    return $deal;
-                });
-                return $this->sendResponse($deals, 'Deals retrieved successfully.');
-            }
-      
-            return $this->sendError('Deals not found.');
+
+        return $this->sendError('Deals not found.');
+    }
+    public function getInternetTvDeals(Request $request)
+    {
+        $deals = Deal::where(['category' => 1, 'status' => 'active'])->latest()->take(4)->get();
+        if (count($deals) > 0) {
+            $deals->map(function ($deal) {
+                $deal->icon =  asset('deal_icons/' . $deal->icon);
+                $deal->categoryDetails;
+                $deal->products = json_decode($deal->products);
+                return $deal;
+            });
+            return $this->sendResponse($deals, 'Deals retrieved successfully.');
         }
-        public function getInternetTvDeals(Request $request)
-        {
-            $deals = Deal::where(['category'=>1,'status'=>'active'])->latest()->take(4)->get();
-            if (count($deals) > 0) {
-                $deals->map(function($deal) {
-                    $deal->icon =  asset('deal_icons/'.$deal->icon);
-                    $deal->categoryDetails;
-                    $deal->products = json_decode($deal->products);
-                    return $deal;
-                });
-                return $this->sendResponse($deals, 'Deals retrieved successfully.');
-            }
-      
-            return $this->sendError('Deals not found.');
+
+        return $this->sendError('Deals not found.');
+    }
+    public function getHomeInsuranceDeals(Request $request)
+    {
+        $deals = Deal::where(['sub_category' => config('constant.subcategory.HomeInsurance'), 'status' => 'active'])->latest()->take(4)->get();
+        if (count($deals) > 0) {
+            $deals->map(function ($deal) {
+                $deal->icon =  asset('deal_icons/' . $deal->icon);
+                $deal->categoryDetails;
+                $deal->products = json_decode($deal->products);
+                return $deal;
+            });
+            return $this->sendResponse($deals, 'Deals retrieved successfully.');
         }
-        public function getHomeInsuranceDeals(Request $request)
-        {
-            $deals = Deal::where(['sub_category'=>config('constant.subcategory.HomeInsurance'),'status'=>'active'])->latest()->take(4)->get();
-            if (count($deals) > 0) {
-                $deals->map(function($deal) {
-                    $deal->icon =  asset('deal_icons/'.$deal->icon);
-                    $deal->categoryDetails;
-                    $deal->products = json_decode($deal->products);
-                    return $deal;
-                });
-                return $this->sendResponse($deals, 'Deals retrieved successfully.');
-            }
-      
-            return $this->sendError('Deals not found.');
-        }
+
+        return $this->sendError('Deals not found.');
     }
 
+    public function getSmartPhoneDeals()
+    {
+        $sp_deal = SmartPhone::orderBy('id', 'desc')->where('status', 'active')->with('featuresDetails', 'discountsDetails', 'faqDetails')->get();
+        if (!$sp_deal->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'data' => $sp_deal,
+                'message' => 'SmartPhone Deals retrieved successfully.'
+            ]);
+        } else {
+            return response()->json([
+                'error' => false,
+                'data' => [],
+                'message' => 'SmartPhone Deals not found'
+            ]);
+        }
+
+        // return $sp_deal;
+    }
+}

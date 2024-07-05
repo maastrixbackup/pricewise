@@ -16,4 +16,18 @@ class SmartPhone extends Model
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
+    public function featuresDetails()
+    {
+        return $this->belongsTo(ProviderFeature::class, 'id', 'provider_id');
+    }
+
+    public function discountsDetails()
+    {
+        return $this->belongsTo(ProviderDiscount::class, 'id', 'sp_provider');
+    }
+    
+    public function faqDetails()
+    {
+        return $this->belongsTo(SmartPhoneFaq::class, 'id', 'provider_id');
+    }
 }
