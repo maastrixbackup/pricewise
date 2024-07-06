@@ -12,4 +12,5 @@ yarn-error.log
 /.vscode
 /bootstrap
 /vendor
+/composer.lock
 *.lock
