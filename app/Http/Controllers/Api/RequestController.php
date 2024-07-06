@@ -148,9 +148,6 @@ class RequestController extends BaseController
             "contact_details" => $contact_details
         ];
 
-        return json_encode($final_data);
-        exit;
-
         $user_id = $request->input('user_id');
         $user_type = $request->input('user_type');
         $category_id = $request->input('category');
@@ -622,5 +619,17 @@ class RequestController extends BaseController
         }
 
         // return $sp_deal;
+    }
+
+    public function getSearchData(Request $request)
+    {
+        $events = Event::latest()->get();
+
+        // Return the data as a JSON response
+        return response()->json([
+            'success' => true,
+            'data' => $events,
+            'message' => 'SearchData retrieved successfully'
+        ]);
     }
 }
