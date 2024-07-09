@@ -15,7 +15,6 @@ class FuneralInsuranceController extends Controller
 {
     public function index(Request $request)
     {
-        // return 1234;
         $pageno = $request->pageNo ?? 1;
         $postsPerPage = $request->postsPerPage ?? 10;
         $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
@@ -30,7 +29,7 @@ class FuneralInsuranceController extends Controller
         $insuredAmount = $request->insured_amount;
         $theftAmount =  $request->theft_amount;
         $homeType  = $request->home_type;
-        
+
         $products = InsuranceProduct::where('sub_category', config('constant.subcategory.FuneralInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
 
         $products->when($postalCode, function ($query) use ($postalCode) {
@@ -150,19 +149,19 @@ class FuneralInsuranceController extends Controller
                             return (object) $item->toArray();
                         })->toArray()
                     ];
-                }                             
-            
+                }
+
                 $filteredProductsFormatted = FuneralInsuranceResource::collection($filteredProducts);
 
-    
+
                 return response()->json([
                     'success' => true,
                     'data'    => $filteredProductsFormatted,
                     'filters' =>  $filters,
                     'message' => 'Products retrieved successfully.',
                 ], 200);
-                 
-                
+
+
             } else {
                 return $this->sendError('No products found -for comparison.', [], 404);
             }

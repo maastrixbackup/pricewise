@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'PriceWise- Tv Channels')
+@section('title', 'PriceWise- Provider Discount')
 @section('content')
 
     <!--breadcrumb-->
@@ -7,7 +7,7 @@
         <div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+                    <li class="breadcrumb-item"><a href="javascript:void(0);"><i class="bx bx-home-alt"></i></a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
@@ -17,7 +17,7 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.tv-channel.create') }}" class="btn btn-primary">Create a New Tv Channel</a>
+                <a href="{{ route('admin.sub-categories.create') }}" class="btn btn-primary">Create Sub Category</a>
 
             </div>
 
@@ -27,59 +27,51 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">TV Channels</h6>
+            <h6 class="mb-0 text-uppercase">Provider FAQ</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="TvChannelTable" class="table table-striped table-bordered">
+                        <table id="SmartPhoneFaqTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Channel Name</th>
-                                    <th>Description</th>
-                                    <th>Features</th>
-                                    <th>Price</th>
-                                    <th>Type</th>
+                                    <th>Title</th>
+                                    <th>Parent Category</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($records)
-                                    @foreach ($records as $record)
+                                @if ($sub_cat)
+                                    @foreach ($sub_cat as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->channel_name }}</td>
-                                            <td>{{ $record->description ?? '' }}</td>
+                                            <td>{{ $record->title }}</td>
+                                            <td>{{$record->categoryDetails->name}}</td>
                                             <td>
-                                                <ul>
-                                                    @foreach (json_decode($record->features ?? '', true) as $k => $v)
-                                                        <li style="list-style-type: none">
-                                                            <i class="fa fa-check-circle fa-1x text-success"></i>
-                                                            {{ $v }}.
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
+                                                @if ($record->status == 'active')
+                                                <span class="badge rounded-pill text-success bg-light-success text-uppercase">Published</span>
+                                                @else
+                                                <span class="badge rounded-pill text-primary bg-light-success  text-uppercase" >Draft</span>
+                                                @endif
                                             </td>
-                                            <td>{{ $record->price }}</td>
-                                            <td>{{ $record->type }}</td>
                                             <td>
                                                 <div class="col d-flex justify-content-evenly">
 
                                                     <a title="Edit"
-                                                        href="{{ route('admin.tv-channel.edit', $record->id) }}"
+                                                        href="{{ route('admin.sub-categories.edit', $record->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
-                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-channel"
+                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-package"
                                                         data-id="{{ $record->id }}"
-                                                        data-action="{{ route('admin.tv-channel.destroy', $record->id) }}"><i
+                                                        data-action="{{ route('admin.sub-categories.destroy', $record->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
                                     @endforeach
                                 @endif
-
                             </tbody>
                         </table>
                     </div>
@@ -92,13 +84,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#TvChannelTable').DataTable({
+            var table = $('#SmartPhoneFaqTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
@@ -107,14 +99,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4]
+                            columns: [0, 1, 2]
                         }
                     },
                 ],
@@ -125,9 +117,9 @@
             });
 
             table.buttons().container()
-                .appendTo('#TvChannelTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#SmartPhoneFaqTable_wrapper .col-md-6:eq(0)');
 
-            $("body").on("click", ".remove-channel", function() {
+            $("body").on("click", ".remove-package", function() {
                 var current_object = $(this);
                 swal({
                     title: "Are you sure?",

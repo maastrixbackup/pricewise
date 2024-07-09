@@ -203,6 +203,7 @@ class RequestController extends BaseController
                 $orderNo = $data->id + 1000;
                 $data->order_no = $orderNo;
                 $name = $data->userDetails ? $data->userDetails->name : '';
+                $email = $data->userDetails ? $data->userDetails->email : '';
 
                 $data->save();
                 if ($request->has('advantages')) {
@@ -223,7 +224,7 @@ class RequestController extends BaseController
                 $body['action_link'] = url('/') . '/api/view-order/' . $orderNo;
 
                 // Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
-                return response()->json(['success' => true, 'message' => 'User request saved successfully'], 200);
+                return response()->json(['success' => true, 'data' => ['name' => $name, 'email' => $email, 'order_no' => $orderNo], 'message' => 'User request saved successfully'], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
             }
@@ -242,9 +243,10 @@ class RequestController extends BaseController
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request,  $id)
+    public function show(Request $request)
     {
-        $userRequest = UserRequest::with('service', 'advantagesData', 'userDetails', 'providerDetails', 'categoryDetails')->find($id);
+        // return 123;
+        $userRequest = UserRequest::with('service', 'advantagesData', 'userDetails', 'providerDetails', 'categoryDetails')->find($request->request_id);
 
         // Change the format of the desired columns here
         $userRequest->shipping_address = json_decode($userRequest->shipping_address);
@@ -299,10 +301,13 @@ class RequestController extends BaseController
         //
     }
 
-    public function viewOrder(Request $request, $id)
-    {
-        $user_request = UserRequest::find($id);
-        return view('admin.requests.edit', compact('user_request'));
+    public function viewOrder(Request $request)
+    { 
+        // return $request->order_no;
+        $order_data = UserRequest::where('order_no', $request->order_no)->first();
+        
+        return $this->sendResponse($order_data, 'Order data retrieved successfully.');
+        // return view('admin.requests.edit', compact('user_request'));
     }
 
     public function getUserData(Request $request)
@@ -601,6 +606,12 @@ class RequestController extends BaseController
         return $this->sendError('Deals not found.');
     }
 
+    public function orderView(Request $request, $order_no)
+    {
+        //  return 1234567989;
+        return $user_request = UserRequest::where('order_no',$order_no)->first();
+    }
+
     public function getSmartPhoneDeals()
     {
         $sp_deal = SmartPhone::orderBy('id', 'desc')->where('status', 'active')->with('featuresDetails', 'discountsDetails', 'faqDetails')->get();
@@ -623,7 +634,7 @@ class RequestController extends BaseController
 
     public function getSearchData(Request $request)
     {
-        $events = Event::latest()->get();
+        $events = InsuranceProduct::latest()->get();
 
         // Return the data as a JSON response
         return response()->json([

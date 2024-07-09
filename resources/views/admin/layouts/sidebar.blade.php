@@ -219,7 +219,7 @@
                              </a>
                          </li>
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="">
+                             <a class="nav-main-link" href="#">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                                  <span class="nav-main-link-name">Options</span>
                              </a>
@@ -230,6 +230,13 @@
                                  <span class="nav-main-link-name">Categories</span>
                              </a>
                          </li>
+
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.sub-categories.index') }}">
+                                <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                <span class="nav-main-link-name">Sub Categories</span>
+                            </a>
+                        </li>
                      </ul>
                  </li>
 

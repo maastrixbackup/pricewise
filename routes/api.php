@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\HomeInsuranceController;
 use App\Http\Controllers\API\VehicleInsuranceController;
 use App\Http\Controllers\API\AccidentalInsuranceController;
+use App\Http\Controllers\API\BusinessEquipmentController;
+use App\Http\Controllers\API\BusinessInterruptionController;
 use App\Http\Controllers\API\TravelInsuranceController;
 use App\Http\Controllers\API\FuneralInsuranceController;
 use App\Http\Controllers\API\CyberSecurityController;
@@ -45,7 +47,7 @@ Route::get('get-top-four-deals', [RequestController::class, 'getTopFourDeals']);
 Route::get('get-internet-tv-deals', [RequestController::class, 'getInternetTvDeals']);
 Route::get('get-home-insurance-deals', [RequestController::class, 'getHomeInsuranceDeals']);
 
-
+// Personal Insurance
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
 Route::post('health-insurance-compare', [HealthInsuranceController::class, 'healthInsuranceCompare']);
@@ -82,9 +84,23 @@ Route::post('liability-insurance-compare', [LiabilityInsuranceController::class,
 // Api on events by satyajit
 Route::get('get-events-list', [RequestController::class, 'eventlist']);
 
+
+//Commercial Insurance
+// Business Interruption Insurance
+Route::post('business-interruption-insurance', [BusinessInterruptionController::class, 'index']);
+
+// Business Equipment Insurance
+Route::post('business-equipment-insurance', [BusinessEquipmentController::class, 'index']);
+
+
+
+
 //Frontend Guest
     // SmartPhone Deals
     Route::any('get-smart-phone-deals', [RequestController::class,'getSmartPhoneDeals']);
+
+    // SmartPhone Deals
+    Route::any('get-search-data', [RequestController::class,'getSearchData']);
 //Internet TvR
     Route::post('internet-tv', [InternetTvController::class, 'index']);
     Route::post('internet-tv-compare', [InternetTvController::class, 'internetCompare']);
@@ -94,6 +110,7 @@ Route::get('get-events-list', [RequestController::class, 'eventlist']);
     Route::get('suppliers', [SettingsController::class, 'getSupliers']);
     Route::get('house-type', [SettingsController::class, 'houseTypes']);
     Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
+
 //Frontent === Auth
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
@@ -112,8 +129,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 //API route for user request
     Route::post('save-user-request', [RequestController::class, 'store']);
     Route::post('get-user-request', [RequestController::class, 'index']);
-    Route::get('show-user-request/{request_id}', [RequestController::class, 'show']);
-    Route::get('view-order/{order_no}', [RequestController::class, 'viewOrder']);
+    
+    Route::post('show-user-request', [RequestController::class, 'show']);
+    Route::post('view-order', [RequestController::class, 'viewOrder']);
+    
     //Reviews
     Route::post('review-list', [RequestController::class, 'reviewList']);
     Route::post('review-save', [RequestController::class, 'reviewSave']);

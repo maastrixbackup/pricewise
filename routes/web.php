@@ -42,7 +42,7 @@ Route::group(['prefix' => 'pricewise'], function () {
     // 		    Lfm::routes();
     // 		});
     // Admin
-    Route::get('view-order/{order_no}', 'RequestController@viewOrder')->name('request.view_order');
+    // Route::get('view-order/{order_no}', 'RequestController@viewOrder')->name('request.view_order');
     Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
         Route::namespace('Auth')->middleware('guest:admin')->group(function () {
@@ -90,7 +90,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('provider-discount', 'ProviderDiscountController');
             Route::resource('provider-feature', 'ProviderFeatureController');
 
-            
+
             //Requests
             Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
             Route::post('/update_status/{id}', 'RequestController@updateStatus')->name('request.update_status');
@@ -173,6 +173,8 @@ Route::group(['prefix' => 'pricewise'], function () {
 
             //Categories
             Route::resource('categories', 'CategoryController');
+            //SubCategories
+            Route::resource('sub-categories', 'SubCategoryController');
             //Banners
             Route::resource('banners', 'BannerController');
             //Reimbursement

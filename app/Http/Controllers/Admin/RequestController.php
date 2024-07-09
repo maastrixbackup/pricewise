@@ -13,7 +13,7 @@ use App\Models\Provider;
 use App\Models\Feature;
 use Validator;
 use App\Http\Resources\EnergyResource;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserData;
 use App\Models\UserRequest;
@@ -55,11 +55,11 @@ class RequestController extends Controller
             ->orWhere('commission_amt', 'like', '%' . $searchValue . '%')
             ->orWhere('shipping_address', 'like', '%' . $searchValue . '%')
             ->orWhere('billing_address', 'like', '%' . $searchValue . '%')
-            ->orWhere('request_status', 'like', '%' . $searchValue . '%')           
+            ->orWhere('request_status', 'like', '%' . $searchValue . '%')
             ->orWhereHas('providerDetails', function($query) use ($searchValue) {
                 $query->where('name', 'like', '%' . $searchValue . '%');
-                });            	  
-            
+                });
+
     }
 
     if (isset($request->user_id)) {
@@ -111,7 +111,7 @@ class RequestController extends Controller
 
         // Get distinct morph types for the service relationship
         $serviceMorphTypes = UserRequest::select('service_type')->distinct()->pluck('service_type');
-        
+
         // Dynamically add whereHasMorph for each service type
         foreach ($serviceMorphTypes as $morphType) {
             $query->orWhereHasMorph('service', $morphType, function($query, $type) use ($searchValue) {
@@ -126,7 +126,7 @@ class RequestController extends Controller
 	    ->get();
 
 	$data = [];
-	
+
 	foreach ($requestRecords as $key => $record) {
 	    $editUrl = route('admin.requests.edit',$record->id). '?' . http_build_query(['category' => $record->category, 'service_id' => $record->service_id]);
 	    $action = '<a href="' . $editUrl . '" class="btn btn-primary btn-sm">Edit</a>';
@@ -170,12 +170,12 @@ class RequestController extends Controller
 	{
 		$serviceId = $request->query('service_id');
 		$category = $request->query('category');
-	    $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('id', $id)		    
+	    $userRequest = UserRequest::with('service','advantagesData','userDetails','providerDetails','categoryDetails')->where('id', $id)
 		    ->first();
 
 
-		    //dd(json_decode($userRequest->advantages, true));		    
-	    return view('admin.requests.edit', compact('userRequest')); 
+		    //dd(json_decode($userRequest->advantages, true));
+	    return view('admin.requests.edit', compact('userRequest'));
 	}
 
 

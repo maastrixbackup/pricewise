@@ -28,7 +28,7 @@
                         <label for="input35" class=" col-form-label">Name</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Name">
                     </div>
-                    <div class=" mb-3">
+                    {{-- <div class=" mb-3">
                         <label for="parent" class=" col-form-label">Parent Category</label>
                         <select class="form-control selectpicker" data-live-search="true" name="parent" id="parent">
                                 <option value="">Select</option>
@@ -36,8 +36,20 @@
                                 <option value="{{$parent->id}}">{{$parent->name}}</option>
                                 @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
+                    <div class="row mb-3">
+                        <label for="input_type" class=" col-form-label">Url<sup
+                                class="text-danger">*</sup></label>
+                        <div class="">
+                            <input type="text" class="form-control" name="slug" id="slug" value="{{ old('slug') }}"
+                                placeholder="Url" readonly>
+                            @error('slug')
+                                <div class="alert alert-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                    </div>
                     <div class="row mb-3">
                         <label for="input_type" class=" col-form-label">Select Icon</label>
                         <div class="form-group">
@@ -145,5 +157,15 @@
     });
 
 
+</script>
+<script>
+    $("#name").keyup(function() {
+        var name_val = $("#name").val();
+        $("#slug").val(name_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+    });
+    $("#name").keydown(function() {
+        var name_val = $("#name").val();
+        $("#slug").val(name_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+    });
 </script>
 @endpush

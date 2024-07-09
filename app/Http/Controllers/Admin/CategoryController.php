@@ -32,7 +32,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $objCategory = Category::latest()->get();
+        $objCategory = Category::latest()->whereNull('parent')->get();
 //if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
 //dd(\Auth::guard('admin')->user()->roles);
 // foreach (Auth::guard('admin')->user()->roles as $role) {
@@ -70,10 +70,11 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $objCategory = new Category();
         $objCategory->name = $request->name;
         $objCategory->slug = $request->slug;
-        $objCategory->parent = $request->parent;
+        // $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
         $objCategory->image = $request->image;
         $objCategory->icon = $request->icon;
@@ -147,7 +148,7 @@ class CategoryController extends Controller
         $objCategory = Category::find($id);
         $objCategory->name = $request->name;
         $objCategory->slug = $request->slug;
-        $objCategory->parent = $request->parent;
+        // $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
         $objCategory->icon = $request->icon;
         $objCategory->status = $request->status;
@@ -199,7 +200,7 @@ class CategoryController extends Controller
         try {
             Category::find($id)->delete();
             return back()->with(Toastr::error(__('Category deleted successfully!')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.categories.index')->with($error_msg);
         }

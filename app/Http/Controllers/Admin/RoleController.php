@@ -92,7 +92,7 @@ class RoleController extends Controller
 			$role->syncPermissions($request->input('permission'));
 			Toastr::success(__('Role added successfully!'));
 			return redirect()->route('admin.roles.index');
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			Toastr::error(__('There is an error! Please try later!'));
 			return redirect()->route('admin.roles.index');
 		}
@@ -133,7 +133,7 @@ class RoleController extends Controller
 
 			Toastr::success(__('Role updated successfully!'));
 			return redirect()->route('admin.roles.index');
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			Toastr::error(__('There is an error! Please try later!'));
 			return redirect()->route('admin.roles.index');
 		}
@@ -153,7 +153,7 @@ class RoleController extends Controller
 			try {
 				Role::find($id)->delete();
 				return back()->with(Toastr::error(__('Role deleted successfully!')));
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$error_msg = Toastr::error(__('There is an error! Please try later!'));
 				return redirect()->route('admin.roles.index')->with($error_msg);
 			}
