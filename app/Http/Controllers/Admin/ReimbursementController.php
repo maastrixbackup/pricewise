@@ -74,12 +74,12 @@ class ReimbursementController extends Controller
     {
         $objCategory = new Reimbursement();
         $objCategory->name = $request->name;
-        $objCategory->description = $request->description;        
+        $objCategory->description = $request->description;
         $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
         $objCategory->sub_category = $request->sub_category;
         // $objCategory->icon = $request->icon;
-        
+
         // $objCategory->status = $request->status;
         if($request->has('cropped_image')){
         $croppedImage = $request->cropped_image;
@@ -210,7 +210,7 @@ class ReimbursementController extends Controller
         try {
             Reimbursement::find($id)->delete();
             return back()->with(Toastr::error(__('Reimbursement deleted successfully!')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.categories.index')->with($error_msg);
         }

@@ -18,7 +18,7 @@ use App\Models\Combo;
 use App\Models\Affiliate;
 use App\Models\Feature;
 use App\Models\ProviderFeature;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;

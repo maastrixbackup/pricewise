@@ -35,7 +35,7 @@
                             <tr>
                                 <th>Sl</th>
                                 <th>Name</th>                               
-                                <th>Parent</th>
+                                <th>Slug</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -46,7 +46,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->name ? $val->name : "NA"}}</td>
-                                <td>{{$val->parentCat ? $val->parentCat->name : "NA"}}</td>                            
+                                <td>{{$val->slug ? $val->slug : "NA"}}</td>                            
                                 
                                 <td>
                                     <div class="col">

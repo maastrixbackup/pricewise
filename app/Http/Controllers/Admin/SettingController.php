@@ -9,6 +9,8 @@ use App\Models\Setting;
 use App\Models\MailchimpSetting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
+use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,8 +26,8 @@ class SettingController extends Controller
     {
         try {
             $website = WebsiteSetting::find(1); // Assuming there's only one website setting record
-            
-            $website->site_title = $request->site_title;        
+
+            $website->site_title = $request->site_title;
             $website->description = $request->description;
             $website->address = $request->address;
             $website->phone = $request->phone;
@@ -36,27 +38,27 @@ class SettingController extends Controller
             $website->linkedin = $request->linkedin;
             $website->telegram = $request->telegram;
             $website->youTube = $request->youTube;
-    
+
             // Handle uploaded logo image
             if ($request->has('cropped_image')) {
                 $croppedImage = $request->cropped_image;
                 $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
                 $imageName = 'logo_' . time() . '.png';
                 $destinationDirectory = 'public/images/website';
-    
+
                 // Save the image to the server
                 $filePath = $destinationDirectory . '/' . $imageName;
                 Storage::put($filePath, $imgData);
-    
+
                 // Delete the old logo image if it exists
                 if ($website->logo) {
                     Storage::delete($destinationDirectory . '/' . $website->logo);
                 }
-    
+
                 // Set the new logo image
                 $website->logo = $imageName;
             }
-    
+
             // Save the updated website settings
             if ($website->save()) {
                 Toastr::success('Website Settings Updated Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -117,8 +119,8 @@ class SettingController extends Controller
                 strtoupper("$key=") . config("$key_config"),
                 strtoupper("MAIL_$key_config")."=$value",
                 $envContent
-            );         
-           
+            );
+
             }else{
                 $envContent = Str::replaceFirst(
                 strtoupper("$key=") . config("mail.mailers.smtp.$key_config"),
@@ -140,7 +142,7 @@ class SettingController extends Controller
         $message = ['message' => 'Failed to update SMTP settings', 'title' => 'Error'];
         return response()->json(['status' => false, 'message' => $message]);
     }
-        
+
     }
 
     public function paymentEdit()
@@ -151,9 +153,9 @@ class SettingController extends Controller
     }
 
 
-    public function paymentStore(Request $request){    
+    public function paymentStore(Request $request){
         try{
-        foreach($request->input('payment') as $key => $value){          
+        foreach($request->input('payment') as $key => $value){
            Setting::where('type','payment_setting')->where('key', $key)
         ->update(['value' => $value]);
         }
@@ -168,15 +170,15 @@ class SettingController extends Controller
     }
     }
 
-    public function businessEdit() 
+    public function businessEdit()
     {
         $businessSetting  = Setting::where('type', 'business_general')->orderBy('key', 'asc')->get()->groupBy('sub_type');
         return view('admin.settings.business_edit', compact('businessSetting'));
     }
 
-    public function businessStore(Request $request){    
+    public function businessStore(Request $request){
         try{
-        foreach($request->input('business') as $key => $value){          
+        foreach($request->input('business') as $key => $value){
            Setting::where('type','business_general')->where('key', $key)
         ->update(['value' => $value]);
         }

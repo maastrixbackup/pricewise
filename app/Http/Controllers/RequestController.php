@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Admin\AdminController;
 use App\Models\Post;
+use App\Models\UserRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class RequestController extends AdminController
@@ -16,7 +18,6 @@ class RequestController extends AdminController
     public function index()
     {
         $posts = Post::whereAdminId(\Auth::guard('admin')->user()->id)->get();
-
         return view('admin.posts.index',['posts'=>$posts]);
     }
 

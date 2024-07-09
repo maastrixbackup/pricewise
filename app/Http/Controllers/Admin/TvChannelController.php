@@ -51,7 +51,7 @@ class TvChannelController extends Controller
             'price' => 'required',
             'type' => 'required',
         ]);
- 
+
         try {
             $newChannel = new TvChannel();
             $newChannel->channel_name = $request->channel_name;
@@ -106,7 +106,7 @@ class TvChannelController extends Controller
             'price' => 'required',
             'type' => 'required',
         ]);
- 
+
         try {
             $channel = TvChannel::findOrFail($id);
             $channel->channel_name = $request->channel_name;

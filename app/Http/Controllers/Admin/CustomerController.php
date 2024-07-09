@@ -9,7 +9,8 @@ use App\Models\Country;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\WelcomeMail;
-use Mail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
@@ -63,7 +64,7 @@ class CustomerController extends Controller
         $objUser->mobile =  $request->mobile;
         $objUser->address =  $request->address;
         $objUser->country =  $request->country;
-        $objUser->status =  $request->status;        
+        $objUser->status =  $request->status;
         $objUser->password = Hash::make('password');
         // Extract base64 encoded image data and decode it
         $croppedImage = $request->cropped_image;
@@ -211,7 +212,7 @@ class CustomerController extends Controller
                 'user'=>  $objUser,
                 'password' => $request->password
             ];
-     
+
             Mail::to($email)->send(new WelcomeMail($body));
 
 

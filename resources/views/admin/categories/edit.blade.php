@@ -32,6 +32,10 @@
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{$objCategory->name}}">
                         </div>
                         <div class=" mb-3">
+                            <label for="input35" class=" col-form-label">Name</label>
+                            <input type="text" class="form-control" id="slug" name="slug" placeholder="Slug" value="{{$objCategory->slug}}">
+                        </div>
+                        {{-- <div class=" mb-3">
                         <label for="parent" class=" col-form-label">Parent Category</label>
                         <select class="form-control selectpicker" data-live-search="true" name="parent" id="parent">
                                 <option value="">Select</option>
@@ -39,7 +43,7 @@
                                 <option value="{{$parent->id}}" @if($objCategory->parent == $parent->id)selected @endif>{{$parent->name}}</option>
                                 @endforeach
                         </select>
-                        </div>
+                        </div> --}}
                         <div class="mb-3">
                         <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
                         
@@ -144,5 +148,15 @@
     });
 
 
+</script>
+<script>
+$("#name").keyup(function() {
+    var name_val = $("#name").val();
+    $("#slug").val(name_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+});
+$("#name").keydown(function() {
+    var name_val = $("#name").val();
+    $("#slug").val(name_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+});
 </script>
 @endpush
