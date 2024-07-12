@@ -70,11 +70,11 @@ class UserDetailController extends Controller
     {
         $responseData = array();
         $data = $request->input();
-        
-        $data['user_id'] = auth()->user()->id;
+
+        $data['user_id'] = $request->user_id;
         $data['service_details'] = json_encode($request->service_details);
-        
-        $customerCred = UserCredential::updateOrCreate(['user_id' => $data['user_id'], 'category'=> $data['category']], $data);
+
+        $customerCred = UserCredential::updateOrCreate(['user_id' => $data['user_id'], 'category' => $data['category']], $data);
         if ($customerCred) {
             array_push($responseData, array('response' => array('status' => 'success', 'msg' => 'Customer Credential Updated Successfully.')));
             return response()->json($responseData, 200);
@@ -83,10 +83,34 @@ class UserDetailController extends Controller
             return response()->json($responseData, 200);
         }
     }
-    public function getCredentials(Request $request){
-        $responseData = UserCredential::where('user_id', $request->user_id)->where('category', $request->category)->first();
-        return response()->json($responseData, 200);
+    public function getCredentials(Request $request)
+    {
+        // Validate the request data
+        // $request->validate([
+        //     'user_id' => 'required',
+        //     'category' => 'required'
+        // ]);
+
+        // Retrieve the user credentials
+        $responseData = UserCredential::where('user_id', $request->user_id)
+            ->where('category', $request->category)
+            ->first();
+
+        // Check if data is found
+        if ($responseData) {
+            return response()->json([
+                'success' => true,
+                'data' => $responseData,
+                'message' => 'User credentials retrieved successfully.'
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No user credentials found for the given parameters.'
+            ], 400);
+        }
     }
+
 
     public function changepassword(Request $request)
     {
@@ -117,7 +141,7 @@ class UserDetailController extends Controller
             return response()->json($responseData, 200);
         } else {
             array_push($responseData, array('response' => array('status' => 'error')));
-            return response()->json($responseData, 200);
+            return response()->json($responseData, 400);
         }
     }
 

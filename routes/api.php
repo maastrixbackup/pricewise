@@ -82,7 +82,7 @@ Route::post('liability-insurance', [LiabilityInsuranceController::class, 'index'
 Route::post('liability-insurance-compare', [LiabilityInsuranceController::class, 'liabilityInsuranceCompare']);
 
 // Api on events by satyajit
-Route::get('get-events-list', [RequestController::class, 'eventlist']);
+Route::get('get-events-list', [RequestController::class, 'eventList']);
 
 
 //Commercial Insurance
@@ -129,12 +129,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 //API route for user request
     Route::post('save-user-request', [RequestController::class, 'store']);
     Route::post('get-user-request', [RequestController::class, 'index']);
-    
+
     Route::post('show-user-request', [RequestController::class, 'show']);
     Route::post('view-order', [RequestController::class, 'viewOrder']);
-    
+
     //Reviews
     Route::post('review-list', [RequestController::class, 'reviewList']);
     Route::post('review-save', [RequestController::class, 'reviewSave']);
-    Route::get('review-show/{id}', [RequestController::class, 'reviewShow']);
+    Route::post('review-show', [RequestController::class, 'reviewShow']);
 });

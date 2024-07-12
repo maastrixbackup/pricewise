@@ -36,7 +36,7 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Title</th>
+                                    <th>Sub Category</th>
                                     <th>Parent Category</th>
                                     <th>Status</th>
                                     <th>Action</th>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -45,7 +46,7 @@ class CategoryController extends Controller
     //     echo $permission->name . "\n";
     // }
         if($request->category_id && $request->category_id != null){
-            $subCategory = Category::where('parent', $request->category_id)->latest()->get();
+            $subCategory = SubCategory::where('category_id', $request->category_id)->latest()->get();
             return response()->json(['status' => true, 'data' => $subCategory]);
         }
         return view('admin.categories.index', compact('objCategory'));
@@ -78,28 +79,28 @@ class CategoryController extends Controller
         $objCategory->type = $request->type;
         $objCategory->image = $request->image;
         $objCategory->icon = $request->icon;
-        
+
         $objCategory->status = $request->status;
         $croppedImage = $request->cropped_image;
 
-      
+
     if ($request->image) {
               // Generate a unique file name for the image
               $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
-        
+
               $destinationDirectory = public_path('storage/images/categories');
-      
+
               if (!is_dir($destinationDirectory)) {
                   mkdir($destinationDirectory, 0777, true);
               }
-      
+
               // Move the file to the public/uploads directory
               $request->file('image')->move($destinationDirectory, $imageName);
 
               $objCategory->image = $imageName ;
     }
-       
-        
+
+
         if ($objCategory->save()) {
             return redirect()->route('admin.categories.index')->with(Toastr::success('Category Created Successfully', '', ["positionClass" => "toast-top-right"]));
             // Toastr::success('Driver Created Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -131,7 +132,7 @@ class CategoryController extends Controller
     {
 
         $objCategory = Category::find($id);
-        $parents = Category::whereNull('parent')->latest()->get(); 
+        $parents = Category::whereNull('parent')->latest()->get();
         return view('admin.categories.edit', compact('objCategory', 'parents'));
     }
 
@@ -156,13 +157,13 @@ class CategoryController extends Controller
         if ($request->image) {
             // Generate a unique file name for the image
             $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
-      
+
             $destinationDirectory = public_path('storage/images/categories');
-    
+
             if (!is_dir($destinationDirectory)) {
                 mkdir($destinationDirectory, 0777, true);
             }
-    
+
             // Move the file to the public/uploads directory
             $request->file('image')->move($destinationDirectory, $imageName);
 
@@ -174,7 +175,7 @@ class CategoryController extends Controller
             }
 
             $objCategory->image = $imageName ;
-            
+
         }
 
         if ($objCategory->save()) {

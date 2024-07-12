@@ -222,8 +222,8 @@ class RequestController extends BaseController
                 $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
                 $body['name'] = $name;
                 $body['action_link'] = url('/') . '/api/view-order/' . $orderNo;
-
-                // Mail::to('bijay.behera85@gmail.com')->send(new CustomerRequestSubmit($body));
+                return $body;
+                // Mail::to($email)->send(new CustomerRequestSubmit($body));
                 return response()->json(['success' => true, 'data' => ['name' => $name, 'email' => $email, 'order_no' => $orderNo], 'message' => 'User request saved successfully'], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
@@ -302,10 +302,10 @@ class RequestController extends BaseController
     }
 
     public function viewOrder(Request $request)
-    { 
+    {
         // return $request->order_no;
         $order_data = UserRequest::where('order_no', $request->order_no)->first();
-        
+
         return $this->sendResponse($order_data, 'Order data retrieved successfully.');
         // return view('admin.requests.edit', compact('user_request'));
     }
@@ -344,28 +344,31 @@ class RequestController extends BaseController
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
         }
     }
-
     public function reviewList(Request $request)
     {
-        $userData = Review::where('user_id', $request->user_id)->get();
+        $query = Review::where('user_id', $request->user_id);
+
         if ($request->has('post_id')) {
-            $userData = Review::where('user_id', $request->user_id)
-                ->where('post_id', $request->post_id)->latest()->get();
+            $query->where('post_id', $request->post_id);
         }
+
+        $userData = $query->latest()->get();
+
         return $this->sendResponse($userData, 'Review data retrieved successfully.');
     }
+
+
     public function reviewSave(Request $request)
     {
         try {
-            $userRequest = UserRequest::where('user_id', $request->user_id)
-                ->where('post_id', $request->post_id)->firstOrFail();
+            // $userRequest = UserRequest::where('user_id', $request->user_id)
+            //     ->where('post_id', $request->post_id)->firstOrFail();
 
             $validatedData = $request->validate([
                 'user_id' => 'required',
                 'rating' => 'required|numeric',
                 'post_id' => 'required|numeric',
             ]);
-
 
 
             Review::updateOrCreate(
@@ -388,9 +391,9 @@ class RequestController extends BaseController
         }
     }
 
-    public function reviewShow($id)
+    public function reviewShow(Request $request)
     {
-        $review = Review::find($id);
+        $review = Review::where('id', $request->review_id)->first();
         return $this->sendResponse($review, 'User review retrieved successfully.');
     }
 
@@ -532,14 +535,12 @@ class RequestController extends BaseController
             ]);
         }
     }
-    public function eventlist(Request $request)
+    public function eventList(Request $request)
     {
         // Fetch all event from the database
         $events = Event::latest()->get();
 
         // Return the data as a JSON response
-
-
         return response()->json([
             'success' => true,
             'data' => $events,
@@ -609,7 +610,7 @@ class RequestController extends BaseController
     public function orderView(Request $request, $order_no)
     {
         //  return 1234567989;
-        return $user_request = UserRequest::where('order_no',$order_no)->first();
+        return $user_request = UserRequest::where('order_no', $order_no)->first();
     }
 
     public function getSmartPhoneDeals()

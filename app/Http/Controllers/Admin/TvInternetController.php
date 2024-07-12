@@ -60,7 +60,7 @@ class TvInternetController extends Controller
         $combos = Combo::where('category', 1)->latest()->get();
         // $objAdditionalCategories = AdditionalCategory::latest()->get();
          $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
-         $objCategory = Category::latest()->get();
+         $objCategory = Category::whereNull('parent')->latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
         return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers', 'tv_packages', 'combos'));
@@ -234,7 +234,7 @@ class TvInternetController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = $request->combos ? json_encode($request->combos) : [];            
+            $objTv->combos = $request->combos ? json_encode($request->combos) : [];
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -243,7 +243,7 @@ class TvInternetController extends Controller
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
             $objTv->mechanic_install = $request->mechanic_install;
-            $objTv->mechanic_charge = $request->mechanic_charge;            
+            $objTv->mechanic_charge = $request->mechanic_charge;
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
             $objTv->no_of_receivers = $request->no_of_receivers;
@@ -300,7 +300,7 @@ class TvInternetController extends Controller
      */
     public function show($id)
     {
-        
+
     }
 
     /**
@@ -316,12 +316,12 @@ class TvInternetController extends Controller
         $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $providers = Provider::latest()->get();
         $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
-        $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();       
+        $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
         $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
-        $objCategory = Category::latest()->get();
+        $objCategory = Category::whereNull('parent')->latest()->get();
         $documents = Document::where('post_id', $id)->where('category', $objTv->category)->get();
         $tvPackages = TvPackage::latest()->get();
         $combos = Combo::latest()->get();
@@ -355,7 +355,7 @@ class TvInternetController extends Controller
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos?$request->combos : []);            
+            $objTv->combos = json_encode($request->combos?$request->combos : []);
             $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -364,7 +364,7 @@ class TvInternetController extends Controller
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
             $objTv->mechanic_install = $request->mechanic_install;
-            $objTv->mechanic_charge = $request->mechanic_charge;            
+            $objTv->mechanic_charge = $request->mechanic_charge;
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
             $objTv->no_of_receivers = $request->no_of_receivers;
@@ -444,9 +444,9 @@ class TvInternetController extends Controller
         try{
         foreach($request->input('features') as $feature_id => $value){
             if($value != null && $post_category != null){
-                
+
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
-            
+
         }
         }
         }catch(\Exception $e){
@@ -458,16 +458,16 @@ class TvInternetController extends Controller
         }
         $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
     public function tv_feature_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
+            if($value != null && $post_category != null){
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
-            
+
         }
         }
         }catch(\Exception $e){
@@ -479,7 +479,7 @@ class TvInternetController extends Controller
         }
         $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 
     public function tele_feature_update(Request $request, $post_id)
@@ -487,9 +487,9 @@ class TvInternetController extends Controller
         $post_category = $request->category_id;
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
+            if($value != null && $post_category != null){
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['feature_value' => $value]);
-            
+
         }
         }
         }catch(\Exception $e){
@@ -501,7 +501,7 @@ class TvInternetController extends Controller
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 
     public function service_info_update(Request $request, $post_id)
@@ -511,15 +511,15 @@ class TvInternetController extends Controller
           $infeature = $request->input('features');
          if(is_array($infeature)){
             foreach($infeature as $feature_id => $value){
-                if($value != null && $post_category != null){                
+                if($value != null && $post_category != null){
                     PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
-                
+
             }
             }
          } else {
             $infeature = []; // Default to an empty array
-        } 
-        
+        }
+
 
 
         }catch(\Exception $e){
@@ -531,6 +531,6 @@ class TvInternetController extends Controller
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 }

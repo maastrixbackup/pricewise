@@ -662,6 +662,7 @@ class ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd
         'App\\Http\\Controllers\\Admin\\SettingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SettingController.php',
         'App\\Http\\Controllers\\Admin\\SmartPhoneController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SmartPhoneController.php',
         'App\\Http\\Controllers\\Admin\\SmartPhoneFaqController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SmartPhoneFaqController.php',
+        'App\\Http\\Controllers\\Admin\\SubCategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SubCategoryController.php',
         'App\\Http\\Controllers\\Admin\\TvChannelController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/TvChannelController.php',
         'App\\Http\\Controllers\\Admin\\TvController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/TvController.php',
         'App\\Http\\Controllers\\Admin\\TvInternetController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/TvInternetController.php',

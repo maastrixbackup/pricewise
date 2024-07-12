@@ -85,6 +85,7 @@ return array(
     'App\\Http\\Controllers\\Admin\\SettingController' => $baseDir . '/app/Http/Controllers/Admin/SettingController.php',
     'App\\Http\\Controllers\\Admin\\SmartPhoneController' => $baseDir . '/app/Http/Controllers/Admin/SmartPhoneController.php',
     'App\\Http\\Controllers\\Admin\\SmartPhoneFaqController' => $baseDir . '/app/Http/Controllers/Admin/SmartPhoneFaqController.php',
+    'App\\Http\\Controllers\\Admin\\SubCategoryController' => $baseDir . '/app/Http/Controllers/Admin/SubCategoryController.php',
     'App\\Http\\Controllers\\Admin\\TvChannelController' => $baseDir . '/app/Http/Controllers/Admin/TvChannelController.php',
     'App\\Http\\Controllers\\Admin\\TvController' => $baseDir . '/app/Http/Controllers/Admin/TvController.php',
     'App\\Http\\Controllers\\Admin\\TvInternetController' => $baseDir . '/app/Http/Controllers/Admin/TvInternetController.php',

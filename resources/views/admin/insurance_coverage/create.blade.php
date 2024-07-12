@@ -16,7 +16,7 @@
                     </li>
                 </ol>
             </nav>
-        </div> 
+        </div>
     </div>
     <!--end breadcrumb-->
     <div class="row">
@@ -50,16 +50,16 @@
                         </div>
                         <div class="row mb-3">
                             <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
-                            
+
                             <label for="upload_image">
                                     <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
-    
+
                                     <div class="overlay">
                                         <div>Click to Change Image</div>
                                     </div>
                                     <input type="file" name="image" class="image" id="upload_image" style="display:none" />
                                     <input type="hidden" id="cropped_image">
-    
+
                                 </label>
                                 @error('image')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
@@ -73,7 +73,7 @@
                                     @foreach ($subCategories as $subCategory)
                                         <option value="{{ $subCategory->id }}"
                                             {{ old('sub_category') == $subCategory->id ? 'selected' : '' }}>
-                                            {{ $subCategory->name }}</option>
+                                            {{ $subCategory->title }}</option>
                                     @endforeach
                                 </select>
                                 @error('sub_category')
@@ -81,7 +81,7 @@
                                 @enderror
                             </div>
                         </div>
-                     
+
                         <div class="row">
                             <label class=" col-form-label"></label>
                             <div class="">

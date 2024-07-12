@@ -20,7 +20,7 @@ use App\Models\FeedInCost;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class EnergyController extends Controller
 {
@@ -47,7 +47,7 @@ class EnergyController extends Controller
 
     	$objEnergy = EnergyProduct::latest()->get();
         $objEnergyFeatures = Feature::select('id','features','input_type')->where('category', 16)->get();
-        
+
         return view('admin.energy.index', compact('objEnergy', 'objEnergyFeatures'));
     }
 
@@ -56,13 +56,13 @@ class EnergyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() 
+    public function create()
     {
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
          $combos = Combo::where('category', 16)->latest()->get();
          $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
-         $objCategory = Category::latest()->get();
+         $objCategory = Category::whereNull('parent')->latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
         return view('admin.energy.add', compact('objCategory', 'objRelatedProducts', 'providers','combos'));
@@ -225,13 +225,13 @@ class EnergyController extends Controller
             $objEnergy->description = $request->description;
             $objEnergy->commission = $request->commission;
             $objEnergy->commission_type = $request->commission_type;
-            $objEnergy->avg_delivery_time = $request->avg_delivery_time;            
+            $objEnergy->avg_delivery_time = $request->avg_delivery_time;
             $objEnergy->contract_length = $request->contract_length;
             $objEnergy->contract_type = $request->contract_type;
             $objEnergy->transfer_service = $request->transfer_service;
             $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             //$combos = implode(",", $request->combos);
-            $objEnergy->combos = json_encode($request->combos ? $request->combos : []);            
+            $objEnergy->combos = json_encode($request->combos ? $request->combos : []);
             $objEnergy->status = $request->status?$request->status:0;
             $objEnergy->valid_till =  $request->valid_till;
             $objEnergy->no_of_person = $request->no_of_person;
@@ -240,33 +240,33 @@ class EnergyController extends Controller
             $objEnergy->government_levies_gas = $request->government_levies_gas;
             $objEnergy->is_featured = $request->is_featured;
             $objEnergy->government_levies_electric = $request->government_levies_electric;
-            $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;            
+            $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;
             $objEnergy->slug = $request->link;
             $objEnergy->provider = $request->provider;
             $objEnergy->no_gas = $request->no_gas;
             $objEnergy->energy_label = json_encode($request->energy_label);
             $objEnergy->meter_type = $request->meter_type;
-            
+
             if ($request->image) {
 
                 // Generate a unique file name for the image
                 $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
-          
+
                 $destinationDirectory = public_path('storage/images/energy');
-        
+
                 if (!is_dir($destinationDirectory)) {
                     mkdir($destinationDirectory, 0777, true);
                 }
-        
+
                 // Move the file to the public/uploads directory
                 $request->file('image')->move($destinationDirectory, $imageName);
-  
+
                 $objEnergy->image = $imageName ;
       }
-            
-     
+
+
             if ($objEnergy->save()) {
-                return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));                
+                return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
             } else {
                 $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
                 return response()->json(["status" => false, 'message' => $message]);
@@ -282,7 +282,7 @@ class EnergyController extends Controller
      */
     public function show($id)
     {
-        
+
     }
 
     /**
@@ -304,9 +304,9 @@ class EnergyController extends Controller
     ->get()
     ->groupBy('parent');
 
-       
+
         $postEnergyFeatures = PostFeature::where('post_id', $id)
-        ->where('category_id', $objEnergy->category)        
+        ->where('category_id', $objEnergy->category)
         ->select('feature_id', 'feature_value', 'details')
         ->get()
         ->mapWithKeys(function ($item) {
@@ -315,7 +315,7 @@ class EnergyController extends Controller
         //dd($postEnergyFeatures);
         $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objEnergy->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
-        $objCategory = Category::latest()->get();
+        $objCategory = Category::whereNull('parent')->latest()->get();
         return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents', 'combos'));
     }
 
@@ -330,17 +330,17 @@ class EnergyController extends Controller
     public function update(Request $request, $id)
     {
         //dd($request->data);
-        $objEnergy = EnergyProduct::where('id', $id)->first();        
+        $objEnergy = EnergyProduct::where('id', $id)->first();
             $objEnergy->title = $request->title;
             $objEnergy->description = $request->description;
             $objEnergy->commission = $request->commission;
             $objEnergy->commission_type = $request->commission_type;
-            $objEnergy->avg_delivery_time = $request->avg_delivery_time;            
+            $objEnergy->avg_delivery_time = $request->avg_delivery_time;
             $objEnergy->contract_length = $request->contract_length;
             $objEnergy->contract_type = $request->contract_type;
             $objEnergy->transfer_service = $request->transfer_service;
             $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objEnergy->combos = $request->combos?json_encode($request->combos) : [];            
+            $objEnergy->combos = $request->combos?json_encode($request->combos) : [];
             $objEnergy->status = $request->online_status?$request->online_status:0;
             $objEnergy->valid_till =  $request->valid_till;
             $objEnergy->category =  $request->category;
@@ -348,38 +348,38 @@ class EnergyController extends Controller
             $objEnergy->government_levies_gas = $request->government_levies_gas;
             $objEnergy->is_featured = $request->is_featured;
             $objEnergy->government_levies_electric = $request->government_levies_electric;
-            $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;            
+            $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;
             $objEnergy->slug = $request->link;
             $objEnergy->no_of_person = $request->no_of_person;
             $objEnergy->provider = $request->provider;
             $objEnergy->no_gas = $request->no_gas;
             $objEnergy->energy_label = json_encode($request->energy_label);
             $objEnergy->meter_type = $request->meter_type;
-         
+
             if ($request->image) {
                 // Generate a unique file name for the image
                 $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
-          
+
                 $destinationDirectory = public_path('storage/images/categories');
-        
+
                 if (!is_dir($destinationDirectory)) {
                     mkdir($destinationDirectory, 0777, true);
                 }
-        
+
                 // Move the file to the public/uploads directory
                 $request->file('image')->move($destinationDirectory, $imageName);
-    
+
                 $existingFilePath = $destinationDirectory.'/'.$objEnergy->image;
-    
+
                 if (file_exists($existingFilePath)) {
                     // Delete the file
                     unlink($existingFilePath);
                 }
-    
+
                 $objEnergy->image = $imageName ;
-                
+
             }
-            
+
         if ($objEnergy->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.energy.index")]);
@@ -422,15 +422,15 @@ class EnergyController extends Controller
         $request->validate([
             'file' => 'required|file|mimes:pdf,doc,docx|max:2048', // Example validation rules
         ]);
-        
+
         // Check if the file is uploaded and valid
         if ($request->file('file')->isValid()) {
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
-        
+
             // Store the file in the 'public/documents' directory
             $filePath = $file->storeAs('public/documents', $fileName);
-        
+
             // Check if the file was stored successfully
             if ($filePath) {
                 // Insert file details into the database
@@ -440,7 +440,7 @@ class EnergyController extends Controller
                     'post_id' => $request->post_id,
                     'path' => $filePath // Store the file path in the database
                 ]);
-        
+
                 // Return success response
                 return response()->json(['success' => true, 'message' => 'File uploaded successfully']);
             } else {
@@ -451,8 +451,8 @@ class EnergyController extends Controller
             // Return error response if file upload failed
             return response()->json(['success' => false, 'message' => 'Invalid file'], 400);
         }
-        
-        
+
+
     }
     public function energy_doc_delete(Request $request, $post_id)
     {
@@ -479,7 +479,7 @@ class EnergyController extends Controller
     {
         $post_category = $request->category_id;
         try{
-            $objEnergy = EnergyProduct::where('id', $id)->first();        
+            $objEnergy = EnergyProduct::where('id', $id)->first();
             $objEnergy->gas_price = $request->gas_price;
             $objEnergy->normal_electric_price = $request->normal_electric_price;
             $objEnergy->peak_electric_price = $request->peak_electric_price;
@@ -503,7 +503,7 @@ class EnergyController extends Controller
         }
         $message = array('message' => 'Energy Prices Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 
     public function energy_feature_update(Request $request, $post_id)
@@ -513,17 +513,17 @@ class EnergyController extends Controller
         //dd($post_category);
         try{
             $mainfeature = $request->input('features');
-            if(is_array($mainfeature)){ 
+            if(is_array($mainfeature)){
                 foreach($mainfeature as $feature_id => $value){
-                    if($value != null && $post_category != null){                
+                    if($value != null && $post_category != null){
                         PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $post_category, 'sub_category' => $sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id], 'post_category' => $post_category]);
-                    
+
                 }
                 }
             }else{
                 $mainfeature = []; // Default to an empty array
             }
-       
+
 
 
         }catch(\Exception $e){
@@ -535,7 +535,7 @@ class EnergyController extends Controller
         }
         $message = array('message' => 'Energy Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 
     public function service_info_update(Request $request, $post_id)
@@ -543,9 +543,9 @@ class EnergyController extends Controller
         $post_category = $request->category_id;
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
+            if($value != null && $post_category != null){
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
-            
+
         }
         }
         }catch(\Exception $e){
@@ -557,6 +557,6 @@ class EnergyController extends Controller
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 }

@@ -28,7 +28,7 @@ class InsuranceProduct extends Model
 
     public function subCategory()
     {
-        return $this->belongsTo(Category::class, 'sub_category');
+        return $this->belongsTo(SubCategory::class, 'sub_category', 'id');
     }
 
     public function categoryDetail()
