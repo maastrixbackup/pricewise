@@ -27,8 +27,8 @@ class HealthInsuranceController extends BaseController
         $ownRiskRange = $request->voluntary_deductible;
         $coverages = $request->coverages;
 
-        $products = InsuranceProduct::where('sub_category',13)->with('postFeatures', 'categoryDetail','coverages.coverageDetails','providerDetails');
-       
+        $products = InsuranceProduct::where('sub_category',config('constant.subcategory.HealthInsurance'))->with('postFeatures', 'categoryDetail','coverages.coverageDetails','providerDetails');
+
         $products->when($postalCode, function ($query) use ($postalCode) {
              $query->whereJsonContains('pin_codes', $postalCode);
         })
@@ -42,15 +42,15 @@ class HealthInsuranceController extends BaseController
         })
         ->when($ownRiskRange, function ($query) use ($ownRiskRange) {
                $query->whereBetween('own_risk', $ownRiskRange);
-        })  
+        })
         ->when($coverages, function ($query) use ($coverages) {
             $query->whereHas('coverages', function ($query) use ($coverages) {
                 $query->whereIn('insurance_coverage_id', $coverages);
            });
         });
-  
-      
-        
+
+
+
        $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
            ->from('features as f1')
            ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
@@ -58,7 +58,7 @@ class HealthInsuranceController extends BaseController
            ->where('f1.is_preferred', 1)
            ->get()
            ->groupBy('parent');
-  
+
 
    // Initialize an empty array to store the grouped filters
    $filters = [];
@@ -72,31 +72,31 @@ class HealthInsuranceController extends BaseController
        ];
    }
 
-  
-        
+
+
         $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
 
         $recordsCount = $products->count();
 
         $providers = $products->count() > 0  ? Provider::where('category',$products->first('category')->category)->get(): []  ;
-       
-      
+
+
            $mergedData = [];
 
             foreach ($filteredProducts as $product) {
-                $formattedProduct = (new HealthInsuranceResource($product))->toArray($request);                
+                $formattedProduct = (new HealthInsuranceResource($product))->toArray($request);
                 $mergedData[] = $formattedProduct;
             }
 
         $message= $products->count() > 0 ? 'Products retrieved successfully.' : 'Products not found.';
-        
-  
+
+
         $coverages = insuranceCoverage::where('subcategory_id',13)->get();
         $coverages = $coverages->map(function ($coverage)  {
             $coverage->image = asset('storage/images/insurance_coverages/'.$coverage->image);
             return $coverage;
         });
-     
+
             return response()->json([
                 'success' => true,
                 'data' => $mergedData,
@@ -112,7 +112,7 @@ class HealthInsuranceController extends BaseController
         $compareIds = $request->compare_ids;
 
         if (!empty($compareIds)) {
-            $products = InsuranceProduct::where('sub_category',13)->with('postFeatures', 'categoryDetail','coverages.coverageDetails');
+            $products = InsuranceProduct::where('sub_category',config('constant.subcategory.HealthInsurance'))->with('postFeatures', 'categoryDetail','coverages.coverageDetails');
             $filteredProducts = $products->whereIn('id', $compareIds)->get();
 
             if ($filteredProducts->isNotEmpty()) {
@@ -134,19 +134,19 @@ class HealthInsuranceController extends BaseController
                             return (object) $item->toArray();
                         })->toArray()
                     ];
-                }                             
-            
+                }
+
                 $filteredProductsFormatted = HealthInsuranceResource::collection($filteredProducts);
 
-    
+
                 return response()->json([
                     'success' => true,
                     'data'    => $filteredProductsFormatted,
                     'filters' =>  $filters,
                     'message' => 'Products retrieved successfully.',
                 ], 200);
-                 
-                
+
+
             } else {
                 return $this->sendError('No products found -for comparison.', [], 404);
             }
@@ -157,5 +157,5 @@ class HealthInsuranceController extends BaseController
 
 
 
-   
+
 }

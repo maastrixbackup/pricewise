@@ -53,13 +53,14 @@ class InsuranceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
          $combos = Combo::where('category', 5)->latest()->get();
          $objRelatedProducts = InsuranceProduct::orderBy('id', 'asc')->get();
-         $objCategory = Category::latest()->get();
+         $objCategory = Category::whereNull('parent')->latest()->get();
          $providers = Provider::latest()->get();
          //$objFeature = TvFeature::latest()->get();
         return view('admin.insurance.add', compact('objCategory', 'objRelatedProducts', 'providers', 'combos'));
@@ -231,7 +232,7 @@ class InsuranceController extends Controller
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $combos =$request->combos ? implode(",", $request->combos) : Null ;
-            $objTv->combos = $request->combos?json_encode($request->combos) : [];            
+            $objTv->combos = $request->combos?json_encode($request->combos) : [];
             $objTv->status = $request->status?$request->status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -240,10 +241,10 @@ class InsuranceController extends Controller
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
             $objTv->mechanic_install = $request->mechanic_install;
-            $objTv->mechanic_charge = $request->mechanic_charge;            
+            $objTv->mechanic_charge = $request->mechanic_charge;
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
-            
+
             //$objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
             // if ($request->file('image') == null || $request->file('image') == '') {
             //     $input['image'] = $objTv->image;
@@ -259,19 +260,19 @@ class InsuranceController extends Controller
             if ($request->image) {
                 // Generate a unique file name for the image
                 $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
-          
+
                 $destinationDirectory = public_path('storage/images/categories');
-        
+
                 if (!is_dir($destinationDirectory)) {
                     mkdir($destinationDirectory, 0777, true);
                 }
-        
+
                 // Move the file to the public/uploads directory
                 $request->file('image')->move($destinationDirectory, $imageName);
-    
+
                 $objTv->image = $imageName ;
       }
-    
+
             if ($objTv->save()) {
                 return redirect()->route('admin.insurance.index')->with(Toastr::success('Insurance Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
                 //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -291,7 +292,7 @@ class InsuranceController extends Controller
      */
     public function show($id)
     {
-        
+
     }
 
     /**
@@ -326,7 +327,7 @@ class InsuranceController extends Controller
         //$postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', 2)->pluck('feature_value', 'feature_id')->toArray();
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
         $objRelatedProducts = InsuranceProduct::orderBy('id', 'asc')->get();
-        $objCategory = Category::latest()->get();
+        $objCategory = Category::whereNull('parent')->latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
         return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'objReimburseFeatures', 'postReimburseFeatures', 'serviceInfo', 'combos'));
@@ -355,7 +356,7 @@ class InsuranceController extends Controller
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $combos =$request->combos ? implode(",", $request->combos): Null;
-            $objTv->combos = $request->combos ? json_encode($request->combos) : [];            
+            $objTv->combos = $request->combos ? json_encode($request->combos) : [];
             $objTv->status = $request->online_status?$request->online_status:0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
@@ -364,7 +365,7 @@ class InsuranceController extends Controller
             $objTv->manual_install = $request->manual_install;
             $objTv->is_featured = $request->is_featured;
             $objTv->mechanic_install = $request->mechanic_install;
-            $objTv->mechanic_charge = $request->mechanic_charge;            
+            $objTv->mechanic_charge = $request->mechanic_charge;
             $objTv->slug = $request->link;
             $objTv->provider = $request->provider;
         // if ($request->file('image') == null || $request->file('image') == '') {
@@ -375,7 +376,7 @@ class InsuranceController extends Controller
         //     $imgFilename = $imgfile->getClientOriginalName();
         //     $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
         //     $image = $imgFilename;
-           
+
         // }
         if ($request->has('cropped_image')) {
         // Access base64 encoded image data directly from the request
@@ -407,7 +408,7 @@ class InsuranceController extends Controller
         // Set the image file name for the provider
         $objTv->image = $imageName;
         }
-         
+
         if ($objTv->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
@@ -433,6 +434,7 @@ class InsuranceController extends Controller
             return redirect()->route('admin.insurance.index')->with($error_msg);
         }
     }
+    
     public function default(Request $request, $id)
     {
         //dd($id);
@@ -446,15 +448,15 @@ class InsuranceController extends Controller
     }
 
     public function insurance_feature_update(Request $request, $post_id)
-    {        
+    {
         $post_category = $request->category_id;
         $sub_category = $request->sub_category;
         //dd($request->features);
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
+            if($value != null && $post_category != null){
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id],['post_id' => $post_id, 'category_id' => $post_category, 'sub_category' => $sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id], 'post_category' => $post_category]);
-            
+
         }
         }
         }catch(\Exception $e){
@@ -466,7 +468,7 @@ class InsuranceController extends Controller
         }
         $message = array('message' => 'Insurance Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
     public function insurance_reimburse_update(Request $request, $post_id)
     {
@@ -475,12 +477,12 @@ class InsuranceController extends Controller
         //dd($request->reimburse);
         try{
             $mainfereimburse = $request->input('reimburse');
-            if(is_array($mainfereimburse)){ 
+            if(is_array($mainfereimburse)){
         foreach($mainfereimburse as $feature_id => $value){
-            if($value != null && $post_category != null){                
+            if($value != null && $post_category != null){
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category], ['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'sub_category' =>$sub_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'details' => $request->details[$feature_id]]);
-            
-        } 
+
+        }
         }
         }else{
             $mainfeature = []; // Default to an empty array
@@ -496,7 +498,7 @@ class InsuranceController extends Controller
         }
         $message = array('message' => 'Insurance Reimbursement Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 
     public function tele_feature_update(Request $request, $post_id)
@@ -504,9 +506,9 @@ class InsuranceController extends Controller
         $post_category = $request->category_id;
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
+            if($value != null && $post_category != null){
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
-            
+
         }
         }
         }catch(\Exception $e){
@@ -518,7 +520,7 @@ class InsuranceController extends Controller
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 
     public function service_info_update(Request $request, $post_id)
@@ -526,9 +528,9 @@ class InsuranceController extends Controller
         $post_category = $request->category_id;
         try{
         foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){                
+            if($value != null && $post_category != null){
                 PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => 2, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => 2, 'feature_id' => $feature_id, 'feature_value' => $value]);
-            
+
         }
         }
         }catch(\Exception $e){
@@ -540,6 +542,6 @@ class InsuranceController extends Controller
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-        
+
     }
 }

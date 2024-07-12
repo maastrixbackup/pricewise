@@ -51,7 +51,7 @@ class RegisterController extends BaseController
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['name'] =  $request->name;
         $body['name'] = $request->name;
-        $email_template = EmailTemplate::where('mail_subject', 'Registation successfull')->first();
+        $email_template = EmailTemplate::where('id', 10)->first();
         $body['body'] = $email_template->mail_body;
         $body['signature'] = $email_template->signature;
         // Generate verification link
@@ -61,8 +61,11 @@ class RegisterController extends BaseController
         ]);
 
         $body['action_link'] = $verificationLink;
-        //dd($body);
-        Mail::to($user->email)->send(new WelcomeEmail($body));
+        try {
+            // Mail::to($user->email)->send(new WelcomeEmail($body));
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
         return $this->sendResponse($success, 'Customer registered successfully.');
     }

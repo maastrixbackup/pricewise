@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\insuranceCoverage;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 class InsuranceCoverageController extends Controller
@@ -35,7 +36,7 @@ class InsuranceCoverageController extends Controller
      */
     public function create()
     {
-        $subCategories = Category::where('parent',5)->get();
+        $subCategories = SubCategory::where('category_id',5)->where('status', 'active')->get();
         return view('admin.insurance_coverage.create',compact('subCategories'));
     }
 
@@ -47,7 +48,7 @@ class InsuranceCoverageController extends Controller
      */
     public function store(Request $request)
     {
-      
+
         $request->validate([
             'name' => 'required',
             'image' => 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
@@ -58,10 +59,10 @@ class InsuranceCoverageController extends Controller
             $newCoverage->name=$request->name;
             $newCoverage->description=$request->description;
 
-            $filename = time().'.'.$request->image->getClientOriginalExtension();  
-     
+            $filename = time().'.'.$request->image->getClientOriginalExtension();
+
             $request->image->move(public_path('storage/images/insurance_coverages/'), $filename);
-            
+
             $newCoverage->image = $filename;
             $newCoverage->subcategory_id = $request->sub_category;
             $newCoverage->save();
@@ -92,7 +93,7 @@ class InsuranceCoverageController extends Controller
      */
     public function edit($id)
     {
-        $subCategories = Category::where('parent',5)->get();
+        $subCategories = SubCategory::where('category_id',5)->where('status', 'active')->get();
         $coverage = insuranceCoverage::where('id', $id)->first();
         return view('admin.insurance_coverage.edit',compact('subCategories','coverage'));
     }
@@ -111,7 +112,7 @@ class InsuranceCoverageController extends Controller
             $coverage->name=$request->name;
             $coverage->description=$request->description;
             if (isset($request->image)) {
-                $filename = time().'.'.$request->image->getClientOriginalExtension(); 
+                $filename = time().'.'.$request->image->getClientOriginalExtension();
                 $request->image->move(public_path('storage/images/insurance_coverages/'), $filename);
             }
             $coverage->image = $filename ?? $coverage->image;

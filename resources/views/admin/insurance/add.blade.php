@@ -9,7 +9,7 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.internet-tv.index')}}">Insurance Products</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.insurance.index')}}">Insurance Products</a></li>
             </ol>
         </nav>
     </div>
@@ -57,7 +57,7 @@
                     </div>
                     </div>
 
-                    
+
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
                             <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
@@ -72,7 +72,7 @@
                     </div>
                     </div>
 
-                
+
                     <div class="col-md-6 col-12">
                         <div class=" mb-3">
                     <label for="avg_delivery_time" class=" col-form-label">Average Aproval Time</label>
@@ -89,8 +89,8 @@
                         </div>
                     </div>
 
-                
-                
+
+
                 <div class="col-md-6 col-12">
                     <div class=" mb-3">
                         <label for="input40" class=" col-form-label">Premium Interval
@@ -129,12 +129,12 @@
                     </div>
                 </div>
 
-                
+
                 <div class="row">
-                    
+
                 </div>
-                
-                
+
+
 
 
                 <div class="">
@@ -147,7 +147,7 @@
             </div>
         </div>
         </div>
-    
+
     <div class="col-md-3 col-12 col-lg-3">
         <div class="card">
             <div class="card-body p-4">
@@ -157,7 +157,7 @@
                     <select id="status" name="status" class="select2 form-select">
                         <option value="1">Publish</option>
                         <option value="0" selected>Draft</option>
-                        
+
                     </select>
                 </div>
                 <div class="mb-3 form-group">
@@ -167,7 +167,7 @@
                         <option value="personal">Personal</option>
                         <option value="business">Business</option>
                         <option value="large-business">Large Business</option>
-                        
+
                     </select>
                 </div>
                 <div class="mb-3 form-group">
@@ -194,7 +194,7 @@
 
                     <select id="sub_category" name="sub_category" class="select2 form-select">
                         <option>Select</option>
-                        
+
                     </select>
                 </div>
                 <div class="mb-3">
@@ -232,8 +232,8 @@
                     @endif
                 </div>
 
-                
-                
+
+
             </div>
         </div>
     </div>

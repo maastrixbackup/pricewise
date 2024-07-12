@@ -8,11 +8,16 @@ return [
         'Smartphones' =>6 ,
     ],
     'subcategory' => [
-        'HealthInsurance'=> 13 ,
-        'HomeInsurance' => 21 ,
-        'TermInsurance' => 19 ,
-        'Telephone' => 2 ,
-        'VehicleInsurance' => 22
+        'HealthInsurance'=> 7 ,
+        'HomeInsurance' => 1 ,
+        'TermInsurance' => 3 ,
+        'Telephone' => 8 ,
+        'Liability' => 15 ,
+        'VehicleInsurance' => 13,
+        'TravelInsurance' => 16,
+        'AccidentalInsurance' => 14,
+        'CyberSecurity' => 12,
+        'FuneralInsurance' => 11
     ]
 ];
 

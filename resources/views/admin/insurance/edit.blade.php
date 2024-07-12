@@ -300,7 +300,7 @@
                                                         <select id="sub_category" name="sub_category"
                                                             class="select2 form-select">
                                                             <option value="{{ $objTv->sub_category }}">
-                                                                {{ $objTv->subCategory ? $objTv->subCategory->name : 'Select' }}
+                                                                {{ $objTv->subCategory ? $objTv->subCategory->title : 'Select' }}
                                                             </option>
 
                                                         </select>
