@@ -127,11 +127,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/update-credentials', [UserDetailController::class, 'updateCredentials']);
     Route::get('/get-credentials', [UserDetailController::class, 'getCredentials']);
 //API route for user request
-    Route::post('save-user-request', [RequestController::class, 'store']);
+    // Route::post('save-user-request', [RequestController::class, 'store']);
     Route::post('get-user-request', [RequestController::class, 'index']);
 
-    Route::post('show-user-request', [RequestController::class, 'show']);
-    Route::post('view-order', [RequestController::class, 'viewOrder']);
+    Route::get('show-user-request/{request_id}', [RequestController::class, 'show']);
+    Route::get('view-order/{order_no}', [RequestController::class, 'viewOrder']);
 
     //Reviews
     Route::post('review-list', [RequestController::class, 'reviewList']);

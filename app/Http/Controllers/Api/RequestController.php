@@ -222,8 +222,8 @@ class RequestController extends BaseController
                 $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
                 $body['name'] = $name;
                 $body['action_link'] = url('/') . '/api/view-order/' . $orderNo;
-                return $body;
-                // Mail::to($email)->send(new CustomerRequestSubmit($body));
+                // return $body;
+                Mail::to($email)->send(new CustomerRequestSubmit($body));
                 return response()->json(['success' => true, 'data' => ['name' => $name, 'email' => $email, 'order_no' => $orderNo], 'message' => 'User request saved successfully'], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
@@ -243,10 +243,10 @@ class RequestController extends BaseController
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show(Request $request, $request_id)
     {
         // return 123;
-        $userRequest = UserRequest::with('service', 'advantagesData', 'userDetails', 'providerDetails', 'categoryDetails')->find($request->request_id);
+        $userRequest = UserRequest::with('service', 'advantagesData', 'userDetails', 'providerDetails', 'categoryDetails')->find($request_id);
 
         // Change the format of the desired columns here
         $userRequest->shipping_address = json_decode($userRequest->shipping_address);
@@ -301,10 +301,10 @@ class RequestController extends BaseController
         //
     }
 
-    public function viewOrder(Request $request)
+    public function viewOrder(Request $request, $id)
     {
         // return $request->order_no;
-        $order_data = UserRequest::where('order_no', $request->order_no)->first();
+        $order_data = UserRequest::where('order_no', $id)->first();
 
         return $this->sendResponse($order_data, 'Order data retrieved successfully.');
         // return view('admin.requests.edit', compact('user_request'));

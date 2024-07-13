@@ -50,7 +50,7 @@ class SmartPhoneController extends Controller
      */
     public function create()
     {
-        $categories = Category::orderBy('name', 'asc')->get();
+        $categories = Category::orderBy('name', 'asc')->where->whereNull('parent')->get();
         return view('admin.smartphone.add', compact('categories'));
         // dd('Ok');
         //
