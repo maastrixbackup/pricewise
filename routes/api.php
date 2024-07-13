@@ -21,6 +21,7 @@ use App\Http\Controllers\API\BusinessInterruptionController;
 use App\Http\Controllers\API\TravelInsuranceController;
 use App\Http\Controllers\API\FuneralInsuranceController;
 use App\Http\Controllers\API\CyberSecurityController;
+use App\Http\Controllers\API\FarmHouseInsuranceController;
 use App\Http\Controllers\API\LiabilityInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
@@ -56,6 +57,10 @@ Route::post('health-insurance-compare', [HealthInsuranceController::class, 'heal
 //Home Insurance
 Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
 Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
+
+//Building Insurance
+Route::post('building-insurance', [FarmHouseInsuranceController::class, 'index']);
+Route::post('building-insurance-compare', [FarmHouseInsuranceController::class, 'buildingInsuranceCompare']);
 
 //Vehicle Insurance
 Route::post('vehicle-insurance', [VehicleInsuranceController::class, 'index']);

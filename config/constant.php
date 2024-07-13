@@ -17,7 +17,8 @@ return [
         'TravelInsurance' => 16,
         'AccidentalInsurance' => 14,
         'CyberSecurity' => 12,
-        'FuneralInsurance' => 11
+        'FuneralInsurance' => 11,
+        'BuildingInsurance' => 18
     ]
 ];
 

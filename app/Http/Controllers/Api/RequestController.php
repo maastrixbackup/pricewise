@@ -230,11 +230,26 @@ class RequestController extends BaseController
             }
         } catch (ValidationException $e) {
             // Handle validation errors
+            \Log::error('Validation error: ' . $e->getMessage(), ['errors' => $e->errors()]);
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
         } catch (QueryException $e) {
             // Handle other database errors
+            \Log::error('Database error: ' . $e->getMessage(), ['exception' => $e]);
             return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
+        } catch (\Exception $e) {
+            // Handle all other errors
+            \Log::error('General error: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['success' => false, 'message' => 'An error occurred'], 500);
         }
+
+
+        // catch (ValidationException $e) {
+        //     // Handle validation errors
+        //     return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+        // } catch (QueryException $e) {
+        //     // Handle other database errors
+        //     return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
+        // }
     }
 
     /**

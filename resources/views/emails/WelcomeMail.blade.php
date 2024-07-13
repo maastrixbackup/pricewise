@@ -1,5 +1,5 @@
 @component('mail::message')
-{{-- @include('components.application-logo') --}}
+@include('components.application-logo')
 Hello, {{$body['name']}}!
 
 {!! $body['body'] !!}
