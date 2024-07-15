@@ -62,7 +62,7 @@ class RegisterController extends BaseController
 
         $body['action_link'] = $verificationLink;
         try {
-            // Mail::to($user->email)->send(new WelcomeEmail($body));
+            Mail::to($user->email)->send(new WelcomeEmail($body));
         } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd
+class ComposerStaticInit0914323516fb57700e7bf5a9bae092ed
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -357,8 +357,8 @@ class ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -674,7 +674,6 @@ class ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd
         'App\\Http\\Controllers\\Api\\EventController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/EventController.php',
         'App\\Http\\Controllers\\Api\\InsuranceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/InsuranceController.php',
         'App\\Http\\Controllers\\Api\\InternetTvController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/InternetTvController.php',
-        'App\\Http\\Controllers\\Api\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/RegisterController.php',
         'App\\Http\\Controllers\\Api\\RequestController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/RequestController.php',
         'App\\Http\\Controllers\\Api\\SettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/SettingsController.php',
         'App\\Http\\Controllers\\Api\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/UserController.php',
@@ -693,6 +692,7 @@ class ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd
         'App\\Http\\Middleware\\AdminMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/AdminMiddleware.php',
         'App\\Http\\Middleware\\ApisecureMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/ApisecureMiddleware.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
+        'App\\Http\\Middleware\\CorsMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/CorsMiddleware.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -6183,10 +6183,10 @@ class ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitca2b4f48c11e08670e9e38f74f6a8efd::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0914323516fb57700e7bf5a9bae092ed::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0914323516fb57700e7bf5a9bae092ed::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0914323516fb57700e7bf5a9bae092ed::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit0914323516fb57700e7bf5a9bae092ed::$classMap;
 
         }, null, ClassLoader::class);
     }

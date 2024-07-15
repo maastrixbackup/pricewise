@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\EmailTemplate;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class EmailTemplateController extends Controller
 {
@@ -56,8 +57,8 @@ class EmailTemplateController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email_of' => 'string|required',
-            'mail_subject' => 'required',
-            'mail_body' => 'required',
+            'mail_subject' => 'required|unique:email_templates,mail_subject',
+            // 'mail_body' => 'required',
             'status' => 'required',
         ]);
 
@@ -65,20 +66,22 @@ class EmailTemplateController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         $data = [
-        'email_of' => $request->email_of,
-        'mail_subject' => $request->mail_subject,
-        'mail_body' => $request->mail_body,
-        'status' => $request->status,
-        'signature' => $request->mail_signature
+            'email_of' => $request->email_of,
+            'mail_subject' => $request->mail_subject,
+            'mail_body' => $request->mail_body,
+            'status' => $request->status,
+            'signature' => $request->mail_signature
         ];
 
-        $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
+        try {
+            $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
 
-        if ($emailTemplate) {
-            //return response()->json(['success' => true, 'data' => $emailTemplate], 200);
-            return redirect()->route('admin.email-templates.index')->with(Toastr::success('Email Template Created Successfully', '', ["positionClass" => "toast-top-right"]));
-        } else {
-            //return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
+            if ($emailTemplate) {
+                //return response()->json(['success' => true, 'data' => $emailTemplate], 200);
+                return redirect()->route('admin.email-templates.index')->with(Toastr::success('Email Template Created Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
     }
 
@@ -90,7 +93,7 @@ class EmailTemplateController extends Controller
      */
     public function show($id)
     {
-       $template = EmailTemplate::where('id', $id)->first();
+        $template = EmailTemplate::where('id', $id)->first();
         return view('admin.email_templates.show', compact('template'));
     }
 
@@ -126,21 +129,22 @@ class EmailTemplateController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         $data = [
-        'email_of' => $request->email_of,
-        'mail_subject' => $request->mail_subject,
-        'mail_body' => $request->mail_body,
-        'status' => $request->status,
-        'signature' => $request->mail_signature
+            'email_of' => $request->email_of,
+            'mail_subject' => $request->mail_subject,
+            'mail_body' => $request->mail_body,
+            'status' => $request->status,
+            'signature' => $request->mail_signature
         ];
 
-        $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
+        try {
+            $emailTemplate = EmailTemplate::updateOrCreate(['email_of' => $request->email_of], $data);
 
-        if ($emailTemplate) {
-            //return response()->json(['success' => true, 'data' => $emailTemplate], 200);
-            Toastr::success('Email Template Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            return redirect()->back();
-        } else {
-            return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
+            if ($emailTemplate) {
+                //return response()->json(['success' => true, 'data' => $emailTemplate], 200);
+                return redirect()->route('admin.email-templates.index')->with(Toastr::success('Email Template Created Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
     }
 
@@ -152,12 +156,12 @@ class EmailTemplateController extends Controller
      */
     public function destroy($id)
     {
-       
+
         $getTemplate = EmailTemplate::find($id);
         try {
             EmailTemplate::find($id)->delete();
             return back()->with(Toastr::error(__('Template deleted successfully!')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.categories.index')->with($error_msg);
         }

@@ -7,9 +7,10 @@ use App\Models\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+
 class RequestController extends AdminController
 {
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +37,7 @@ class RequestController extends AdminController
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */ 
+     */
     public function store(Request $request)
     {
         //
@@ -66,11 +67,11 @@ class RequestController extends AdminController
         // }
 
         // if(\Auth::guard('admin')->user()->can('view',$post)){
-        //     return view('admin.posts.edit',['post'=>$post]);            
+        //     return view('admin.posts.edit',['post'=>$post]);
         // }
-        
+
         $this->authorize('view',$post);
-        return view('admin.posts.edit',['post'=>$post]);            
+        return view('admin.posts.edit',['post'=>$post]);
     }
 
     /**

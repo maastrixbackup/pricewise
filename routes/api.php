@@ -21,6 +21,7 @@ use App\Http\Controllers\API\BusinessInterruptionController;
 use App\Http\Controllers\API\TravelInsuranceController;
 use App\Http\Controllers\API\FuneralInsuranceController;
 use App\Http\Controllers\API\CyberSecurityController;
+use App\Http\Controllers\API\FarmHouseInsuranceController;
 use App\Http\Controllers\API\LiabilityInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
@@ -56,6 +57,10 @@ Route::post('health-insurance-compare', [HealthInsuranceController::class, 'heal
 //Home Insurance
 Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
 Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
+
+//Building Insurance
+Route::post('building-insurance', [FarmHouseInsuranceController::class, 'index']);
+Route::post('building-insurance-compare', [FarmHouseInsuranceController::class, 'buildingInsuranceCompare']);
 
 //Vehicle Insurance
 Route::post('vehicle-insurance', [VehicleInsuranceController::class, 'index']);
@@ -127,11 +132,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/update-credentials', [UserDetailController::class, 'updateCredentials']);
     Route::get('/get-credentials', [UserDetailController::class, 'getCredentials']);
 //API route for user request
-    Route::post('save-user-request', [RequestController::class, 'store']);
+    // Route::post('save-user-request', [RequestController::class, 'store']);
     Route::post('get-user-request', [RequestController::class, 'index']);
 
-    Route::post('show-user-request', [RequestController::class, 'show']);
-    Route::post('view-order', [RequestController::class, 'viewOrder']);
+    Route::get('show-user-request/{request_id}', [RequestController::class, 'show']);
+    Route::get('view-order/{order_no}', [RequestController::class, 'viewOrder']);
 
     //Reviews
     Route::post('review-list', [RequestController::class, 'reviewList']);
