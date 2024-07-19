@@ -14,12 +14,12 @@
         </nav>
     </div>
     <div class="ms-auto">
-        
+
         <div class="btn-group">
             <a href="{{route('admin.add.caterer')}}" class="btn btn-primary">Create a New Caterer</a>
 
         </div>
-       
+
     </div>
 </div>
 <!--end breadcrumb-->
@@ -46,16 +46,16 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->caterer_name}}</td>
-                                <td>{{$val->isenable==1?'No':'Yes'}}</td>
+                                <td>{{$val->status=='active'?'Yes':'No'}}</td>
                                 <td>{{date('d-M-Y',strtotime($val->created_at))}}</td>
                                 <td>
                                     <div class="col">
-                                        
+
                                         <a title="Edit" href="{{route('admin.edit.caterer',$val->id)}}" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
-                                        
-                                        
+
+
                                         <a title="Delete" class="btn1 btn-outline-danger trash remove-category" data-id="{{ $val->id }}" data-action="{{route('admin.delete.caterer', $val->id)}}"><i class="bx bx-trash me-0"></i></a>
-                                        
+
                                     </div>
                                 </td>
                             </tr>
@@ -79,14 +79,14 @@
             lengthChange: false,
             buttons: [{
                     extend: 'excelHtml5',
-                    text: '<i class="far fa-file-excel"></i>',
+                    text: '<i class="fa fa-file-excel-o"></i>',
                     exportOptions: {
                         columns: [0, 1]
                     }
                 },
                 {
                     extend: 'pdfHtml5',
-                    text: '<i class="fal fa-file-pdf"></i>',
+                    text: '<i class="fa fa-file-pdf-o"></i>',
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
                     exportOptions: {
@@ -95,7 +95,7 @@
                 },
                 {
                     extend: 'print',
-                    text: '<i class="far fa-print"></i>',
+                    text: '<i class="fa fa-print"></i>',
                     exportOptions: {
                         columns: [0, 1]
                     }
@@ -117,7 +117,7 @@
                 title: "Are you sure?",
                 text: "You will not be able to recover this data!",
                 type: "error",
-                showCancelButton: true, 
+                showCancelButton: true,
                 dangerMode: true,
                 cancelButtonClass: '#DD6B55',
                 confirmButtonColor: '#dc3545',

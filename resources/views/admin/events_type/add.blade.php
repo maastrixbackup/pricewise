@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Pricewise- Caterer Create')
+@section('title', 'Pricewise- Events Type Create')
 @section('content')
 
     <!--breadcrumb-->
@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.features.index') }}">Caterers</a></li>
+                            href="{{ route('admin.events_type.index') }}">Event Type</a></li>
                 </ol>
             </nav>
         </div>
@@ -23,34 +23,49 @@
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New Caterer</h5>
+                    <h5 class="mb-0">Add New Event Type</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form id="featureForm" method="post" action="{{ route('admin.post.caterer') }}">
+                    <form method="post" action="{{ route('admin.events_type.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
                             <label for="input35" class=" col-form-label">Name</label>
                             <div class="">
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Caterer's Name" value="{{ old('name') }}">
+                                    placeholder="Event Type" value="{{ old('name') }}">
+
+                                @error('name')
+                                    <div class="alert alert-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
-                            @error('name')
-                                <div class="alert alert-danger mt-1">{{ $message }}</div>
-                            @enderror
                         </div>
                         <div class="row mb-3">
-                            <label for="input35" class=" col-form-label">Name</label>
+                            <label for="input35" class=" col-form-label">Url</label>
                             <div class="">
-                                <textarea name="description" class="form-control"  id="description" placeholder="Description"  rows="5">{{old('description')}}</textarea>
+                                <input type="text" class="form-control" readonly id="url" name="url"
+                                    placeholder="Url" value="{{ old('url') }}">
                             </div>
-                            @error('description')
-                                <div class="alert alert-danger mt-1">{{ $message }}</div>
-                            @enderror
                         </div>
+                        <div class="mb-3">
+                            <label for="input35" class=" col-form-label">Description</label>
+                            <textarea class="form-control" name="description" id="description" placeholder="Description">{{ old('description') }}</textarea>
+                        </div>
+                        <label for="upload_image" class="mb-3">
+
+                            <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                alt="Select image" />
+
+                            <div class="overlay" style="cursor: pointer">
+                                <div>Click to Change Image</div>
+                            </div>
+                            <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                            <input type="hidden" name="cropped_image" id="cropped_image">
+
+                        </label>
                         <div class="row mb-3">
                             <label for="input35" class=" col-form-label">Is Enable</label>
                             <div class="">
-                                <select name="isenable" id="isenable" class="form-control">
+                                <select name="status" id="status" class="form-control">
                                     <option value="active">Yes</option>
                                     <option value="inactive">No</option>
                                 </select>
@@ -71,3 +86,16 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
+    <script>
+        $("#name").keyup(function() {
+            var name_val = $("#name").val();
+            $("#url").val(name_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+        });
+        $("#name").keydown(function() {
+            var name_val = $("#name").val();
+            $("#url").val(name_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+        });
+    </script>
+@endpush

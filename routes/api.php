@@ -86,8 +86,8 @@ Route::post('cyber-security-insurance-compare', [CyberSecurityController::class,
 Route::post('liability-insurance', [LiabilityInsuranceController::class, 'index']);
 Route::post('liability-insurance-compare', [LiabilityInsuranceController::class, 'liabilityInsuranceCompare']);
 
-// Api on events by satyajit
-Route::get('get-events-list', [RequestController::class, 'eventList']);
+// Api on events
+Route::post('get-events-list', [RequestController::class, 'eventList']);
 
 
 //Commercial Insurance

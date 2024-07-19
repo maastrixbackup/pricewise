@@ -19,6 +19,7 @@ use App\Models\PostRequest;
 use App\Models\InsuranceProduct;
 use Validator;
 use App\Http\Resources\EnergyResource;
+use App\Models\Caterer;
 use App\Models\Deal;
 use App\Models\TvPackage;
 use App\Models\TvOption;
@@ -28,7 +29,9 @@ use App\Models\UserData;
 use App\Models\UserRequest;
 use App\Models\Review;
 use App\Models\Event;
-
+use App\Models\EventRoom;
+use App\Models\EventTheme;
+use App\Models\EventType;
 
 class RequestController extends BaseController
 {
@@ -550,18 +553,49 @@ class RequestController extends BaseController
             ]);
         }
     }
+
     public function eventList(Request $request)
     {
+        $code =  $request->postal_code;
         // Fetch all event from the database
-        $events = Event::latest()->get();
+        $events = Event::where('status', 'active')->with('roomDetails', 'catererDetails', 'eventTypes');
+        if ($request->has('postal_code')) {
+            $events->where('postal_code', $code);
+        }
+        $dataEvent = $events->latest()->get();
 
-        // Return the data as a JSON response
-        return response()->json([
-            'success' => true,
-            'data' => $events,
-            'message' => 'Deal retrieved successfully'
-        ]);
+        // return $dataEvent;
+        $room_type = EventRoom::where('status', 'active')->get();
+        $caterer = Caterer::where('status', 'active')->get();
+        $event_type = EventType::where('status', 'active')->get();
+        $event_theme = EventTheme::where('status', 'active')->get();
+
+
+        $data['events'] = $dataEvent;
+        $data['room_type'] = $room_type;
+        $data['caterer'] = $caterer;
+        $data['event_type'] = $event_type;
+        $data['event_theme'] = $event_theme;
+
+        return $data['events'];
+        if ($data['events']) {
+            // Return the data as a JSON response
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'message' => 'Event retrieved successfully'
+            ]);
+        } else {
+            // Return the data as a JSON response
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'message' => 'Event retrieved successfully'
+            ]);
+        }
     }
+
+
     public function getTopFourDeals(Request $request)
     {
         $deals = Deal::latest()->take(4)->get();
