@@ -11,7 +11,7 @@
                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.features.index')}}">Caterers</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{route('admin.list.caterer')}}">Caterers</a></li>
             </ol>
         </nav>
     </div>
@@ -36,8 +36,8 @@
                         <label for="input35" class=" col-form-label">Is Enable</label>
                         <div class="">
                             <select name="isenable" id="isenable" class="form-control">
-                                <option value="1" {{$editcaterer->isenable==1?'selected':''}}>Yes</option>
-                                <option value="0" {{$editcaterer->isenable==0?'selected':''}}>No</option>
+                                <option value="active" {{$editcaterer->status=='active'?'selected':''}}>Yes</option>
+                                <option value="inactive" {{$editcaterer->status=='inactive'?'selected':''}}>No</option>
                             </select>
                         </div>
                     </div>
@@ -46,7 +46,6 @@
                         <div class="">
                             <div class="d-md-flex d-grid align-items-center gap-3">
                                 <button type="submit" class="btn btn-primary px-4" name="submit2">Update</button>
-                                <button type="reset" class="btn btn-light px-4">Reset</button>
                             </div>
                         </div>
                     </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Event;
+use App\Models\EventType;
 use App\Models\EventDoc;
 
 class EventController extends Controller
@@ -17,7 +18,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        
+
         $objEvent = Event::latest()->get();
         return view('admin.events.index', compact('objEvent'));
     }
@@ -44,13 +45,14 @@ class EventController extends Controller
         // dd($request->all());
         $objEvent = new Event();
         $objEvent->name = $request->name;
+        $objEvent->slug = $request->url;
         $objEvent->event_type = $request->event_type;
-        $objEvent->catererid = $request->catererid;
+        $objEvent->caterer_id = $request->caterer_id;
         $objEvent->description = $request->description;
         $objEvent->location = $request->location;
-        $objEvent->postcode = $request->postcode;
-        $objEvent->houseno = $request->houseno;
-        $objEvent->room = $request->room;
+        $objEvent->postal_code = $request->postal_code;
+        $objEvent->house_no = $request->house_no;
+        $objEvent->room_type = $request->room_type;
         $objEvent->start_date = $request->start_date;
         $objEvent->end_date = $request->end_date;
         $objEvent->start_time = $request->start_time;
@@ -59,12 +61,10 @@ class EventController extends Controller
         $objEvent->decoration_price = $request->decorationprice;
         $objEvent->photoshop_price = $request->photoshopprice;
         $objEvent->status = $request->status;
-        $objEvent->stateid = $request->stateid;
-        $objEvent->created_at = NOW();
-        $objEvent->updated_at = NOW();
+        $objEvent->country_id = $request->country_id;
         $objEvent->save();
 
-      
+
         if ($objEvent->save()) {
             // if($request->hasfile('image'))
             // {
@@ -78,7 +78,7 @@ class EventController extends Controller
             //    }
             //    EventDoc::insert($insert);
             // }
-           
+
             return redirect()->route('admin.events.index')->with(Toastr::success('Event Created Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
@@ -118,17 +118,19 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {     
+    {
         //echo 123;exit;
+        // dd($request->all());
         $objEvent = Event::find($id);
         $objEvent->name = $request->name;
+        $objEvent->slug = $request->url;
         $objEvent->event_type = $request->event_type;
-        $objEvent->catererid = $request->catererid;
+        $objEvent->caterer_id = $request->caterer_id;
         $objEvent->description = $request->description;
         $objEvent->location = $request->location;
-        $objEvent->postcode = $request->postcode;
-        $objEvent->houseno = $request->houseno;
-        $objEvent->room = $request->room;
+        $objEvent->postal_code = $request->postal_code;
+        $objEvent->house_no = $request->house_no;
+        $objEvent->room_type = $request->room_type;
         $objEvent->start_date = $request->start_date;
         $objEvent->end_date = $request->end_date;
         $objEvent->start_time = $request->start_time;
@@ -137,10 +139,8 @@ class EventController extends Controller
         $objEvent->decoration_price = $request->decorationprice;
         $objEvent->photoshop_price = $request->photoshopprice;
         $objEvent->status = $request->status;
-        $objEvent->stateid = $request->stateid;
-        $objEvent->updated_at = NOW();
-        $objEvent->save();
-       
+        $objEvent->country_id = $request->country_id;
+
         if ($objEvent->save()) {
             // EventDoc::where('id',$id)->delete();
             // if($request->hasfile('image'))
@@ -153,15 +153,16 @@ class EventController extends Controller
             //        $insert[$key]['name'] = $name;
             //        $insert[$key]['path'] = $path;
             //    }
-               
+
             //    EventDoc::insert($insert);
             // }
-            // return redirect()->route('admin.events.index')->with(Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-            Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.events.index")]);
+            return redirect()->route('admin.events.index')->with(Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            // Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            // return redirect()->route("admin.events.index");
         } else {
-            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
+            return redirect()->route('admin.events.index')->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
+            // $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
+            // return response()->json(["status" => true, 'message' => $message]);
         }
     }
 
@@ -171,17 +172,18 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id) 
+    public function destroy(Request $request, $id)
     {
         $id = $request->id;
         $getEvent = Event::find($id);
         try {
             Event::find($id)->delete();
             return back()->with(Toastr::error(__('Event deleted successfully!')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.events.index')->with($error_msg);
         }
     }
+
 }
 

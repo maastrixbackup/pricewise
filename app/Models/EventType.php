@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Caterer extends Model
+class EventType extends Model
 {
     use HasFactory;
-    protected $fillable = ['caterer_name', 'description', 'status'];
+    protected $fillable = ['title', 'slug', 'description', 'image', 'status'];
 }

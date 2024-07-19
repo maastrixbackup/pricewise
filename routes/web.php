@@ -185,6 +185,9 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('feed-in-costs', 'FeedInCostController');
             //Events
             Route::resource('events', 'EventController');
+            Route::resource('events_type', 'EventTypeController');
+            Route::resource('room_type', 'EventRoomController');
+            Route::resource('event_theme', 'EventThemeController');
 
             //MailChimp Subscribers
             Route::get('create-subscriber', 'MailChimpController@createSubscriber')->name('create-subscriber');

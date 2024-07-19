@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','NoPlan- Events')
+@section('title','Pricewise- Events')
 @section('content')
 
 <!--breadcrumb-->
@@ -28,7 +28,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="userTable" class="table table-striped table-bordered">
+                    <table id="eventTable" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Sl</th>
@@ -44,7 +44,7 @@
                         <tbody>
                             @if($objEvent)
                             @foreach($objEvent as $val)
-                           
+
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{$val->name}}</td>
@@ -62,11 +62,11 @@
                                 <td>{{$val->start_date}}</td>
                                 <td>{{$val->end_date}}</td>
                                 <td>
-                                @if($val->status==1)
+                                @if($val->status== 'active')
                                     <div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Published</div>
                                 @else
                                     <div class="badge rounded-pill text-info bg-light-info p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Draft</div>
-                                @endif    
+                                @endif
                                 </td>
                                 <td>
                                     <div class="col">
@@ -92,13 +92,40 @@
 
 <script>
     $(document).ready(function() {
-        var table = $('#userTable').DataTable({
+        var table = $('#eventTable').DataTable({
             lengthChange: false,
-            buttons: ['excel', 'pdf', 'print']
+            buttons: [{
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i>',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i>',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+            ],
+            'columnDefs': [{
+                'targets': [2], // column index (start from 0)
+                'orderable': false, // set orderable false for selected columns
+            }]
         });
 
         table.buttons().container()
-            .appendTo('#userTable_wrapper .col-md-6:eq(0)');
+            .appendTo('#eventTable_wrapper .col-md-6:eq(0)');
 
 
         $("body").on("click", ".remove-category", function() {
@@ -112,7 +139,7 @@
                 cancelButtonClass: '#DD6B55',
                 confirmButtonColor: '#dc3545',
                 confirmButtonText: 'Delete!',
-            }, function(result) { 
+            }, function(result) {
                 if (result) {
                     var action = current_object.attr('data-action');
                     var token = jQuery('meta[name="csrf-token"]').attr('content');
