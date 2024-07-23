@@ -108,8 +108,8 @@
                             <label for="input_type" class=" col-form-label">Status<sup class="text-danger">*</sup></label>
                             <div class="">
                                 <select class="form-control" name="status">
-                                    <option value="active" {{ $deal->status == 'active' ? 'selected' : '' }}>active</option>
-                                    <option value="inactive" {{ $deal->status == 'inactive' ? 'selected' : '' }}>inactive
+                                    <option value="active" {{ $deal->status == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="inactive" {{ $deal->status == 'inactive' ? 'selected' : '' }}>Inactive
                                     </option>
                                 </select>
                                 @error('status')

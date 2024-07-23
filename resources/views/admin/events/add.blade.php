@@ -74,9 +74,9 @@
                                 placeholder="Location">
                         </div>
                         <div class=" mb-3">
-                            <label for="input35" class=" col-form-label">Post Code</label>
+                            <label for="input35" class=" col-form-label">Pin Codes</label>
                             <input type="text" class="form-control" id="postal_code" name="postal_code"
-                                placeholder="Post Code">
+                                placeholder="PIN codes with coma (,) separated">
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-12 mb-3">
@@ -90,7 +90,7 @@
                                 <select name="room_type" id="room_type" class="form-control">
                                     <option value="">--Select--</option>
                                     @foreach (App\Models\EventRoom::all() as $rooms)
-                                        <option value="{{$rooms->id}}">{{$rooms->room}}</option>
+                                        <option value="{{ $rooms->id }}">{{ $rooms->room }}</option>
                                     @endforeach
                                     {{-- <option value="1">1 Room</option>
                                     <option value="2">2 Room</option>
@@ -146,31 +146,31 @@
                         </div>
 
                         <!-- <div class="mb-3">last comment by satya
-                                        <label for="input40" class="col-sm-3 col-form-label">Image</label> -->
+                                            <label for="input40" class="col-sm-3 col-form-label">Image</label> -->
                         <!-- <input type="file" class="form-control" name="image[]" id="image" accept="images/*" multiple/> -->
                         <!-- <input type="file" name="image[]" id="files" class="form-control" placeholder="Choose Images" multiple> -->
 
                         <!-- </div> last comment by satya -->
                         <!-- <div class="input-group control-group increment">
-                                        <input type="file" name="image[]" class="form-control">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-success" type="button"><i class="glyphicon glyphicon-plus"></i>Add</button>
-                                        </div>
-                                    </div>
-                                    <div class="clone hide">
-                                        <div class="control-group input-group" style="margin-top:10px">
                                             <input type="file" name="image[]" class="form-control">
                                             <div class="input-group-btn">
-                                                <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                                                <button class="btn btn-success" type="button"><i class="glyphicon glyphicon-plus"></i>Add</button>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="mt-1 text-center">
-                                            <div class="images-preview-div"> </div>
+                                        <div class="clone hide">
+                                            <div class="control-group input-group" style="margin-top:10px">
+                                                <input type="file" name="image[]" class="form-control">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div> -->
+
+                                        <div class="col-md-12">
+                                            <div class="mt-1 text-center">
+                                                <div class="images-preview-div"> </div>
+                                            </div>
+                                        </div> -->
 
                         <div class="row mb-3">
                             <div class="">

@@ -144,8 +144,8 @@
                              </ul>
                          </li>
                          <li class="nav-main-item">
-                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
-                             aria-expanded="false" href="#">
+                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu"
+                                 aria-haspopup="true" aria-expanded="false" href="#">
                                  <i class="nav-main-link-icon fa-solid fa-mobile-screen"></i>
                                  <span class="nav-main-link-name">Smartphones</span>
                              </a>
@@ -184,6 +184,81 @@
                          </li>
                      </ul>
                  </li>
+
+                 <li class="nav-main-item">
+                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                         aria-expanded="false" href="#">
+                         <i class="nav-main-link-icon fa fa-money "></i>
+                         <span class="nav-main-link-name">Loans</span>
+                     </a>
+                     <ul class="nav-main-submenu">
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.banks.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-university"></i>
+                                 <span class="nav-main-link-name">Loan Provider</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.purposes.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-paper-plane-o"></i>
+                                 <span class="nav-main-link-name">Spending Purpose</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.loan-type.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-money"></i>
+                                 <span class="nav-main-link-name">Loan Type</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.loans.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-product-hunt"></i>
+                                 <span class="nav-main-link-name">Loan Products</span>
+                             </a>
+                         </li>
+                     </ul>
+                 </li>
+
+                 <li class="nav-main-item">
+                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                         aria-expanded="false" href="#">
+                         <i class="nav-main-link-icon fa fa-calendar"></i>
+                         <span class="nav-main-link-name">Event Management</span>
+                     </a>
+                     <ul class="nav-main-submenu">
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.room_type.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Room Type</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.list.caterer') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Caterer </span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.event_theme.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Theme Type</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.events_type.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Event Type</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.events.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                 <span class="nav-main-link-name">Events</span>
+                             </a>
+                         </li>
+                     </ul>
+                 </li>
+
 
                  <li class="nav-main-item">
                      <a class="nav-main-link" href="{{ route('admin.requests.index') }}">
@@ -232,49 +307,9 @@
                          </li>
 
                          <li class="nav-main-item">
-                            <a class="nav-main-link" href="{{ route('admin.sub-categories.index') }}">
-                                <i class="nav-main-link-icon fa-solid fa-list"></i>
-                                <span class="nav-main-link-name">Sub Categories</span>
-                            </a>
-                        </li>
-                     </ul>
-                 </li>
-
-                 <li class="nav-main-item">
-                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
-                         aria-expanded="false" href="#">
-                         <i class="nav-main-link-icon fa fa-calendar"></i>
-                         <span class="nav-main-link-name">Event Management</span>
-                     </a>
-                     <ul class="nav-main-submenu">
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.room_type.index') }}">
-                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                 <span class="nav-main-link-name">Room Type</span>
-                             </a>
-                         </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.list.caterer') }}">
-                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                 <span class="nav-main-link-name">Caterer </span>
-                             </a>
-                         </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.event_theme.index') }}">
-                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                 <span class="nav-main-link-name">Theme Type</span>
-                             </a>
-                         </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.events_type.index') }}">
-                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                 <span class="nav-main-link-name">Event Type</span>
-                             </a>
-                         </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.events.index') }}">
+                             <a class="nav-main-link" href="{{ route('admin.sub-categories.index') }}">
                                  <i class="nav-main-link-icon fa-solid fa-list"></i>
-                                 <span class="nav-main-link-name">Events</span>
+                                 <span class="nav-main-link-name">Sub Categories</span>
                              </a>
                          </li>
                      </ul>

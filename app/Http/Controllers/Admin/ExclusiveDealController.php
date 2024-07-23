@@ -7,6 +7,7 @@ use App\Models\Deal;
 use App\Models\Category;
 use App\Models\TvInternetProduct;
 use App\Models\InsuranceProduct;
+use App\Models\SmartPhone;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 
@@ -29,7 +30,7 @@ class ExclusiveDealController extends Controller
     {
         $records = Deal::latest()->get();
         // dd($records);
-        return view('admin.exclusive_deals.index',compact('records'));
+        return view('admin.exclusive_deals.index', compact('records'));
     }
 
     /**
@@ -39,8 +40,8 @@ class ExclusiveDealController extends Controller
      */
     public function create()
     {
-        $categories = Category::latest()->get();
-        return view('admin.exclusive_deals.create',compact('categories'));
+        $categories = Category::latest()->whereNull('parent')->get();
+        return view('admin.exclusive_deals.create', compact('categories'));
     }
 
     /**
@@ -60,13 +61,13 @@ class ExclusiveDealController extends Controller
         ]);
         try {
             $newDeal = new Deal();
-            $newDeal->title=$request->title;
-            $newDeal->valid_till=$request->valid_till;
+            $newDeal->title = $request->title;
+            $newDeal->valid_till = $request->valid_till;
 
-            $filename = time().'.'.$request->icon->getClientOriginalExtension();  
-     
+            $filename = time() . '.' . $request->icon->getClientOriginalExtension();
+
             $request->icon->move(public_path('deal_icons'), $filename);
-            
+
             $newDeal->icon = $filename;
             $newDeal->category = $request->category;
             $newDeal->products = json_encode($request->products);
@@ -99,9 +100,9 @@ class ExclusiveDealController extends Controller
      */
     public function edit($id)
     {
-        $categories = Category::latest()->get();
+        $categories = Category::latest()->whereNull('parent')->get();
         $deal = Deal::where('id', $id)->first();
-        return view('admin.exclusive_deals.edit',compact('categories','deal'));
+        return view('admin.exclusive_deals.edit', compact('categories', 'deal'));
     }
 
     /**
@@ -123,10 +124,10 @@ class ExclusiveDealController extends Controller
         ]);
         try {
             $deal = Deal::findOrFail($id);
-            $deal->title=$request->title;
-            $deal->valid_till=$request->valid_till;
+            $deal->title = $request->title;
+            $deal->valid_till = $request->valid_till;
             if (isset($request->icon)) {
-                $filename = time().'.'.$request->icon->getClientOriginalExtension(); 
+                $filename = time() . '.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(public_path('deal_icons'), $filename);
             }
             $deal->icon = $filename ?? $deal->icon;
@@ -161,41 +162,35 @@ class ExclusiveDealController extends Controller
 
     public function getProductsCategoryWise(Request $request)
     {
-        
-        if ($request->category_id==1) {
 
-            $response = TvInternetProduct::latest()->get(); 
-            return response()->json($response,200);
+        if ($request->category_id == 1) {
 
-        }elseif ($request->category_id == 2) {
+            $response = TvInternetProduct::latest()->get();
+            return response()->json($response, 200);
+        } elseif ($request->category_id == 2) {
 
-            $response = []; 
-            return response()->json($response,200);
+            $response = [];
+            return response()->json($response, 200);
+        } elseif ($request->category_id == 5) {
 
-        }elseif ($request->category_id == 5) {
+            $response = InsuranceProduct::latest()->get();
+            return response()->json($response, 200);
+        } elseif ($request->category_id == 6) {
+            $response = SmartPhone::latest()->get();
+            // $response = [];
+            return response()->json($response, 200);
+        } elseif ($request->category_id == 13) {
 
-            $response = InsuranceProduct::latest()->get(); 
-            return response()->json($response,200);
+            $response = [];
+            return response()->json($response, 200);
+        } elseif ($request->category_id == 14) {
 
-        }elseif ($request->category_id == 6) {
+            $response = [];
+            return response()->json($response, 200);
+        } elseif ($request->category_id == 16) {
 
-            $response = []; 
-            return response()->json($response,200);
-
-        }elseif ($request->category_id == 13) {
-
-            $response = []; 
-            return response()->json($response,200); 
-
-        }elseif ($request->category_id == 14) {
-
-            $response = []; 
-            return response()->json($response,200);
-
-        }elseif ($request->category_id == 16) {
-
-            $response = []; 
-            return response()->json($response,200); 
+            $response = [];
+            return response()->json($response, 200);
         }
     }
 }

@@ -33,6 +33,15 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        <label for="input35" class=" col-form-label">Description</label>
+                        <div class="">
+                            <textarea name="description" class="form-control" id="description" placeholder="Description" rows="5">{{ $editcaterer->description }}</textarea>
+                        </div>
+                        @error('description')
+                            <div class="alert alert-danger mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="row mb-3">
                         <label for="input35" class=" col-form-label">Is Enable</label>
                         <div class="">
                             <select name="isenable" id="isenable" class="form-control">

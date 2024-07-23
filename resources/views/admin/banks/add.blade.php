@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.list.caterer') }}">Caterers</a></li>
+                            href="{{ route('admin.banks.index') }}">Banks</a></li>
                 </ol>
             </nav>
         </div>
@@ -23,34 +23,58 @@
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New Caterer</h5>
+                    <h5 class="mb-0">Add New Bank</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form id="featureForm" method="post" action="{{ route('admin.post.caterer') }}">
+                    <form method="post" action="{{ route('admin.banks.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
-                            <label for="input35" class=" col-form-label">Name</label>
+                            <label for="input35" class=" col-form-label">Bank Name</label>
                             <div class="">
-                                <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Caterer's Name" value="{{ old('name') }}">
+                                <input type="text" class="form-control" id="bank_name" name="bank_name"
+                                    placeholder="Bank Name" value="{{ old('bank_name') }}">
                             </div>
-                            @error('name')
+                            @error('bank_name')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="row mb-3">
-                            <label for="input35" class=" col-form-label">Description</label>
+                            <label for="input35" class=" col-form-label">Swift Code</label>
                             <div class="">
-                                <textarea name="description" class="form-control" id="description" placeholder="Description" rows="5">{{ old('description') }}</textarea>
+                                <input type="text" class="form-control" id="swift_code" name="swift_code"
+                                    placeholder="Swift Code" value="{{ old('swift_code') }}">
                             </div>
-                            @error('description')
+                            @error('swift_code')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
                             @enderror
+                        </div>
+                        <label for="upload_image" class="mb-3">
+
+                            <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                alt="Select image" />
+
+                            <div class="overlay" style="cursor: pointer">
+                                <div>Click to Change Image</div>
+                            </div>
+                            <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                            <input type="hidden" name="cropped_image" id="cropped_image">
+
+                        </label>
+                        <div class="row mb-3">
+                            <label for="input35" class=" col-form-label">Country</label>
+                            <div class="">
+                                <select name="country_id" id="country_id" class="form-control selectpicker">
+                                    <option value="">-- Select --</option>
+                                    @foreach (App\Models\Country::all() as $country)
+                                        <option value="{{ $country->id }}">{{ $country->country_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="row mb-3">
                             <label for="input35" class=" col-form-label">Is Enable</label>
                             <div class="">
-                                <select name="isenable" id="isenable" class="form-control">
+                                <select name="isenable" id="isenable" class="form-control ">
                                     <option value="active">Yes</option>
                                     <option value="inactive">No</option>
                                 </select>
@@ -71,3 +95,13 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            new Choices(document.querySelector(".selectpicker"), {
+                removeItemButton: true
+            });
+        });
+    </script>
+@endpush

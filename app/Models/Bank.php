@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Bank extends Model
 {
     use HasFactory;
+    protected $fillable = ['bank_name', 'slug', 'country_id', 'swift_code', 'status'];
+
+    public function countryDetails()
+    {
+        return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
 }

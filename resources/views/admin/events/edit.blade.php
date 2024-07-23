@@ -33,8 +33,8 @@
                                 <label for="input35" class=" col-form-label">Event Name</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="Name"
                                     value="{{ $objEvent->name }}">
-                                    <input type="hidden" class="form-control" id="url" name="url" placeholder="Url"
-                                        value="{{ $objEvent->slug }}">
+                                <input type="hidden" class="form-control" id="url" name="url" placeholder="Url"
+                                    value="{{ $objEvent->slug }}">
                             </div>
 
                             <div class=" mb-3">
@@ -42,8 +42,9 @@
                                 <select name="event_type" id="event_type" class="form-control">
                                     <option value="">--Select--</option>
                                     @foreach (App\Models\EventType::all() as $ev)
-                                    <option value="{{$ev->id}}" {{ $objEvent->event_type == $ev->id ? 'selected' : '' }}>{{$ev->title}}
-                                    </option>
+                                        <option value="{{ $ev->id }}"
+                                            {{ $objEvent->event_type == $ev->id ? 'selected' : '' }}>{{ $ev->title }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -54,7 +55,7 @@
                                     <option value="">--Select--</option>
                                     @foreach (App\Models\Caterer::all() as $caterer)
                                         <option value="{{ $caterer->id }}"
-                                            {{ $caterer->id == $objEvent->caterer_id  ? 'selected' : '' }}>
+                                            {{ $caterer->id == $objEvent->caterer_id ? 'selected' : '' }}>
                                             {{ $caterer->caterer_name }}</option>
                                     @endforeach
                                 </select>
@@ -73,7 +74,8 @@
                             <div class=" mb-3">
                                 <label for="input35" class=" col-form-label">Post Code</label>
                                 <input type="text" class="form-control" id="postal_code" name="postal_code"
-                                    placeholder="Post Code" value="{{ $objEvent->postal_code }}">
+                                    placeholder="PIN codes with coma (,) separated"
+                                    value="{{ implode(',', json_decode($objEvent->postal_code, true)) }}">
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-12 mb-3">
