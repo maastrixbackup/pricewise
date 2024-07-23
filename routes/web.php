@@ -91,6 +91,31 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('provider-feature', 'ProviderFeatureController');
 
 
+            //Bank
+            Route::resource('banks', 'BankController');
+            // Spending Purpose
+            Route::prefix('purposes')->group(function () {
+                Route::get('/', 'CommonController@purposes_index')->name('purposes.index');
+                Route::get('/create', 'CommonController@purposes_create')->name('purposes.create');
+                Route::post('/store', 'CommonController@purposes_store')->name('purposes.store');
+                Route::get('/edit/{id}', 'CommonController@purposes_edit')->name('purposes.edit');
+                Route::post('/update/{id}', 'CommonController@purposes_update')->name('purposes.update');
+                Route::post('/destroy', 'CommonController@purposes_destroy')->name('purposes.destroy');
+            });
+            // Spending Purpose
+            Route::prefix('loan-type')->group(function () {
+                Route::get('/', 'CommonController@loanType_index')->name('loan-type.index');
+                Route::get('/create', 'CommonController@loanType_create')->name('loan-type.create');
+                Route::post('/store', 'CommonController@loanType_store')->name('loan-type.store');
+                Route::get('/edit/{id}', 'CommonController@loanType_edit')->name('loan-type.edit');
+                Route::post('/update/{id}', 'CommonController@loanType_update')->name('loan-type.update');
+                Route::post('/destroy', 'CommonController@loanType_destroy')->name('loan-type.destroy');
+            });
+
+            // Loans
+            Route::resource('loans', 'LoanController');
+
+
             //Requests
             Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
             Route::post('/update_status/{id}', 'RequestController@updateStatus')->name('request.update_status');

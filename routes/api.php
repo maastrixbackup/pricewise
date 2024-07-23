@@ -89,7 +89,8 @@ Route::post('liability-insurance-compare', [LiabilityInsuranceController::class,
 // Api on events
 Route::post('get-events-list', [RequestController::class, 'eventList']);
 
-
+// API on Loan
+Route::post('get-loan-type', [RequestController::class,  'getPurposeData']);
 //Commercial Insurance
 // Business Interruption Insurance
 Route::post('business-interruption-insurance', [BusinessInterruptionController::class, 'index']);

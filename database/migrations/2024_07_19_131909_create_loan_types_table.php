@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBanksTable extends Migration
+class CreateLoanTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateBanksTable extends Migration
      */
     public function up()
     {
-        Schema::create('banks', function (Blueprint $table) {
+        Schema::create('loan_types', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('country_id');
-            $table->string('bank_name');
-            $table->string('swift_code');
-            $table->string('slug')->nullable();
+            $table->bigInteger('p_id');
+            $table->string('loan_type');
+            $table->string('image')->nullable();
+            $table->text('description')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('inactive');
             $table->timestamps();
         });
@@ -31,6 +31,6 @@ class CreateBanksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('banks');
+        Schema::dropIfExists('loan_types');
     }
 }

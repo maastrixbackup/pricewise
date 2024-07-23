@@ -82,7 +82,7 @@ class PermissionController extends Controller
 			$permissions = Permission::create(['name' => $request->input('name')]);
 			Toastr::success(__('Permission created successfully!'));
 			return redirect()->route('admin.permissions.create');
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			Toastr::error(__('There is an error! Please try later!'));
 			return redirect()->route('admin.permissions.create');
 		}
@@ -114,7 +114,7 @@ class PermissionController extends Controller
 
 			Toastr::success(__('Permission updated successfully!'));
 			return redirect()->route('admin.permissions.index');
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			Toastr::error(__('There is an error! Please try later!'));
 			return redirect()->route('admin.permissions.index');
 		}
@@ -126,7 +126,7 @@ class PermissionController extends Controller
 		try {
 			Permission::find($id)->delete();
 			return redirect()->route('admin.permissions.index')->with(Toastr::error(__('Permission deleted successfully!')));
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$error_msg = Toastr::error(__('There is an error! Please try later!'));
 			return redirect()->route('admin.permissions.index')->with($error_msg);
 		}

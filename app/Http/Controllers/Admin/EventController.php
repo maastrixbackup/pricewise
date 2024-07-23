@@ -43,14 +43,28 @@ class EventController extends Controller
     {
 
         // dd($request->all());
+
+
+        // Convert to lowercase
+        $slug = strtolower($request->name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $objEvent = new Event();
         $objEvent->name = $request->name;
-        $objEvent->slug = $request->url;
+        $objEvent->slug = $slug;
         $objEvent->event_type = $request->event_type;
         $objEvent->caterer_id = $request->caterer_id;
         $objEvent->description = $request->description;
         $objEvent->location = $request->location;
-        $objEvent->postal_code = $request->postal_code;
+        $objEvent->postal_code = json_encode($request->postal_code ? explode(",", $request->postal_code) : []);
         $objEvent->house_no = $request->house_no;
         $objEvent->room_type = $request->room_type;
         $objEvent->start_date = $request->start_date;
@@ -121,14 +135,27 @@ class EventController extends Controller
     {
         //echo 123;exit;
         // dd($request->all());
+
+        // Convert to lowercase
+        $slug = strtolower($request->name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $objEvent = Event::find($id);
         $objEvent->name = $request->name;
-        $objEvent->slug = $request->url;
+        $objEvent->slug = $slug;
         $objEvent->event_type = $request->event_type;
         $objEvent->caterer_id = $request->caterer_id;
         $objEvent->description = $request->description;
         $objEvent->location = $request->location;
-        $objEvent->postal_code = $request->postal_code;
+        $objEvent->postal_code = json_encode($request->postal_code ? explode(",", $request->postal_code) : []);
         $objEvent->house_no = $request->house_no;
         $objEvent->room_type = $request->room_type;
         $objEvent->start_date = $request->start_date;

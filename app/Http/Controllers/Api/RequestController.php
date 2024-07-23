@@ -19,6 +19,7 @@ use App\Models\PostRequest;
 use App\Models\InsuranceProduct;
 use Validator;
 use App\Http\Resources\EnergyResource;
+use App\Http\Resources\LoanTypeResource;
 use App\Models\Caterer;
 use App\Models\Deal;
 use App\Models\TvPackage;
@@ -32,6 +33,7 @@ use App\Models\Event;
 use App\Models\EventRoom;
 use App\Models\EventTheme;
 use App\Models\EventType;
+use App\Models\LoanType;
 
 class RequestController extends BaseController
 {
@@ -692,5 +694,34 @@ class RequestController extends BaseController
             'data' => $events,
             'message' => 'SearchData retrieved successfully'
         ]);
+    }
+
+    public function getPurposeData(Request $request)
+    {
+        if ($request->input('p_id')) {
+            $loanData = LoanType::whereJsonContains('p_id', $request->input('p_id'))->get();
+        } else {
+            $loanData = LoanType::limit(3)->get();
+        }
+
+        if (!$loanData->isEmpty()) {
+            $mergedData = [];
+            foreach ($loanData as $loan) {
+                $formattedData = (new LoanTypeResource($loan))->toArray($request);
+                $mergedData[] = $formattedData;
+            }
+            return response()->json([
+                'success' => true,
+                'data' => $mergedData,
+                'message' => 'Data Retrieved Successfully.'
+            ]);
+        } else {
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'No Data Found!.'
+            ]);
+        }
     }
 }

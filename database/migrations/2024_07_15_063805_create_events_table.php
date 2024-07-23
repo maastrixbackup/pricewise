@@ -22,7 +22,7 @@ class CreateEventsTable extends Migration
             $table->bigInteger('caterer_id')->nullable();
             $table->text('description')->nullable();
             $table->longText('location')->nullable();
-            $table->longText('postal_code')->nullable();
+            $table->json('postal_code')->nullable();
             $table->string('house_no')->nullable();
             $table->bigInteger('room_type')->nullable();
             $table->string('image')->nullable();

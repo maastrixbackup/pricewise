@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Pricewise- Caterer Create')
+@section('title', 'Pricewise- Spending Purpose')
 @section('content')
 
     <!--breadcrumb-->
@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.list.caterer') }}">Caterers</a></li>
+                            href="{{ route('admin.purposes.index') }}">Purposes</a></li>
                 </ol>
             </nav>
         </div>
@@ -23,34 +23,46 @@
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New Caterer</h5>
+                    <h5 class="mb-0">Add New Purpose</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form id="featureForm" method="post" action="{{ route('admin.post.caterer') }}">
+                    <form method="post" action="{{ route('admin.purposes.store') }}" enctype="multipart/form-data">
                         @csrf
-                        <div class="row mb-3">
-                            <label for="input35" class=" col-form-label">Name</label>
-                            <div class="">
-                                <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Caterer's Name" value="{{ old('name') }}">
-                            </div>
+                        <div class=" mb-3">
+                            <label for="input35" class=" col-form-label">Purpose Name</label>
+                            <input type="text" class="form-control" name="name" id="name"
+                                placeholder="Spending Purpose" value="{{ old('name') }}">
+
                             @error('name')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="row mb-3">
+
+                        <div class="mb-3">
                             <label for="input35" class=" col-form-label">Description</label>
-                            <div class="">
-                                <textarea name="description" class="form-control" id="description" placeholder="Description" rows="5">{{ old('description') }}</textarea>
-                            </div>
+                            <textarea class="form-control" name="description" id="description" placeholder="Description">{{ old('description') }}</textarea>
+
                             @error('description')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <label for="upload_image" class="mb-3">
+
+                            <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                alt="Select image" />
+
+                            <div class="overlay" style="cursor: pointer">
+                                <div>Click to Change Image</div>
+                            </div>
+                            <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                            <input type="hidden" name="cropped_image" id="cropped_image">
+
+                        </label>
                         <div class="row mb-3">
                             <label for="input35" class=" col-form-label">Is Enable</label>
                             <div class="">
-                                <select name="isenable" id="isenable" class="form-control">
+                                <select name="status" id="status" class="form-control">
                                     <option value="active">Yes</option>
                                     <option value="inactive">No</option>
                                 </select>
