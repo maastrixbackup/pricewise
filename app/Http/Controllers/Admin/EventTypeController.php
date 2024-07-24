@@ -47,10 +47,23 @@ class EventTypeController extends Controller
         ]);
 
         try {
+
+            // Convert to lowercase
+            $slug = strtolower($request->name);
+
+            // Remove special characters
+            $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+            // Replace spaces and multiple hyphens with a single hyphen
+            $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+            // Trim hyphens from the beginning and end of the string
+            $slug = trim($slug, '-');
+
             // Create a new instance of EventType
             $ev_type = new EventType();
             $ev_type->title = $request->name;
-            $ev_type->slug = $request->url;
+            $ev_type->slug = $slug;
             $ev_type->description = $request->description;
             $ev_type->status = $request->status;
 
@@ -104,10 +117,23 @@ class EventTypeController extends Controller
     {
 
         try {
+
+            // Convert to lowercase
+            $slug = strtolower($request->name);
+
+            // Remove special characters
+            $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+            // Replace spaces and multiple hyphens with a single hyphen
+            $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+            // Trim hyphens from the beginning and end of the string
+            $slug = trim($slug, '-');
+
             // Create a new instance of EventType
             $ev_type_update =  EventType::find($id);
             $ev_type_update->title = $request->name;
-            $ev_type_update->slug = $request->url;
+            $ev_type_update->slug = $slug;
             $ev_type_update->description = $request->description;
             $ev_type_update->status = $request->status;
 

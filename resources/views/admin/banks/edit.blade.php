@@ -50,6 +50,16 @@
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="row mb-3">
+                            <label for="description" class=" col-form-label">Description</label>
+                            <div class="">
+                                <textarea class="form-control" name="description" placeholder="Description" id="" cols="30"
+                                    rows="5">{{ $edit_bank->description }}</textarea>
+                            </div>
+                            @error('description')
+                                <div class="alert alert-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <label for="upload_image" class="mb-3">
 
                             <img src="{{ asset('storage/images/bank_images/' . $edit_bank->image) }}" id="uploaded_image"

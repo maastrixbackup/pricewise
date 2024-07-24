@@ -190,6 +190,19 @@ class TvProductController extends Controller
             $message = array('message' => 'Already Exists! Please enter unique title', 'title' => 'Already Exists!');
             return response()->json(["status" => false, 'message' => $message, 'title' => 'Already Exists!']);
         } else {
+
+            // Convert to lowercase
+            $slug = strtolower($request->title);
+
+            // Remove special characters
+            $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+            // Replace spaces and multiple hyphens with a single hyphen
+            $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+            // Trim hyphens from the beginning and end of the string
+            $slug = trim($slug, '-');
+
             $objTv = new TvProduct();
             $objTv->title = $request->title;
             $objTv->content = $request->description;
@@ -212,7 +225,7 @@ class TvProductController extends Controller
             $objTv->catalogue_name = $request->catalogue_name;
             $objTv->product_name_api = $request->product_name_api;
             $objTv->category_id =  $request->category;
-            $objTv->url = $request->link;
+            $objTv->url = $slug;
             $objTv->affiliate = $request->affiliate_name;
             $objTv->template = $request->template;
             $objTv->is_page = isset($request->is_page) ? $request->is_page : 0;
@@ -276,6 +289,19 @@ class TvProductController extends Controller
 
     public function tv_update(Request $request, $id)
     {
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $objTv = TvProduct::where('id', $id)->first();
         $objTv->title = $request->title;
         //$objTv->avg_speed = $request->avg_speed;
@@ -298,7 +324,7 @@ class TvProductController extends Controller
         $objTv->product_name_api = $request->product_name_api;
         $objTv->category_id =  $request->category;
         $objTv->mpf_product = $request->mpf_product;
-        $objTv->url = $request->link;
+        $objTv->url = $slug;
         $objTv->affiliate = $request->affiliate_name;
         $objTv->template = $request->template;
 
@@ -339,6 +365,7 @@ class TvProductController extends Controller
             return redirect()->route('admin.tv-products.index')->with($error_msg);
         }
     }
+
     public function default(Request $request, $id)
     {
         //dd($id);
@@ -482,7 +509,7 @@ class TvProductController extends Controller
         $objExtProduct = TvProduct::where('id', $id)->first();
         $objProduct = new TvProduct();
         $last_product = TvProduct::where('id', $id)->max('duplicate_count');
-        //dd($last_product);
+        dd($last_product);
         if ($last_product == 0) {
             $dup_no = '--' . 'duplicate';
         } else {

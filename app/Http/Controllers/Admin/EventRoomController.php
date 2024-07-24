@@ -37,16 +37,28 @@ class EventRoomController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required',
             // 'image' => 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
             // 'sub_category' => 'required',
         ]);
         try {
+
+            // Convert to lowercase
+            $slug = strtolower($request->name);
+
+            // Remove special characters
+            $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+            // Replace spaces and multiple hyphens with a single hyphen
+            $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+            // Trim hyphens from the beginning and end of the string
+            $slug = trim($slug, '-');
+
             $evt_room = new EventRoom();
             $evt_room->room = $request->name;
-            $evt_room->slug = $request->url;
+            $evt_room->slug = $slug;
             $evt_room->description = $request->description;
             $evt_room->status = $request->status;
 
@@ -95,30 +107,44 @@ class EventRoomController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    { $request->validate([
-        'name' => 'required',
-        // 'image' => 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
-        // 'sub_category' => 'required',
-    ]);
-    try {
-        $evt_room = EventRoom::find($id);
-        $evt_room->room = $request->name;
-        $evt_room->slug = $request->url;
-        $evt_room->description = $request->description;
-        $evt_room->status = $request->status;
+    {
+        $request->validate([
+            'name' => 'required',
+            // 'image' => 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
+            // 'sub_category' => 'required',
+        ]);
+        try {
+
+            // Convert to lowercase
+            $slug = strtolower($request->name);
+
+            // Remove special characters
+            $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+            // Replace spaces and multiple hyphens with a single hyphen
+            $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+            // Trim hyphens from the beginning and end of the string
+            $slug = trim($slug, '-');
+
+            $evt_room = EventRoom::find($id);
+            $evt_room->room = $request->name;
+            $evt_room->slug = $slug;
+            $evt_room->description = $request->description;
+            $evt_room->status = $request->status;
 
 
-        // // Handle the image file upload
-        // $filename = time() . '.' . $request->image->getClientOriginalExtension();
-        // $request->image->move(public_path('storage/images/event_type/'), $filename);
+            // // Handle the image file upload
+            // $filename = time() . '.' . $request->image->getClientOriginalExtension();
+            // $request->image->move(public_path('storage/images/event_type/'), $filename);
 
-        // // Save the filename in the database
-        // $evt_room->image = $filename;
-        $evt_room->save();
-        return redirect()->route('admin.room_type.index')->with('success', 'Event Room Added Successfully');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', $e->getMessage());
-    }
+            // // Save the filename in the database
+            // $evt_room->image = $filename;
+            $evt_room->save();
+            return redirect()->route('admin.room_type.index')->with('success', 'Event Room Added Successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**

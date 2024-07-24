@@ -129,7 +129,8 @@
                                 <div class=" mb-3">
                                     <label for="avg_delivery_time" class=" col-form-label">Average Aproval Time</label>
                                     <input type="number" class="form-control" id="avg_delivery_time"
-                                        name="avg_delivery_time" placeholder="Average Delivery Time" min="0" onKeyPress="if(this.value.length==5) return false;"
+                                        name="avg_delivery_time" placeholder="Average Delivery Time" min="0"
+                                        onKeyPress="if(this.value.length==5) return false;"
                                         value="{{ $loan->approval_time }}">
                                 </div>
                             </div>
@@ -185,6 +186,18 @@
                                     Business</option>
                                 <option value="large-business"
                                     {{ $loan->product_type == 'large-business' ? 'selected' : '' }}>Large Business</option>
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3 form-group">
+                            <label for="product_type" class="col-form-label"><b>Service Type</b>
+                            </label>
+                            <select id="service_type" name="service_type" class="select2 form-select">
+                                <option value="Zelfstandig" {{ $loan->service_types == 'Zelfstandig' ? 'selected' : '' }}>
+                                    Zelfstandig</option>
+                                <option value="Begeleiding" {{ $loan->service_types == 'Begeleiding' ? 'selected' : '' }}>
+                                    Begeleiding</option>
 
                             </select>
                         </div>
@@ -330,56 +343,56 @@
         });
     </script>
     <script type="text/javascript">
-        $("#productForm").validate({
-            errorElement: 'span',
-            errorClass: 'help-block',
-            highlight: function(element, errorClass, validClass) {
-                $(element).closest('.form-group').addClass("has-error");
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).closest('.form-group').removeClass("has-error");
-                $(element).closest('.form-group').addClass("has-success");
-            },
+        // $("#productForm").validate({
+        //     errorElement: 'span',
+        //     errorClass: 'help-block',
+        //     highlight: function(element, errorClass, validClass) {
+        //         $(element).closest('.form-group').addClass("has-error");
+        //     },
+        //     unhighlight: function(element, errorClass, validClass) {
+        //         $(element).closest('.form-group').removeClass("has-error");
+        //         $(element).closest('.form-group').addClass("has-success");
+        //     },
 
-            rules: {
-                title: "required",
-                description: "required",
+        //     rules: {
+        //         title: "required",
+        //         description: "required",
 
-            },
-            messages: {
-                title: "Title is missing",
-                description: "Description is missing",
-            },
-            submitHandler: function(form) {
-                var data = CKEDITOR.instances.description.getData();
-                $("#description").val(data);
-                var formData = new FormData(form);
-                $.ajax({
+        //     },
+        //     messages: {
+        //         title: "Title is missing",
+        //         description: "Description is missing",
+        //     },
+        //     submitHandler: function(form) {
+        //         var data = CKEDITOR.instances.description.getData();
+        //         $("#description").val(data);
+        //         var formData = new FormData(form);
+        //         $.ajax({
 
-                    url: form.action,
-                    method: "post",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        //success
+        //             url: form.action,
+        //             method: "post",
+        //             headers: {
+        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //             },
+        //             data: formData,
+        //             processData: false,
+        //             contentType: false,
+        //             success: function(data) {
+        //                 //success
 
-                        if (data.status) {
-                            location.href = data.redirect_location;
-                        } else {
-                            toastr.error(data.message.message, 'Already Exists!');
-                        }
-                    },
-                    error: function(e) {
-                        toastr.error('Something went wrong . Please try again later!!', '');
-                    }
-                });
-                return false;
-            }
-        });
+        //                 if (data.status) {
+        //                     location.href = data.redirect_location;
+        //                 } else {
+        //                     toastr.error(data.message.message, 'Already Exists!');
+        //                 }
+        //             },
+        //             error: function(e) {
+        //                 toastr.error('Something went wrong . Please try again later!!', '');
+        //             }
+        //         });
+        //         return false;
+        //     }
+        // });
 
         // $("#title").keyup(function() {
         //     var title_val = $("#title").val();

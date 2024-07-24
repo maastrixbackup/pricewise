@@ -35,17 +35,17 @@ class BannerController extends Controller
     public function index()
     {
         $banners = Banner::latest()->get();
-//if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
-//dd(\Auth::guard('admin')->user()->roles);
-// foreach (Auth::guard('admin')->user()->roles as $role) {
-//         $permissions = $role->permissions;
-//          echo $permission->name . "\n";
-//     }
-    // $permissions = Permission::all();
+        //if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
+        //dd(\Auth::guard('admin')->user()->roles);
+        // foreach (Auth::guard('admin')->user()->roles as $role) {
+        //         $permissions = $role->permissions;
+        //          echo $permission->name . "\n";
+        //     }
+        // $permissions = Permission::all();
 
-    // foreach ($permissions as $permission) {
-    //     echo $permission->name . "\n";
-    // }
+        // foreach ($permissions as $permission) {
+        //     echo $permission->name . "\n";
+        // }
         return view('admin.banners.index', compact('banners'));
     }
 
@@ -57,7 +57,7 @@ class BannerController extends Controller
     public function create()
     {
         $pages = Page::where('status', 1)->get();
-       return view('admin.banners.add', compact('pages'));
+        return view('admin.banners.add', compact('pages'));
     }
 
     /**
@@ -68,7 +68,20 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-        
+
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $banner = new Banner();
         $banner->title = $request->title;
         $banner->description = $request->description;
@@ -77,7 +90,7 @@ class BannerController extends Controller
         $banner->slider_id = $request->slider_id;
         $banner->page = $request->page;
         $banner->section = $request->section;
-        $banner->link = $request->link;
+        $banner->link = $slug;
         $croppedImage = $request->cropped_image;
         $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
@@ -99,7 +112,6 @@ class BannerController extends Controller
         if ($banner->save()) {
             Toastr::success('Banner Created Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route("admin.banners.index");
-           
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -140,6 +152,20 @@ class BannerController extends Controller
     public function update(Request $request, $id)
     {
         try {
+
+
+            // Convert to lowercase
+            $slug = strtolower($request->title);
+
+            // Remove special characters
+            $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+            // Replace spaces and multiple hyphens with a single hyphen
+            $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+            // Trim hyphens from the beginning and end of the string
+            $slug = trim($slug, '-');
+
             $banner = Banner::find($id);
             $banner->title = $request->title;
             $banner->description = $request->description;
@@ -148,26 +174,26 @@ class BannerController extends Controller
             $banner->slider_id = $request->slider_id;
             $banner->page = $request->page;
             $banner->section = $request->section;
-            $banner->link = $request->link;
-    
+            $banner->link = $slug;
+
             if ($request->has('cropped_image')) {
                 $croppedImage = $request->cropped_image;
                 $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
                 $imageName = 'banner_' . time() . '.png';
                 $destinationDirectory = 'public/images/banners';
-    
+
                 Storage::makeDirectory($destinationDirectory);
-    
+
                 $filePath = $destinationDirectory . '/' . $imageName;
-    
+
                 if ($banner->image) {
                     Storage::delete($destinationDirectory . '/' . $banner->image);
                 }
-    
+
                 Storage::put($filePath, $imgData);
                 $banner->image = $imageName;
             }
-    
+
             if ($banner->save()) {
                 Toastr::success('Banner Updated Successfully', '', ["positionClass" => "toast-top-right"]);
                 return response()->json(["status" => true, "redirect_location" => route("admin.banners.index")]);
@@ -194,10 +220,9 @@ class BannerController extends Controller
         try {
             Banner::find($id)->delete();
             return back()->with(Toastr::error(__('Banner deleted successfully!')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.banners.index')->with($error_msg);
         }
     }
 }
-

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\TvChannel;
 use Brian2694\Toastr\Facades\Toastr;
 use Validator;
+
 class TvChannelController extends Controller
 {
     function __construct()
@@ -24,8 +25,8 @@ class TvChannelController extends Controller
      */
     public function index()
     {
-       $records = TvChannel::latest()->get();
-       return view('admin.tv_channel.index',compact('records'));
+        $records = TvChannel::latest()->get();
+        return view('admin.tv_channel.index', compact('records'));
     }
 
     /**
@@ -66,7 +67,6 @@ class TvChannelController extends Controller
             Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
             return back();
         }
-
     }
 
     /**

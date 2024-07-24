@@ -188,6 +188,15 @@
 
                             </select>
                         </div>
+                        <div class="mb-3 form-group">
+                            <label for="product_type" class="col-form-label"><b>Service Type</b>
+                            </label>
+                            <select id="service_type" name="service_type" class="select2 form-select">
+                                <option value="Zelfstandig">Zelfstandig</option>
+                                <option value="Begeleiding">Begeleiding</option>
+
+                            </select>
+                        </div>
                         <div class="mb-3">
                             <label for="category" class="col-form-label"><b>Category</b>
                             </label>

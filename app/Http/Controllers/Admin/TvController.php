@@ -13,10 +13,10 @@ use Brian2694\Toastr\Facades\Toastr;
 
 class TvController extends Controller
 {
-  
+
     public function tvUpdate(Request $request, $id)
     {
-        $tv = TvPage::find($id); 
+        $tv = TvPage::find($id);
         $tv->tv_deal_header1 = $request->tv_deal_header1 ? $request->tv_deal_header1 : $tv->tv_deal_header1;
         $tv->tv_deal_header2 = $request->tv_deal_header2 ? $request->tv_deal_header2 : $tv->tv_deal_header2;
         $tv->tv_deal_desc = $request->tv_deal_desc ? $request->tv_deal_desc : $tv->tv_deal_desc;
@@ -33,18 +33,17 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $tv->entertainment_img = $image;
-            
         }
         $tv->meta_tag = $request->meta_tag ? $request->meta_tag : $tv->meta_tag;
         $tv->meta_keyword = $request->meta_keyword ? $request->meta_keyword : $tv->meta_keyword;
         $tv->meta_desc = $request->meta_desc ? $request->meta_desc : $tv->meta_desc;
-        $tv->og_title = $request->og_title ? $request->og_title :$tv->og_title;
-        $tv->og_desc = $request->og_desc ? $request->og_desc :$tv->og_desc;
-        $tv->og_site_name = $request->og_site_name ? $request->og_site_name :$tv->og_site_name;
-        $tv->twitter_card = $request->twitter_card ? $request->twitter_card :$tv->twitter_card;
-        $tv->twitter_site = $request->twitter_site ? $request->twitter_site :$tv->twitter_site;
-        $tv->twitter_title = $request->twitter_title ? $request->twitter_title :$tv->twitter_title;
-        $tv->twitter_desc = $request->twitter_desc ? $request->twitter_desc :$tv->twitter_desc;
+        $tv->og_title = $request->og_title ? $request->og_title : $tv->og_title;
+        $tv->og_desc = $request->og_desc ? $request->og_desc : $tv->og_desc;
+        $tv->og_site_name = $request->og_site_name ? $request->og_site_name : $tv->og_site_name;
+        $tv->twitter_card = $request->twitter_card ? $request->twitter_card : $tv->twitter_card;
+        $tv->twitter_site = $request->twitter_site ? $request->twitter_site : $tv->twitter_site;
+        $tv->twitter_title = $request->twitter_title ? $request->twitter_title : $tv->twitter_title;
+        $tv->twitter_desc = $request->twitter_desc ? $request->twitter_desc : $tv->twitter_desc;
         if ($request->file('tv_deal_img') == null) {
             $input['tv_deal_img'] = $tv->tv_deal_img;
         } else {
@@ -54,7 +53,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $tv->tv_deal_img = $image;
-            
         }
         $tv->movie_title = $request->movie_title ? $request->movie_title : $tv->movie_title;
         $tv->movie_desc = $request->movie_desc ? $request->movie_desc : $tv->movie_desc;
@@ -72,7 +70,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $tv->pop_telecom_img1 = $image;
-            
         }
         if ($request->file('pop_telecom_img2') == null) {
             $input['pop_telecom_img2'] = $tv->pop_telecom_img2;
@@ -83,7 +80,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $tv->pop_telecom_img2 = $image;
-            
         }
         $tv->sport_title = $request->sport_title ? $request->sport_title : $tv->sport_title;
         $tv->sport_desc = $request->sport_desc ? $request->sport_desc : $tv->sport_desc;
@@ -103,7 +99,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $tv->sport_img = $image;
-            
         }
         if ($request->file('sound_img') == null) {
             $input['sound_img'] = $tv->sound_img;
@@ -114,7 +109,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $tv->sound_img = $image;
-            
         }
 
         if ($tv->save()) {
@@ -127,9 +121,22 @@ class TvController extends Controller
 
     public function tvLinkStore(Request $request)
     {
+
+        // Convert to lowercase
+        $slug = strtolower($request->name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $tvLinks = new TvLink();
         $tvLinks->name = $request->name;
-        $tvLinks->url = $request->link;
+        $tvLinks->url = $slug;
         $tvLinks->status = $request->status;
         if ($request->file('image')) {
             $destinationPath = '/images';
@@ -140,7 +147,7 @@ class TvController extends Controller
             $tvLinks->image = $image;
         }
 
-        if($tvLinks->save()){
+        if ($tvLinks->save()) {
             return redirect()->back()->with(Toastr::success('TV Link Added Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
             return redirect()->back()->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
@@ -157,9 +164,22 @@ class TvController extends Controller
     public function tvLinkUpdate(Request $request, $id)
     {
         //dd($request->all());
+
+        // Convert to lowercase
+        $slug = strtolower($request->name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $tvLinks = TvLink::find($id);
         $tvLinks->name = $request->name;
-        $tvLinks->url = $request->link;
+        $tvLinks->url = $slug;
         $tvLinks->status = $request->status;
         if ($request->file('image') == null) {
             $input['image'] = $tvLinks->image;
@@ -170,7 +190,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $tvLinks->image = $image;
-            
         }
         if ($tvLinks->save()) {
             return redirect()->back()->with(Toastr::success('Tv Link Updated Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -199,9 +218,9 @@ class TvController extends Controller
         $poptv->btn_name = $request->btn_name;
         $poptv->btn_link = $request->btn_link;
         $poptv->status = $request->status;
-        
 
-        if($poptv->save()){
+
+        if ($poptv->save()) {
             return redirect()->back()->with(Toastr::success('TV Bundle Added Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
             return redirect()->back()->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
@@ -224,7 +243,7 @@ class TvController extends Controller
         $poptv->btn_name = $request->btn_name;
         $poptv->btn_link = $request->btn_link;
         $poptv->status = $request->status;
-        
+
         if ($poptv->save()) {
             return redirect()->back()->with(Toastr::success('TV Bundle Updated Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
@@ -258,7 +277,7 @@ class TvController extends Controller
             $include->image = $image;
         }
 
-        if($include->save()){
+        if ($include->save()) {
             return redirect()->back()->with(Toastr::success('Added Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
             return redirect()->back()->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
@@ -287,7 +306,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $include->image = $image;
-            
         }
         if ($include->save()) {
             return redirect()->back()->with(Toastr::success('Updated Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -311,7 +329,7 @@ class TvController extends Controller
     public function discoverStore(Request $request)
     {
         $discover = new Discover();
-        
+
         $discover->title = $request->title;
         $discover->description = $request->discover_desc;
         $discover->status = $request->status;
@@ -324,7 +342,7 @@ class TvController extends Controller
             $discover->image = $image;
         }
 
-        if($discover->save()){
+        if ($discover->save()) {
             return redirect()->back()->with(Toastr::success('Added Successfully', '', ["positionClass" => "toast-top-right"]));
         } else {
             return redirect()->back()->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
@@ -354,7 +372,6 @@ class TvController extends Controller
             $imgfile->move(public_path() . $destinationPath, $imgfile->getClientOriginalName());
             $image = $imgFilename;
             $discover->image = $image;
-            
         }
         if ($discover->save()) {
             return redirect()->back()->with(Toastr::success('Updated Successfully', '', ["positionClass" => "toast-top-right"]));

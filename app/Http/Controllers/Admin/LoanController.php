@@ -76,6 +76,7 @@ class LoanController extends Controller
         $loan->p_id = $request->p_id;
         $loan->category = $request->category;
         $loan->product_type = $request->product_type;
+        $loan->service_types = $request->service_type;
         $loan->rate_of_interest = $request->interest_rate;
         $loan->approval_time = $request->avg_delivery_time;
         $loan->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
@@ -166,6 +167,7 @@ class LoanController extends Controller
         $loan->p_id = $request->p_id;
         $loan->category = $request->category;
         $loan->product_type = $request->product_type;
+        $loan->service_types = $request->service_type;
         $loan->rate_of_interest = $request->interest_rate;
         $loan->approval_time = $request->avg_delivery_time;
         $loan->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);

@@ -71,13 +71,27 @@ class SmartPhoneController extends Controller
             'description' => 'required',
             'status' => 'required',
         ]);
+
+
+        // Convert to lowercase
+        $slug = strtolower($request->provider_name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         DB::beginTransaction();
         try {
             $smP = new SmartPhone();
             $smP->provider_name = $request->provider_name;
             $smP->description = $request->description;
             $smP->category_id = $request->category_id;
-            $smP->slug = $request->provider_url;
+            $smP->slug = $slug;
             $smP->status = $request->type;
 
             if ($smP->save()) {
@@ -128,6 +142,20 @@ class SmartPhoneController extends Controller
         $request->validate([
             'provider_name' => 'required',
         ]);
+
+
+        // Convert to lowercase
+        $slug = strtolower($request->provider_name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $sp_update = SmartPhone::where('id', $id)->first();
         DB::beginTransaction();
         try {
@@ -135,7 +163,7 @@ class SmartPhoneController extends Controller
             $sp_update->description = $request->description;
             $sp_update->category_id = $request->category_id;
             $sp_update->status = $request->type;
-            $sp_update->slug = $request->provider_url;
+            $sp_update->slug = $slug;
             if ($sp_update->save()) {
                 DB::commit();
                 return redirect()->back()->with(Toastr::success('Provide Updated Successfully', '', ["positionClass" => "toast-top-right"]));

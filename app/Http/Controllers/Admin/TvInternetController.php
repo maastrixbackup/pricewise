@@ -42,10 +42,10 @@ class TvInternetController extends Controller
      */
     public function index(Request $request)
     {
-    	$objTv = TvInternetProduct::latest()->get();
-        $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
-        $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
-        $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
+        $objTv = TvInternetProduct::latest()->get();
+        $objTvFeatures = Feature::select('id', 'features', 'input_type')->where('category', 9)->get();
+        $objInternetFeatures = Feature::select('id', 'features', 'input_type')->where('category', 8)->get();
+        $objTeleFeatures = Feature::select('id', 'features', 'input_type')->where('category', 2)->get();
         return view('admin.tvinternet.index', compact('objTv', 'objTvFeatures', 'objInternetFeatures', 'objTeleFeatures'));
     }
 
@@ -59,10 +59,10 @@ class TvInternetController extends Controller
         $tv_packages = TvPackage::latest()->get();
         $combos = Combo::where('category', 1)->latest()->get();
         // $objAdditionalCategories = AdditionalCategory::latest()->get();
-         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
-         $objCategory = Category::whereNull('parent')->latest()->get();
-         $providers = Provider::latest()->get();
-         //$objFeature = TvFeature::latest()->get();
+        $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
+        $objCategory = Category::whereNull('parent')->latest()->get();
+        $providers = Provider::latest()->get();
+        //$objFeature = TvFeature::latest()->get();
         return view('admin.tvinternet.add', compact('objCategory', 'objRelatedProducts', 'providers', 'tv_packages', 'combos'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
@@ -158,16 +158,16 @@ class TvInternetController extends Controller
 
             $edit_link = $delete_link = $default_link = $duplicate_link = '';
             // if (Auth::guard('admin')->user()->can('tv-product-edit')) {
-                $edit_link =   '<a title="Edit" href="' . $edit_btn . '" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>';
+            $edit_link =   '<a title="Edit" href="' . $edit_btn . '" class="btn1 btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>';
             //}
             //if (Auth::guard('admin')->user()->can('tv-product-delete')) {
-                $delete_link = ' <a title="Delete" class="btn1 btn-outline-danger trash remove-tv" data-id="' . $record->id . '" data-action="' . $delete_btn . '"><i class="bx bx-trash me-0"></i></a>';
+            $delete_link = ' <a title="Delete" class="btn1 btn-outline-danger trash remove-tv" data-id="' . $record->id . '" data-action="' . $delete_btn . '"><i class="bx bx-trash me-0"></i></a>';
             //}
             //if (Auth::guard('admin')->user()->can('tv-product-default')) {
-                $default_link = '  <a title="Default" class="btn1 btn-outline-success" href="' . $default_btn . '"><i class="bx bx-star me-0"></i></a>';
+            $default_link = '  <a title="Default" class="btn1 btn-outline-success" href="' . $default_btn . '"><i class="bx bx-star me-0"></i></a>';
             //}
             //if (Auth::guard('admin')->user()->can('internet-tv-duplicate')) {
-                $duplicate_link = ' <a title="Duplicate" class="btn1 btn-outline-warning" href="' . $duplicate_btn . '"><i class="bx bx-copy me-0"></i></a>';
+            $duplicate_link = ' <a title="Duplicate" class="btn1 btn-outline-warning" href="' . $duplicate_btn . '"><i class="bx bx-copy me-0"></i></a>';
             //}
 
             if ($record->add_extras || $record->related_products) {
@@ -218,6 +218,19 @@ class TvInternetController extends Controller
             $message = array('message' => 'Already Exists! Please enter unique title', 'title' => 'Already Exists!');
             return response()->json(["status" => false, 'message' => $message, 'title' => 'Already Exists!']);
         } else {
+
+            // Convert to lowercase
+            $slug = strtolower($request->title);
+
+            // Remove special characters
+            $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+            // Replace spaces and multiple hyphens with a single hyphen
+            $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+            // Trim hyphens from the beginning and end of the string
+            $slug = trim($slug, '-');
+
             $objTv = new TvInternetProduct();
             $objTv->title = $request->title;
             $objTv->content = $request->description;
@@ -235,7 +248,7 @@ class TvInternetController extends Controller
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $objTv->combos = $request->combos ? json_encode($request->combos) : [];
-            $objTv->status = $request->status?$request->status:0;
+            $objTv->status = $request->status ? $request->status : 0;
             $objTv->valid_till =  $request->valid_till;
             $objTv->category =  $request->category;
             $objTv->product_type = $request->product_type;
@@ -244,42 +257,42 @@ class TvInternetController extends Controller
             $objTv->is_featured = $request->is_featured;
             $objTv->mechanic_install = $request->mechanic_install;
             $objTv->mechanic_charge = $request->mechanic_charge;
-            $objTv->slug = $request->link;
+            $objTv->slug = $slug;
             $objTv->provider = $request->provider;
             $objTv->no_of_receivers = $request->no_of_receivers;
             $objTv->telephone_extensions = $request->telephone_extensions;
-            $objTv->tv_packages = json_encode($request->tv_packages??[]);
-            $objTv->network_type = json_encode($request->network_type??[]);
+            $objTv->tv_packages = json_encode($request->tv_packages ?? []);
+            $objTv->network_type = json_encode($request->network_type ?? []);
 
             if ($request->has('cropped_image')) {
-            // Access base64 encoded image data directly from the request
-            $croppedImage = $request->cropped_image;
+                // Access base64 encoded image data directly from the request
+                $croppedImage = $request->cropped_image;
 
-            // Extract base64 encoded image data and decode it
-            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+                // Extract base64 encoded image data and decode it
+                $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
-            // Generate a unique file name for the image
-            $imageName = 'tvInternet_' . time() . '.png';
+                // Generate a unique file name for the image
+                $imageName = 'tvInternet_' . time() . '.png';
 
-            // Specify the destination directory where the image will be saved
-            $destinationDirectory = 'public/images/tvinternet';
+                // Specify the destination directory where the image will be saved
+                $destinationDirectory = 'public/images/tvinternet';
 
-            // Create the directory if it doesn't exist
-            Storage::makeDirectory($destinationDirectory);
+                // Create the directory if it doesn't exist
+                Storage::makeDirectory($destinationDirectory);
 
-            // Save the image to the server using Laravel's file upload method
-            $filePath = $destinationDirectory . '/' . $imageName;
+                // Save the image to the server using Laravel's file upload method
+                $filePath = $destinationDirectory . '/' . $imageName;
 
-            // Delete the old image if it exists
-            if ($objTv->image) {
-                Storage::delete($destinationDirectory . '/' . $objTv->image);
-            }
+                // Delete the old image if it exists
+                if ($objTv->image) {
+                    Storage::delete($destinationDirectory . '/' . $objTv->image);
+                }
 
-            // Save the new image
-            Storage::put($filePath, $imgData);
+                // Save the new image
+                Storage::put($filePath, $imgData);
 
-            // Set the image file name for the provider
-            $objTv->image = $imageName;
+                // Set the image file name for the provider
+                $objTv->image = $imageName;
             }
             if ($objTv->save()) {
                 return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -300,7 +313,6 @@ class TvInternetController extends Controller
      */
     public function show($id)
     {
-
     }
 
     /**
@@ -312,12 +324,12 @@ class TvInternetController extends Controller
     public function edit($id)
     {
         $objTv = TvInternetProduct::findOrFail($id);
-        $objTvFeatures = Feature::select('id','features','input_type')->where('category', 9)->get();
+        $objTvFeatures = Feature::select('id', 'features', 'input_type')->where('category', 9)->get();
         $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $providers = Provider::latest()->get();
-        $objInternetFeatures = Feature::select('id','features','input_type')->where('category', 8)->get();
+        $objInternetFeatures = Feature::select('id', 'features', 'input_type')->where('category', 8)->get();
         $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
-        $objTeleFeatures = Feature::select('id','features','input_type')->where('category', 2)->get();
+        $objTeleFeatures = Feature::select('id', 'features', 'input_type')->where('category', 2)->get();
         $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $serviceInfo = PostFeature::where('post_id', $id)->where('type', 'info')->get();
         $objRelatedProducts = TvInternetProduct::orderBy('id', 'asc')->get();
@@ -338,40 +350,53 @@ class TvInternetController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $objTv = TvInternetProduct::where('id', $id)->first();
         // dd($request->combos);
-            $objTv->title = $request->title;
-            $objTv->content = $request->description3;
-            $objTv->commission = $request->commission;
-            $objTv->commission_type = $request->commission_type;
-            $objTv->avg_delivery_time = $request->avg_delivery_time;
-            $objTv->price = $request->price;
-            $objTv->discounted_price = $request->discounted_price;
-            $objTv->discounted_till = $request->discounted_till;
-            $objTv->shipping_cost = $request->shipping_cost;
-            $objTv->connection_cost = $request->connection_cost;
-            $objTv->discount = $request->discount;
-            $objTv->contract_length = $request->contract_length;
-            $objTv->contract_type = $request->contract_type;
-            $objTv->transfer_service = $request->transfer_service;
-            $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
-            $objTv->combos = json_encode($request->combos?$request->combos : []);
-            $objTv->status = $request->online_status?$request->online_status:0;
-            $objTv->valid_till =  $request->valid_till;
-            $objTv->category =  $request->category;
-            $objTv->product_type = $request->product_type;
-            $objTv->no_of_person = $request->no_of_person;
-            $objTv->manual_install = $request->manual_install;
-            $objTv->is_featured = $request->is_featured;
-            $objTv->mechanic_install = $request->mechanic_install;
-            $objTv->mechanic_charge = $request->mechanic_charge;
-            $objTv->slug = $request->link;
-            $objTv->provider = $request->provider;
-            $objTv->no_of_receivers = $request->no_of_receivers;
-            $objTv->telephone_extensions = $request->telephone_extensions;
-            $objTv->tv_packages = json_encode($request->tv_packages??[]);
-            $objTv->network_type = json_encode($request->network_type??[]);
-            if ($request->has('cropped_image')) {
+        $objTv->title = $request->title;
+        $objTv->content = $request->description3;
+        $objTv->commission = $request->commission;
+        $objTv->commission_type = $request->commission_type;
+        $objTv->avg_delivery_time = $request->avg_delivery_time;
+        $objTv->price = $request->price;
+        $objTv->discounted_price = $request->discounted_price;
+        $objTv->discounted_till = $request->discounted_till;
+        $objTv->shipping_cost = $request->shipping_cost;
+        $objTv->connection_cost = $request->connection_cost;
+        $objTv->discount = $request->discount;
+        $objTv->contract_length = $request->contract_length;
+        $objTv->contract_type = $request->contract_type;
+        $objTv->transfer_service = $request->transfer_service;
+        $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+        $objTv->combos = json_encode($request->combos ? $request->combos : []);
+        $objTv->status = $request->online_status ? $request->online_status : 0;
+        $objTv->valid_till =  $request->valid_till;
+        $objTv->category =  $request->category;
+        $objTv->product_type = $request->product_type;
+        $objTv->no_of_person = $request->no_of_person;
+        $objTv->manual_install = $request->manual_install;
+        $objTv->is_featured = $request->is_featured;
+        $objTv->mechanic_install = $request->mechanic_install;
+        $objTv->mechanic_charge = $request->mechanic_charge;
+        $objTv->slug = $slug;
+        $objTv->provider = $request->provider;
+        $objTv->no_of_receivers = $request->no_of_receivers;
+        $objTv->telephone_extensions = $request->telephone_extensions;
+        $objTv->tv_packages = json_encode($request->tv_packages ?? []);
+        $objTv->network_type = json_encode($request->network_type ?? []);
+        if ($request->has('cropped_image')) {
             // Access base64 encoded image data directly from the request
             $croppedImage = $request->cropped_image;
 
@@ -400,7 +425,7 @@ class TvInternetController extends Controller
 
             // Set the image file name for the provider
             $objTv->image = $imageName;
-            }
+        }
         if ($objTv->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
@@ -441,96 +466,85 @@ class TvInternetController extends Controller
     public function internet_feature_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
-        try{
-        foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){
+        try {
+            foreach ($request->input('features') as $feature_id => $value) {
+                if ($value != null && $post_category != null) {
 
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
-
-        }
-        }
-        }catch(\Exception $e){
+                    PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category], ['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value, 'post_category' => $post_category]);
+                }
+            }
+        } catch (\Exception $e) {
             $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
-        // Log the error for further investigation
-        \Log::error($errorMessage);
+            // Log the error for further investigation
+            \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
         $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
-
+        return response()->json(["status" => true, 'message' => $message]);
     }
     public function tv_feature_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
-        try{
-        foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
-
-        }
-        }
-        }catch(\Exception $e){
+        try {
+            foreach ($request->input('features') as $feature_id => $value) {
+                if ($value != null && $post_category != null) {
+                    PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category], ['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                }
+            }
+        } catch (\Exception $e) {
             $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
-        // Log the error for further investigation
-        \Log::error($errorMessage);
+            // Log the error for further investigation
+            \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
         $message = array('message' => 'Internet Features Updated Successfully', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
-
+        return response()->json(["status" => true, 'message' => $message]);
     }
 
     public function tele_feature_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
-        try{
-        foreach($request->input('features') as $feature_id => $value){
-            if($value != null && $post_category != null){
-                PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['feature_value' => $value]);
-
-        }
-        }
-        }catch(\Exception $e){
+        try {
+            foreach ($request->input('features') as $feature_id => $value) {
+                if ($value != null && $post_category != null) {
+                    PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category], ['feature_value' => $value]);
+                }
+            }
+        } catch (\Exception $e) {
             $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
-        // Log the error for further investigation
-        \Log::error($errorMessage);
+            // Log the error for further investigation
+            \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
-
+        return response()->json(["status" => true, 'message' => $message]);
     }
 
     public function service_info_update(Request $request, $post_id)
     {
         $post_category = $request->category_id;
-        try{
-          $infeature = $request->input('features');
-         if(is_array($infeature)){
-            foreach($infeature as $feature_id => $value){
-                if($value != null && $post_category != null){
-                    PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category],['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
-
+        try {
+            $infeature = $request->input('features');
+            if (is_array($infeature)) {
+                foreach ($infeature as $feature_id => $value) {
+                    if ($value != null && $post_category != null) {
+                        PostFeature::updateOrCreate(['post_id' => $post_id, 'category_id' => $post_category, 'feature_id' => $feature_id, 'post_category' => $post_category], ['post_id' => $post_id, 'post_category' => $post_category, 'category_id' => $post_category, 'feature_id' => $feature_id, 'feature_value' => $value]);
+                    }
+                }
+            } else {
+                $infeature = []; // Default to an empty array
             }
-            }
-         } else {
-            $infeature = []; // Default to an empty array
-        }
-
-
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
-        // Log the error for further investigation
-        \Log::error($errorMessage);
+            // Log the error for further investigation
+            \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
-
+        return response()->json(["status" => true, 'message' => $message]);
     }
 }

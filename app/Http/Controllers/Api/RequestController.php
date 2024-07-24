@@ -19,6 +19,7 @@ use App\Models\PostRequest;
 use App\Models\InsuranceProduct;
 use Validator;
 use App\Http\Resources\EnergyResource;
+use App\Http\Resources\LoanProductResource;
 use App\Http\Resources\LoanTypeResource;
 use App\Models\Caterer;
 use App\Models\Deal;
@@ -33,6 +34,7 @@ use App\Models\Event;
 use App\Models\EventRoom;
 use App\Models\EventTheme;
 use App\Models\EventType;
+use App\Models\LoanProduct;
 use App\Models\LoanType;
 
 class RequestController extends BaseController
@@ -722,6 +724,73 @@ class RequestController extends BaseController
                 'data' => [],
                 'message' => 'No Data Found!.'
             ]);
+        }
+    }
+
+    public function getLoanDetails(Request $request)
+    {
+        $postalCode = $request->postal_code;
+        $purpose = $request->spend_purpose;
+        $maxAmount = $request->max_amount;  // Ensure this is a single numeric value
+        $expectedAmount = $request->exp_amount;  // Ensure this is a single numeric value
+        $provider = $request->provider;
+        $loanType = $request->input('loan_type');
+
+        // return $maxAmount;
+        $loanTypes = LoanProduct::latest()->with('purposeDetails', 'providerDetails')->where('status', 1);
+
+        $loanTypes->when($postalCode, function ($query) use ($postalCode) {
+            $query->whereJsonContains('pin_codes', $postalCode);
+        })
+            ->when($purpose, function ($query) use ($purpose) {
+                $query->where('p_id', $purpose);
+            })
+            ->when($provider, function ($query) use ($provider) {
+                $query->whereJsonContains('provider', $provider);
+            })
+            ->when($loanType, function ($query) use ($loanType) {
+                $query->whereJsonContains('loan_type_id', $loanType);
+            })
+            ->when($maxAmount, function ($query) use ($maxAmount) {
+                $query->where('borrow_amount', '>=', $maxAmount);
+            })
+            ->when($expectedAmount, function ($query) use ($expectedAmount) {
+                $query->where('expected_amount', '>=', $expectedAmount);
+            });
+
+        $loanTypes = $loanTypes->get(); // Execute the query and get the collection
+
+        // Check if the collection is empty
+        if ($loanTypes->isEmpty()) {
+            $recordsCount = $loanTypes->count();
+            $message = $loanTypes->count() > 0 ? 'Loan Products retrieved successfully.' : 'Loan Products not found.';
+            $code = $loanTypes->count() > 0 ? 200 : 404;
+
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'recordsCount' => $recordsCount,
+                'message' => $message
+            ], $code);
+        } else {
+
+            $mergedData = [];
+            foreach ($loanTypes as $loans) {
+                $formattedData = (new LoanProductResource($loans))->toArray($request);
+                $mergedData[] = $formattedData;
+            }
+
+            $recordsCount = $loanTypes->count();
+            $message = $loanTypes->count() > 0 ? 'Loan Products retrieved successfully.' : 'Loan Products not found.';
+            $code = $loanTypes->count() > 0 ? 200 : 404;
+
+
+            return response()->json([
+                'success' => true,
+                'data' => $mergedData,
+                'recordsCount' => $recordsCount,
+                'message' => $message
+            ], $code);
         }
     }
 }

@@ -17,4 +17,9 @@ class LoanProduct extends Model
     {
         return $this->belongsTo(SpendingPurpose::class, 'p_id', 'id');
     }
+
+    public function providerDetails()
+    {
+        return $this->hasMany(Bank::class, 'id', 'id');
+    }
 }

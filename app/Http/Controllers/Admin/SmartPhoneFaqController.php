@@ -61,12 +61,26 @@ class SmartPhoneFaqController extends Controller
             'description' => 'required',
             'status' => 'required',
         ]);
+
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $sp_faq = new SmartPhoneFaq();
         $sp_faq->provider_id = $request->provider_id;
         $sp_faq->title = $request->title;
         $sp_faq->description = $request->description;
         $sp_faq->status = $request->status;
-        $sp_faq->slug = $request->title_url;
+        $sp_faq->slug = $slug;
 
         DB::beginTransaction();
         try {
@@ -118,12 +132,26 @@ class SmartPhoneFaqController extends Controller
             'description' => 'required',
             'status' => 'required',
         ]);
+
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $sp_faqs_update = SmartPhoneFaq::where('id', $id)->first();
         $sp_faqs_update->provider_id = $request->provider_id;
         $sp_faqs_update->title = $request->title;
         $sp_faqs_update->description = $request->description;
         $sp_faqs_update->status = $request->status;
-        $sp_faqs_update->slug = $request->title_url;
+        $sp_faqs_update->slug = $slug;
 
         DB::beginTransaction();
         try {
