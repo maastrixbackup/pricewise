@@ -64,7 +64,7 @@ class ProviderController extends Controller
         $objProvider->meter_readings = $request->meter_readings;
         $objProvider->adjust_installments = $request->adjust_installments;
         $objProvider->view_consumption = $request->view_consumption;
-        $objProvider->rose_scheme = $request->rose_scheme;        
+        $objProvider->rose_scheme = $request->rose_scheme;
         $croppedImage = $request->cropped_image;
         $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
         $imageName = 'provider_' . time() . '.png';
@@ -121,7 +121,7 @@ class ProviderController extends Controller
         $objProvider->name = $request->name;
         $objProvider->about = $request->about;
         $objProvider->status = $request->status;
-        $objProvider->category = $request->category;        
+        $objProvider->category = $request->category;
         $objProvider->payment_options = $request->payment_options;
         $objProvider->annual_accounts = $request->annual_accounts;
         $objProvider->meter_readings = $request->meter_readings;
@@ -182,7 +182,7 @@ class ProviderController extends Controller
         try {
             Provider::find($id)->delete();
             return back()->with(Toastr::error(__('Provider deleted successfully!')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.providers.index')->with($error_msg);
         }

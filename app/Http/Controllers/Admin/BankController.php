@@ -60,6 +60,7 @@ class BankController extends Controller
         $banks = new Bank();
         $banks->bank_name = $request->bank_name;
         $banks->swift_code = $request->swift_code;
+        $banks->description = $request->description;
         $banks->slug = $slug;
         $banks->country_id = $request->country_id;
         $banks->status = $request->isenable;
@@ -133,6 +134,7 @@ class BankController extends Controller
         $banks = Bank::find($id);
         $banks->bank_name = $request->bank_name;
         $banks->swift_code = $request->swift_code;
+        $banks->description = $request->description;
         $banks->slug = $slug;
         $banks->country_id = $request->country_id;
         $banks->status = $request->isenable;

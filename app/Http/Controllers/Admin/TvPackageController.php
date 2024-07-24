@@ -29,7 +29,7 @@ class TvPackageController extends Controller
     public function index()
     {
         $records = TvPackage::latest()->with('providerDetails')->get();
-        return view('admin.tv_package.index',compact('records'));
+        return view('admin.tv_package.index', compact('records'));
     }
 
     /**
@@ -39,9 +39,9 @@ class TvPackageController extends Controller
      */
     public function create()
     {
-        $channels=TvChannel::get();
+        $channels = TvChannel::get();
         $providers = Provider::get();
-        return view('admin.tv_package.create',compact('channels','providers'));
+        return view('admin.tv_package.create', compact('channels', 'providers'));
     }
 
     /**
@@ -57,7 +57,7 @@ class TvPackageController extends Controller
             'channels' => 'required|min:1',
             'provider' => 'required',
         ]);
- 
+
         try {
             $newPackage = new TvPackage();
             $newPackage->package_name = $request->package_name;
@@ -92,10 +92,10 @@ class TvPackageController extends Controller
      */
     public function edit($id)
     {
-        $channels=TvChannel::get();
+        $channels = TvChannel::get();
         $providers = Provider::get();
         $package = TvPackage::where('id', $id)->first();
-        return view('admin.tv_package.edit', compact('package','channels','providers'));
+        return view('admin.tv_package.edit', compact('package', 'channels', 'providers'));
     }
 
     /**
@@ -112,7 +112,7 @@ class TvPackageController extends Controller
             'channels' => 'required|min:1',
             'provider' => 'required',
         ]);
-    //dd($request->package_price);
+        
         try {
             $package = TvPackage::findOrFail($id);
             $package->package_name = $request->package_name;

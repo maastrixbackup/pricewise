@@ -58,7 +58,7 @@ class SubCategoryController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        
+
         $request->validate([
             'title' => 'required|unique:sub_categories,title',
             'slug' => 'required',
@@ -66,19 +66,30 @@ class SubCategoryController extends Controller
             'status' => 'required',
         ]);
 
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $sub_category = new SubCategory();
         $sub_category->title = $request->title;
-        $sub_category->slug = $request->slug;
+        $sub_category->slug = $slug;
         $sub_category->status = $request->status;
         $sub_category->category_id = $request->category_id;
 
         if ($sub_category->save()) {
-            return redirect()->back()->with(Toastr::success('Sub Category Added Succcessfully','', ["positionClass" => "toast-top-right"]));
+            return redirect()->back()->with(Toastr::success('Sub Category Added Succcessfully', '', ["positionClass" => "toast-top-right"]));
         } else {
-            return redirect()->back()->with(Toastr::error('Unable To Add Sub Category','', ["positionClass" => "toast-top-right"]));
+            return redirect()->back()->with(Toastr::error('Unable To Add Sub Category', '', ["positionClass" => "toast-top-right"]));
         }
-        
-
     }
 
     /**
@@ -100,7 +111,9 @@ class SubCategoryController extends Controller
      */
     public function edit($id)
     {
-        return view('admin.sub_categories.edit');
+        $subCat = SubCategory::find($id);
+        $category = Category::orderBy('id', 'desc')->whereNull('parent')->get();
+        return view('admin.sub_categories.edit', compact('subCat', 'category'));
     }
 
     /**
@@ -112,7 +125,39 @@ class SubCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'slug' => 'required',
+            'category_id' => 'required',
+            'status' => 'required',
+        ]);
+
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
+        $sub_category = SubCategory::find($id);
+        $sub_category->title = $request->title;
+        $sub_category->slug = $slug;
+        $sub_category->status = $request->status;
+        $sub_category->category_id = $request->category_id;
+
+        try {
+            if ($sub_category->save()) {
+                return redirect()->back()->with(Toastr::success('Sub Category Updated', '', ["positionClass" => "toast-top-right"]));
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+        }
     }
 
     /**
@@ -123,6 +168,12 @@ class SubCategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            SubCategory::find($id)->delete();
+            return back()->with(Toastr::success('Sub Category deleted !', '', ["positionClass" => "toast-top-right"]));
+        } catch (\Exception $e) {
+            Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
+            return back();
+        }
     }
 }

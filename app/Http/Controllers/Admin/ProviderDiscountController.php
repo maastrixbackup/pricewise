@@ -55,11 +55,24 @@ class ProviderDiscountController extends Controller
     public function store(Request $request)
     {
         // dd($request->provider);
+
+        // Convert to lowercase
+        $slug = strtolower($request->discount_title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         DB::beginTransaction();
         try {
             $sp_data = new ProviderDiscount();
             $sp_data->title = $request->discount_title;
-            $sp_data->slug = $request->discount_url;
+            $sp_data->slug = $slug;
             $sp_data->sp_provider = $request->provider;
             $sp_data->discount_type = $request->discount_type;
             $sp_data->discount = $request->discount;
@@ -110,11 +123,24 @@ class ProviderDiscountController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
+
+        // Convert to lowercase
+        $slug = strtolower($request->discount_title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         DB::beginTransaction();
         try {
             $sp_data_update = ProviderDiscount::where('id', $id)->first();
             $sp_data_update->title = $request->discount_title;
-            $sp_data_update->slug = $request->discount_url;
+            $sp_data_update->slug = $slug;
             $sp_data_update->sp_provider = $request->provider;
             $sp_data_update->discount_type = $request->discount_type;
             $sp_data_update->discount = $request->discount;

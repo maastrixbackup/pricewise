@@ -143,6 +143,7 @@ return array(
     'App\\Http\\Resources\\HomeInsuranceResource' => $baseDir . '/app/Http/Resources/HomeInsuranceResource.php',
     'App\\Http\\Resources\\InternetTvResource' => $baseDir . '/app/Http/Resources/InternetTvResource.php',
     'App\\Http\\Resources\\LiabilityInsuranceResource' => $baseDir . '/app/Http/Resources/LiabilityInsuranceResource.php',
+    'App\\Http\\Resources\\LoanProductResource' => $baseDir . '/app/Http/Resources/LoanProductResource.php',
     'App\\Http\\Resources\\LoanTypeResource' => $baseDir . '/app/Http/Resources/LoanTypeResource.php',
     'App\\Http\\Resources\\PostFeatureResource' => $baseDir . '/app/Http/Resources/PostFeatureResource.php',
     'App\\Http\\Resources\\TravelInsuranceResource' => $baseDir . '/app/Http/Resources/TravelInsuranceResource.php',

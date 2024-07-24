@@ -720,6 +720,7 @@ class ComposerStaticInit0914323516fb57700e7bf5a9bae092ed
         'App\\Http\\Resources\\HomeInsuranceResource' => __DIR__ . '/../..' . '/app/Http/Resources/HomeInsuranceResource.php',
         'App\\Http\\Resources\\InternetTvResource' => __DIR__ . '/../..' . '/app/Http/Resources/InternetTvResource.php',
         'App\\Http\\Resources\\LiabilityInsuranceResource' => __DIR__ . '/../..' . '/app/Http/Resources/LiabilityInsuranceResource.php',
+        'App\\Http\\Resources\\LoanProductResource' => __DIR__ . '/../..' . '/app/Http/Resources/LoanProductResource.php',
         'App\\Http\\Resources\\LoanTypeResource' => __DIR__ . '/../..' . '/app/Http/Resources/LoanTypeResource.php',
         'App\\Http\\Resources\\PostFeatureResource' => __DIR__ . '/../..' . '/app/Http/Resources/PostFeatureResource.php',
         'App\\Http\\Resources\\TravelInsuranceResource' => __DIR__ . '/../..' . '/app/Http/Resources/TravelInsuranceResource.php',

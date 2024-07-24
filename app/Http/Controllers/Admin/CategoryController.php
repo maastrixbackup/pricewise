@@ -71,10 +71,21 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        // Convert to lowercase
+        $slug = strtolower($request->name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $objCategory = new Category();
         $objCategory->name = $request->name;
-        $objCategory->slug = $request->slug;
+        $objCategory->slug = $slug;
         // $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
         $objCategory->image = $request->image;
@@ -145,10 +156,22 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //echo 123;exit;
+
+        // Convert to lowercase
+        $slug = strtolower($request->name);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
         $objCategory = Category::find($id);
         $objCategory->name = $request->name;
-        $objCategory->slug = $request->slug;
+        $objCategory->slug = $slug;
         // $objCategory->parent = $request->parent;
         $objCategory->type = $request->type;
         $objCategory->icon = $request->icon;
