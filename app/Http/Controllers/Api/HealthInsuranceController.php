@@ -92,7 +92,7 @@ class HealthInsuranceController extends BaseController
         $message = $products->count() > 0 ? 'Products retrieved successfully.' : 'Products not found.';
 
 
-        $coverages = insuranceCoverage::where('subcategory_id', 7)->get();
+        $coverages = insuranceCoverage::where('subcategory_id', config('constant.subcategory.HealthInsurance'))->get();
         $coverages = $coverages->map(function ($coverage) {
             $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
             return $coverage;
