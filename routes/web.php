@@ -93,6 +93,7 @@ Route::group(['prefix' => 'pricewise'], function () {
 
             //Bank
             Route::resource('banks', 'BankController');
+
             // Spending Purpose
             Route::prefix('purposes')->group(function () {
                 Route::get('/', 'CommonController@purposes_index')->name('purposes.index');
@@ -114,6 +115,28 @@ Route::group(['prefix' => 'pricewise'], function () {
 
             // Loans
             Route::resource('loans', 'LoanController');
+
+            // Cyber Security
+            Route::resource('cyber-security', 'CyberSecurityController');
+            // Security Provider
+            Route::prefix('security-provider')->group(function () {
+                Route::get('/', 'CyberSecurityController@sProvider_index')->name('security-provider.index');
+                Route::get('/create', 'CyberSecurityController@sProvider_create')->name('security-provider.create');
+                Route::post('/store', 'CyberSecurityController@sProvider_store')->name('security-provider.store');
+                Route::get('/edit/{id}', 'CyberSecurityController@sProvider_edit')->name('security-provider.edit');
+                Route::post('/update/{id}', 'CyberSecurityController@sProvider_update')->name('security-provider.update');
+                Route::post('/destroy', 'CyberSecurityController@sProvider_destroy')->name('security-provider.destroy');
+            });
+            
+            // Security Provider
+            Route::prefix('security-feature')->group(function () {
+                Route::get('/', 'CyberSecurityController@sFeatures_index')->name('security-feature.index');
+                Route::get('/create', 'CyberSecurityController@sFeatures_create')->name('security-feature.create');
+                Route::post('/store', 'CyberSecurityController@sFeatures_store')->name('security-feature.store');
+                Route::get('/edit/{id}', 'CyberSecurityController@sFeatures_edit')->name('security-feature.edit');
+                Route::post('/update/{id}', 'CyberSecurityController@sFeatures_update')->name('security-feature.update');
+                Route::post('/destroy', 'CyberSecurityController@sFeatures_destroy')->name('security-feature.destroy');
+            });
 
 
             //Requests

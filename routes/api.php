@@ -8,21 +8,21 @@ use App\Http\Controllers\Api\UserDetailController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\InternetTvController;
 use App\Http\Controllers\Api\EnergyController;
-use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\Admin\ProviderController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\HealthInsuranceController;
 use App\Http\Controllers\Api\EventController;
-use App\Http\Controllers\API\HomeInsuranceController;
-use App\Http\Controllers\API\VehicleInsuranceController;
-use App\Http\Controllers\API\AccidentalInsuranceController;
-use App\Http\Controllers\API\BusinessEquipmentController;
-use App\Http\Controllers\API\BusinessInterruptionController;
-use App\Http\Controllers\API\TravelInsuranceController;
-use App\Http\Controllers\API\FuneralInsuranceController;
-use App\Http\Controllers\API\CyberSecurityController;
-use App\Http\Controllers\API\FarmHouseInsuranceController;
-use App\Http\Controllers\API\LiabilityInsuranceController;
+use App\Http\Controllers\Api\HomeInsuranceController;
+use App\Http\Controllers\Api\VehicleInsuranceController;
+use App\Http\Controllers\Api\AccidentalInsuranceController;
+use App\Http\Controllers\Api\BusinessEquipmentController;
+use App\Http\Controllers\Api\BusinessInterruptionController;
+use App\Http\Controllers\Api\TravelInsuranceController;
+use App\Http\Controllers\Api\FuneralInsuranceController;
+use App\Http\Controllers\Api\CyberSecurityController;
+use App\Http\Controllers\Api\FarmHouseInsuranceController;
+use App\Http\Controllers\Api\LiabilityInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -88,6 +88,9 @@ Route::post('liability-insurance-compare', [LiabilityInsuranceController::class,
 
 // Api on events
 Route::post('get-events-list', [RequestController::class, 'eventList']);
+
+// Api on Cyber Security
+Route::post('get-cyber-security', [RequestController::class, 'cyberSecurity']);
 
 // API on Loan
 Route::post('get-loan-details', [RequestController::class, 'getLoanDetails']);

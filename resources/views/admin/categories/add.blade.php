@@ -66,7 +66,7 @@
                     </div>
                 <div class="mb-3">
                         <label for="input40" class="col-sm-6 col-form-label"><b>Category Image </b></label>
-                        
+
                         <label for="upload_image">
                                 <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
 
@@ -94,7 +94,7 @@
 
         </div>
     </div>
-    
+
     </div>
 
     </div>
@@ -119,12 +119,12 @@
 
         rules: {
             name: "required",
-            
+
 
         },
         messages: {
             name: "Name is missing",
-            
+
         },
         submitHandler: function(form) {
             // var value = CKEDITOR.instances['description'].getData()

@@ -27,7 +27,7 @@
                     <h5 class="mb-0">Sub Category</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.sub-categories.update', $subCat->id) }}">
+                    <form method="post" action="{{ route('admin.sub-categories.update', $subCat->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row mb-3">
@@ -73,6 +73,19 @@
                             </div>
 
                         </div>
+
+                        <label for="upload_image" class="mb-3">
+
+                            <img src="{{ asset('storage/images/sub_categories/' . $subCat->image) }}" id="uploaded_image"
+                                class="img img-responsive img-circle" width="100" alt="Select image" />
+
+                            <div class="overlay" style="cursor: pointer">
+                                <div>Click to Change Image</div>
+                            </div>
+                            <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                            <input type="hidden" name="cropped_image" id="cropped_image">
+
+                        </label>
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Status<sup class="text-danger">*</sup></label>
                             <div class="">

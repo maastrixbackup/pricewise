@@ -21,7 +21,9 @@ use Validator;
 use App\Http\Resources\EnergyResource;
 use App\Http\Resources\LoanProductResource;
 use App\Http\Resources\LoanTypeResource;
+use App\Http\Resources\SecurityResource;
 use App\Models\Caterer;
+use App\Models\CyberSecurity;
 use App\Models\Deal;
 use App\Models\TvPackage;
 use App\Models\TvOption;
@@ -34,8 +36,10 @@ use App\Models\Event;
 use App\Models\EventRoom;
 use App\Models\EventTheme;
 use App\Models\EventType;
+use App\Models\insuranceCoverage;
 use App\Models\LoanProduct;
 use App\Models\LoanType;
+use App\Models\SecurityFeature;
 
 class RequestController extends BaseController
 {
@@ -792,5 +796,75 @@ class RequestController extends BaseController
                 'message' => $message
             ], $code);
         }
+    }
+
+    public function cyberSecurity(Request $request)
+    {
+        // return 123;
+        $postalCode = $request->postal_code;
+        $licenseDuration = $request->license_duration;
+        $cloudBackUp = $request->cloud_backup;
+        $noOfPCs = $request->no_of_pc;
+
+        $security = CyberSecurity::with('featureDetails', 'providerDetails');
+
+        $security->when($postalCode, function ($query) use ($postalCode) {
+            $query->whereJsonContains('pin_codes', $postalCode);
+        })
+            ->when($licenseDuration, function ($query) use ($licenseDuration) {
+                $query->where('license_duration', '>=', $licenseDuration);
+            })
+            ->when($noOfPCs, function ($query) use ($noOfPCs) {
+                $query->where('no_of_pc', '>=', $noOfPCs);
+            })
+            ->when($cloudBackUp, function ($query) use ($cloudBackUp) {
+                $query->where('cloud_backup', '>=', $cloudBackUp);
+            });
+
+        $securities = $security->get();
+
+
+        $insuranceProduct = InsuranceProduct::where('sub_category', config('constant.subcategory.HomeInsurance'))->get();
+
+        $insuranceProduct = $insuranceProduct->map(function ($coverage) {
+            $coverage->image = asset('storage/images/insurance/' . $coverage->image);
+            return $coverage;
+        });
+
+        // Check if the collection is empty
+        if ($securities->isEmpty()) {
+            $recordsCount = $securities->count();
+            $message = $securities->count() > 0 ? 'Product retrieved successfully.' : ' Products not found.';
+            $code = $securities->count() > 0 ? 200 : 404;
+
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'recordsCount' => $recordsCount,
+                'message' => $message
+            ], $code);
+        } else {
+
+            $mergedData = [];
+            foreach ($securities as $security) {
+                $formattedData = (new SecurityResource($security))->toArray($request);
+                $mergedData[] = $formattedData;
+            }
+
+            $recordsCount = $securities->count();
+            $message = $securities->count() > 0 ? 'Products retrieved successfully.' : ' Products not found.';
+            $code = $securities->count() > 0 ? 200 : 404;
+
+
+            return response()->json([
+                'success' => true,
+                'data' => $mergedData,
+                'recordsCount' => $recordsCount,
+                'insurance' => $insuranceProduct,
+                'message' => $message
+            ], $code);
+        }
+
+        // return $securities;
     }
 }
