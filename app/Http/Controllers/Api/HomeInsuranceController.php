@@ -114,7 +114,7 @@ class HomeInsuranceController extends Controller
             'success' => true,
             'data' => $mergedData,
             // 'providers' => $providers,
-            // 'coverages' => $coverages,
+            'coverages' => $coverages,
             'recordsCount' => $recordsCount,
             'filters' => $filters,
             'message' => $message
@@ -134,7 +134,8 @@ class HomeInsuranceController extends Controller
                 $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
                     ->from('features as f1')
                     ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-                    ->where('f1.category', 5)
+                    // ->where('f1.category',5)
+                    ->where('f1.category', config('constant.category.Insurance'))
                     ->where('f1.is_preferred', 1)
                     ->get()
                     ->groupBy('parent');
