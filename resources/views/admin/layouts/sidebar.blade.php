@@ -259,6 +259,34 @@
                      </ul>
                  </li>
 
+                 <li class="nav-main-item">
+                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                         aria-expanded="false" href="#">
+                         <i class="nav-main-link-icon fa fa-shield"></i>
+                         <span class="nav-main-link-name">Cyber Security</span>
+                     </a>
+                     <ul class="nav-main-submenu">
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.security-provider.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-user-secret"></i>
+                                 <span class="nav-main-link-name">Provider</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.security-feature.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-list-alt"></i>
+                                 <span class="nav-main-link-name">Features</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.cyber-security.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                 <span class="nav-main-link-name">Cyber Security Products</span>
+                             </a>
+                         </li>
+                     </ul>
+                 </li>
+
 
                  <li class="nav-main-item">
                      <a class="nav-main-link" href="{{ route('admin.requests.index') }}">

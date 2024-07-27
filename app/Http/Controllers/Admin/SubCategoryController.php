@@ -85,6 +85,22 @@ class SubCategoryController extends Controller
         $sub_category->status = $request->status;
         $sub_category->category_id = $request->category_id;
 
+        if ($request->image) {
+            // Generate a unique file name for the image
+            $imageName = 'sub_category_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            $destinationDirectory = public_path('storage/images/sub_categories');
+
+            if (!is_dir($destinationDirectory)) {
+                mkdir($destinationDirectory, 0777, true);
+            }
+
+            // Move the file to the public/uploads directory
+            $request->file('image')->move($destinationDirectory, $imageName);
+
+            $sub_category->image = $imageName;
+        }
+
         if ($sub_category->save()) {
             return redirect()->back()->with(Toastr::success('Sub Category Added Succcessfully', '', ["positionClass" => "toast-top-right"]));
         } else {
@@ -150,6 +166,22 @@ class SubCategoryController extends Controller
         $sub_category->slug = $slug;
         $sub_category->status = $request->status;
         $sub_category->category_id = $request->category_id;
+
+        if ($request->image) {
+            // Generate a unique file name for the image
+            $imageName = 'sub_category_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+
+            $destinationDirectory = public_path('storage/images/sub_categories');
+
+            if (!is_dir($destinationDirectory)) {
+                mkdir($destinationDirectory, 0777, true);
+            }
+
+            // Move the file to the public/uploads directory
+            $request->file('image')->move($destinationDirectory, $imageName);
+
+            $sub_category->image = $imageName;
+        }
 
         try {
             if ($sub_category->save()) {

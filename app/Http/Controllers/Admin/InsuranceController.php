@@ -272,9 +272,9 @@ class InsuranceController extends Controller
 
             if ($request->image) {
                 // Generate a unique file name for the image
-                $imageName = 'category_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+                $imageName = 'insurance_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
 
-                $destinationDirectory = public_path('storage/images/categories');
+                $destinationDirectory = public_path('storage/images/insurance');
 
                 if (!is_dir($destinationDirectory)) {
                     mkdir($destinationDirectory, 0777, true);

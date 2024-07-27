@@ -27,12 +27,14 @@
                     <h5 class="mb-0">Sub Category</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.sub-categories.store') }}">
+                    <form method="post" action="{{ route('admin.sub-categories.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
-                            <label for="input_type" class=" col-form-label">Sub Category<sup class="text-danger">*</sup></label>
+                            <label for="input_type" class=" col-form-label">Sub Category<sup
+                                    class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="text" class="form-control" name="title" id="title" value="{{old('title')}}" placeholder="Sub Category">
+                                <input type="text" class="form-control" name="title" id="title"
+                                    value="{{ old('title') }}" placeholder="Sub Category">
                                 @error('title')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -40,11 +42,10 @@
 
                         </div>
                         <div class="row mb-3">
-                            <label for="input_type" class=" col-form-label">Url<sup
-                                    class="text-danger">*</sup></label>
+                            <label for="input_type" class=" col-form-label">Url<sup class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="text" class="form-control" name="slug" id="slug" value="{{ old('slug') }}"
-                                    placeholder="Url" readonly>
+                                <input type="text" class="form-control" name="slug" id="slug"
+                                    value="{{ old('slug') }}" placeholder="Url" readonly>
                                 @error('slug')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -52,7 +53,8 @@
 
                         </div>
                         <div class="row mb-3">
-                            <label for="input_type" class=" col-form-label">Parent Category<sup class="text-danger">*</sup></label>
+                            <label for="input_type" class=" col-form-label">Parent Category<sup
+                                    class="text-danger">*</sup></label>
                             <div class="">
                                 <select name="category_id" class="form-control" id="category_id">
                                     <option value="" selected disabled>Select</option>
@@ -68,11 +70,24 @@
                             </div>
 
                         </div>
+
+                        <label for="upload_image" class="mb-3">
+
+                            <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                alt="Select image" />
+
+                            <div class="overlay" style="cursor: pointer">
+                                <div>Click to Change Image</div>
+                            </div>
+                            <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                            <input type="hidden" name="cropped_image" id="cropped_image">
+
+                        </label>
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Status<sup class="text-danger">*</sup></label>
                             <div class="">
                                 <select class="form-control" name="status">
-                                    <option value="active" >Active</option>
+                                    <option value="active">Active</option>
                                     <option value="inactive" selected>Inactive</option>
                                 </select>
                                 @error('status')
@@ -97,86 +112,86 @@
     </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
-<script>
-    tinymce.init({
-        selector: '#descriptions',
-        plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
-        toolbar_mode: 'floating',
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
+    <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
+    <script>
+        tinymce.init({
+            selector: '#descriptions',
+            plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            toolbar_mode: 'floating',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
 
-        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
-        codesample_languages: [{
-                text: 'HTML/XML',
-                value: 'markup'
-            },
-            {
-                text: 'JavaScript',
-                value: 'javascript'
-            },
-            {
-                text: 'CSS',
-                value: 'css'
-            },
-            {
-                text: 'PHP',
-                value: 'php'
-            },
-            {
-                text: 'Ruby',
-                value: 'ruby'
-            },
-            {
-                text: 'Python',
-                value: 'python'
-            },
-            {
-                text: 'Java',
-                value: 'java'
-            },
-            {
-                text: 'C',
-                value: 'c'
-            },
-            {
-                text: 'C#',
-                value: 'csharp'
-            },
-            {
-                text: 'C++',
-                value: 'cpp'
-            }
-        ],
-
-        file_picker_callback(callback, value, meta) {
-            let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
-                'body')[0].clientWidth
-            let y = window.innerHeight || document.documentElement.clientHeight || document
-                .getElementsByTagName('body')[0].clientHeight
-
-            tinymce.activeEditor.windowManager.openUrl({
-                url: '/file-manager/tinymce5',
-                title: 'Laravel File manager',
-                width: x * 0.8,
-                height: y * 0.8,
-                onMessage: (api, message) => {
-                    callback(message.content, {
-                        text: message.text
-                    })
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
+            codesample_languages: [{
+                    text: 'HTML/XML',
+                    value: 'markup'
+                },
+                {
+                    text: 'JavaScript',
+                    value: 'javascript'
+                },
+                {
+                    text: 'CSS',
+                    value: 'css'
+                },
+                {
+                    text: 'PHP',
+                    value: 'php'
+                },
+                {
+                    text: 'Ruby',
+                    value: 'ruby'
+                },
+                {
+                    text: 'Python',
+                    value: 'python'
+                },
+                {
+                    text: 'Java',
+                    value: 'java'
+                },
+                {
+                    text: 'C',
+                    value: 'c'
+                },
+                {
+                    text: 'C#',
+                    value: 'csharp'
+                },
+                {
+                    text: 'C++',
+                    value: 'cpp'
                 }
-            })
-        }
-    });
-</script>
-<script>
-    $("#title").keyup(function() {
-        var title_val = $("#title").val();
-        $("#slug").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
-    });
-    $("#title").keydown(function() {
-        var title_val = $("#title").val();
-        $("#slug").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
-    });
-</script>
+            ],
+
+            file_picker_callback(callback, value, meta) {
+                let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
+                    'body')[0].clientWidth
+                let y = window.innerHeight || document.documentElement.clientHeight || document
+                    .getElementsByTagName('body')[0].clientHeight
+
+                tinymce.activeEditor.windowManager.openUrl({
+                    url: '/file-manager/tinymce5',
+                    title: 'Laravel File manager',
+                    width: x * 0.8,
+                    height: y * 0.8,
+                    onMessage: (api, message) => {
+                        callback(message.content, {
+                            text: message.text
+                        })
+                    }
+                })
+            }
+        });
+    </script>
+    <script>
+        $("#title").keyup(function() {
+            var title_val = $("#title").val();
+            $("#slug").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+        });
+        $("#title").keydown(function() {
+            var title_val = $("#title").val();
+            $("#slug").val(title_val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+        });
+    </script>
 @endpush

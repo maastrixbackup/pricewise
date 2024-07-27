@@ -40,7 +40,7 @@ class VehicleInsuranceResource extends JsonResource
             'discount_percentage' => $this->discount_percentage,
             'commission' => $this->commission,
             'commission_type' => $this->commission_type,
-            'image' => asset('storage/images/car_insurance/' . $this->image),
+            'image' => asset('storage/images/insurance/' . $this->image),
             'connection_cost' => $this->connection_cost,
             'shipping_cost' => $this->shipping_cost,
             'other_cost' => $other_cost,

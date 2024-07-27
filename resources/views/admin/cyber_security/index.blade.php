@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'PriceWise- Provider Discount')
+@section('title', 'PriceWise- Cyber Securities')
 @section('content')
 
     <!--breadcrumb-->
@@ -7,7 +7,7 @@
         <div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item"><a href="javascript:void(0);"><i class="bx bx-home-alt"></i></a>
+                    <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
@@ -17,73 +17,83 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.sub-categories.create') }}" class="btn btn-primary">Create Sub Category</a>
+                <a href="{{ route('admin.cyber-security.create') }}" class="btn btn-primary">Create Security Product</a>
 
             </div>
 
         </div>
     </div>
     <!--end breadcrumb-->
-
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">Provider FAQ</h6>
+            <h6 class="mb-0 text-uppercase">Security Products</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="SmartPhoneFaqTable" class="table table-striped table-bordered">
+                        <table id="userTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
                                     <th>Title</th>
-                                    <th>Parent Category</th>
+                                    <th>License Duration</th>
+                                    <th> Backup</th>
+                                    <th>No. of PCs</th>
                                     <th>Image</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($sub_cat)
-                                    @foreach ($sub_cat as $record)
+                                @if ($securities)
+                                    @foreach ($securities as $val)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->title }}</td>
-                                            <td>{{ $record->categoryDetails->name }}</td>
+                                            <td>{{ $val->title }}</td>
+                                            <td>{{ isset($val->license_duration) ? $val->license_duration . ' Years' : '' }}
+                                            </td>
+                                            <td>{{ isset($val->cloud_backup) ? $val->cloud_backup . ' GB' : '' }}</td>
+                                            <td>{{ isset($val->no_of_pc) ? $val->no_of_pc . ' PCs' : '' }}</td>
                                             <td>
-                                                @if ($record->image)
-                                                    <img src="{{ asset('storage/images/sub_categories/' . $record->image) }}"
-                                                        alt="{{ $record->image }}" width="50px" height="50px">
+                                                @if (!empty($val->image))
+                                                    <img src="{{ asset('storage/images/cyber_security/' . $val->image) }}"
+                                                        alt="{{ $val->image }}" width="100px" height="50px">
                                                 @else
                                                     <img src="{{ asset('storage/images/no_image/no-image.png') }}"
-                                                        alt="No image" width="50px" height="50px">
+                                                        alt="{{ $val->image }}" width="60px" height="60px">
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($record->status == 'active')
-                                                    <span
-                                                        class="badge rounded-pill text-success bg-light-success text-uppercase">Published</span>
+                                                @if ($val->status == 'active')
+                                                    <div
+                                                        class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3">
+                                                        <i class="bx bxs-circle me-1"></i>Published
+                                                    </div>
                                                 @else
-                                                    <span
-                                                        class="badge rounded-pill text-primary bg-light-success  text-uppercase">Draft</span>
+                                                    <div
+                                                        class="badge rounded-pill text-info bg-light-info p-2 text-uppercase px-3">
+                                                        <i class="bx bxs-circle me-1"></i>Draft
+                                                    </div>
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="col d-flex justify-content-evenly">
-
+                                                <div class="col">
                                                     <a title="Edit"
-                                                        href="{{ route('admin.sub-categories.edit', $record->id) }}"
+                                                        href="{{ route('admin.cyber-security.edit', $val->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
-                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-package"
-                                                        data-id="{{ $record->id }}"
-                                                        data-action="{{ route('admin.sub-categories.destroy', $record->id) }}"><i
+
+                                                    <a title="Delete" class="btn1 btn-outline-danger trash remove-category"
+                                                        data-id="{{ $val->id }}"
+                                                        data-action="{{ route('admin.cyber-security.destroy', $val->id) }}"><i
                                                             class="bx bx-trash me-0"></i></a>
+
                                                 </div>
                                             </td>
                                         </tr>
                                     @endforeach
                                 @endif
+
                             </tbody>
                         </table>
                     </div>
@@ -91,34 +101,34 @@
             </div>
         </div>
     </div>
-
 @endsection
+
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#SmartPhoneFaqTable').DataTable({
+            var table = $('#userTable').DataTable({
                 lengthChange: false,
                 buttons: [{
                         extend: 'excelHtml5',
-                        text: '<i class="far fa-file-excel"></i>',
+                        text: '<i class="fa fa-file-excel-o"></i>',
                         exportOptions: {
-                            columns: [0, 1, 2]
+                            columns: [0, 1]
                         }
                     },
                     {
                         extend: 'pdfHtml5',
-                        text: '<i class="fal fa-file-pdf"></i>',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1, 2]
+                            columns: [0, 1]
                         }
                     },
                     {
                         extend: 'print',
-                        text: '<i class="far fa-print"></i>',
+                        text: '<i class="fa fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1, 2]
+                            columns: [0, 1]
                         }
                     },
                 ],
@@ -129,9 +139,10 @@
             });
 
             table.buttons().container()
-                .appendTo('#SmartPhoneFaqTable_wrapper .col-md-6:eq(0)');
+                .appendTo('#userTable_wrapper .col-md-6:eq(0)');
 
-            $("body").on("click", ".remove-package", function() {
+
+            $("body").on("click", ".remove-category", function() {
                 var current_object = $(this);
                 swal({
                     title: "Are you sure?",
@@ -159,6 +170,7 @@
                             '<input name="id" type="hidden" value="' + id + '">');
                         $('body').find('.remove-form').submit();
                     }
+
                 });
             });
         });

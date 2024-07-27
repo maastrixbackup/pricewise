@@ -34,18 +34,18 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $objCategory = Category::latest()->whereNull('parent')->get();
-//if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
-//dd(\Auth::guard('admin')->user()->roles);
-// foreach (Auth::guard('admin')->user()->roles as $role) {
-//         $permissions = $role->permissions;
-//          echo $permission->name . "\n";
-//     }
-    // $permissions = Permission::all();
+        //if(Auth::guard('admin')->user()->can('role-list')){dd('hi');}
+        //dd(\Auth::guard('admin')->user()->roles);
+        // foreach (Auth::guard('admin')->user()->roles as $role) {
+        //         $permissions = $role->permissions;
+        //          echo $permission->name . "\n";
+        //     }
+        // $permissions = Permission::all();
 
-    // foreach ($permissions as $permission) {
-    //     echo $permission->name . "\n";
-    // }
-        if($request->category_id && $request->category_id != null){
+        // foreach ($permissions as $permission) {
+        //     echo $permission->name . "\n";
+        // }
+        if ($request->category_id && $request->category_id != null) {
             $subCategory = SubCategory::where('category_id', $request->category_id)->latest()->get();
             return response()->json(['status' => true, 'data' => $subCategory]);
         }
@@ -60,7 +60,7 @@ class CategoryController extends Controller
     public function create()
     {
         $parents = Category::whereNull('parent')->latest()->get();
-       return view('admin.categories.add', compact('parents'));
+        return view('admin.categories.add', compact('parents'));
     }
 
     /**
@@ -95,21 +95,21 @@ class CategoryController extends Controller
         $croppedImage = $request->cropped_image;
 
 
-    if ($request->image) {
-              // Generate a unique file name for the image
-              $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+        if ($request->image) {
+            // Generate a unique file name for the image
+            $imageName = 'category_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
 
-              $destinationDirectory = public_path('storage/images/categories');
+            $destinationDirectory = public_path('storage/images/categories');
 
-              if (!is_dir($destinationDirectory)) {
-                  mkdir($destinationDirectory, 0777, true);
-              }
+            if (!is_dir($destinationDirectory)) {
+                mkdir($destinationDirectory, 0777, true);
+            }
 
-              // Move the file to the public/uploads directory
-              $request->file('image')->move($destinationDirectory, $imageName);
+            // Move the file to the public/uploads directory
+            $request->file('image')->move($destinationDirectory, $imageName);
 
-              $objCategory->image = $imageName ;
-    }
+            $objCategory->image = $imageName;
+        }
 
 
         if ($objCategory->save()) {
@@ -179,7 +179,7 @@ class CategoryController extends Controller
 
         if ($request->image) {
             // Generate a unique file name for the image
-            $imageName = 'category_' . time() .'.'.$request->file('image')->getClientOriginalExtension();
+            $imageName = 'category_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
 
             $destinationDirectory = public_path('storage/images/categories');
 
@@ -190,15 +190,14 @@ class CategoryController extends Controller
             // Move the file to the public/uploads directory
             $request->file('image')->move($destinationDirectory, $imageName);
 
-            $existingFilePath = $destinationDirectory.'/'.$objCategory->image;
+            $existingFilePath = $destinationDirectory . '/' . $objCategory->image;
 
             if (file_exists($existingFilePath)) {
                 // Delete the file
                 unlink($existingFilePath);
             }
 
-            $objCategory->image = $imageName ;
-
+            $objCategory->image = $imageName;
         }
 
         if ($objCategory->save()) {
@@ -230,4 +229,3 @@ class CategoryController extends Controller
         }
     }
 }
-
