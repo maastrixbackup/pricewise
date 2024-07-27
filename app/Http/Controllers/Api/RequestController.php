@@ -824,10 +824,18 @@ class RequestController extends BaseController
         $securities = $security->get();
 
 
-        $insuranceProduct = InsuranceProduct::where('sub_category', config('constant.subcategory.HomeInsurance'))->get();
+        // $insuranceProduct = InsuranceProduct::where('sub_category', config('constant.subcategory.HomeInsurance'))->get();
 
-        $insuranceProduct = $insuranceProduct->map(function ($coverage) {
-            $coverage->image = asset('storage/images/insurance/' . $coverage->image);
+
+        // $insuranceProduct = $insuranceProduct->map(function ($coverage) {
+        //     $coverage->image = asset('storage/images/insurance/' . $coverage->image);
+        //     return $coverage;
+        // });
+
+        $coverages = insuranceCoverage::where('subcategory_id', config('constant.subcategory.HomeInsurance'))->get();
+
+        $coverages = $coverages->map(function ($coverage) {
+            $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
             return $coverage;
         });
 
@@ -860,7 +868,7 @@ class RequestController extends BaseController
                 'success' => true,
                 'data' => $mergedData,
                 'recordsCount' => $recordsCount,
-                'insurance' => $insuranceProduct,
+                'insurance' => $coverages,
                 'message' => $message
             ], $code);
         }
