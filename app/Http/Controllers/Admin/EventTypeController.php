@@ -138,8 +138,16 @@ class EventTypeController extends Controller
             $ev_type_update->status = $request->status;
 
             if (isset($request->image)) {
-                $filename = time().'.'.$request->image->getClientOriginalExtension();
+                $filename = time() . '.' . $request->image->getClientOriginalExtension();
                 $request->image->move(public_path('storage/images/event_type/'), $filename);
+
+
+                $existingFilePath = public_path('storage/images/event_type/') . $ev_type_update->image;
+
+                if (file_exists($existingFilePath)) {
+                    // Delete the file
+                    unlink($existingFilePath);
+                }
             }
 
             $ev_type_update->image = $filename ?? $ev_type_update->image;
@@ -163,7 +171,7 @@ class EventTypeController extends Controller
     {
         try {
             EventType::where('id', $id)->delete();
-            return redirect()->back()->with('success','Event Type Deleted');
+            return redirect()->back()->with('success', 'Event Type Deleted');
         } catch (\Exception $e) {
             return redirect()->back()->with($e->getMessage());
         }

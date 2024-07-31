@@ -46,7 +46,7 @@ class FeatureController extends Controller
      */
     public function create()
     {
-        $categories = Category::latest()->get();
+        $categories = Category::latest()->whereNull('parent')->get();
         return view('admin.features.add', compact('categories'));
     }
 
@@ -95,7 +95,7 @@ class FeatureController extends Controller
     public function edit($id)
     {
         $objFeature = Feature::find($id);
-        $categories = Category::latest()->get();
+        $categories = Category::latest()->whereNull('parent')->get();
         return view('admin.features.edit', compact('objFeature', 'categories'));
     }
 
@@ -142,7 +142,7 @@ class FeatureController extends Controller
             // } else {
                 Feature::find($id)->delete();
                 return back()->with(Toastr::error(__('Feature deleted successfully!')));
-            
+
         } catch (Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.features.index')->with($error_msg);

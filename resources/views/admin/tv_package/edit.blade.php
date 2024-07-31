@@ -28,7 +28,8 @@
                     <h5 class="mb-0">Edit Tv Package</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.tv-packages.update',$package->id) }}">
+                    <form method="post" action="{{ route('admin.tv-packages.update', $package->id) }}"
+                        enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row mb-3">
@@ -44,7 +45,7 @@
 
                         </div>
                         @php
-                            $packageChannels=json_decode($package->tv_channels) 
+                            $packageChannels = json_decode($package->tv_channels);
                         @endphp
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Channels<sup class="text-danger">*</sup></label>
@@ -53,7 +54,7 @@
                                     <option value="">Select</option>
                                     @foreach ($channels as $channel)
                                         <option value="{{ $channel->id }}"
-                                            {{in_array($channel->id, $packageChannels) ? 'selected' : ''}}>
+                                            {{ in_array($channel->id, $packageChannels) ? 'selected' : '' }}>
                                             {{ $channel->channel_name }}</option>
                                     @endforeach
                                 </select>
@@ -68,14 +69,32 @@
                                 <select class="form-control" name="provider">
                                     <option value="">Select</option>
                                     @foreach ($providers as $provider)
-                                        <option value="{{ $provider->id }}" {{$package->provider_id == $provider->id ? 'selected' : ''}}>{{ $provider->name }}</option>
+                                        <option value="{{ $provider->id }}"
+                                            {{ $package->provider_id == $provider->id ? 'selected' : '' }}>
+                                            {{ $provider->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('provider')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="row mb-3">
+                        </div>
+
+
+                        <div class="row mb-3">
+                            <label for="input_type" class=" col-form-label">Package Features<sup
+                                    class="text-danger">*</sup></label>
+                            <div class="">
+                                <textarea name="features" id="features" rows="10">{{ $package->features }}</textarea>
+
+                                @error('features')
+                                    <div class="alert alert-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-3">
                             <label for="package_price" class=" col-form-label">Package Price<sup
                                     class="text-danger">*</sup></label>
                             <div class="">
@@ -86,7 +105,24 @@
                                 @enderror
                             </div>
 
-                            </div>
+                        </div>
+
+                        <label for="input40" class="col-sm-6 col-form-label"><b>Package Image </b></label>
+                        <div class="mb-3">
+
+
+                            <label for="upload_image">
+                                <img src="{{ asset('storage/images/tvPackages/' . $package->image )}}" id="uploaded_image"
+                                    class="img img-responsive img-circle" width="100" height="100px" alt="Select image" />
+
+                                <div class="overlay">
+                                    <div>Click to Change Image</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image"
+                                    style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
+
+                            </label>
                         </div>
 
 
@@ -105,12 +141,82 @@
     </div>
 @endsection
 @push('scripts')
+<script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            new Choices(document.querySelector(".choices-multiple"),{
-                 removeItemButton: true
-                });
+            new Choices(document.querySelector(".choices-multiple"), {
+                removeItemButton: true
+            });
         });
-     
+
+        tinymce.init({
+            selector: '#features',
+            plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            toolbar_mode: 'floating',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
+            codesample_languages: [{
+                    text: 'HTML/XML',
+                    value: 'markup'
+                },
+                {
+                    text: 'JavaScript',
+                    value: 'javascript'
+                },
+                {
+                    text: 'CSS',
+                    value: 'css'
+                },
+                {
+                    text: 'PHP',
+                    value: 'php'
+                },
+                {
+                    text: 'Ruby',
+                    value: 'ruby'
+                },
+                {
+                    text: 'Python',
+                    value: 'python'
+                },
+                {
+                    text: 'Java',
+                    value: 'java'
+                },
+                {
+                    text: 'C',
+                    value: 'c'
+                },
+                {
+                    text: 'C#',
+                    value: 'csharp'
+                },
+                {
+                    text: 'C++',
+                    value: 'cpp'
+                }
+            ],
+
+            file_picker_callback(callback, value, meta) {
+                let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
+                    'body')[0].clientWidth
+                let y = window.innerHeight || document.documentElement.clientHeight || document
+                    .getElementsByTagName('body')[0].clientHeight
+
+                tinymce.activeEditor.windowManager.openUrl({
+                    url: '/file-manager/tinymce5',
+                    title: 'Laravel File manager',
+                    width: x * 0.8,
+                    height: y * 0.8,
+                    onMessage: (api, message) => {
+                        callback(message.content, {
+                            text: message.text
+                        })
+                    }
+                })
+            }
+        });
     </script>
 @endpush

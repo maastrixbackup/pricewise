@@ -8,6 +8,7 @@ use App\Models\insuranceCoverage;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
+
 class InsuranceCoverageController extends Controller
 {
     function __construct()
@@ -25,8 +26,8 @@ class InsuranceCoverageController extends Controller
      */
     public function index()
     {
-       $records = insuranceCoverage::latest()->get();
-       return view('admin.insurance_coverage.index',compact('records'));
+        $records = insuranceCoverage::latest()->get();
+        return view('admin.insurance_coverage.index', compact('records'));
     }
 
     /**
@@ -36,8 +37,8 @@ class InsuranceCoverageController extends Controller
      */
     public function create()
     {
-        $subCategories = SubCategory::where('category_id',5)->where('status', 'active')->get();
-        return view('admin.insurance_coverage.create',compact('subCategories'));
+        $subCategories = SubCategory::where('category_id', 5)->where('status', 'active')->get();
+        return view('admin.insurance_coverage.create', compact('subCategories'));
     }
 
     /**
@@ -56,17 +57,17 @@ class InsuranceCoverageController extends Controller
         ]);
         try {
             $newCoverage = new insuranceCoverage();
-            $newCoverage->name=$request->name;
-            $newCoverage->description=$request->description;
+            $newCoverage->name = $request->name;
+            $newCoverage->description = $request->description;
 
-            $filename = time().'.'.$request->image->getClientOriginalExtension();
+            $filename = time() . '.' . $request->image->getClientOriginalExtension();
 
             $request->image->move(public_path('storage/images/insurance_coverages/'), $filename);
 
             $newCoverage->image = $filename;
             $newCoverage->subcategory_id = $request->sub_category;
             $newCoverage->save();
-            Toastr ::success('Coverage Added Successfully', '', ["positionClass" => "toast-top-right"]);
+            Toastr::success('Coverage Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.insurance-coverages.index');
         } catch (\Exception $e) {
             Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]);
@@ -82,7 +83,6 @@ class InsuranceCoverageController extends Controller
      */
     public function show($id)
     {
-
     }
 
     /**
@@ -93,9 +93,9 @@ class InsuranceCoverageController extends Controller
      */
     public function edit($id)
     {
-        $subCategories = SubCategory::where('category_id',5)->where('status', 'active')->get();
+        $subCategories = SubCategory::where('category_id', 5)->where('status', 'active')->get();
         $coverage = insuranceCoverage::where('id', $id)->first();
-        return view('admin.insurance_coverage.edit',compact('subCategories','coverage'));
+        return view('admin.insurance_coverage.edit', compact('subCategories', 'coverage'));
     }
 
     /**
@@ -109,11 +109,19 @@ class InsuranceCoverageController extends Controller
     {
         try {
             $coverage = insuranceCoverage::findOrFail($id);
-            $coverage->name=$request->name;
-            $coverage->description=$request->description;
+            $coverage->name = $request->name;
+            $coverage->description = $request->description;
             if (isset($request->image)) {
-                $filename = time().'.'.$request->image->getClientOriginalExtension();
+                $filename = time() . '.' . $request->image->getClientOriginalExtension();
                 $request->image->move(public_path('storage/images/insurance_coverages/'), $filename);
+
+
+                $existingFilePath = public_path('storage/images/insurance_coverages/') . $coverage->image;
+
+                if (file_exists($existingFilePath)) {
+                    // Delete the file
+                    unlink($existingFilePath);
+                }
             }
             $coverage->image = $filename ?? $coverage->image;
             $coverage->subcategory_id =  $request->sub_category;

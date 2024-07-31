@@ -64,6 +64,16 @@ class TvPackageController extends Controller
             $newPackage->tv_channels = json_encode($request->channels);
             $newPackage->provider_id = $request->provider;
             $newPackage->package_price = $request->package_price;
+            $newPackage->features = $request->features;
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'tvPackages_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/tvPackages/'), $filename);
+            }
+            // Save the filename in the database
+            $newPackage->image = $filename ?? '';
+
             $newPackage->save();
             Toastr::success('Package Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.tv-packages.index');
@@ -112,13 +122,37 @@ class TvPackageController extends Controller
             'channels' => 'required|min:1',
             'provider' => 'required',
         ]);
-        
+
         try {
             $package = TvPackage::findOrFail($id);
             $package->package_name = $request->package_name;
             $package->tv_channels = json_encode($request->channels);
             $package->provider_id = $request->provider;
             $package->package_price = $request->package_price;
+            $package->features = $request->features;
+
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'tvPackages_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/tvPackages/'), $filename);
+
+
+                $existingFilePath = public_path('storage/images/tvPackages/') . $package->image;
+
+                // Check if there is an existing image and delete it if it exists
+                if ($package->image) {
+                    $existingFilePath = public_path('storage/images/tvPackages/') . $package->image;
+
+                    if (file_exists($existingFilePath)) {
+                        // Delete the file
+                        unlink($existingFilePath);
+                    }
+                }
+            }
+            // Save the filename in the database
+            $package->image = $filename ?? $package->image;
+
             $package->save();
             Toastr::success('Package Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.tv-packages.index');

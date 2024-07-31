@@ -325,6 +325,13 @@ class CyberSecurityController extends Controller
             $filename = 's_provider_' . time() . '.' . $extension;
             // Move the uploaded file to the desired directory
             $request->image->move(public_path('storage/images/cyber_security/'), $filename);
+
+            $existingFilePath = public_path('storage/images/cyber_security/') . $sProvider->image;
+
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
+            }
         }
 
         $sProvider->image = $filename ?? $sProvider->image;

@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Admin\AdminController;
 use App\Models\Page;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends AdminController
 {
@@ -30,7 +32,7 @@ class PageController extends AdminController
     {
         $pages = Page::all()->sortByDesc('id');
 
-        return view('admin.pages.index',['pages'=>$pages]);
+        return view('admin.pages.index', ['pages' => $pages]);
     }
 
     /**
@@ -48,14 +50,14 @@ class PageController extends AdminController
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */ 
+     */
     public function store(Request $request)
     {
-        $page = Page::updateOrCreate(['title'=>$request->title],[
-            'title'=>$request->title,
-            'image'=>$request->image,
-            'status'=>$request->status,
-            'description'=>$request->description
+        $page = Page::updateOrCreate(['title' => $request->title], [
+            'title' => $request->title,
+            'image' => $request->image,
+            'status' => $request->status,
+            'description' => $request->description
         ]);
         if ($page) {
             return redirect()->route('admin.pages.index')->with(Toastr::success('page Created Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -86,8 +88,8 @@ class PageController extends AdminController
      */
     public function edit(Page $page)
     {
-               
-        return view('admin.pages.edit',['page'=>$page]);            
+
+        return view('admin.pages.edit', ['page' => $page]);
     }
 
     /**
@@ -99,12 +101,12 @@ class PageController extends AdminController
      */
     public function update(Request $request, Page $page)
     {
-        
+
         $page->update([
-            'title'=>$request->title,
-            'image'=>$request->image,
-            'status'=>$request->status,
-            'description'=>$request->description
+            'title' => $request->title,
+            'image' => $request->image,
+            'status' => $request->status,
+            'description' => $request->description
         ]);
         if ($page) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -129,7 +131,7 @@ class PageController extends AdminController
         try {
             Page::find($id)->delete();
             return back()->with(Toastr::error(__('Page deleted successfully!')));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.pages.index')->with($error_msg);
         }

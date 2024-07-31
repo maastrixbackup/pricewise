@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HouseType;
 use App\Models\LoanType;
 use App\Models\SpendingPurpose;
 use Brian2694\Toastr\Facades\Toastr;
@@ -114,6 +115,14 @@ class CommonController extends Controller
         if (isset($request->image)) {
             $filename = time() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path('storage/images/loans/'), $filename);
+
+
+            $existingFilePath = public_path('storage/images/loans/') . $purose_update->image;
+
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
+            }
         }
 
         $purose_update->image = $filename ?? $purose_update->image;
@@ -208,6 +217,14 @@ class CommonController extends Controller
         if ($request->image) {
             $filename = time() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path('storage/images/loans/'), $filename);
+
+
+            $existingFilePath = public_path('storage/images/loans/') . $loanType->image;
+
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
+            }
         }
 
         $loanType->image = $filename ?? $loanType->image;
@@ -230,6 +247,114 @@ class CommonController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-bottom-right"]));
         }
+    }
+
+    public function houseType_index(Request $request)
+    {
+        $ObjHouses = HouseType::orderBy('title', 'asc')->get();
+        return view('admin.house_type.index', compact('ObjHouses'));
+    }
+    public function houseType_create(Request $request)
+    {
+        return view('admin.house_type.add');
+    }
+    public function houseType_store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|unique:house_types,title',
+            'image' => 'required'
+        ]);
+        // dd($request->all());
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
+        $houseType = new HouseType();
+        $houseType->title = trim($request->title);
+        $houseType->slug = $slug;
+        $houseType->description = $request->description;
+        $houseType->status = $request->status;
+        if ($request->image) {
+            // Handle the image file upload
+            $filename = 'houses_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/houses/'), $filename);
+        }
+        // Save the filename in the database
+        $houseType->image = $filename ?? '';
+
+        try {
+            if ($houseType->save()) {
+                return redirect()->route('admin.house-type.index')->with(Toastr::success('House Type Added Successfully', '', ["positionClass" => "toast-top-right"]));
+
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+        }
+    }
+    public function houseType_edit(Request $request, $id)
+    {
+        $house = HouseType::find($id);
+        return view('admin.house_type.edit', compact('house'));
+    }
+    public function houseType_update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required',
+        ]);
+
+        // Convert to lowercase
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
+        $houseType = HouseType::find($id);
+        $houseType->title = trim($request->title);
+        $houseType->slug = $slug;
+        $houseType->description = $request->description;
+        $houseType->status = $request->status;
+
+        if (isset($request->image)) {
+            // Handle the image file upload
+            $filename = 'houses_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/houses/'), $filename);
+
+            $existingFilePath = public_path('storage/images/houses/') . $houseType->image;
+
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
+            }
+        }
+        // Save the filename in the database
+        $houseType->image = $filename ?? $houseType->image;
+
+        try {
+            if ($houseType->save()) {
+                return redirect()->route('admin.house-type.index')->with(Toastr::success('House Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+        }
+    }
+    public function houseType_destroy(Request $request)
+    {
     }
 
 

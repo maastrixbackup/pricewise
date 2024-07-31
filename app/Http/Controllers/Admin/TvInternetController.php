@@ -245,6 +245,7 @@ class TvInternetController extends Controller
             $objTv->discount = $request->discount;
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
+            $objTv->house_type = $request->house_type;
             $objTv->transfer_service = $request->transfer_service;
             $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $objTv->combos = $request->combos ? json_encode($request->combos) : [];
@@ -264,36 +265,44 @@ class TvInternetController extends Controller
             $objTv->tv_packages = json_encode($request->tv_packages ?? []);
             $objTv->network_type = json_encode($request->network_type ?? []);
 
-            if ($request->has('cropped_image')) {
-                // Access base64 encoded image data directly from the request
-                $croppedImage = $request->cropped_image;
 
-                // Extract base64 encoded image data and decode it
-                $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+            // Handle the image file upload
+            $filename =  'tvinternet_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/tvinternet/'), $filename);
 
-                // Generate a unique file name for the image
-                $imageName = 'tvInternet_' . time() . '.png';
+            // Save the filename in the database
+            $objTv->image = $filename ?? '';
 
-                // Specify the destination directory where the image will be saved
-                $destinationDirectory = 'public/images/tvinternet';
+            // if ($request->has('cropped_image')) {
+            //     // Access base64 encoded image data directly from the request
+            //     $croppedImage = $request->cropped_image;
 
-                // Create the directory if it doesn't exist
-                Storage::makeDirectory($destinationDirectory);
+            //     // Extract base64 encoded image data and decode it
+            //     $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
-                // Save the image to the server using Laravel's file upload method
-                $filePath = $destinationDirectory . '/' . $imageName;
+            //     // Generate a unique file name for the image
+            //     $imageName = 'tvinternet' . time() . '.png';
 
-                // Delete the old image if it exists
-                if ($objTv->image) {
-                    Storage::delete($destinationDirectory . '/' . $objTv->image);
-                }
+            //     // Specify the destination directory where the image will be saved
+            //     $destinationDirectory = 'public/images/tvinternet';
 
-                // Save the new image
-                Storage::put($filePath, $imgData);
+            //     // Create the directory if it doesn't exist
+            //     Storage::makeDirectory($destinationDirectory);
 
-                // Set the image file name for the provider
-                $objTv->image = $imageName;
-            }
+            //     // Save the image to the server using Laravel's file upload method
+            //     $filePath = $destinationDirectory . '/' . $imageName;
+
+            //     // Delete the old image if it exists
+            //     if ($objTv->image) {
+            //         Storage::delete($destinationDirectory . '/' . $objTv->image);
+            //     }
+
+            //     // Save the new image
+            //     Storage::put($filePath, $imgData);
+
+            //     // Set the image file name for the provider
+            //     $objTv->image = $imageName;
+            // }
             if ($objTv->save()) {
                 return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
                 //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
@@ -324,7 +333,8 @@ class TvInternetController extends Controller
     public function edit($id)
     {
         $objTv = TvInternetProduct::findOrFail($id);
-        $objTvFeatures = Feature::select('id', 'features', 'input_type')->where('category', 9)->get();
+        $objTvFeatures = Feature::select('id', 'features', 'input_type')->where('category', 1)->get();
+        // dd($objTvFeatures);
         $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $providers = Provider::latest()->get();
         $objInternetFeatures = Feature::select('id', 'features', 'input_type')->where('category', 8)->get();
@@ -378,6 +388,7 @@ class TvInternetController extends Controller
         $objTv->discount = $request->discount;
         $objTv->contract_length = $request->contract_length;
         $objTv->contract_type = $request->contract_type;
+        $objTv->house_type = $request->house_type;
         $objTv->transfer_service = $request->transfer_service;
         $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
         $objTv->combos = json_encode($request->combos ? $request->combos : []);
@@ -396,36 +407,44 @@ class TvInternetController extends Controller
         $objTv->telephone_extensions = $request->telephone_extensions;
         $objTv->tv_packages = json_encode($request->tv_packages ?? []);
         $objTv->network_type = json_encode($request->network_type ?? []);
-        if ($request->has('cropped_image')) {
-            // Access base64 encoded image data directly from the request
-            $croppedImage = $request->cropped_image;
 
-            // Extract base64 encoded image data and decode it
-            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-
-            // Generate a unique file name for the image
-            $imageName = 'tvInternet_' . time() . '.png';
-
-            // Specify the destination directory where the image will be saved
-            $destinationDirectory = 'public/images/tvinternet';
-
-            // Create the directory if it doesn't exist
-            Storage::makeDirectory($destinationDirectory);
-
-            // Save the image to the server using Laravel's file upload method
-            $filePath = $destinationDirectory . '/' . $imageName;
-
-            // Delete the old image if it exists
-            if ($objTv->image) {
-                Storage::delete($destinationDirectory . '/' . $objTv->image);
-            }
-
-            // Save the new image
-            Storage::put($filePath, $imgData);
-
-            // Set the image file name for the provider
-            $objTv->image = $imageName;
+        if (isset($request->image)) {
+            $filename = 'tvInternet_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/tvinternet/'), $filename);
         }
+
+        $objTv->image = $filename ?? $objTv->image;
+
+        // if ($request->has('cropped_image')) {
+        //     // Access base64 encoded image data directly from the request
+        //     $croppedImage = $request->cropped_image;
+
+        //     // Extract base64 encoded image data and decode it
+        //     $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        //     // Generate a unique file name for the image
+        //     $imageName = 'tvInternet_' . time() . '.png';
+
+        //     // Specify the destination directory where the image will be saved
+        //     $destinationDirectory = 'public/images/tvinternet';
+
+        //     // Create the directory if it doesn't exist
+        //     Storage::makeDirectory($destinationDirectory);
+
+        //     // Save the image to the server using Laravel's file upload method
+        //     $filePath = $destinationDirectory . '/' . $imageName;
+
+        //     // Delete the old image if it exists
+        //     if ($objTv->image) {
+        //         Storage::delete($destinationDirectory . '/' . $objTv->image);
+        //     }
+
+        //     // Save the new image
+        //     Storage::put($filePath, $imgData);
+
+        //     // Set the image file name for the provider
+        //     $objTv->image = $imageName;
+        // }
         if ($objTv->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
