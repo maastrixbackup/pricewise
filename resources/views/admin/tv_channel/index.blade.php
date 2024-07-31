@@ -37,7 +37,7 @@
                                 <tr>
                                     <th>Sl</th>
                                     <th>Channel Name</th>
-                                    <th>Description</th>
+                                    <th>Channel Logo</th>
                                     <th>Features</th>
                                     <th>Price</th>
                                     <th>Type</th>
@@ -50,7 +50,13 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->channel_name }}</td>
-                                            <td>{{ $record->description ?? '' }}</td>
+                                            <td>
+                                                @if ($record->image)
+                                                    <img src="{{ asset('storage/images/tvChannel/' . $record->image) }}"
+                                                        alt="{{ $record->image }}" width="100px" height="80px">
+                                                @else
+                                                @endif
+                                            </td>
                                             <td>
                                                 <ul>
                                                     @foreach (json_decode($record->features ?? '', true) as $k => $v)

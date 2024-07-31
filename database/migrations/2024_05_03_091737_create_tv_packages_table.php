@@ -17,6 +17,8 @@ class CreateTvPackagesTable extends Migration
             $table->id();
             $table->string('package_name');
             $table->json('tv_channels');
+            $table->longText('features')->nullable();
+            $table->string('image')->nullable();
             $table->bigInteger('provider_id');
             $table->timestamps();
         });

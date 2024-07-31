@@ -120,6 +120,12 @@
                                          <span class="nav-main-link-name">Tv Options</span>
                                      </a>
                                  </li>
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.tv-options.index') }}">
+                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                         <span class="nav-main-link-name">Phone Options</span>
+                                     </a>
+                                 </li>
                              </ul>
                          </li>
                          <li class="nav-main-item">
@@ -319,6 +325,12 @@
                              <a class="nav-main-link" href="{{ route('admin.providers.index') }}">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                                  <span class="nav-main-link-name">Companies</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.house-type.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">House Types</span>
                              </a>
                          </li>
                          <li class="nav-main-item">

@@ -7,6 +7,9 @@ use App\Models\Provider;
 use App\Models\Combo;
 use App\Models\PostFeature;
 use App\Http\Resources\PostFeatureResource;
+use App\Models\FAQ;
+use App\Models\TvChannel;
+use App\Models\TvPackage;
 
 class InternetTvResource extends JsonResource
 {
@@ -20,6 +23,40 @@ class InternetTvResource extends JsonResource
     {
         $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
         $combos = Combo::where('category', $this->category)->get();
+        $tvPackages = TvPackage::where('provider_id', $this->provider)->get();
+        $filteredPackages = $tvPackages->map(function ($package) {
+            // Decode the TV channels JSON and get the array of channel IDs
+            $channelIds = json_decode($package->tv_channels, true);
+            $channelCount = is_array($channelIds) ? count($channelIds) : 0;
+
+            // Retrieve all TV channels and filter those in the package
+            $tvChannels = TvChannel::latest()->get();
+            $filteredChannels = $tvChannels->filter(function ($channel) use ($channelIds) {
+                return in_array($channel->id, $channelIds);
+            })->map(function ($ch) {
+                return [
+                    'id' => $ch->id,
+                    'name' => $ch->channel_name,
+                    'image' => asset('storage/images/tvChannels' . $ch->image),
+                    'features' => json_decode($ch->features, true),
+                    'description' => $ch->description,
+                    'price' => $ch->price,
+                    'type' => $ch->type
+                ];
+            })->values(); // Use `values()->all()` to reset keys and convert to array
+
+            return [
+                'id' => $package->id,
+                'name' => $package->package_name,
+                'image' => asset('storage/images/tvPackages/' . $package->image),
+                'features' => $package->features,
+                'channel_ids' => $package->tv_channels,
+                'channels' => $filteredChannels, // Changed key to 'channels' for clarity
+                'channel_count' => $channelCount,
+            ];
+        });
+
+
         $filteredCombos = $combos->filter(function ($combo) {
             return in_array($combo->id, json_decode($this->combos));
         });
@@ -72,6 +109,8 @@ class InternetTvResource extends JsonResource
             }),
             'provider_details' => $this->whenLoaded('providerDetails', function () {
                 return [
+                    'id' => $this->providerDetails->id,
+                    'name' => $this->providerDetails->name,
                     'about' => $this->providerDetails->about,
                     'payment_options' => $this->providerDetails->payment_options,
                     'annual_accounts' => $this->providerDetails->annual_accounts,
@@ -81,6 +120,8 @@ class InternetTvResource extends JsonResource
                     'rose_scheme' => $this->providerDetails->rose_scheme,
                 ];
             }),
+            'package_details' => $filteredPackages,
+            'faqs' => FAQ::where('category_id', $this->category)->get(),
             'features' => PostFeatureResource::collection($features),
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),

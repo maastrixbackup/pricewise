@@ -17,6 +17,7 @@ class CreateTvChannelsTable extends Migration
             $table->id();
             $table->string('channel_name');
             $table->text('description')->nullable();
+            $table->string('image')->nullable();
             $table->decimal('price', 20, 2);
             $table->string('type')->comment('HD , NORMAL');
             $table->json('features')->nullable();

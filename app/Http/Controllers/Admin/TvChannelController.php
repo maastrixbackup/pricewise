@@ -52,7 +52,7 @@ class TvChannelController extends Controller
             'price' => 'required',
             'type' => 'required',
         ]);
-
+        // dd($request->all());
         try {
             $newChannel = new TvChannel();
             $newChannel->channel_name = $request->channel_name;
@@ -60,6 +60,15 @@ class TvChannelController extends Controller
             $newChannel->price = (int)$request->price;
             $newChannel->type = $request->type;
             $newChannel->features = isset($request->features) && count($request->features) > 0 ? json_encode($request->features) : Null;
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'tvChannel_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/tvChannel/'), $filename);
+            }
+            // Save the filename in the database
+            $newChannel->image = $filename ?? '';
+
             $newChannel->save();
             Toastr::success('FAQ Added Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.tv-channel.index');
@@ -114,6 +123,22 @@ class TvChannelController extends Controller
             $channel->price = (int)$request->price;
             $channel->type = $request->type;
             $channel->features = isset($request->features) && count($request->features) > 0 ? json_encode($request->features) : Null;
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'tvChannel_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/tvChannel/'), $filename);
+
+
+                $existingFilePath = public_path('storage/images/tvChannel/') . $channel->image;
+
+                if (file_exists($existingFilePath)) {
+                    // Delete the file
+                    unlink($existingFilePath);
+                }
+            }
+            // Save the filename in the database
+            $channel->image = $filename ?? $channel->image;
             $channel->save();
             Toastr::success('FAQ Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             return redirect()->route('admin.tv-channel.index');

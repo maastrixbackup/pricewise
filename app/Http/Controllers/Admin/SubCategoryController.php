@@ -180,6 +180,14 @@ class SubCategoryController extends Controller
             // Move the file to the public/uploads directory
             $request->file('image')->move($destinationDirectory, $imageName);
 
+
+            $existingFilePath = public_path('storage/images/sub_categories/') . $sub_category->image;
+
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
+            }
+
             $sub_category->image = $imageName;
         }
 

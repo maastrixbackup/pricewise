@@ -26,7 +26,7 @@ use Brian2694\Toastr\Facades\Toastr;
         }
         public function FAQAdd()
         {
-            $categories = Category::latest()->get();
+            $categories = Category::latest()->whereNull('parent')->get();
             return view('admin.FAQ.add', compact('categories'));
         }
         public function FAQStore(Request $request)
@@ -53,7 +53,7 @@ use Brian2694\Toastr\Facades\Toastr;
         public function FAQEdit(Request $request)
         {
             $faq = FAQ::where('id', $request->id)->first();
-            $categories = Category::latest()->get();
+            $categories = Category::latest()->whereNull('parent')->get();
             return view('admin.FAQ.edit', compact('categories', 'faq'));
         }
         public function FAQupdate(Request $request)

@@ -12,11 +12,12 @@
                     </li>
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('admin.tv-channel.index') }}">Tv Channels</a>
+                    <li class="breadcrumb-item active" aria-current="page"><a
+                            href="{{ route('admin.tv-channel.index') }}">Tv Channels</a>
                     </li>
                 </ol>
             </nav>
-        </div> 
+        </div>
     </div>
     <!--end breadcrumb-->
     <div class="row">
@@ -26,12 +27,14 @@
                     <h5 class="mb-0">Add New Tv Channel</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.tv-channel.store') }}">
+                    <form method="post" action="{{ route('admin.tv-channel.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
-                            <label for="input_type" class=" col-form-label">Channel Name<sup class="text-danger">*</sup></label>
+                            <label for="input_type" class=" col-form-label">Channel Name<sup
+                                    class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="text" class="form-control" name="channel_name" value="{{old('channel_name')}}" placeholder="Channel Name">
+                                <input type="text" class="form-control" name="channel_name"
+                                    value="{{ old('channel_name') }}" placeholder="Channel Name">
                                 @error('channel_name')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -41,7 +44,7 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Description</label>
                             <div class="">
-                                <textarea name="description" class="form-control" cols="30" rows="5">{{old('description')}}</textarea>
+                                <textarea name="description" class="form-control" cols="30" rows="5">{{ old('description') }}</textarea>
                                 @error('description')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -51,7 +54,8 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Price<sup class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="number" class="form-control" name="price" value="{{old('price')}}" placeholder="Price" min="0">
+                                <input type="number" class="form-control" name="price" value="{{ old('price') }}"
+                                    placeholder="Price" min="0">
                                 @error('price')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -72,26 +76,45 @@
                         </div>
                         <div class="mb-3">
                             <div class="">
-                            <label for="input_type" class=" col-form-label">Features</label>
-                        </div>
+                                <label for="input_type" class=" col-form-label">Features</label>
+                            </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="features[]" value="At home via TV App">
+                                <input class="form-check-input" type="checkbox" name="features[]"
+                                    value="At home via TV App">
                                 <label class="form-check-label">At home via TV App</label>
-                              </div>
-                              <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="features[]" value="Everywhere via TV App">
-                                <label class="form-check-label" >Everywhere via TV App</label>
-                              </div>
-                              <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="features[]"  value="Missed start">
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="features[]"
+                                    value="Everywhere via TV App">
+                                <label class="form-check-label">Everywhere via TV App</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="features[]" value="Missed start">
                                 <label class="form-check-label">Missed start</label>
-                              </div>
+                            </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" name="features[]" value="Missed programme">
                                 <label class="form-check-label">Missed programme</label>
-                              </div>
-                            
+                            </div>
+
                         </div>
+
+                        <label for="upload_image" class="mb-3">
+
+                            <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                alt="Select image" />
+
+                            <div class="overlay" style="cursor: pointer">
+                                <div>Click to Choose Logo</div>
+                            </div>
+                            <input type="file" name="image" class="image" id="upload_image"
+                                style="display:none" />
+                            <input type="hidden" name="cropped_image" id="cropped_image">
+                        </label>
+
+                        @error('image')
+                            <div class="alert alert-danger py-1 mt-1">{{ $message }}</div>
+                        @enderror
                         <div class="row">
                             <label class=" col-form-label"></label>
                             <div class="">

@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\TravelInsuranceController;
 use App\Http\Controllers\Api\FuneralInsuranceController;
 use App\Http\Controllers\Api\CyberSecurityController;
 use App\Http\Controllers\Api\FarmHouseInsuranceController;
+use App\Http\Controllers\Api\LegalCounselInsuranceController;
 use App\Http\Controllers\Api\LiabilityInsuranceController;
 use Illuminate\Support\Facades\Auth;
 
@@ -85,7 +86,8 @@ Route::post('cyber-security-insurance-compare', [CyberSecurityController::class,
 //CyeberSecurity Insurance
 Route::post('liability-insurance', [LiabilityInsuranceController::class, 'index']);
 Route::post('liability-insurance-compare', [LiabilityInsuranceController::class, 'liabilityInsuranceCompare']);
-
+// Legal Counsel
+Route::post('legal-counsel-insurance', [LegalCounselInsuranceController::class, 'index']);
 // Api on events
 Route::post('get-events-list', [RequestController::class, 'eventList']);
 

@@ -112,6 +112,14 @@ class EventThemeController extends Controller
             if (isset($request->image)) {
                 $filename = time() . '.' . $request->image->getClientOriginalExtension();
                 $request->image->move(public_path('storage/images/event_theme/'), $filename);
+
+
+                $existingFilePath = public_path('storage/images/event_theme/') . $ev_theme_update->image;
+
+                if (file_exists($existingFilePath)) {
+                    // Delete the file
+                    unlink($existingFilePath);
+                }
             }
 
             $ev_theme_update->image = $filename ?? $ev_theme_update->image;
@@ -140,5 +148,4 @@ class EventThemeController extends Controller
             return redirect()->back()->with($e->getMessage());
         }
     }
-
 }

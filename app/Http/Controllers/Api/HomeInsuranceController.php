@@ -113,7 +113,7 @@ class HomeInsuranceController extends Controller
         return response()->json([
             'success' => true,
             'data' => $mergedData,
-            // 'providers' => $providers,
+            'providers' => $providers,
             'coverages' => $coverages,
             'recordsCount' => $recordsCount,
             'filters' => $filters,

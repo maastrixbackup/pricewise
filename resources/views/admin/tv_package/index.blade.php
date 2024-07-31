@@ -37,6 +37,7 @@
                                 <tr>
                                     <th>Sl</th>
                                     <th>Package Name</th>
+                                    <th>Image</th>
                                     <th>Providers</th>
                                     <th>Action</th>
                                 </tr>
@@ -47,6 +48,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->package_name }}</td>
+                                            <td><img src="{{ asset('storage/images/tvPackages/' . $record->image) }}"
+                                                    alt="{{ $record->image }}" width="80px" height="80px"></td>
                                             <td>{{ $record->providerDetails->name }}</td>
                                             <td>
                                                 <div class="col d-flex justify-content-evenly">
@@ -83,7 +86,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
@@ -92,14 +95,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                 ],

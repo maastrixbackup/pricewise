@@ -113,6 +113,16 @@ Route::group(['prefix' => 'pricewise'], function () {
                 Route::post('/destroy', 'CommonController@loanType_destroy')->name('loan-type.destroy');
             });
 
+            // House Type
+            Route::prefix('house-type')->group(function () {
+                Route::get('/', 'CommonController@houseType_index')->name('house-type.index');
+                Route::get('/create', 'CommonController@houseType_create')->name('house-type.create');
+                Route::post('/store', 'CommonController@houseType_store')->name('house-type.store');
+                Route::get('/edit/{id}', 'CommonController@houseType_edit')->name('house-type.edit');
+                Route::post('/update/{id}', 'CommonController@houseType_update')->name('house-type.update');
+                Route::post('/destroy', 'CommonController@houseType_destroy')->name('house-type.destroy');
+            });
+
             // Loans
             Route::resource('loans', 'LoanController');
 
@@ -127,7 +137,7 @@ Route::group(['prefix' => 'pricewise'], function () {
                 Route::post('/update/{id}', 'CyberSecurityController@sProvider_update')->name('security-provider.update');
                 Route::post('/destroy', 'CyberSecurityController@sProvider_destroy')->name('security-provider.destroy');
             });
-            
+
             // Security Provider
             Route::prefix('security-feature')->group(function () {
                 Route::get('/', 'CyberSecurityController@sFeatures_index')->name('security-feature.index');

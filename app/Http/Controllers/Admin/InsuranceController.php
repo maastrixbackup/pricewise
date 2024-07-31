@@ -270,21 +270,28 @@ class InsuranceController extends Controller
             //     $objTv->image = $image;
             // }
 
-            if ($request->image) {
-                // Generate a unique file name for the image
-                $imageName = 'insurance_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+            // Handle the image file upload
+            $filename =  'insurance_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/insurance_product/'), $filename);
 
-                $destinationDirectory = public_path('storage/images/insurance');
+            // Save the filename in the database
+            $objTv->image = $filename ?? '';
 
-                if (!is_dir($destinationDirectory)) {
-                    mkdir($destinationDirectory, 0777, true);
-                }
+            // if ($request->image) {
+            //     // Generate a unique file name for the image
+            //     $imageName = 'insurance_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
 
-                // Move the file to the public/uploads directory
-                $request->file('image')->move($destinationDirectory, $imageName);
+            //     $destinationDirectory = public_path('storage/images/insurance');
 
-                $objTv->image = $imageName;
-            }
+            //     if (!is_dir($destinationDirectory)) {
+            //         mkdir($destinationDirectory, 0777, true);
+            //     }
+
+            //     // Move the file to the public/uploads directory
+            //     $request->file('image')->move($destinationDirectory, $imageName);
+
+            //     $objTv->image = $imageName;
+            // }
 
             if ($objTv->save()) {
                 return redirect()->route('admin.insurance.index')->with(Toastr::success('Insurance Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -402,36 +409,50 @@ class InsuranceController extends Controller
         //     $image = $imgFilename;
 
         // }
-        if ($request->has('cropped_image')) {
-            // Access base64 encoded image data directly from the request
-            $croppedImage = $request->cropped_image;
+        if (isset($request->image)) {
+            $filename = 'insurance_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/insurance/'), $filename);
 
-            // Extract base64 encoded image data and decode it
-            $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+            $existingFilePath = public_path('storage/images/insurance/') . $objTv->image;
 
-            // Generate a unique file name for the image
-            $imageName = 'category_' . time() . '.png';
-
-            // Specify the destination directory where the image will be saved
-            $destinationDirectory = 'public/images/insurance';
-
-            // Create the directory if it doesn't exist
-            Storage::makeDirectory($destinationDirectory);
-
-            // Save the image to the server using Laravel's file upload method
-            $filePath = $destinationDirectory . '/' . $imageName;
-
-            // Delete the old image if it exists
-            if ($objTv->image) {
-                Storage::delete($destinationDirectory . '/' . $objTv->image);
+            if (file_exists($existingFilePath)) {
+                // Delete the file
+                unlink($existingFilePath);
             }
-
-            // Save the new image
-            Storage::put($filePath, $imgData);
-
-            // Set the image file name for the provider
-            $objTv->image = $imageName;
         }
+
+        $objTv->image = $filename ?? $objTv->image;
+
+        // if ($request->has('image')) {
+        //     // Access base64 encoded image data directly from the request
+        //     $croppedImage = $request->image;
+
+        //     // Extract base64 encoded image data and decode it
+        //     $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+
+        //     // Generate a unique file name for the image
+        //     $imageName = 'insurance_' . time() . '.png';
+
+        //     // Specify the destination directory where the image will be saved
+        //     $destinationDirectory = 'public/images/insurance';
+
+        //     // Create the directory if it doesn't exist
+        //     Storage::makeDirectory($destinationDirectory);
+
+        //     // Save the image to the server using Laravel's file upload method
+        //     $filePath = $destinationDirectory . '/' . $imageName;
+
+        //     // Delete the old image if it exists
+        //     if ($objTv->image) {
+        //         Storage::delete($destinationDirectory . '/' . $objTv->image);
+        //     }
+
+        //     // Save the new image
+        //     Storage::put($filePath, $imgData);
+
+        //     // Set the image file name for the provider
+        //     $objTv->image = $imageName;
+        // }
 
         if ($objTv->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);

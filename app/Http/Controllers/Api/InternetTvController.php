@@ -10,11 +10,11 @@ use App\Models\TvInternetProduct;
 use App\Models\Feature;
 use Validator;
 use App\Http\Resources\InternetTvResource;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class InternetTvController extends BaseController
 {
-   public function index(Request $request)
+    public function index(Request $request)
     {
         \DB::enableQueryLog();
         $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
@@ -25,7 +25,7 @@ class InternetTvController extends BaseController
 
         // Filter by postal code
         if ($request->has('postal_code')) {
-           $postalCode = json_encode($request->input('postal_code'));
+            $postalCode = json_encode($request->input('postal_code'));
             // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
             $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
         }
@@ -35,10 +35,10 @@ class InternetTvController extends BaseController
             $products->where('no_of_person', '>=', $request->input('no_of_person'));
         }
 
-        // Filter by house type
-        if ($request->has('house_type')) {
-            $products->where('house_type', $request->input('house_type'));
-        }
+        // // Filter by house type
+        // if ($request->has('house_type')) {
+        //     $products->where('house_type', $request->input('house_type'));
+        // }
 
         // Filter by current supplier
         // if ($request->has('current_supplier')) {
@@ -57,34 +57,34 @@ class InternetTvController extends BaseController
         $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
         $recordsCount = $products->count();
         if ($filteredProducts->isNotEmpty()) {
-        $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
-            ->from('features as f1')
-            ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-            ->where('f1.category', $filteredProducts[0]->category)
-            ->where('f1.is_preferred', 1)
-            ->get()
-            ->groupBy('parent');
-            } else {
+            $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
+                ->from('features as f1')
+                ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+                ->where('f1.category', $filteredProducts[0]->category)
+                ->where('f1.is_preferred', 1)
+                ->get()
+                ->groupBy('parent');
+        } else {
 
             $objFeatures = collect(); // Or any other default value or action
         }
 
         $mergedData = [];
 
-            foreach ($filteredProducts as $product) {
-                $formattedProduct = (new InternetTvResource($product))->toArray($request);   
-                $mergedData[] = $formattedProduct;
-            }
-            if($request->has('callFromExclusiveDeal')){
-                return [$mergedData , $objFeatures];
-            }
-            return response()->json([
-                'success' => true,
-                'data' => $mergedData,
-                'filters' => $objFeatures,
-                'recordsCount'=> $recordsCount,
-                'message' => 'Products retrieved successfully.'
-            ]);
+        foreach ($filteredProducts as $product) {
+            $formattedProduct = (new InternetTvResource($product))->toArray($request);
+            $mergedData[] = $formattedProduct;
+        }
+        if ($request->has('callFromExclusiveDeal')) {
+            return [$mergedData, $objFeatures];
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $mergedData,
+            'filters' => $objFeatures,
+            'recordsCount' => $recordsCount,
+            'message' => 'Products retrieved successfully.'
+        ]);
     }
 
     public function internetCompare(Request $request)
@@ -140,8 +140,6 @@ class InternetTvController extends BaseController
                     'filters' =>  $filters,
                     'message' => 'Products retrieved successfully.',
                 ], 200);
-
-
             } else {
                 return $this->sendError('No products found -for comparison.', [], 404);
             }
@@ -172,7 +170,7 @@ class InternetTvController extends BaseController
             'detail' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
@@ -214,7 +212,7 @@ class InternetTvController extends BaseController
             'detail' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
