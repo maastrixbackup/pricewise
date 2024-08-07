@@ -40,6 +40,7 @@ use App\Models\insuranceCoverage;
 use App\Models\LoanProduct;
 use App\Models\LoanType;
 use App\Models\SecurityFeature;
+use Facade\Ignition\Support\Packagist\Package;
 
 class RequestController extends BaseController
 {
@@ -633,6 +634,40 @@ class RequestController extends BaseController
 
         return $this->sendError('Deals not found.');
     }
+
+    public function getEnergyData(Request $request)
+    {
+        $providers = Provider::where('category', config('constant.category.energy'))->get();
+
+        if (count($providers) > 0) {
+
+            $providers = $providers->map(function ($provider) {
+                $provider->image = asset('storage/images/providers/' . $provider->image);
+                return $provider;
+            });
+
+            $filterData = [];
+            foreach ($providers as $k => $v) {
+                $filterData[$k] = [
+                    'id' => $v->id,
+                    'name' => $v->name,
+                    'image' => $v->image,
+                    'about' => $v->about,
+                    'address' => $v->address,
+                    'payment_options' => $v->payment_options,
+                    'annual_accounts' => $v->annual_accounts,
+                    'meter_readings' => $v->meter_readings,
+                    'adjust_installments' => $v->adjust_installments,
+                    'view_consumption' => $v->view_consumption,
+                    'rose_scheme' => $v->rose_scheme,
+                    'category' => $v->category,
+                ];
+            }
+            return $this->sendResponse($filterData, 'Data retrieved successfully.');
+        }
+        return $this->sendError('Data not found.');
+    }
+
     public function getInternetTvDeals(Request $request)
     {
         $deals = Deal::where(['category' => 1, 'status' => 'active'])->latest()->take(4)->get();
@@ -647,6 +682,67 @@ class RequestController extends BaseController
         }
 
         return $this->sendError('Deals not found.');
+    }
+
+    public function getInternetTvPackages(Request $request)
+    {
+        $providers = Provider::where('category', config('constant.category.Internet & Tv'))->get();
+
+        // if ($request->provider_id && $request->provider_id != '') {
+        //     $packages = TvPackage::where('provider_id', $request->provider_id)->get();
+        // }
+
+        $packages = TvPackage::all();
+
+        $filterPackages = [];
+        $filterData = [];
+
+        if (count($packages) > 0) {
+            $packages = $packages->map(function ($package) {
+                $package->image = asset('storage/images/tvPackages/' . $package->image);
+                return $package;
+            });
+            foreach ($packages as $key => $value) {
+                $filterPackages[] = [
+                    'id' => $value->id,
+                    'package_name' => $value->package_name,
+                    'image' => $value->image,
+                    'tv_channels' => $value->tv_channels,
+                    'features' => $value->features,
+                    'package_price' => $value->package_price,
+                    'provider_id' => $value->provider_id,
+                ];
+            }
+        }
+
+        if (count($providers) > 0) {
+            $providers = $providers->map(function ($provider) {
+                $provider->image = asset('storage/images/providers/' . $provider->image);
+                return $provider;
+            });
+
+            foreach ($providers as $k => $v) {
+                $filterData[$k] = [
+                    'id' => $v->id,
+                    'name' => $v->name,
+                    'image' => $v->image,
+                    'about' => $v->about,
+                    'address' => $v->address,
+                    'payment_options' => $v->payment_options,
+                    'annual_accounts' => $v->annual_accounts,
+                    'meter_readings' => $v->meter_readings,
+                    'adjust_installments' => $v->adjust_installments,
+                    'view_consumption' => $v->view_consumption,
+                    'rose_scheme' => $v->rose_scheme,
+                    'category' => $v->category,
+                ];
+            }
+        }
+
+        $finalData['providers'] = $filterData;
+        $finalData['packages'] = $filterPackages;
+
+        return $this->sendResponse($finalData, 'Data retrieved successfully.');
     }
     public function getHomeInsuranceDeals(Request $request)
     {

@@ -190,15 +190,16 @@ class CategoryController extends Controller
             // Move the file to the public/uploads directory
             $request->file('image')->move($destinationDirectory, $imageName);
 
-            $existingFilePath = $destinationDirectory . '/' . $objCategory->image;
-
-            if (file_exists($existingFilePath)) {
-                // Delete the file
-                unlink($existingFilePath);
+            // Check if the dealProduct has an existing image
+            if (!empty($objCategory->image)) {
+                $existingFilePath = public_path('storage/images/categories/') . $objCategory->image;
+                if (file_exists($existingFilePath)) {
+                    // Delete the file if it exists
+                    unlink($existingFilePath);
+                }
             }
-
-            $objCategory->image = $imageName;
         }
+        $objCategory->image = $imageName ?? $objCategory->image;
 
         if ($objCategory->save()) {
             // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));

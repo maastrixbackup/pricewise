@@ -50,7 +50,11 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $faq->title }}</td>
                                             <td>@php echo $faq->description  @endphp </td>
-                                            <td>@if(isset($faq->icon))<i class="fa {{ $faq->icon }}" id="fa_icon"></i>@endif</td>
+                                            <td>
+                                                @if (isset($faq->icon))
+                                                    <i class="fa {{ $faq->icon }}" id="fa_icon"></i>
+                                                @endif
+                                            </td>
                                             <td>{{ $faq->categoryDetails->name }}</td>
 
                                             <td>
@@ -61,8 +65,8 @@
                                                             class="bx bx-pencil me-0"></i></a>
 
 
-                                                    <a title="Delete" href="{{ route('admin.FAQ-delete', $faq->id) }}" class="btn1 btn-outline-danger trash remove-faq"
-                                                       ><i
+                                                    <a title="Delete" href="{{ route('admin.FAQ-delete', $faq->id) }}"
+                                                        class="btn1 btn-outline-danger trash remove-faq"><i
                                                             class="bx bx-trash me-0"></i></a>
 
                                                 </div>
@@ -89,7 +93,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0,1,2,4]
+                            columns: [0, 1, 2, 4]
                         }
                     },
                     {
@@ -98,14 +102,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0,1,2,4]
+                            columns: [0, 1, 2, 4]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0,1,2,4]
+                            columns: [0, 1, 2, 4]
                         }
                     },
                 ],
@@ -118,24 +122,24 @@
             table.buttons().container()
                 .appendTo('#FAQTable_wrapper .col-md-6:eq(0)');
 
-        $("body").on("click", ".remove-faq", function(event) {
-              event.preventDefault();
-            var current_object = $(this);
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this data!",
-                type: "error",
-                showCancelButton: true,
-                dangerMode: true,
-                cancelButtonClass: '#DD6B55',
-                confirmButtonColor: '#dc3545',
-                confirmButtonText: 'Delete!',
-            }, function(result) {
-                if (result) {
-                    location.href=current_object.attr('href') ;  
-                }
+            $("body").on("click", ".remove-faq", function(event) {
+                event.preventDefault();
+                var current_object = $(this);
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this data!",
+                    type: "error",
+                    showCancelButton: true,
+                    dangerMode: true,
+                    cancelButtonClass: '#DD6B55',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'Delete!',
+                }, function(result) {
+                    if (result) {
+                        location.href = current_object.attr('href');
+                    }
+                });
             });
         });
-    });
     </script>
 @endpush

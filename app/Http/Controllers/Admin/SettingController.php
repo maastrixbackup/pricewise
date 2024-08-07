@@ -101,48 +101,46 @@ class SettingController extends Controller
             'mail_from_address' => 'required',
             'mail_from_name' => 'required',
         ]);
-//logger()->debug('Request data:', $validatedData);
+        //logger()->debug('Request data:', $validatedData);
         // Update .env file
         // foreach ($validatedData as $key => $value) {
         //     file_put_contents(base_path('.env'), "$key=$value" . PHP_EOL, FILE_APPEND | LOCK_EX);
         // }
         try {
-        // Read current .env content
-        $envContent = File::get(base_path('.env'));
+            // Read current .env content
+            $envContent = File::get(base_path('.env'));
 
-        // Replace existing values with new ones
-        foreach ($validatedData as $key => $value) {
-            $key_config = str_replace('mail_', '', $key);
-            if($key == 'mail_from_address' || $key == 'mail_from_name'){
-                $key_config = str_replace('_', '.', $key);
-            $envContent = Str::replaceFirst(
-                strtoupper("$key=") . config("$key_config"),
-                strtoupper("MAIL_$key_config")."=$value",
-                $envContent
-            );
-
-            }else{
-                $envContent = Str::replaceFirst(
-                strtoupper("$key=") . config("mail.mailers.smtp.$key_config"),
-                strtoupper("MAIL_$key_config")."=$value",
-                $envContent
-            );
+            // Replace existing values with new ones
+            foreach ($validatedData as $key => $value) {
+                $key_config = str_replace('mail_', '', $key);
+                if ($key == 'mail_from_address' || $key == 'mail_from_name') {
+                    $key_config = str_replace('_', '.', $key);
+                    $envContent = Str::replaceFirst(
+                        strtoupper("$key=") . config("$key_config"),
+                        strtoupper("MAIL_$key_config") . "=$value",
+                        $envContent
+                    );
+                } else {
+                    $envContent = Str::replaceFirst(
+                        strtoupper("$key=") . config("mail.mailers.smtp.$key_config"),
+                        strtoupper("MAIL_$key_config") . "=$value",
+                        $envContent
+                    );
+                }
             }
-        }
-//dd($envContent);
-        // Rewrite the .env file with updated content
-        File::put(base_path('.env'), $envContent);
+            //dd($envContent);
+            // Rewrite the .env file with updated content
+            File::put(base_path('.env'), $envContent);
 
-        // Clear config cache
-        Artisan::call('config:cache');
+            // Clear config cache
+            Artisan::call('config:cache');
 
-        $message = array("status" => true,'message' => 'SMTP Setting Updated Successfully', 'title' => '');
+            $message = array("status" => true, 'message' => 'SMTP Setting Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
-    } catch (\Exception $e) {
-        $message = ['message' => 'Failed to update SMTP settings', 'title' => 'Error'];
-        return response()->json(['status' => false, 'message' => $message]);
-    }
-
+        } catch (\Exception $e) {
+            $message = ['message' => 'Failed to update SMTP settings', 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
+        }
     }
 
     public function paymentEdit()
@@ -153,21 +151,22 @@ class SettingController extends Controller
     }
 
 
-    public function paymentStore(Request $request){
-        try{
-        foreach($request->input('payment') as $key => $value){
-           Setting::where('type','payment_setting')->where('key', $key)
-        ->update(['value' => $value]);
-        }
-        $message = array('message' => 'Updated Successfully', 'title' => '');
+    public function paymentStore(Request $request)
+    {
+        try {
+            foreach ($request->input('payment') as $key => $value) {
+                Setting::where('type', 'payment_setting')->where('key', $key)
+                    ->update(['value' => $value]);
+            }
+            $message = array('message' => 'Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update Payment settings: ' . $e->getMessage();
-    // Log the error for further investigation
-    \Log::error($errorMessage);
-        $message = ['message' => 'Failed to update Payment settings', 'title' => 'Error'];
-        return response()->json(['status' => false, 'message' => $message]);
-    }
+            // Log the error for further investigation
+            \Log::error($errorMessage);
+            $message = ['message' => 'Failed to update Payment settings', 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
+        }
     }
 
     public function businessEdit()
@@ -176,21 +175,22 @@ class SettingController extends Controller
         return view('admin.settings.business_edit', compact('businessSetting'));
     }
 
-    public function businessStore(Request $request){
-        try{
-        foreach($request->input('business') as $key => $value){
-           Setting::where('type','business_general')->where('key', $key)
-        ->update(['value' => $value]);
-        }
-        $message = array('message' => 'Updated Successfully', 'title' => '');
+    public function businessStore(Request $request)
+    {
+        try {
+            foreach ($request->input('business') as $key => $value) {
+                Setting::where('type', 'business_general')->where('key', $key)
+                    ->update(['value' => $value]);
+            }
+            $message = array('message' => 'Updated Successfully', 'title' => '');
             return response()->json(["status" => true, 'message' => $message]);
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update Business Settings: ' . $e->getMessage();
-    // Log the error for further investigation
-    \Log::error($errorMessage);
-        $message = ['message' => 'Failed to update Business Settings', 'title' => 'Error'];
-        return response()->json(['status' => false, 'message' => $message]);
-    }
+            // Log the error for further investigation
+            \Log::error($errorMessage);
+            $message = ['message' => 'Failed to update Business Settings', 'title' => 'Error'];
+            return response()->json(['status' => false, 'message' => $message]);
+        }
     }
 
     public function mailchimpEdit()
@@ -212,5 +212,4 @@ class SettingController extends Controller
             return response()->json(["status" => false, 'message' => $message]);
         }
     }
-
 }

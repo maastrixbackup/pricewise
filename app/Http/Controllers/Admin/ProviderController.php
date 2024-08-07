@@ -8,6 +8,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
 use App\Models\Provider;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ProviderController extends Controller
 {
@@ -42,8 +43,8 @@ class ProviderController extends Controller
      */
     public function create()
     {
-        $categories = Category::latest()->get();
-       return view('admin.providers.add', compact('categories'));
+        $categories = Category::whereNull('parent')->latest()->get();
+        return view('admin.providers.add', compact('categories'));
     }
 
     /**
@@ -54,6 +55,11 @@ class ProviderController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
+        $request->validate([
+            'name' => 'required|unique:providers,name'
+        ]);
+
         $objProvider = new Provider();
         $objProvider->name = $request->name;
         $objProvider->about = $request->about;
@@ -65,21 +71,39 @@ class ProviderController extends Controller
         $objProvider->adjust_installments = $request->adjust_installments;
         $objProvider->view_consumption = $request->view_consumption;
         $objProvider->rose_scheme = $request->rose_scheme;
-        $croppedImage = $request->cropped_image;
-        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-        $imageName = 'provider_' . time() . '.png';
-        $destinationDirectory = 'public/images/providers';
-        Storage::makeDirectory($destinationDirectory);
-        $filePath = $destinationDirectory . '/' . $imageName;
-        Storage::put($filePath, $imgData);
-        $objProvider->image = $imageName;
-        if ($objProvider->save()) {
-            //return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]));
-            Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
-        } else {
-            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            return response()->json(["status" => false, 'message' => $message]);
+
+        $croppedImage = $request->image;
+        if ($request->hasFile('image')) {
+            // Handle the image file upload
+            $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/providers/'), $filename);
+        }
+        // Save the filename in the database
+        $objProvider->image = $filename ?? '';
+
+        // $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+        // $imageName = 'provider_' . time() . '.png';
+        // $destinationDirectory = 'public/images/providers';
+        // Storage::makeDirectory($destinationDirectory);
+        // $filePath = $destinationDirectory . '/' . $imageName;
+        // Storage::put($filePath, $imgData);
+        // $objProvider->image = $imageName;
+        // if ($objProvider->save()) {
+        //     return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]));
+        //     // Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]);
+        //     // return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
+        // } else {
+        //     $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
+        //     return response()->json(["status" => false, 'message' => $message]);
+        // }
+
+
+        try {
+            if ($objProvider->save()) {
+                return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('admin.providers.index')->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
     }
 
@@ -102,7 +126,7 @@ class ProviderController extends Controller
      */
     public function edit($id)
     {
-        $categories = Category::latest()->get();
+        $categories = Category::whereNull('parent')->latest()->get();
         $provider  = Provider::find($id);
         return view('admin.providers.edit', compact('provider', 'categories'));
     }
@@ -116,7 +140,9 @@ class ProviderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //echo 123;exit;
+        // dd($request->all());
+        $request->validate(['name' => 'required']);
+
         $objProvider = Provider::find($id);
         $objProvider->name = $request->name;
         $objProvider->about = $request->about;
@@ -128,44 +154,36 @@ class ProviderController extends Controller
         $objProvider->adjust_installments = $request->adjust_installments;
         $objProvider->view_consumption = $request->view_consumption;
         $objProvider->rose_scheme = $request->rose_scheme;
-        if ($request->has('cropped_image')) {
-        // Access base64 encoded image data directly from the request
-        $croppedImage = $request->cropped_image;
 
-        // Extract base64 encoded image data and decode it
-        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
+        if ($request->hasFile('image')) {
+            // Handle the image file upload
+            $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/images/providers/'), $filename);
 
-        // Generate a unique file name for the image
-        $imageName = 'provider_' . time() . '.png';
+            // Check if the provider has an existing image
+            if (!empty($objProvider->image)) {
+                $existingFilePath = public_path('storage/images/providers/') . $objProvider->image;
+                if (file_exists($existingFilePath)) {
+                    // Delete the file if it exists
+                    unlink($existingFilePath);
+                }
+            }
 
-        // Specify the destination directory where the image will be saved
-        $destinationDirectory = 'public/images/providers';
-
-        // Create the directory if it doesn't exist
-        Storage::makeDirectory($destinationDirectory);
-
-        // Save the image to the server using Laravel's file upload method
-        $filePath = $destinationDirectory . '/' . $imageName;
-
-        // Delete the old image if it exists
-        if ($objProvider->image) {
-            Storage::delete($destinationDirectory . '/' . $objProvider->image);
-        }
-
-        // Save the new image
-        Storage::put($filePath, $imgData);
-
-        // Set the image file name for the provider
-        $objProvider->image = $imageName;
+            // Save the new filename in the database
+            $objProvider->image = $filename;
+        } else {
+            // If no new image is uploaded, retain the existing image
+            $filename = $objProvider->image;
         }
 
         if ($objProvider->save()) {
-            // return redirect()->route('admin.drivers.index')->with(Toastr::success('Driver Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-            Toastr::success('Provider Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
+            return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            // Toastr::success('Provider Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            // return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
         } else {
-            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            return response()->json(["status" => true, 'message' => $message]);
+            return redirect()->route('admin.providers.index')->with(Toastr::error('Unable to Updated!', '', ["positionClass" => "toast-top-right"]));
+            // $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
+            // return response()->json(["status" => true, 'message' => $message]);
         }
     }
 
@@ -188,4 +206,3 @@ class ProviderController extends Controller
         }
     }
 }
-

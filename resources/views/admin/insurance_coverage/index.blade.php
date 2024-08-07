@@ -17,7 +17,8 @@
         <div class="ms-auto">
 
             <div class="btn-group">
-                <a href="{{ route('admin.insurance-coverages.create') }}" class="btn btn-primary">Create a New Insurance Coverage</a>
+                <a href="{{ route('admin.insurance-coverages.create') }}" class="btn btn-primary">Create a New Insurance
+                    Coverage</a>
 
             </div>
 
@@ -49,7 +50,8 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->name }}</td>
                                             <td>{{ $record->description ?? '' }}</td>
-                                            <td><img src="{{ asset('storage/images/insurance_coverages/'.$record->image) }}" alt="{{$record->image}}" width="50px" height="50px"></td>
+                                            <td><img src="{{ asset('storage/images/insurance_coverages/' . $record->image) }}"
+                                                    alt="{{ $record->image }}" width="50px" height="50px"></td>
                                             <td>
                                                 <div class="col d-flex justify-content-evenly">
                                                     <a title="Edit"
@@ -84,7 +86,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
@@ -93,14 +95,14 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                     {
                         extend: 'print',
                         text: '<i class="far fa-print"></i>',
                         exportOptions: {
-                            columns: [0, 1 ,2]
+                            columns: [0, 1, 2]
                         }
                     },
                 ],

@@ -81,6 +81,10 @@ class HealthInsuranceController extends BaseController
 
         $providers = $products->count() > 0  ? Provider::where('category', $products->first('category')->category)->get() : [];
 
+        $providers = $providers->map(function ($provider) {
+            $provider->image = asset('storage/images/providers/' . $provider->image);
+            return $provider;
+        });
 
         $mergedData = [];
 
@@ -108,6 +112,7 @@ class HealthInsuranceController extends BaseController
             'message' => $message
         ], 200);
     }
+    
     public function healthInsuranceCompare(Request $request)
     {
         $compareIds = $request->compare_ids;

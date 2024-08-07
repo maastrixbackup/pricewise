@@ -10,19 +10,19 @@ use App\Models\TvInternetProduct;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
 use App\Models\Feature;
-use Validator;
+use Dotenv\Validator;
 use App\Http\Resources\EnergyResource;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class InsuranceController extends BaseController
 {
    public function index(Request $request)
     {
         $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost');
-        
+
         // Filter by postal code
         if ($request->has('postal_code')) {
-           $postalCode = json_encode($request->input('postal_code'));    
+           $postalCode = json_encode($request->input('postal_code'));
             // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
             $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
         }
@@ -54,18 +54,18 @@ class InsuranceController extends BaseController
 
         // Filter by energy label
         if ($request->has('energy_label')) {
-            
-            $energy_label = json_encode($request->input('energy_label'));    
+
+            $energy_label = json_encode($request->input('energy_label'));
             // Use whereRaw with JSON_CONTAINS to check if the energy_label is present in the energy_label array
             $products->whereRaw('JSON_CONTAINS(energy_label, ?)', [$energy_label]);
-        }     
+        }
 
         if ($request->has('features')) {
             $features = $request->input('features');
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
             });
-        }    
+        }
         // Retrieve filtered products and return response
         $filteredProducts = $products->get();
         $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
@@ -100,7 +100,7 @@ class InsuranceController extends BaseController
                     ->where('f1.is_preferred', 1)
                     ->get()
                     ->groupBy('parent');
-                
+
                 $filteredProductsFormatted = EnergyResource::collection($filteredProducts);
 
                 // Merge filteredProductsFormatted and objEnergyFeatures
@@ -120,7 +120,7 @@ class InsuranceController extends BaseController
     public function getSupliers()
     {
         $providers = Provider::get();
-    
+
         return $this->sendResponse($providers, 'Suppliers retrieved successfully.');
     }
     /**
@@ -132,21 +132,21 @@ class InsuranceController extends BaseController
     public function store(Request $request)
     {
         $input = $request->all();
-   
+
         $validator = Validator::make($input, [
             'name' => 'required',
             'detail' => 'required'
         ]);
-   
+
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors());
         }
-   
+
         $product = TvInternetProduct::create($input);
-   
+
         return $this->sendResponse(new EnergyResource($product), 'Product created successfully.');
-    } 
-   
+    }
+
     /**
      * Display the specified resource.
      *
@@ -156,14 +156,14 @@ class InsuranceController extends BaseController
     public function show($id)
     {
         $product = TvInternetProduct::find($id);
-  
+
         if (is_null($product)) {
             return $this->sendError('Product not found.');
         }
-   
+
         return $this->sendResponse(new EnergyResource($product), 'Product retrieved successfully.');
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -174,23 +174,23 @@ class InsuranceController extends BaseController
     public function update(Request $request, TvInternetProduct $product)
     {
         $input = $request->all();
-   
+
         $validator = Validator::make($input, [
             'name' => 'required',
             'detail' => 'required'
         ]);
-   
+
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors());
         }
-   
+
         $product->name = $input['name'];
         $product->detail = $input['detail'];
         $product->save();
-   
+
         return $this->sendResponse(new EnergyResource($product), 'Product updated successfully.');
     }
-   
+
     /**
      * Remove the specified resource from storage.
      *
@@ -200,8 +200,8 @@ class InsuranceController extends BaseController
     public function destroy(TvInternetProduct $product)
     {
         $product->delete();
-   
+
         return $this->sendResponse([], 'Product deleted successfully.');
     }
-  
+
 }

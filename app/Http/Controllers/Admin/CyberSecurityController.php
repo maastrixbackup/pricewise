@@ -170,15 +170,17 @@ class CyberSecurityController extends Controller
             // Move the file to the public/uploads directory
             $request->file('image')->move($destinationDirectory, $imageName);
 
-            $existingFilePath = $destinationDirectory . '/' . $security->image;
-
-            if (file_exists($existingFilePath)) {
-                // Delete the file
-                unlink($existingFilePath);
+            // Check if  an existing image
+            if (!empty($security->image)) {
+                $existingFilePath = public_path('storage/images/cyber_security/') . $security->image;
+                if (file_exists($existingFilePath)) {
+                    // Delete the file if it exists
+                    unlink($existingFilePath);
+                }
             }
-
-            $security->image = $imageName;
         }
+
+        $security->image = $imageName ?? $security->image;
 
         try {
             if ($security->save()) {
@@ -199,9 +201,9 @@ class CyberSecurityController extends Controller
     {
         try {
             CyberSecurity::find($id)->delete();
-            return redirect()->back()->with(Toastr::success('Security Product Deleted','', ["positionClass" => "toast-top-right"]));
+            return redirect()->back()->with(Toastr::success('Security Product Deleted', '', ["positionClass" => "toast-top-right"]));
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(),'', ["positionClass" => "toast-top-right"]));
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
     }
 
@@ -326,11 +328,13 @@ class CyberSecurityController extends Controller
             // Move the uploaded file to the desired directory
             $request->image->move(public_path('storage/images/cyber_security/'), $filename);
 
-            $existingFilePath = public_path('storage/images/cyber_security/') . $sProvider->image;
-
-            if (file_exists($existingFilePath)) {
-                // Delete the file
-                unlink($existingFilePath);
+            // Check if  an existing image
+            if (!empty($sProvider->image)) {
+                $existingFilePath = public_path('storage/images/cyber_security/') . $sProvider->image;
+                if (file_exists($existingFilePath)) {
+                    // Delete the file if it exists
+                    unlink($existingFilePath);
+                }
             }
         }
 

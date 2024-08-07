@@ -25,7 +25,7 @@
             <!-- Notifications Dropdown -->
             <div class="dropdown d-inline-block">
               <button type="button" class="btn btn-alt-secondary" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="far fa-fw fa-flag"></i>
+                <i class="far fa-fw fa-bell"></i>
                 <span class="badge bg-primary rounded-pill">3</span>
               </button>
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
@@ -100,9 +100,9 @@
                   </a>
                   <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{route('admin.change-password',['id' => Auth::guard('admin')->user()->id])}}">
                     <span><i class="far fa-fw fa-key me-1"></i> Change Password</span>
-                    
+
                   </a>
-                  
+
                   <!-- END Side Overlay -->
 
                   <div role="separator" class="dropdown-divider"></div>

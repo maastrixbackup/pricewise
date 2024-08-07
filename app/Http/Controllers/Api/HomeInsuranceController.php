@@ -92,6 +92,10 @@ class HomeInsuranceController extends Controller
 
         $providers = $products->count() > 0  ? Provider::where('category', $products->first('category')->category)->get() : [];
 
+        $providers = $providers->map(function ($provider) {
+            $provider->image = asset('storage/images/providers/' . $provider->image);
+            return $provider;
+        });
 
         $mergedData = [];
 
@@ -167,5 +171,32 @@ class HomeInsuranceController extends Controller
         } else {
             return $this->sendError('No comparison IDs provided.', [], 400);
         }
+    }
+
+    public function getRecommendedInsurance(Request $request)
+    {
+
+        $coverages = insuranceCoverage::where('subcategory_id', config('constant.subcategory.HomeInsurance'))->get();
+
+        if ($coverages->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'recordsCount' => 0,
+                'message' => 'Insurance Not Found.'
+            ], 404);
+        }
+
+        $coverages = $coverages->map(function ($coverage) {
+            $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
+            return $coverage;
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $coverages,
+            'recordsCount' => $coverages->count(),
+            'message' => 'Insurance retrieved successfully.'
+        ], 200);
     }
 }

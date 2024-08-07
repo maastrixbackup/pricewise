@@ -57,6 +57,7 @@ Route::group(['prefix' => 'pricewise'], function () {
         });
         Route::middleware('admin')->group(function () {
             Route::get('file-manager', 'FileManagerController@index');
+            Route::post('/upload-image', 'RequestController@imageUpload')->name('upload_image');
             Route::resource('email-templates', 'EmailTemplateController');
             Route::get('dashboard', 'HomeController@index')->name('dashboard');
             Route::get('admin-test', 'HomeController@adminTest')->name('admintest');
@@ -125,6 +126,74 @@ Route::group(['prefix' => 'pricewise'], function () {
 
             // Loans
             Route::resource('loans', 'LoanController');
+
+            // Shop
+            Route::resource('products', 'ProductController');
+            Route::post('/add-product-images/{id}', 'ProductController@add_product_images')->name('add_product_images');
+            Route::post('/update-product-description/{id}', 'ProductController@update_product_description')->name('update_product_description');
+            Route::post('/update-product-features/{id}', 'ProductController@update_product_features')->name('update_product_features');
+            Route::post('/delete-product-images', 'ProductController@delete_product_images')->name('delete_p_image');
+            Route::post('/delete-product-specification', 'ProductController@delete_p_specification')->name('delete_p_specification');
+
+            // Product Category
+            Route::prefix('product-color')->group(function () {
+                Route::get('/', 'ProductController@color_index')->name('product-color.index');
+                Route::get('/create', 'ProductController@color_create')->name('product-color.create');
+                Route::post('/store', 'ProductController@color_store')->name('product-color.store');
+                Route::get('/edit/{id}', 'ProductController@color_edit')->name('product-color.edit');
+                Route::post('/update/{id}', 'ProductController@color_update')->name('product-color.update');
+                Route::post('/destroy', 'ProductController@color_destroy')->name('product-color.destroy');
+            });
+
+            // Product Category
+            Route::prefix('product-category')->group(function () {
+                Route::get('/', 'ProductController@pCategory_index')->name('product-category.index');
+                Route::get('/create', 'ProductController@pCategory_create')->name('product-category.create');
+                Route::post('/store', 'ProductController@pCategory_store')->name('product-category.store');
+                Route::get('/edit/{id}', 'ProductController@pCategory_edit')->name('product-category.edit');
+                Route::post('/update/{id}', 'ProductController@pCategory_update')->name('product-category.update');
+                Route::post('/destroy', 'ProductController@pCategory_destroy')->name('product-category.destroy');
+            });
+
+            // Product Promotion
+            Route::prefix('product-promotion')->group(function () {
+                Route::get('/', 'ProductController@promotion_index')->name('product-promotion.index');
+                Route::get('/create', 'ProductController@promotion_create')->name('product-promotion.create');
+                Route::post('/store', 'ProductController@promotion_store')->name('product-promotion.store');
+                Route::get('/edit/{id}', 'ProductController@promotion_edit')->name('product-promotion.edit');
+                Route::post('/update/{id}', 'ProductController@promotion_update')->name('product-promotion.update');
+                Route::post('/destroy', 'ProductController@promotion_destroy')->name('product-promotion.destroy');
+            });
+
+            // Product Promotion
+            Route::prefix('product-brands')->group(function () {
+                Route::get('/', 'ProductController@brand_index')->name('product-brands.index');
+                Route::get('/create', 'ProductController@brand_create')->name('product-brands.create');
+                Route::post('/store', 'ProductController@brand_store')->name('product-brands.store');
+                Route::get('/edit/{id}', 'ProductController@brand_edit')->name('product-brands.edit');
+                Route::post('/update/{id}', 'ProductController@brand_update')->name('product-brands.update');
+                Route::post('/destroy', 'ProductController@brand_destroy')->name('product-brands.destroy');
+            });
+
+            // Deals Product
+            Route::prefix('deals-product')->group(function () {
+                Route::get('/', 'ProductController@deals_index')->name('deals-product.index');
+                Route::get('/create', 'ProductController@deals_create')->name('deals-product.create');
+                Route::post('/store', 'ProductController@deals_store')->name('deals-product.store');
+                Route::get('/edit/{id}', 'ProductController@deals_edit')->name('deals-product.edit');
+                Route::post('/update/{id}', 'ProductController@deals_update')->name('deals-product.update');
+                Route::post('/destroy', 'ProductController@deals_destroy')->name('deals-product.destroy');
+            });
+
+
+            // Route::prefix('shop-settings')->group(function () {
+            //     Route::get('/', 'ProductController@shop_index')->name('shop-settings.index');
+            //     Route::get('/create', 'ProductController@shop_create')->name('shop-settings.create');
+            //     Route::post('/store', 'ProductController@shop_store')->name('shop-settings.store');
+            //     Route::get('/edit/{id}', 'ProductController@shop_edit')->name('shop-settings.edit');
+            //     Route::post('/update/{id}', 'ProductController@shop_update')->name('shop-settings.update');
+            //     Route::post('/destroy', 'ProductController@shop_destroy')->name('shop-settings.destroy');
+            // });
 
             // Cyber Security
             Route::resource('cyber-security', 'CyberSecurityController');
@@ -265,6 +334,10 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('create-campaign', 'MailChimpController@createCampaign')->name('create-campaign');
             Route::post('send-campaign', 'MailChimpController@sendCampaign')->name('send-campaign');
             Route::get('get-template', 'MailChimpController@getTemplate')->name('get-template');
+
+            // Shop Setting
+            Route::get('shop-settings', 'ProductController@shopEdit')->name('shop-settings');
+            Route::post('shop-store', 'ProductController@shopStore')->name('shop-store');
 
             //Website Setting
             Route::get('website-setting', 'SettingController@websiteEdit')->name('website-setting');

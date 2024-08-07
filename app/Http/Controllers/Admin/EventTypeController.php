@@ -141,12 +141,13 @@ class EventTypeController extends Controller
                 $filename = time() . '.' . $request->image->getClientOriginalExtension();
                 $request->image->move(public_path('storage/images/event_type/'), $filename);
 
-
-                $existingFilePath = public_path('storage/images/event_type/') . $ev_type_update->image;
-
-                if (file_exists($existingFilePath)) {
-                    // Delete the file
-                    unlink($existingFilePath);
+                // Check if the dealProduct has an existing image
+                if (!empty($ev_type_update->image)) {
+                    $existingFilePath = public_path('storage/images/event_type/') . $ev_type_update->image;
+                    if (file_exists($existingFilePath)) {
+                        // Delete the file if it exists
+                        unlink($existingFilePath);
+                    }
                 }
             }
 

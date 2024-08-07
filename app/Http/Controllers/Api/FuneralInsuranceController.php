@@ -92,6 +92,11 @@ class FuneralInsuranceController extends Controller
 
         $providers = $products->count() > 0  ? Provider::where('category', $products->first('category')->category)->get() : [];
 
+        $providers = $providers->map(function ($provider) {
+            $provider->image = asset('storage/images/providers/' . $provider->image);
+            return $provider;
+        });
+
 
         $mergedData = [];
 

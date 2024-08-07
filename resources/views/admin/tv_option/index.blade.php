@@ -81,7 +81,7 @@
                         extend: 'excelHtml5',
                         text: '<i class="far fa-file-excel"></i>',
                         exportOptions: {
-                            columns: [0, 1 ]
+                            columns: [0, 1]
                         }
                     },
                     {
