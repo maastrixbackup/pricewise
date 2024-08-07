@@ -178,7 +178,7 @@
                                     <div class="form-check-box">
                                         <div class="form-group form-check-pr">
                                             <input type="checkbox" id="a" name="network_type[]"
-                                                value="Optical Fiber"><label for="a">Optical Fiber</label>
+                                                value="Optical-Fiber"><label for="a">Optical Fiber</label>
                                         </div>
                                         <div class="form-group form-check-pr">
                                             <input type="checkbox" id="b" name="network_type[]"
@@ -186,11 +186,11 @@
                                         </div>
                                         <div class="form-group form-check-pr">
                                             <input type="checkbox" id="c" name="network_type[]"
-                                                value="ADSL/VDSL"><label for="c">ADSL/VDSL</label>
+                                                value="ADSL-VDSL"><label for="c">ADSL/VDSL</label>
                                         </div>
                                         <div class="form-group form-check-pr">
                                             <input type="checkbox" id="d" name="network_type[]"
-                                                value="WiFI Booster"><label for="d">WiFI Booster</label>
+                                                value="WiFI-Booster"><label for="d">WiFI Booster</label>
                                         </div>
 
                                     </div>

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserData;
 use App\Models\UserRequest;
+use Illuminate\Support\Facades\Storage;
 
 class RequestController extends Controller
 {
@@ -192,4 +193,16 @@ class RequestController extends Controller
 		$message = array('message' => 'Request Status Updated Successfully', 'title' => '');
 		return response()->json(["status" => true, 'message' => $message]);
 	}
+
+    public function uploadImage(Request $request)
+    {
+        if($request->hasFile('file')) {
+            $file = $request->file('file');
+            $path = $file->store('public/uploads'); // Adjust the path as needed
+            $url = Storage::url($path);
+
+            return response()->json(['url' => $url]);
+        }
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
 }

@@ -92,6 +92,11 @@ class LiabilityInsuranceController extends Controller
 
         $providers = $products->count() > 0  ? Provider::where('category', $products->first('category')->category)->get() : [];
 
+        $providers = $providers->map(function ($provider) {
+            $provider->image = asset('storage/images/providers/' . $provider->image);
+            return $provider;
+        });
+
 
         $mergedData = [];
 
@@ -113,7 +118,7 @@ class LiabilityInsuranceController extends Controller
         return response()->json([
             'success' => true,
             'data' => $mergedData,
-            // 'providers' => $providers,
+            'providers' => $providers,
             // 'coverages' => $coverages,
             'recordsCount' => $recordsCount,
             'filters' => $filters,

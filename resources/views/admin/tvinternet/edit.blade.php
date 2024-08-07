@@ -291,8 +291,8 @@
                                                                 <div class="form-check-box">
                                                                     <div class="form-group form-check-pr">
                                                                         <input type="checkbox" id="a"
-                                                                            name="network_type[]" value="Optical Fiber"
-                                                                            @if (in_array('Optical Fiber', $network_types)) checked @endif><label
+                                                                            name="network_type[]" value="Optical-Fiber"
+                                                                            @if (in_array('Optical-Fiber', $network_types)) checked @endif><label
                                                                             for="a">Optical Fiber</label>
                                                                     </div>
                                                                     <div class="form-group form-check-pr">
@@ -303,14 +303,14 @@
                                                                     </div>
                                                                     <div class="form-group form-check-pr">
                                                                         <input type="checkbox" id="c"
-                                                                            name="network_type[]" value="ADSL/VDSL"
-                                                                            @if (in_array('ADSL/VDSL', $network_types)) checked @endif><label
+                                                                            name="network_type[]" value="ADSL-VDSL"
+                                                                            @if (in_array('ADSL-VDSL', $network_types)) checked @endif><label
                                                                             for="c">ADSL/VDSL</label>
                                                                     </div>
                                                                     <div class="form-group form-check-pr">
                                                                         <input type="checkbox" id="d"
-                                                                            name="network_type[]" value="WiFI Booster"
-                                                                            @if (in_array('WiFI Booster', $network_types)) checked @endif><label
+                                                                            name="network_type[]" value="WiFI-Booster"
+                                                                            @if (in_array('WiFI-Booster', $network_types)) checked @endif><label
                                                                             for="d">WiFI Booster</label>
                                                                     </div>
 

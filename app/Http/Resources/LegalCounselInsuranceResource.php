@@ -19,6 +19,16 @@ class LegalCounselInsuranceResource extends JsonResource
     {
         $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
 
+        $faqs = FAQ::where('category_id', config('constant.category.Insurance'))->get();
+        $formattedFaqs = $faqs->map(function ($faq) {
+            return [
+                'id' => $faq->id,
+                'title' => $faq->title,
+                'description' => $faq->description,
+                'icon' => $faq->icon,
+                'category_id' => $faq->category_id
+            ];
+        });
         $combos = Combo::where('category', $this->category)->get();
         $filteredCombos = $combos->filter(function ($combo) {
             return in_array($combo->id, json_decode($this->combos));
@@ -35,7 +45,7 @@ class LegalCounselInsuranceResource extends JsonResource
             'discount_percentage' => $this->discount_percentage,
             'commission' => $this->commission,
             'commission_type' => $this->commission_type,
-            'image' => asset('storage/images/insurance/'.$this->image),
+            'image' => asset('storage/images/insurance/' . $this->image),
             'connection_cost' => $this->connection_cost,
             'shipping_cost' => $this->shipping_cost,
             'other_cost' => $other_cost,
@@ -51,8 +61,8 @@ class LegalCounselInsuranceResource extends JsonResource
             'tv_packages' => $this->tv_packages,
             'network_type' => $this->network_type,
             'category' => $this->category,
-            'sub_category'=>$this->sub_category,
-            'provider' =>$this->providerDetails,
+            'sub_category' => $this->sub_category,
+            'provider' => $this->providerDetails,
             'combos' => $this->combos,
             'combo_details' => $filteredCombos->toArray(),
             'manual_install' => $this->manual_install,
@@ -63,7 +73,7 @@ class LegalCounselInsuranceResource extends JsonResource
                 $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
                 return $coverage;
             }),
-            'FAQs'=> FAQ::where('sub_category_id',config('constant.subcategory.HomeInsurance'))->get(),
+            'FAQs' => $formattedFaqs,
             'features' => PostFeatureResource::collection($features),
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),

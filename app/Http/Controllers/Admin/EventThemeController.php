@@ -114,11 +114,13 @@ class EventThemeController extends Controller
                 $request->image->move(public_path('storage/images/event_theme/'), $filename);
 
 
-                $existingFilePath = public_path('storage/images/event_theme/') . $ev_theme_update->image;
-
-                if (file_exists($existingFilePath)) {
-                    // Delete the file
-                    unlink($existingFilePath);
+                // Check if the dealProduct has an existing image
+                if (!empty($ev_theme_update->image)) {
+                    $existingFilePath = public_path('storage/images/event_theme/') . $ev_theme_update->image;
+                    if (file_exists($existingFilePath)) {
+                        // Delete the file if it exists
+                        unlink($existingFilePath);
+                    }
                 }
             }
 

@@ -8,45 +8,60 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\TvInternetProduct;
 use App\Models\Feature;
-use Validator;
+use Dotenv\Validator;
 use App\Http\Resources\InternetTvResource;
+use App\Models\Provider;
 use Illuminate\Support\Facades\DB;
 
 class InternetTvController extends BaseController
 {
     public function index(Request $request)
     {
-        \DB::enableQueryLog();
+        DB::enableQueryLog();
         $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails');
+
+        // Clone the query for calculating min and max prices
+        $priceQuery = clone $products;
+        $minPrice = $priceQuery->min('price');
+        $maxPrice = $priceQuery->max('price');
 
         $pageno = $request->pageNo ?? 1;
         $postsPerPage = $request->postsPerPage ?? 10;
-        $toSkip = (int)$postsPerPage * (int)$pageno - (int)$postsPerPage;
+        $toSkip = (int)$postsPerPage * ((int)$pageno - 1);
 
-        // Filter by postal code
+        // Apply filters based on the request parameters
         if ($request->has('postal_code')) {
             $postalCode = json_encode($request->input('postal_code'));
-            // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
             $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
         }
 
-        // Filter by number of persons
+        if ($request->has('network_type')) {
+            $networkType = json_encode($request->input('network_type'));
+            $products->whereRaw('JSON_CONTAINS(network_type, ?)', [$networkType]);
+        }
+
+        if ($request->has('tv_packages')) {
+            $tvPackages = json_encode($request->input('tv_packages'));
+            $products->whereRaw('JSON_CONTAINS(tv_packages, ?)', [$tvPackages]);
+        }
+
         if ($request->has('no_of_person')) {
             $products->where('no_of_person', '>=', $request->input('no_of_person'));
         }
 
-        // // Filter by house type
-        // if ($request->has('house_type')) {
-        //     $products->where('house_type', $request->input('house_type'));
-        // }
+        if ($request->has('house_type')) {
+            $products->where('house_type', $request->input('house_type'));
+        }
 
-        // Filter by current supplier
-        // if ($request->has('current_supplier')) {
-        //     $products->where('provider', $request->input('current_supplier'));
-        // }
+        if ($request->has('current_supplier')) {
+            $products->where('provider', $request->input('current_supplier'));
+        }
 
+        if ($request->has('no_of_receivers')) {
+            $products->where('no_of_receivers', '>=', $request->input('no_of_receivers'));
+        }
 
-        if ($request->has('features') && $request->feature !== null) {
+        if ($request->has('features') && !is_null($request->features)) {
             $features = $request->input('features');
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
@@ -54,8 +69,11 @@ class InternetTvController extends BaseController
         }
 
 
+
+
         $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
         $recordsCount = $products->count();
+
         if ($filteredProducts->isNotEmpty()) {
             $objFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
                 ->from('features as f1')
@@ -65,24 +83,24 @@ class InternetTvController extends BaseController
                 ->get()
                 ->groupBy('parent');
         } else {
-
-            $objFeatures = collect(); // Or any other default value or action
+            $objFeatures = collect();
         }
 
-        $mergedData = [];
+        $mergedData = $filteredProducts->map(function ($product) use ($request) {
+            return (new InternetTvResource($product))->toArray($request);
+        });
 
-        foreach ($filteredProducts as $product) {
-            $formattedProduct = (new InternetTvResource($product))->toArray($request);
-            $mergedData[] = $formattedProduct;
-        }
         if ($request->has('callFromExclusiveDeal')) {
             return [$mergedData, $objFeatures];
         }
+
         return response()->json([
             'success' => true,
             'data' => $mergedData,
             'filters' => $objFeatures,
             'recordsCount' => $recordsCount,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
             'message' => 'Products retrieved successfully.'
         ]);
     }
@@ -207,14 +225,14 @@ class InternetTvController extends BaseController
     {
         $input = $request->all();
 
-        $validator = Validator::make($input, [
+        $request->validate( [
             'name' => 'required',
             'detail' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
+        // if ($validator->fails()) {
+        //     return $this->sendError('Validation Error.', $validator->errors());
+        // }
 
         $product->name = $input['name'];
         $product->detail = $input['detail'];

@@ -7,6 +7,8 @@ use App\Models\Provider;
 use App\Models\Combo;
 use App\Models\PostFeature;
 use App\Http\Resources\PostFeatureResource;
+use App\Models\FAQ;
+
 class HealthInsuranceResource extends JsonResource
 {
     /**
@@ -19,6 +21,16 @@ class HealthInsuranceResource extends JsonResource
     {
         $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
 
+        $faqs = FAQ::where('category_id', config('constant.category.Insurance'))->get();
+        $formattedFaqs = $faqs->map(function ($faq) {
+            return [
+                'id' => $faq->id,
+                'title' => $faq->title,
+                'description' => $faq->description,
+                'icon' => $faq->icon,
+                'category_id' => $faq->category_id
+            ];
+        });
         $combos = Combo::where('category', $this->category)->get();
         $filteredCombos = $combos->filter(function ($combo) {
             return in_array($combo->id, json_decode($this->combos));
@@ -65,6 +77,7 @@ class HealthInsuranceResource extends JsonResource
             }),
             'provider' => $this->providerDetails,
             'features' => PostFeatureResource::collection($features),
+            'faq' => $formattedFaqs,
             'created_at' => $this->created_at->format('d/m/Y'),
             'updated_at' => $this->updated_at->format('d/m/Y'),
 

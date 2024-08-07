@@ -97,6 +97,11 @@ class LegalCounselInsuranceController extends Controller
 
         $providers = $products->count() > 0  ? Provider::where('category', $products->first('category')->category)->get() : [];
 
+        $providers = $providers->map(function ($provider) {
+            $provider->image = asset('storage/images/providers/' . $provider->image);
+            return $provider;
+        });
+
 
         $mergedData = [];
 
@@ -118,7 +123,7 @@ class LegalCounselInsuranceController extends Controller
         return response()->json([
             'success' => true,
             'data' => $mergedData,
-            // 'providers' => $providers,
+            'providers' => $providers,
             'r_coverages' => $coverages,
             'r_insurance' => $coverages,
             'recordsCount' => $recordsCount,

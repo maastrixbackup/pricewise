@@ -264,7 +264,7 @@ class EnergyController extends Controller
             if ($request->image) {
 
                 // Generate a unique file name for the image
-                $imageName = 'category_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+                $imageName = 'energy_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
 
                 $destinationDirectory = public_path('storage/images/energy');
 
@@ -308,7 +308,7 @@ class EnergyController extends Controller
     {
         $combos = Combo::where('category', 16)->latest()->get();
         $objEnergy = EnergyProduct::find($id);
-        $providers = Provider::all();
+        $providers = Provider::where('category', config('constant.category.energy'))->get();
         $documents = Document::where('post_id', $id)->where('category', $objEnergy->category)->get();
         $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
             ->from('features as f1')
@@ -344,7 +344,6 @@ class EnergyController extends Controller
     {
         //dd($request->data);
 
-
         // Convert to lowercase
         $slug = strtolower($request->title);
 
@@ -369,8 +368,8 @@ class EnergyController extends Controller
         $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
         $objEnergy->combos = $request->combos ? json_encode($request->combos) : [];
         $objEnergy->status = $request->online_status ? $request->online_status : 0;
-        $objEnergy->valid_till =  $request->valid_till;
-        $objEnergy->category =  $request->category;
+        $objEnergy->valid_till = $request->valid_till;
+        $objEnergy->category = $request->category;
         $objEnergy->product_type = $request->product_type;
         $objEnergy->government_levies_gas = $request->government_levies_gas;
         $objEnergy->is_featured = $request->is_featured;
@@ -378,33 +377,36 @@ class EnergyController extends Controller
         $objEnergy->reduction_of_energy_tax = $request->reduction_of_energy_tax;
         $objEnergy->slug = $slug;
         $objEnergy->no_of_person = $request->no_of_person;
-        $objEnergy->provider = $request->provider;
+        $objEnergy->provider = is_numeric($request->provider) ? $request->provider : null; // Ensure provider is a valid integer
         $objEnergy->no_gas = $request->no_gas;
         $objEnergy->energy_label = json_encode($request->energy_label);
         $objEnergy->meter_type = $request->meter_type;
 
         if ($request->image) {
             // Generate a unique file name for the image
-            $imageName = 'category_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+            $imageName = 'energy_' . time() . '.' . $request->file('image')->getClientOriginalExtension();
 
-            $destinationDirectory = public_path('storage/images/categories');
+            $destinationDirectory = public_path('storage/images/energy');
 
             if (!is_dir($destinationDirectory)) {
                 mkdir($destinationDirectory, 0777, true);
             }
 
-            // Move the file to the public/uploads directory
+            // Move the file to the destination directory
             $request->file('image')->move($destinationDirectory, $imageName);
 
             $existingFilePath = $destinationDirectory . '/' . $objEnergy->image;
 
-            if (file_exists($existingFilePath)) {
-                // Delete the file
+            if (!empty($objEnergy->image) && file_exists($existingFilePath)) {
+                // Delete the existing file if it exists
                 unlink($existingFilePath);
             }
 
             $objEnergy->image = $imageName;
         }
+
+        $objEnergy->save();
+
 
         if ($objEnergy->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);

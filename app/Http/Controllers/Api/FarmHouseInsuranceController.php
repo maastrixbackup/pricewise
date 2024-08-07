@@ -114,8 +114,8 @@ class FarmHouseInsuranceController extends Controller
         return response()->json([
             'success' => true,
             'data' => $mergedData,
-            // 'providers' => $providers,
-            // 'coverages' => $coverages,
+            'providers' => $providers,
+            'coverages' => $coverages,
             'recordsCount' => $recordsCount,
             'filters' => $filters,
             'message' => $message

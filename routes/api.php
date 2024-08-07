@@ -42,11 +42,13 @@ Route::post('/login', [RegisterController::class, 'login'])->name('customer-logi
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
 Route::get('get-energy-deals', [RequestController::class, 'getEnergyDeals']);
+Route::get('get-energy-data', [RequestController::class, 'getEnergyData']);
 Route::get('get-deals-data', [RequestController::class, 'getDealsData']);
 Route::get('get-tv-packages', [RequestController::class, 'getTvPackages']);
 Route::get('get-exclusive-deal/{id}', [RequestController::class, 'getExclusiveDeal']);
 Route::get('get-top-four-deals', [RequestController::class, 'getTopFourDeals']);
 Route::get('get-internet-tv-deals', [RequestController::class, 'getInternetTvDeals']);
+Route::get('get-internet-tv-package', [RequestController::class, 'getInternetTvPackages']);
 Route::get('get-home-insurance-deals', [RequestController::class, 'getHomeInsuranceDeals']);
 
 // Personal Insurance
@@ -58,6 +60,7 @@ Route::post('health-insurance-compare', [HealthInsuranceController::class, 'heal
 //Home Insurance
 Route::post('home-insurance', [HomeInsuranceController::class, 'index']);
 Route::post('home-insurance-compare', [HomeInsuranceController::class, 'homeInsuranceCompare']);
+Route::post('home-recommended-insurance', [HomeInsuranceController::class, 'getRecommendedInsurance']);
 
 //Building Insurance
 Route::post('building-insurance', [FarmHouseInsuranceController::class, 'index']);

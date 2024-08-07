@@ -230,7 +230,6 @@ class TvInternetController extends Controller
 
             // Trim hyphens from the beginning and end of the string
             $slug = trim($slug, '-');
-
             $objTv = new TvInternetProduct();
             $objTv->title = $request->title;
             $objTv->content = $request->description;
@@ -337,7 +336,7 @@ class TvInternetController extends Controller
         // dd($objTvFeatures);
         $postTvFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $providers = Provider::latest()->get();
-        $objInternetFeatures = Feature::select('id', 'features', 'input_type')->where('category', 8)->get();
+        $objInternetFeatures = Feature::select('id', 'features', 'input_type')->where('category', config('constant.category.Internet & Tv'))->get();
         $postInternetFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();
         $objTeleFeatures = Feature::select('id', 'features', 'input_type')->where('category', 2)->get();
         $postTeleFeatures = PostFeature::where('post_id', $id)->where('category_id', $objTv->category)->pluck('feature_value', 'feature_id')->toArray();

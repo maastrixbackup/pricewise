@@ -194,6 +194,63 @@
                  <li class="nav-main-item">
                      <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
                          aria-expanded="false" href="#">
+                         <i class="nav-main-link-icon fa fa-cart-plus"></i>
+                         <span class="nav-main-link-name">Shop</span>
+                     </a>
+                     <ul class="nav-main-submenu">
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.product-category.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Product Category</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.product-promotion.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-percent"></i>
+                                 <span class="nav-main-link-name">Promotion Product</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.deals-product.index') }}">
+                                <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                <span class="nav-main-link-name">Deals Product</span>
+                            </a>
+                        </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.product-brands.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                 <span class="nav-main-link-name">Brands</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.product-color.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-paint-brush"></i>
+                                 <span class="nav-main-link-name"> Colors</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.products.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list-alt"></i>
+                                 <span class="nav-main-link-name">Shop Product</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.shop-settings') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-cogs"></i>
+                                 <span class="nav-main-link-name">Shop Settings</span>
+                             </a>
+                         </li>
+                     </ul>
+                 </li>
+
+                 <li class="nav-main-item">
+                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                         aria-expanded="false" href="#">
                          <i class="nav-main-link-icon fa fa-money "></i>
                          <span class="nav-main-link-name">Loans</span>
                      </a>
