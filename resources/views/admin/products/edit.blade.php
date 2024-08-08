@@ -11,7 +11,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.insurance.index') }}">Insurances</a></li>
+                            href="{{ route('admin.products.index') }}">Products</a></li>
                 </ol>
             </nav>
         </div>
@@ -230,6 +230,14 @@
                                                     </option>
                                                 </select>
                                             </div>
+                                            <!-- <label for="input35" class="col-form-label"><b>Top 3 Product</b></label> -->
+                                            <div class="mb-3 add-scroll">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="new_arrival"
+                                                        @if ($objProduct->new_arrival == 1) checked @endif value="1">
+                                                    <label class="form-check-label" for="flexCheckDefault">New Arrival</label>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="col-md-6 col-12">
@@ -264,8 +272,7 @@
                                         <div class="col-md-6 col-12">
 
                                             <div class="mb-3 form-group">
-                                                <label for="input40" class="col-form-label"><b>Product Type</b>
-                                                </label>
+                                                <label for="input40" class="col-form-label">Product Type</label>
                                                 <select id="product_type" name="product_type"
                                                     class="select2 form-select">
                                                     <option value="personal"
@@ -280,6 +287,8 @@
 
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
                                             <!-- <label for="input35" class="col-form-label"><b>Top 3 Product</b></label> -->
                                             <div class="mb-3 add-scroll">
                                                 <div class="form-check">
@@ -289,8 +298,6 @@
                                                         Product</label>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6 col-12">
                                             <!-- <label for="input35" class="col-form-label"><b>Top 3 Product</b></label> -->
                                             <div class="mb-3 add-scroll">
                                                 <div class="form-check form-check-inline">

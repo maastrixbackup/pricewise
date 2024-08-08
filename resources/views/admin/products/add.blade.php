@@ -148,6 +148,14 @@
                                         <option value="3">On Request</option>
                                     </select>
                                 </div>
+                                <!-- <label for="input35" class="col-form-label"><b>Top 3 Product</b></label> -->
+                                <div class="mb-3 add-scroll">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="new_arrival"
+                                             value="1">
+                                        <label class="form-check-label" for="flexCheckDefault">New Arrival</label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-md-6 col-12">

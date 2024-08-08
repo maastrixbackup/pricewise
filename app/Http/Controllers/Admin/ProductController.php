@@ -53,7 +53,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|unique:shop_products,title'
+            'title' => 'required'
         ]);
 
         // dd($request->all());
@@ -89,6 +89,7 @@ class ProductController extends Controller
             $shopProduct->about = $request->about;
             $shopProduct->p_status = $request->p_status;
             $shopProduct->is_featured = $request->is_featured;
+            $shopProduct->new_arrival = $request->new_arrival;
             $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $shopProduct->is_publish = $request->status;
 
@@ -148,8 +149,8 @@ class ProductController extends Controller
         $request->validate([
             'title' => 'required'
         ]);
-
-        // dd($request->all());
+        // $id2 = encrypt($id);
+        // $id1 = decrypt($id2);
 
         // Convert to lowercase
         $slug = strtolower($request->title);
@@ -182,6 +183,7 @@ class ProductController extends Controller
             $shopProduct->about = $request->about;
             $shopProduct->p_status = $request->p_status;
             $shopProduct->is_featured = $request->is_featured;
+            $shopProduct->new_arrival = $request->new_arrival;
             $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $shopProduct->is_publish = $request->status;
 
