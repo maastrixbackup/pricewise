@@ -20,4 +20,14 @@ class ShopProduct extends Model
     {
         return $this->belongsTo(ProductBrand::class, 'brand_id', 'id');
     }
+
+    public function colorDetails()
+    {
+        return $this->belongsTo(ProductColor::class, 'color_id', 'id');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
 }
