@@ -9,10 +9,10 @@ use App\Models\ProductCategory;
 use App\Models\ProductColor;
 use App\Models\ProductImage;
 use App\Models\ProductPromotion;
+use App\Models\ProductRating;
 use App\Models\ShopProduct;
 use App\Models\ShopSetting;
 use Brian2694\Toastr\Facades\Toastr;
-use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -97,7 +97,7 @@ class ProductController extends Controller
                 DB::commit();
                 return redirect()->back()->with(Toastr::success('Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
@@ -122,19 +122,36 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+
+        // $id1 = encrypt($id);
+        // dd($id1);
+        // $id1 = decrypt($id2);
         $objBrand = ProductBrand::all();
         $objCategory = ProductCategory::all();
         $objColor = ProductColor::all();
         $objImages = ProductImage::where('product_id', $id)->get();
-
-        // $objImages = $objImages->map(function ($img) {
-        //     $img->image = asset('storage/images/shops/' . $img->image);
-        //     return $img;
-        // });
-
         $objProduct = ShopProduct::find($id);
-        // dd($objProduct->specification);
-        return view('admin.products.edit', compact('objProduct', 'objBrand', 'objCategory', 'objColor', 'objImages'));
+
+        $rating = ProductRating::where('product_id', $id)->get();
+        $review = $rating->count();
+        $rate = 0.0;
+
+        if ($review > 0) {
+            $totalRating = $rating->sum('rating');
+            $rate = $totalRating / $review;
+        }
+
+        $ratingCount  = [
+
+            '5 Star' => $rating->where('rating', 5)->count(),
+            '4 Star' => $rating->where('rating', 4)->count(),
+            '3 Star' => $rating->where('rating', 3)->count(),
+            '2 Star' => $rating->where('rating', 2)->count(),
+            '1 Star' => $rating->where('rating', 1)->count(),
+        ];
+
+
+        return view('admin.products.edit', compact('objProduct', 'objBrand', 'objCategory', 'objColor', 'objImages', 'ratingCount'));
     }
 
     /**
@@ -149,8 +166,6 @@ class ProductController extends Controller
         $request->validate([
             'title' => 'required'
         ]);
-        // $id2 = encrypt($id);
-        // $id1 = decrypt($id2);
 
         // Convert to lowercase
         $slug = strtolower($request->title);
@@ -191,7 +206,7 @@ class ProductController extends Controller
                 DB::commit();
                 return redirect()->route('admin.products.index')->with(Toastr::success('Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
@@ -363,6 +378,34 @@ class ProductController extends Controller
 
         $product = json_decode($sProduct->specification, true);
         return response()->json(["status" => true, "product" => $product, "pid" => $request->id, 'message' => 'Specification Deleted']);
+    }
+
+    public function update_new_arrival(Request $request)
+    {
+        $newArrival = ShopProduct::find($request->id);
+
+        if ($newArrival) {
+            $key = $request->key;
+
+            if ($newArrival->new_arrival == 1) {
+                $newArrival->new_arrival = null;
+            } else {
+                $newArrival->new_arrival = 1;
+            }
+
+            $newArrival->save();
+
+            return response()->json([
+                "status" => true,
+                "product" => $newArrival,
+                "message" => 'New Arrival Status Updated'
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => 'Product not found'
+            ], 404);
+        }
     }
 
     /**
@@ -1005,5 +1048,99 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
+    }
+
+    public function ratingsView(Request $request)
+    {
+        $ratings = ProductRating::with('productDetails', 'userDetails')->get();
+        return view('admin.products.ratings', compact('ratings'));
+    }
+
+    public function viewRatings(Request $request)
+    {
+        $id = $request->id;
+        $rating = ProductRating::where('product_id', $id)->get();
+        $reviewCount = $rating->count();
+        $averageRating = 0.0;
+
+        if ($reviewCount > 0) {
+            $totalRating = $rating->sum('rating');
+            $averageRating = $totalRating / $reviewCount;
+
+            $averageRating = round($averageRating, 1); // This will round it to 3.6
+        }
+
+        $ratingCount = [
+            '5 Star' => $rating->where('rating', 5)->count(),
+            '4 Star' => $rating->where('rating', 4)->count(),
+            '3 Star' => $rating->where('rating', 3)->count(),
+            '2 Star' => $rating->where('rating', 2)->count(),
+            '1 Star' => $rating->where('rating', 1)->count(),
+        ];
+
+        $totalRatings = array_sum($ratingCount);
+
+        $rateData = '';  // Initialize an empty string to hold the HTML output
+
+        foreach ($ratingCount as $key => $count) {
+            $percentage = $totalRatings > 0 ? ($count / $totalRatings) * 100 : 0;
+            $rateData .= '<tr class="rating-bar">
+                            <td style="width: 10%;">' . $key . '</td>
+                            <td style="width: 80%;">
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar" role="progressbar"
+                                        aria-valuenow="' . round($percentage) . '" aria-valuemin="0"
+                                        aria-valuemax="100"
+                                        style="width: ' . round($percentage) . '%; background-color: orange;">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 10%;">(' . $count . ')</td>
+                        </tr>';
+        }
+
+        return response()->json([
+            'success' => true,
+            'averageRating' => $averageRating,
+            'totalRatings' => $totalRatings,
+            'totalReview' => $reviewCount,
+            'rateData' => $rateData,
+            'message' => 'Showing..'
+        ]);
+    }
+
+    public function reviewDetails(Request $request)
+    {
+        // Retrieve the single ProductRating record with related user and product details
+        $reviewDetails = ProductRating::with('userDetails', 'productDetails')->find($request->id);
+
+        // Check if the record exists
+        if (!$reviewDetails) {
+            return response()->json(['error' => 'Review not found'], 404);
+        }
+
+        // Transform the data to the desired format
+        $reviewDetails = [
+            'id' => $reviewDetails->id,
+            'rating' => $reviewDetails->rating,
+            'review' => $reviewDetails->review,
+            'product' => [
+                'id' => $reviewDetails->productDetails->id,
+                'title' => $reviewDetails->productDetails->title,
+                'sku' => $reviewDetails->productDetails->sku,
+                'size' => $reviewDetails->productDetails->size,
+                'actual_price' => $reviewDetails->productDetails->actual_price,
+                'sell_price' => $reviewDetails->productDetails->sell_price,
+            ],
+            'user' =>[
+                'id' => $reviewDetails->userDetails->id,
+                'name' => $reviewDetails->userDetails->name,
+                'email' => $reviewDetails->userDetails->email,
+                'mobile' => $reviewDetails->userDetails->mobile,
+                'photo' => asset('storage/images/customers/' . $reviewDetails->userDetails->photo)
+            ], 
+        ];
+
+        return response()->json($reviewDetails);
     }
 }
