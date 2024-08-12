@@ -42,8 +42,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/dropzone.css') }}" />
     <link href="{{ asset('assets/css/plugins/cropper.css') }}" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <!-- SweetAlert -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style type="text/css">
         .image_area:hover .overlay {
             height: 50%;
@@ -93,28 +91,6 @@
             100% {
                 opacity: 1.0;
             }
-        }
-
-
-        .rating-bars {
-            width: 100%;
-        }
-
-        .rating-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .rating-bar .bar {
-            height: 10px;
-            margin-left: 10px;
-            margin-right: 10px;
-            background-color: orange;
-        }
-
-        .rates {
-            color: orange;
         }
     </style>
 

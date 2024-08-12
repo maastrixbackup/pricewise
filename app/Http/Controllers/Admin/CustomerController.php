@@ -47,7 +47,7 @@ class CustomerController extends Controller
     public function create()
     {
         $country = Country::all();
-        return view('admin.customers.add', compact('country'));
+        return view('admin.customers.add',compact('country'));
     }
 
     /**
@@ -66,26 +66,31 @@ class CustomerController extends Controller
         $objUser->country =  $request->country;
         $objUser->status =  $request->status;
         $objUser->password = Hash::make('password');
+        // Extract base64 encoded image data and decode it
+        $croppedImage = $request->cropped_image;
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
+        // Generate a unique file name for the image
+        $imageName = 'customer_' . time() . '.png';
 
-        if ($request->image) {
-            // Handle the image file upload
-            $filename = 'customer_' . time() . '.' . $request->image->getClientOriginalExtension();
-            $request->image->move(public_path('storage/images/customers/'), $filename);
-        }
-        // Save the filename in the database
-        $objUser->photo = $filename ?? '';
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/customers';
 
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
 
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+        Storage::put($filePath, $imgData);
+
+        // Set the image file name for the provider
+        $objUser->photo = $imageName;
         if ($objUser->save()) {
-            return redirect()->route('admin.customers.index')->with(Toastr::success('Customer Added Successfully', '', ["positionClass" => "toast-top-right"]));
-            // Toastr::success('Customer Added Successfully', '', ["positionClass" => "toast-top-right"]);
-            // return response()->json(["status" => true, "redirect_location" => route("admin.customers.index")]);
+            Toastr::success('Customer Added Successfully', '', ["positionClass" => "toast-top-right"]);
+            return response()->json(["status" => true, "redirect_location" => route("admin.customers.index")]);
         } else {
-            return redirect()->back()->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
-
-            // $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            // return response()->json(["status" => false, 'message' => $message]);
+            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
+            return response()->json(["status" => false, 'message' => $message]);
         }
     }
 
@@ -108,9 +113,9 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $objUser = User::find($id);
+        $objUser= User::find($id);
         $country = Country::all();
-        return view('admin.customers.edit', compact('objUser', 'country'));
+        return view('admin.customers.edit', compact('objUser','country'));
     }
 
     /**
@@ -122,41 +127,50 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $objUser = User::where('id', $id)->first();
+        $objUser = User::where('id',$id)->first();
         $objUser->name = $request->name;
         $objUser->email = $request->email;
         $objUser->mobile =  $request->mobile;
         $objUser->address =  $request->address;
         $objUser->country =  $request->country;
         $objUser->status =  $request->status;
+        //dd($request->country);
+        if ($request->has('cropped_image')) {
+        // Access base64 encoded image data directly from the request
+        $croppedImage = $request->cropped_image;
 
-        if ($request->image) {
-            // Handle the image file upload
-            $filename = 'customer_' . time() . '.' . $request->image->getClientOriginalExtension();
-            $request->image->move(public_path('storage/images/customers/'), $filename);
+        // Extract base64 encoded image data and decode it
+        $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
 
-            // Check if the user has an existing image
-            if (!empty($objUser->photo)) {
-                $existingFilePath = public_path('storage/images/customers/') . $objUser->photo;
-                if (file_exists($existingFilePath)) {
-                    // Delete the file if it exists
-                    unlink($existingFilePath);
-                }
-            }
+        // Generate a unique file name for the image
+        $imageName = 'customer_' . time() . '.png';
+        //dd($imgData);
+        // Specify the destination directory where the image will be saved
+        $destinationDirectory = 'public/images/customers';
+
+        // Create the directory if it doesn't exist
+        Storage::makeDirectory($destinationDirectory);
+
+        // Save the image to the server using Laravel's file upload method
+        $filePath = $destinationDirectory . '/' . $imageName;
+
+        // Delete the old image if it exists
+        if ($objUser->photo) {
+            Storage::delete($destinationDirectory . '/' . $objUser->photo);
         }
-        // Save the filename in the database
-        $objUser->photo = $filename ?? $objUser->photo;
 
+        // Save the new image
+        Storage::put($filePath, $imgData);
 
+        // Set the image file name for the provider
+        $objUser->photo = $imageName;
+        }
         if ($objUser->save()) {
-            return redirect()->route('admin.customers.index')->with(Toastr::success('Customer Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-
-            // return response()->json(["status" => true, "redirect_location" => route("admin.customers.index")]);
+            Toastr::success('Customer Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+            return response()->json(["status" => true, "redirect_location" => route("admin.customers.index")]);
         } else {
-            return redirect()->back()->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
-
-            // $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            // return response()->json(["status" => false, 'message' => $message]);
+            $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
+            return response()->json(["status" => false, 'message' => $message]);
         }
     }
 
@@ -173,7 +187,7 @@ class CustomerController extends Controller
         try {
             User::find($id)->delete();
             return back()->with(Toastr::error(__('Customer deleted successfully!')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error_msg = Toastr::error(__('There is an error! Please try later!'));
             return redirect()->route('admin.customers.index')->with($error_msg);
         }
@@ -181,13 +195,13 @@ class CustomerController extends Controller
 
     public function pw_generate($id)
     {
-        $objUser = User::find($id);
+        $objUser= User::find($id);
         return view('admin.customers.pw_generate', compact('objUser'));
     }
 
     public function pw_update(Request $request, $id)
     {
-        $objUser = User::where('id', $id)->first();
+        $objUser = User::where('id',$id)->first();
         $objUser->password =  Hash::make($request->password);
         if ($objUser->save()) {
 
@@ -195,7 +209,7 @@ class CustomerController extends Controller
 
             $email = $objUser->email;
             $body = [
-                'user' =>  $objUser,
+                'user'=>  $objUser,
                 'password' => $request->password
             ];
 
@@ -214,12 +228,12 @@ class CustomerController extends Controller
 
     public function statusChange(Request $request)
     {
-        $objUser = User::where('id', $request->id)->first();
-        if ($objUser->status == 'Rejected') {
-            $objUser->status = 'Approved';
-        } elseif ($objUser->status == 'Approved') {
+        $objUser = User::where('id',$request->id)->first();
+        if($objUser->status == 'Rejected'){
+        $objUser->status = 'Approved';
+        }elseif($objUser->status == 'Approved'){
             $objUser->status = 'Rejected';
-        } else {
+        }else{
             $objUser->status = $request->approve ? 'Approved' : 'Rejected';
         }
         if ($objUser->save()) {
@@ -232,13 +246,13 @@ class CustomerController extends Controller
 
     public function approve()
     {
-        $objUsers = User::where('status', 'Approved')->latest()->get();
+        $objUsers = User::where('status','Approved')->latest()->get();
         return view('admin.customers.approve_customers', compact('objUsers'));
     }
 
     public function reject()
     {
-        $objUsers = User::where('status', 'Rejected')->latest()->get();
+        $objUsers = User::where('status','Rejected')->latest()->get();
         return view('admin.customers.reject_customers', compact('objUsers'));
     }
 }

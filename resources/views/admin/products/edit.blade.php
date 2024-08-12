@@ -16,8 +16,6 @@
             </nav>
         </div>
     </div>
-    <!--end breadcrumb-->
-
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs nav-success" role="tablist">
@@ -34,8 +32,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#internet" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="fa fa-text-width font-18 me-1" aria-hidden="true"></i>
-
+                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                             </div>
                             <div class="tab-title">Product Description</div>
                         </div>
@@ -45,7 +42,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#tv" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="fa fa-list-ul font-18 me-1" aria-hidden="true"></i>
+                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                             </div>
                             <div class="tab-title">Specification</div>
                         </div>
@@ -55,24 +52,13 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#serviceInfo" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="fa fa-file-image-o font-18 me-1" aria-hidden="true"></i>
+                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                             </div>
                             <div class="tab-title">Product Images</div>
                         </div>
                     </a>
                 </li>
-
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#productRating" role="tab" aria-selected="false">
-                        <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="fa fa-star-o font-18 me-1" aria-hidden="true"></i>
-                            </div>
-                            <div class="tab-title">Product Ratings</div>
-                        </div>
-                    </a>
-                </li>
             </ul>
-
             <div class="tab-content py-3">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
                     <div class="row">
@@ -249,8 +235,7 @@
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" name="new_arrival"
                                                         @if ($objProduct->new_arrival == 1) checked @endif value="1">
-                                                    <label class="form-check-label" for="flexCheckDefault">New
-                                                        Arrival</label>
+                                                    <label class="form-check-label" for="flexCheckDefault">New Arrival</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -377,6 +362,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="tv" role="tabpanel">
+
                     <form id="tvForm" method="post"
                         action="{{ route('admin.update_product_features', $objProduct->id) }}"
                         enctype="multipart/form-data">
@@ -476,6 +462,7 @@
 
                 </div>
 
+
                 <div class="tab-pane fade" id="serviceInfo" role="tabpanel">
                     <form id="infoForm" method="post"
                         action="{{ route('admin.add_product_images', $objProduct->id) }}" enctype="multipart/form-data">
@@ -491,16 +478,15 @@
                                     @if (!$objImages->isEmpty())
                                         <div class="row" id="imgData">
                                             @foreach ($objImages as $image)
-                                                <div class="col-sm-3 mb-3" id="imdDiv_{{ $image->id }}">
+                                                <div class="col-sm-3 mb-3">
                                                     <div class="card" style="border: 1px solid gray;">
                                                         <span style="top: -5px;position: absolute;right: 0;"><a
-                                                                href="javascript:void(0);" id="img_{{ $image->id }}"
+                                                                href="javascript:void(0);"
                                                                 onclick="deleteImage('{{ $image->id }}', '{{ $objProduct->id }}')"><i
                                                                     class="fa fa-times-circle"
                                                                     aria-hidden="true"></i></a></span>
                                                         <img src="{{ asset('storage/images/shops/' . $image->image) }}"
-                                                            class="img-fluid" width="200" height="200"
-                                                            style="height: 86px">
+                                                            class="img-fluid" width="200" alt="">
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -538,44 +524,10 @@
                     </form>
                 </div>
 
-
-                <div class="tab-pane fade" id="productRating" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-10 mx-auto">
-                            <div class="card">
-                                <div class="card-body">
-                                    @php
-                                        $totalRatings = array_sum($ratingCount);
-                                    @endphp
-                                    <table class="rating-bars" style="width: 100%;">
-                                        @foreach ($ratingCount as $star => $count)
-                                            @php
-                                                $percentage = $totalRatings > 0 ? ($count / $totalRatings) * 100 : 0;
-                                            @endphp
-                                            <tr class="rating-bar">
-                                                <td style="width: 10%;">{{ $star }}</td>
-                                                <td style="width: 80%;">
-                                                    <div class="progress" style="height: 10px;">
-                                                        <div class="progress-bar" role="progressbar"
-                                                            aria-valuenow="{{ round($percentage) }}" aria-valuemin="0"
-                                                            aria-valuemax="100"
-                                                            style="width: {{ round($percentage) }}%; background-color: orange;">
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 10%;">({{ $count }})</td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
+    <!--end breadcrumb-->
 
 @endsection
 @push('scripts')
@@ -620,42 +572,14 @@
                             console.log(data);
                             // return false;
 
-                            var toastMixin = Swal.mixin({
-                                toast: true,
-                                icon: 'success',
-                                title: 'General Title',
-                                animation: false,
-                                position: 'top-right',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            });
+
                             if (data.status) {
-                                toastr.error(data.message.message, '');
-                                $('#imdDiv_' + id).remove();
-                                // toastMixin.fire({
-                                //     animation: true,
-                                //     title: data.message.message
-                                // });
+                                location.reload();
                             } else {
-                                toastr.error(data.message.message, '');
-                                // toastMixin.fire({
-                                //     icon: 'error',
-                                //     animation: true,
-                                //     title: data.message.message
-                                // });
+                                toastr.error(data.message.message, 'Already Exists!');
                             }
                         },
                         error: function(e) {
-                            // toastMixin.fire({
-                            //     icon: 'error',
-                            //     animation: true,
-                            //     title: 'Something went wrong. Please try again later!'
-                            // });
                             toastr.error('Something went wrong. Please try again later!', '');
                         }
                     });
@@ -690,7 +614,6 @@
                             console.log(data.status);
 
                             if (data.status) {
-                                toastr.success(data.message, '');
                                 $('#rData').html('');
                                 $.each(data.product, function(key, val) {
                                     var tableRows = '';
