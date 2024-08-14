@@ -27,8 +27,11 @@ class ProductController extends Controller
     public function index()
     {
         $shopProducts = ShopProduct::with('categoryDetails', 'brandDetails')->get();
+        $objBrand = ProductBrand::latest()->get();
+        $objColor  = ProductColor::latest()->get();
+        $objCategory  = ProductCategory::latest()->get();
         // dd($shopProducts);
-        return view('admin.products.index', compact('shopProducts'));
+        return view('admin.products.index', compact('shopProducts', 'objBrand', 'objColor', 'objCategory'));
     }
 
     /**
@@ -92,6 +95,15 @@ class ProductController extends Controller
             $shopProduct->new_arrival = $request->new_arrival;
             $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $shopProduct->is_publish = $request->status;
+
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'banner_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/shops/'), $filename);
+            }
+            // Save the filename in the database
+            $shopProduct->banner_image = $filename ?? '';
 
             if ($shopProduct->save()) {
                 DB::commit();
@@ -201,6 +213,25 @@ class ProductController extends Controller
             $shopProduct->new_arrival = $request->new_arrival;
             $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $shopProduct->is_publish = $request->status;
+
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'banner_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/shops/'), $filename);
+
+                // Check if the dealProduct has an existing image
+                if (!empty($shopProduct->banner_image)) {
+                    $existingFilePath = public_path('storage/images/shops/') . $shopProduct->banner_image;
+                    if (file_exists($existingFilePath)) {
+                        // Delete the file if it exists
+                        unlink($existingFilePath);
+                    }
+                }
+            }
+
+            // Save the filename in the database
+            $shopProduct->banner_image = $filename ?? $shopProduct->banner_image;
 
             if ($shopProduct->save()) {
                 DB::commit();
@@ -1132,15 +1163,91 @@ class ProductController extends Controller
                 'actual_price' => $reviewDetails->productDetails->actual_price,
                 'sell_price' => $reviewDetails->productDetails->sell_price,
             ],
-            'user' =>[
+            'user' => [
                 'id' => $reviewDetails->userDetails->id,
                 'name' => $reviewDetails->userDetails->name,
                 'email' => $reviewDetails->userDetails->email,
                 'mobile' => $reviewDetails->userDetails->mobile,
                 'photo' => asset('storage/images/customers/' . $reviewDetails->userDetails->photo)
-            ], 
+            ],
         ];
 
         return response()->json($reviewDetails);
+    }
+
+    public function duplicateProduct(Request $request)
+    {
+        $objBrand = ProductBrand::latest()->get();
+        $objColor = ProductColor::latest()->get();
+        $objCategory = ProductCategory::latest()->get();
+        $id = $request->product_id;
+        $objProduct = ShopProduct::find($id);
+
+        $productData = view('admin.partials.product-form', compact('objBrand', 'objColor', 'objCategory', 'objProduct'))->render();
+
+        return response()->json(['success' => true, 'html' => $productData], 200);
+    }
+
+    public function storeDuplicateProduct(Request $request)
+    {
+        if ($request->has('sku')) {
+            $product = ShopProduct::where('sku', $request->input('sku'))->first();
+            if ($product) { // Check if $product is not null
+                return redirect()->back()->with(Toastr::error('Product with Same SKU Already exists', '', ["positionClass" => "toast-top-right"]));
+            }
+        }
+
+        // dd($request->all());
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
+        DB::beginTransaction();
+        try {
+            $shopProduct = new ShopProduct();
+            $shopProduct->title = trim($request->title);
+            $shopProduct->slug = $slug;
+            $shopProduct->model = $request->model;
+            $shopProduct->sku = $request->sku;
+            $shopProduct->size = $request->size;
+            $shopProduct->brand_id = $request->brand;
+            $shopProduct->category_id = $request->category;
+            $shopProduct->color_id = $request->color;
+            $shopProduct->actual_price = $request->actual_price;
+            $shopProduct->exp_delivery = $request->exp_delivery;
+            $shopProduct->sell_price = $request->selling_price;
+            $shopProduct->delivery_cost = $request->delivery_cost;
+            $shopProduct->qty = $request->qty;
+            $shopProduct->about = $request->about;
+            $shopProduct->p_status = $request->p_status;
+            $shopProduct->is_featured = $request->is_featured;
+            $shopProduct->new_arrival = $request->new_arrival;
+            $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $shopProduct->is_publish = $request->status;
+
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'banner_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/shops/'), $filename);
+            }
+            // Save the filename in the database
+            $shopProduct->banner_image = $filename ?? '';
+
+            if ($shopProduct->save()) {
+                DB::commit();
+                return redirect()->back()->with(Toastr::success('Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+        }
     }
 }

@@ -195,6 +195,7 @@ return array(
     'App\\Models\\PostReimbursement' => $baseDir . '/app/Models/PostReimbursement.php',
     'App\\Models\\PostRequest' => $baseDir . '/app/Models/PostRequest.php',
     'App\\Models\\ProductBrand' => $baseDir . '/app/Models/ProductBrand.php',
+    'App\\Models\\ProductCart' => $baseDir . '/app/Models/ProductCart.php',
     'App\\Models\\ProductCategory' => $baseDir . '/app/Models/ProductCategory.php',
     'App\\Models\\ProductColor' => $baseDir . '/app/Models/ProductColor.php',
     'App\\Models\\ProductImage' => $baseDir . '/app/Models/ProductImage.php',

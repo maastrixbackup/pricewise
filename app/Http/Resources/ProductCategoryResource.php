@@ -23,6 +23,7 @@ class ProductCategoryResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'image' => asset('storage/images/shops/' . $this->image),
+            'no_image' => asset('storage/images/no_image/no-image.png'),
             'brands' => $brands->map(function($brand){
                 return [
                     'id' =>$brand->id,
@@ -37,6 +38,7 @@ class ProductCategoryResource extends JsonResource
                     'slug' => $product->slug,
                     'sku' => $product->sku,
                     'color' => $product->colorDetails->title,
+                    'banner_image' => asset('storage/images/shops/' . $this->banner_image),
                     'images' => $product->images->map(function ($image) {
                         return [
                             'product_id' => $image->product_id,

@@ -30,6 +30,9 @@ class ShopProductResource extends JsonResource
             'reviews' => $this->review_count,
             'available_status' => $this->p_status,
             'product_type' => $this->product_type,
+            'path' => asset('storage/images/shops/'),
+            'banner_image' =>  $this->banner_image,
+            'no_image' => asset('storage/images/no_image/no-image.png'),
             'images' => $this->images->map(function ($image) {
                 return [
                     'product_id' => $image->product_id,

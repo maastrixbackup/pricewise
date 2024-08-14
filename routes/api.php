@@ -111,6 +111,14 @@ Route::post('business-equipment-insurance', [BusinessEquipmentController::class,
 // API on Shop Products
 Route::post('shop-products', [ShopProductController::class, 'index']);
 Route::get('product-details/{id}', [ShopProductController::class, 'productDetails']);
+Route::post('shop-filter', [ShopProductController::class, 'shopFilter']);
+
+// API on Cart
+Route::post('add-to-cart', [ShopProductController::class, 'addToCart']);
+Route::post('view-cart', [ShopProductController::class, 'viewCart']);
+Route::post('remove-cart', [ShopProductController::class, 'removeCart']);
+Route::post('add-quantity', [ShopProductController::class, 'addMoreQty']);
+Route::post('remove-quantity', [ShopProductController::class, 'removeQty']);
 
 Route::any('store-product-review', [ShopProductController::class, 'storeProductReviews']);
 Route::post('filter-reviews', [ShopProductController::class, 'filteredReviews']);

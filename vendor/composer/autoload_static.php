@@ -772,6 +772,7 @@ class ComposerStaticInit0914323516fb57700e7bf5a9bae092ed
         'App\\Models\\PostReimbursement' => __DIR__ . '/../..' . '/app/Models/PostReimbursement.php',
         'App\\Models\\PostRequest' => __DIR__ . '/../..' . '/app/Models/PostRequest.php',
         'App\\Models\\ProductBrand' => __DIR__ . '/../..' . '/app/Models/ProductBrand.php',
+        'App\\Models\\ProductCart' => __DIR__ . '/../..' . '/app/Models/ProductCart.php',
         'App\\Models\\ProductCategory' => __DIR__ . '/../..' . '/app/Models/ProductCategory.php',
         'App\\Models\\ProductColor' => __DIR__ . '/../..' . '/app/Models/ProductColor.php',
         'App\\Models\\ProductImage' => __DIR__ . '/../..' . '/app/Models/ProductImage.php',
