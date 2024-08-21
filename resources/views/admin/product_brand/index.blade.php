@@ -142,7 +142,7 @@
                             "<form class='form-inline remove-form' method='post' action='" +
                             action + "'></form>");
                         $('body').find('.remove-form').append(
-                            '<input name="_method" type="hidden" value="DELETE">');
+                            '<input name="_method" type="hidden" value="POST">');
                         $('body').find('.remove-form').append(
                             '<input name="_token" type="hidden" value="' + token + '">');
                         $('body').find('.remove-form').append(

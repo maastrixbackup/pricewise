@@ -9,10 +9,10 @@ use App\Models\ProductCategory;
 use App\Models\ProductColor;
 use App\Models\ProductImage;
 use App\Models\ProductPromotion;
+use App\Models\ProductRating;
 use App\Models\ShopProduct;
 use App\Models\ShopSetting;
 use Brian2694\Toastr\Facades\Toastr;
-use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -109,7 +109,7 @@ class ProductController extends Controller
                 DB::commit();
                 return redirect()->back()->with(Toastr::success('Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
@@ -134,19 +134,36 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+
+        // $id1 = encrypt($id);
+        // dd($id1);
+        // $id1 = decrypt($id2);
         $objBrand = ProductBrand::all();
         $objCategory = ProductCategory::all();
         $objColor = ProductColor::all();
         $objImages = ProductImage::where('product_id', $id)->get();
-
-        // $objImages = $objImages->map(function ($img) {
-        //     $img->image = asset('storage/images/shops/' . $img->image);
-        //     return $img;
-        // });
-
         $objProduct = ShopProduct::find($id);
-        // dd($objProduct->specification);
-        return view('admin.products.edit', compact('objProduct', 'objBrand', 'objCategory', 'objColor', 'objImages'));
+
+        $rating = ProductRating::where('product_id', $id)->get();
+        $review = $rating->count();
+        $rate = 0.0;
+
+        if ($review > 0) {
+            $totalRating = $rating->sum('rating');
+            $rate = $totalRating / $review;
+        }
+
+        $ratingCount  = [
+
+            '5 Star' => $rating->where('rating', 5)->count(),
+            '4 Star' => $rating->where('rating', 4)->count(),
+            '3 Star' => $rating->where('rating', 3)->count(),
+            '2 Star' => $rating->where('rating', 2)->count(),
+            '1 Star' => $rating->where('rating', 1)->count(),
+        ];
+
+
+        return view('admin.products.edit', compact('objProduct', 'objBrand', 'objCategory', 'objColor', 'objImages', 'ratingCount'));
     }
 
     /**
@@ -161,8 +178,6 @@ class ProductController extends Controller
         $request->validate([
             'title' => 'required'
         ]);
-        // $id2 = encrypt($id);
-        // $id1 = decrypt($id2);
 
         // Convert to lowercase
         $slug = strtolower($request->title);
@@ -222,7 +237,7 @@ class ProductController extends Controller
                 DB::commit();
                 return redirect()->route('admin.products.index')->with(Toastr::success('Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
@@ -264,7 +279,7 @@ class ProductController extends Controller
     public function delete_product_images(Request $request)
     {
         $productImage = ProductImage::where('id', $request->id)->first();
-
+        // return response()->json($productImage);
         if ($productImage) {
             // Check if the productImage has an existing image
             if (!empty($productImage->image)) {
@@ -468,6 +483,34 @@ class ProductController extends Controller
 
         $product = json_decode($sProduct->specification, true);
         return response()->json(["status" => true, "product" => $product, "pid" => $request->id, 'message' => 'Specification Deleted']);
+    }
+
+    public function update_new_arrival(Request $request)
+    {
+        $newArrival = ShopProduct::find($request->id);
+
+        if ($newArrival) {
+            $key = $request->key;
+
+            if ($newArrival->new_arrival == 1) {
+                $newArrival->new_arrival = null;
+            } else {
+                $newArrival->new_arrival = 1;
+            }
+
+            $newArrival->save();
+
+            return response()->json([
+                "status" => true,
+                "product" => $newArrival,
+                "message" => 'New Arrival Status Updated'
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => 'Product not found'
+            ], 404);
+        }
     }
 
     /**

@@ -86,7 +86,7 @@ class ShopProductController extends Controller
         });
 
         // Prepare product category data
-        $productCategory = ProductCategory::orderBy('id', 'asc')->get();
+        $productCategory = ProductCategory::orderBy('id', 'asc')->where('status', 'active')->get();
         $filteredCat = $productCategory->map(function ($category) use ($request) {
             return (new ProductCategoryResource($category))->toArray($request);
         });
@@ -193,7 +193,7 @@ class ShopProductController extends Controller
 
         // $id = encrypt($id);
         // $id = decrypt($id);
-        $product = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->where('slug',$slug)->first();
+        $product = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->where('slug', $slug)->first();
 
         $similarProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->take(10)->get();
 

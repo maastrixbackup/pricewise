@@ -33,7 +33,7 @@
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Title<sup class="text-danger">*</sup></label>
                             <div class="">
-                                <input type="text" class="form-control" name="title" value="{{ old('title') }}"
+                                <input type="text" class="form-control" name="title" id="tt" value="{{ old('title') }}"
                                     placeholder="Title">
                                 @error('title')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
@@ -58,13 +58,13 @@
                             <div class="">
                                 <label for="upload_image">
                                     <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100" alt="Select image" />
-        
+
                                     <div class="overlay">
                                         <div>Click to Change Image</div>
                                     </div>
                                     <input type="file" name="icon" class="image" id="upload_image" style="display:none" />
                                     <input type="hidden" name="cropped_image" id="cropped_image">
-        
+
                                 </label>
                                 @error('icon')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
@@ -88,7 +88,7 @@
                                 @enderror
                             </div>
                         </div>
-                      
+
                         <div class="row mb-3">
                             <label for="input_type" class=" col-form-label">Products<sup class="text-danger">*</sup></label>
                             <div class="">
@@ -157,7 +157,7 @@
                     },
                     success: function(response) {
                         choices.destroy();
-                        
+
                         var products = response;
                         var productDropdown = $('#product');
                         productDropdown.empty(); // Empty the dropdown first
@@ -183,6 +183,125 @@
 
             // Initialize Choices library initially
             initializeChoices();
+        });
+        tinymce.init({
+            selector: '#tt',
+            license_key: 'gpl',
+            plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            toolbar_mode: 'floating',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code',
+            codesample_languages: [{
+                    text: 'HTML/XML',
+                    value: 'markup'
+                },
+                {
+                    text: 'JavaScript',
+                    value: 'javascript'
+                },
+                {
+                    text: 'CSS',
+                    value: 'css'
+                },
+                {
+                    text: 'PHP',
+                    value: 'php'
+                },
+                {
+                    text: 'Ruby',
+                    value: 'ruby'
+                },
+                {
+                    text: 'Python',
+                    value: 'python'
+                },
+                {
+                    text: 'Java',
+                    value: 'java'
+                },
+                {
+                    text: 'C',
+                    value: 'c'
+                },
+                {
+                    text: 'C#',
+                    value: 'csharp'
+                },
+                {
+                    text: 'C++',
+                    value: 'cpp'
+                }
+            ],
+
+            setup: function(editor) {
+                const maxChars = 50; // Set your character limit here
+
+                // Create a div element to display the character count
+                const charCountSpan = document.createElement('span');
+                charCountSpan.id = 'charCount';
+                charCountSpan.style.display = 'block';
+                charCountSpan.style.textAlign = 'right';
+                charCountSpan.style.marginTop = '5px';
+                charCountSpan.textContent = `Characters: 0/${maxChars}`;
+                editor.on('init', function() {
+                    editor.getContainer().appendChild(charCountSpan);
+                });
+
+                function updateCharCount() {
+                    const content = editor.getContent({
+                        format: 'text'
+                    });
+                    const charCount = content.length;
+                    charCountSpan.textContent = `Characters: ${charCount}/${maxChars}`;
+                }
+
+                editor.on('input', function() {
+                    const content = editor.getContent({
+                        format: 'text'
+                    });
+                    if (content.length > maxChars) {
+                        editor.setContent(content.substring(0, maxChars));
+                    }
+                    updateCharCount();
+                });
+
+                editor.on('keydown', function(e) {
+                    const content = editor.getContent({
+                        format: 'text'
+                    });
+                    if (content.length >= maxChars && e.key !== 'Backspace' && e.key !== 'Delete') {
+                        e.preventDefault();
+                    }
+                });
+
+                editor.on('init', function() {
+                    updateCharCount(); // Initialize the character count display
+                });
+
+            },
+
+            file_picker_callback(callback, value, meta) {
+                let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
+                    'body')[0].clientWidth
+                let y = window.innerHeight || document.documentElement.clientHeight || document
+                    .getElementsByTagName('body')[0].clientHeight
+
+                tinymce.activeEditor.windowManager.openUrl({
+                    url: '/file-manager/tinymce5',
+                    title: 'Laravel File manager',
+                    width: x * 0.2,
+                    height: y * 0.2,
+                    onMessage: (api, message) => {
+                        callback(message.content, {
+                            text: message.text
+                        })
+                    }
+                })
+            }
+
+
         });
     </script>
 @endpush
