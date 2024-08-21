@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\ProductRating;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+
 class ProductDetailsResource extends JsonResource
 {
     /**

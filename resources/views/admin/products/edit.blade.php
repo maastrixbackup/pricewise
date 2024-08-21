@@ -16,6 +16,8 @@
             </nav>
         </div>
     </div>
+    <!--end breadcrumb-->
+
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs nav-success" role="tablist">
@@ -32,7 +34,8 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#internet" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
+                            <div class="tab-icon"><i class="fa fa-text-width font-18 me-1" aria-hidden="true"></i>
+
                             </div>
                             <div class="tab-title">Product Description</div>
                         </div>
@@ -42,7 +45,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#tv" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
+                            <div class="tab-icon"><i class="fa fa-list-ul font-18 me-1" aria-hidden="true"></i>
                             </div>
                             <div class="tab-title">Specification</div>
                         </div>
@@ -52,7 +55,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#serviceInfo" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
+                            <div class="tab-icon"><i class="fa fa-file-image-o font-18 me-1" aria-hidden="true"></i>
                             </div>
                             <div class="tab-title">Product Images</div>
                         </div>
@@ -79,6 +82,7 @@
                     </a>
                 </li>
             </ul>
+
             <div class="tab-content py-3">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
                     <div class="row">
@@ -255,7 +259,8 @@
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" name="new_arrival"
                                                         @if ($objProduct->new_arrival == 1) checked @endif value="1">
-                                                    <label class="form-check-label" for="flexCheckDefault">New Arrival</label>
+                                                    <label class="form-check-label" for="flexCheckDefault">New
+                                                        Arrival</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -403,7 +408,6 @@
                 </div>
 
                 <div class="tab-pane fade" id="tv" role="tabpanel">
-
                     <form id="tvForm" method="post"
                         action="{{ route('admin.update_product_features', $objProduct->id) }}"
                         enctype="multipart/form-data">
@@ -503,7 +507,6 @@
 
                 </div>
 
-
                 <div class="tab-pane fade" id="serviceInfo" role="tabpanel">
                     <form id="infoForm" method="post"
                         action="{{ route('admin.add_product_images', $objProduct->id) }}" enctype="multipart/form-data">
@@ -519,15 +522,16 @@
                                     @if (!$objImages->isEmpty())
                                         <div class="row" id="imgData">
                                             @foreach ($objImages as $image)
-                                                <div class="col-sm-3 mb-3">
+                                                <div class="col-sm-3 mb-3" id="imdDiv_{{ $image->id }}">
                                                     <div class="card" style="border: 1px solid gray;">
                                                         <span style="top: -5px;position: absolute;right: 0;"><a
-                                                                href="javascript:void(0);"
+                                                                href="javascript:void(0);" id="img_{{ $image->id }}"
                                                                 onclick="deleteImage('{{ $image->id }}', '{{ $objProduct->id }}')"><i
                                                                     class="fa fa-times-circle"
                                                                     aria-hidden="true"></i></a></span>
                                                         <img src="{{ asset('storage/images/shops/' . $image->image) }}"
-                                                            class="img-fluid" width="200" alt="">
+                                                            class="img-fluid" width="200" height="200"
+                                                            style="height: 86px">
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -556,7 +560,7 @@
                             <label class="col-sm-3 col-form-label"></label>
                             <div class="col-sm-8">
                                 <div class="d-md-flex d-grid align-items-center gap-3">
-                                    <button type="submit" id="submitBtn4" class="btn btn-primary px-4"
+                                    <button type="submit" id="submitBtn" class="btn btn-primary px-4"
                                         value="Save">Save</button>
                                     <button type="reset" class="btn btn-light px-4">Reset</button>
                                 </div>
@@ -663,7 +667,6 @@
             </div>
         </div>
     </div>
-    <!--end breadcrumb-->
 
 @endsection
 @push('scripts')
@@ -705,14 +708,14 @@
                             product_id: p_id
                         },
                         success: function(data) {
-                            console.log(data);
+                            // console.log(data);
                             // return false;
 
-
                             if (data.status) {
-                                location.reload();
+                                toastr.error(data.message.message, '');
+                                $('#imdDiv_' + id).remove();
                             } else {
-                                toastr.error(data.message.message, 'Already Exists!');
+                                toastr.error(data.message.message, '');
                             }
                         },
                         error: function(e) {
@@ -750,6 +753,7 @@
                             console.log(data.status);
 
                             if (data.status) {
+                                toastr.success(data.message, '');
                                 $('#rData').html('');
                                 $.each(data.product, function(key, val) {
                                     var tableRows = '';
@@ -936,6 +940,7 @@
 
         tinymce.init({
             selector: '#description',
+            license_key: 'gpl',
             plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
             toolbar_mode: 'floating',
             tinycomments_mode: 'embedded',

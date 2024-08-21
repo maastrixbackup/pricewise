@@ -49,7 +49,7 @@
                                     @foreach ($dealsProduct as $record)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $record->title ?? '' }}</td>
+                                            <td>{!! $record->title ?? '' !!}</td>
                                             <td>{{ date('d-m-Y h:i:s A', strtotime($record->valid_till)) }}</td>
                                             <td><img width="100"
                                                     src="{{ asset('storage/images/shops/' . $record->image) }}"

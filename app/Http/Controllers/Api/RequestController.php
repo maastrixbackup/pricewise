@@ -427,11 +427,21 @@ class RequestController extends BaseController
     public function getDealsData()
     {
         $deals = Deal::latest()->take(3)->get();
-        $deals->map(function ($deal) {
-            $deal->icon =  asset('deal_icons/' . $deal->icon);
-            $deal->categoryDetails;
-            $deal->products = json_decode($deal->products);
-            return $deal;
+        $deals = $deals->map(function ($deal) {
+            // $deal->icon =  asset('deal_icons/' . $deal->icon);
+            // $deal->categoryDetails;
+            // $deal->products = json_decode($deal->products);
+            // return $deal;
+            return [
+                'id' => $deal->id,
+                'title' => $deal->title,
+                'valid_till' => $deal->valid_till,
+                'icon' => asset('deal_icons/' . $deal->icon),
+                'category' => $deal->category,
+                'sub_category' => $deal->sub_category,
+                'products' => json_decode($deal->products, true),
+                'category_details' => $deal->categoryDetails,
+            ];
         });
         return $this->sendResponse($deals, 'Deals retrieved successfully.');
     }

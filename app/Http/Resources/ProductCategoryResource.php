@@ -6,6 +6,7 @@ use App\Models\ProductBrand;
 use App\Models\ShopProduct;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+
 class ProductCategoryResource extends JsonResource
 {
     /**

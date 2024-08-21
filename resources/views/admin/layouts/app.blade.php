@@ -265,6 +265,8 @@
     <!-- <script src="{{ asset('assets/js/app.js') }}"></script> -->
     <script src="{{ asset('assets/plugins/dropzone/dropzone.js') }}"></script>
     <script src="{{ asset('assets/plugins/cropperjs/cropper.min.js') }}"></script>
+
+    <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript">
         $(function() {
             $('#datepicker').datepicker();

@@ -120,22 +120,24 @@ Route::post('remove-cart', [ShopProductController::class, 'removeCart']);
 Route::post('add-quantity', [ShopProductController::class, 'addMoreQty']);
 Route::post('remove-quantity', [ShopProductController::class, 'removeQty']);
 
+Route::any('store-product-review', [ShopProductController::class, 'storeProductReviews']);
+Route::post('filter-reviews', [ShopProductController::class, 'filteredReviews']);
 
 //Frontend Guest
-    // SmartPhone Deals
-    Route::any('get-smart-phone-deals', [RequestController::class,'getSmartPhoneDeals']);
+// SmartPhone Deals
+Route::any('get-smart-phone-deals', [RequestController::class, 'getSmartPhoneDeals']);
 
-    // SmartPhone Deals
-    Route::any('get-search-data', [RequestController::class,'getSearchData']);
+// SmartPhone Deals
+Route::any('get-search-data', [RequestController::class, 'getSearchData']);
 //Internet TvR
-    Route::post('internet-tv', [InternetTvController::class, 'index']);
-    Route::post('internet-tv-compare', [InternetTvController::class, 'internetCompare']);
+Route::post('internet-tv', [InternetTvController::class, 'index']);
+Route::post('internet-tv-compare', [InternetTvController::class, 'internetCompare']);
 //API routs for energy
-    Route::post('energy', [EnergyController::class, 'index']);
-    Route::post('energy-compare', [EnergyController::class, 'energyCompare']);
-    Route::get('suppliers', [SettingsController::class, 'getSupliers']);
-    Route::get('house-type', [SettingsController::class, 'houseTypes']);
-    Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
+Route::post('energy', [EnergyController::class, 'index']);
+Route::post('energy-compare', [EnergyController::class, 'energyCompare']);
+Route::get('suppliers', [SettingsController::class, 'getSupliers']);
+Route::get('house-type', [SettingsController::class, 'houseTypes']);
+Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
 
 //Frontent === Auth
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -146,13 +148,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/change-password', [UserDetailController::class, 'changepassword']);
     Route::post('/reset-password', [UserDetailController::class, 'resetpassword']);
     Route::post('/email-update', [UserDetailController::class, 'emailUpdate']);
-//API route for user data
+    //API route for user data
     Route::post('get-user-data', [RequestController::class, 'getUserData']);
     Route::post('save-user-data', [RequestController::class, 'saveUserData']);
-//API route for Customer Creadential
+    //API route for Customer Creadential
     Route::post('/update-credentials', [UserDetailController::class, 'updateCredentials']);
     Route::get('/get-credentials', [UserDetailController::class, 'getCredentials']);
-//API route for user request
+    //API route for user request
     // Route::post('save-user-request', [RequestController::class, 'store']);
     Route::post('get-user-request', [RequestController::class, 'index']);
 
