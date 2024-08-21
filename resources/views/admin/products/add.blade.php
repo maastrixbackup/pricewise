@@ -218,6 +218,24 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <label for="input35" class="col-form-label">Banner Image</label>
+                            </div>
+                            <label for="upload_image" class="mb-3">
+    
+                                <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                    alt="Select image" />
+    
+                                <div class="overlay" style="cursor: pointer">
+                                    <div>Click to Change Image</div>
+                                </div>
+                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="hidden" name="cropped_image" id="cropped_image">
+    
+                            </label>
+                            @error('image')
+                                <div class="alert alert-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="">

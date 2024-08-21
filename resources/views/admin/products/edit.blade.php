@@ -58,6 +58,26 @@
                         </div>
                     </a>
                 </li>
+
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-bs-toggle="tab" href="#productRating" role="tab" aria-selected="false">
+                        <div class="d-flex align-items-center">
+                            <div class="tab-icon"><i class="fa fa-star-o font-18 me-1" aria-hidden="true"></i>
+                            </div>
+                            <div class="tab-title">Ratings</div>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-bs-toggle="tab" href="#productHighlights" role="tab" aria-selected="false">
+                        <div class="d-flex align-items-center">
+                            <div class="tab-icon"><i class="fa fa-star-o font-18 me-1" aria-hidden="true"></i>
+                            </div>
+                            <div class="tab-title"> Highlights</div>
+                        </div>
+                    </a>
+                </li>
             </ul>
             <div class="tab-content py-3">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
@@ -316,6 +336,27 @@
                                         </div>
                                     </div>
 
+                                    <div class="row mb-3">
+                                        <label for="input35" class="col-form-label">Banneer Image</label>
+                                    </div>
+                                    <label for="upload_image" class="mb-3">
+
+                                        <img src="{{ asset('storage/images/shops/' . $objProduct->banner_image) }}"
+                                            id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                            alt="Select image" />
+
+                                        <div class="overlay" style="cursor: pointer">
+                                            <div>Click to Change Image</div>
+                                        </div>
+                                        <input type="file" name="image" class="image" id="upload_image"
+                                            style="display:none" />
+                                        <input type="hidden" name="cropped_image" id="cropped_image">
+
+                                    </label>
+                                    @error('image')
+                                        <div class="alert alert-danger mt-1">{{ $message }}</div>
+                                    @enderror
+
                                     <div class="">
                                         <label class=" col-form-label"></label>
                                         <div class="d-md-flex d-grid align-items-center gap-3">
@@ -524,6 +565,101 @@
                     </form>
                 </div>
 
+
+                <div class="tab-pane fade" id="productRating" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-10 mx-auto">
+                            <div class="card">
+                                <div class="card-body">
+                                    @php
+                                        $totalRatings = array_sum($ratingCount);
+                                    @endphp
+                                    <table class="rating-bars" style="width: 100%;">
+                                        @foreach ($ratingCount as $star => $count)
+                                            @php
+                                                $percentage = $totalRatings > 0 ? ($count / $totalRatings) * 100 : 0;
+                                            @endphp
+                                            <tr class="rating-bar">
+                                                <td style="width: 10%;">{{ $star }}</td>
+                                                <td style="width: 80%;">
+                                                    <div class="progress" style="height: 10px;">
+                                                        <div class="progress-bar" role="progressbar"
+                                                            aria-valuenow="{{ round($percentage) }}" aria-valuemin="0"
+                                                            aria-valuemax="100"
+                                                            style="width: {{ round($percentage) }}%; background-color: orange;">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 10%;">({{ $count }})</td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="productHighlights" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-10 mx-auto">
+                            <div class="card">
+                                <div class="card-body">
+                                    @php
+                                        $heighlights = json_decode($objProduct->heighlights, true);
+                                        // dd($heighlights);
+                                    @endphp
+                                    <span id="hiData">
+                                        @if ($heighlights)
+                                            <table class="rating-bars table table-bordered" style="width: 100%;">
+                                                @foreach ($heighlights as $hh)
+                                                    <tr>
+                                                        <th>{{ $loop->iteration }}</th>
+                                                        <th>{{ $hh }}</th>
+                                                        <td><a href="javascript:;"class="text-danger"
+                                                                onclick="removeHighlight('{{ $hh }}', '{{ $objProduct->id }}')"><i
+                                                                    class="fa fa-trash-o" aria-hidden="true"></i></a></td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                        @endif
+                                    </span>
+                                    <form action="{{ route('admin.add_product_highlights', $objProduct->id) }}"
+                                        method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class=" mb-3">
+                                            <label for="internet_guarantee" class=" col-form-label">Highlights</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="highlight[]" required class="form-control"
+                                                    placeholder="Hightlights">
+                                                <div class="input-group-append">
+                                                    <a href="javascript:void(0);" class="btn btn-primary mx-1 AddH"><i
+                                                            class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div id="appDataH"></div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <label class="col-sm-3 col-form-label"></label>
+                                            <div class="col-sm-8">
+                                                <div class="d-md-flex d-grid align-items-center gap-3">
+                                                    <button type="submit" id="submitBtn4" class="btn btn-primary px-4"
+                                                        value="Save">Save</button>
+                                                    <button type="reset" class="btn btn-light px-4">Reset</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -653,6 +789,74 @@
 
         }
 
+
+        function removeHighlight(k, id) {
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "error",
+                showCancelButton: true,
+                dangerMode: true,
+                cancelButtonClass: '#DD6B55',
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Delete!',
+            }, function(result) {
+                if (result) {
+                    $.ajax({
+                        url: '{{ route('admin.delete_p_highlight') }}',
+                        method: "post",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            id: id,
+                            key: k
+                        },
+                        success: function(data) {
+                            // console.log(data);
+
+                            if (data.status) {
+                                toastr.success(data.message, '');
+                                // Clear existing highlights
+                                $('#hiData').html('');
+
+                                // Build the updated highlights HTML
+                                var cardHtml = `
+                                    <table class="rating-bars table table-bordered" style="width: 100%;">
+                                `;
+
+                                $.each(data.pData, function(key, val) {
+                                    cardHtml += `
+                                        <tr>
+                                            <th>${key + 1}</th>
+                                            <th>${val}</th>
+                                            <td>
+                                                <a href="javascript:;" class="text-danger"
+                                                    onclick="removeHighlight('${val}', '${id}')">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    `;
+                                });
+
+                                cardHtml += `</table>`;
+                                $('#hiData').append(cardHtml);
+                            } else {
+                                toastr.error(data.message, 'Already Exists!');
+                            }
+                        },
+                        error: function(e) {
+                            toastr.error('Something went wrong. Please try again later!', '');
+                        }
+                    });
+
+                }
+            });
+
+        }
+
         $(document).on('click', '.AddF', function() {
             var htmlData = `
                     <span class="groupData">
@@ -686,6 +890,29 @@
 
         $(document).on('click', '.removeFd', function() {
             $(this).closest('.gropuData1').remove();
+        });
+
+        $(document).on('click', '.AddH', function() {
+            var count = $('#appDataH .input-group').length;
+
+            if (count < 2) {
+                var htmlData =
+                    `<div class="input-group mb-3">
+                <input type="text" name="highlight[]" class="form-control" placeholder="Highlights">
+                <div class="input-group-append">
+                    <a href="javascript:void(0);" class="btn btn-danger mx-1 removeH">
+                        <i class="fa fa-minus-square-o" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>`;
+                $('#appDataH').append(htmlData);
+            } else {
+                alert("You can only add up to 3 highlights.");
+            }
+        });
+
+        $(document).on('click', '.removeH', function() {
+            $(this).closest('.input-group').remove();
         });
 
         $(document).on('click', '.Add', function() {
