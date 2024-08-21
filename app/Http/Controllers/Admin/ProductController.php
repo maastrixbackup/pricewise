@@ -1249,7 +1249,6 @@ class ProductController extends Controller
             $count++;
         }
 
-        // dd($slug);
         DB::beginTransaction();
         try {
             $shopProduct = new ShopProduct();
