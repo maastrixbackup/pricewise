@@ -137,6 +137,8 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::post('/delete-product-specification', 'ProductController@delete_p_specification')->name('delete_p_specification');
             Route::post('/duplicate-product', 'ProductController@duplicateProduct')->name('duplicate_product');
             Route::post('/store-product', 'ProductController@storeDuplicateProduct')->name('store_duplicate_product');
+            Route::post('/add-product-highlights/{id}', 'ProductController@storeProductHighlight')->name('add_product_highlights');
+            Route::post('/delete-product-highlight', 'ProductController@delete_p_highlight')->name('delete_p_highlight');
 
             // Product Category
             Route::prefix('product-color')->group(function () {

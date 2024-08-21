@@ -116,10 +116,11 @@
                                     <th>Sl</th>
                                     <th>Title</th>
                                     <th>Brand</th>
+                                    <th>Category</th>
                                     <th>Availability</th>
                                     <th>Product Price</th>
                                     <th>Product Type</th>
-                                    <th>New Arrival</th>
+                                    {{-- <th>Status</th> --}}
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -130,6 +131,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->title ?? '' }}</td>
                                             <td>{{ $record->brandDetails->title ?? '' }}</td>
+                                            <td>{{ $record->categoryDetails->title ?? '' }}</td>
                                             <td>
                                                 @if ($record->p_status == 1)
                                                     <span
@@ -159,19 +161,18 @@
                                                     <span class="  text-uppercase">Large Bussiness</span>
                                                 @endif
                                             </td>
-                                            <td>
-                                                {{-- <div class=" form-check-pr"> --}}
-                                                <input type="checkbox" style="width: 20px; height:20px;"
-                                                    id="a_{{ $loop->iteration }}" name="new_arrival[]"
-                                                    onclick="chArrival('{{ $record->id }}', '{{ $loop->iteration }}')"
-                                                    value="1" @if ($record->new_arrival == 1) checked @endif><label
-                                                    for="a"></label>
-                                                {{-- </div> --}}
-                                            </td>
+                                            {{-- <td>
+                                                @if ($record->is_publish == 1)
+                                                    <span
+                                                        class="badge rounded-pill text-success bg-light-success text-uppercase">Published</span>
+                                                @else
+                                                    <span
+                                                        class="badge rounded-pill text-primary bg-light-success  text-uppercase">Draft</span>
+                                                @endif
+                                            </td> --}}
                                             <td>
                                                 <div class="col d-flex col d-flex justify-content-evenly">
-                                                    <a title="Edit"
-                                                        href="{{ route('admin.products.edit', $record->id) }}"
+                                                    <a title="Edit" href="{{ route('admin.products.edit', $record->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
                                                     <a title="Delete" class="btn1 btn-outline-danger trash remove-package"

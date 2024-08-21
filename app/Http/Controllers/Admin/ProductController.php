@@ -9,10 +9,10 @@ use App\Models\ProductCategory;
 use App\Models\ProductColor;
 use App\Models\ProductImage;
 use App\Models\ProductPromotion;
-use App\Models\ProductRating;
 use App\Models\ShopProduct;
 use App\Models\ShopSetting;
 use Brian2694\Toastr\Facades\Toastr;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -109,7 +109,7 @@ class ProductController extends Controller
                 DB::commit();
                 return redirect()->back()->with(Toastr::success('Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
@@ -134,36 +134,19 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-
-        // $id1 = encrypt($id);
-        // dd($id1);
-        // $id1 = decrypt($id2);
         $objBrand = ProductBrand::all();
         $objCategory = ProductCategory::all();
         $objColor = ProductColor::all();
         $objImages = ProductImage::where('product_id', $id)->get();
+
+        // $objImages = $objImages->map(function ($img) {
+        //     $img->image = asset('storage/images/shops/' . $img->image);
+        //     return $img;
+        // });
+
         $objProduct = ShopProduct::find($id);
-
-        $rating = ProductRating::where('product_id', $id)->get();
-        $review = $rating->count();
-        $rate = 0.0;
-
-        if ($review > 0) {
-            $totalRating = $rating->sum('rating');
-            $rate = $totalRating / $review;
-        }
-
-        $ratingCount  = [
-
-            '5 Star' => $rating->where('rating', 5)->count(),
-            '4 Star' => $rating->where('rating', 4)->count(),
-            '3 Star' => $rating->where('rating', 3)->count(),
-            '2 Star' => $rating->where('rating', 2)->count(),
-            '1 Star' => $rating->where('rating', 1)->count(),
-        ];
-
-
-        return view('admin.products.edit', compact('objProduct', 'objBrand', 'objCategory', 'objColor', 'objImages', 'ratingCount'));
+        // dd($objProduct->specification);
+        return view('admin.products.edit', compact('objProduct', 'objBrand', 'objCategory', 'objColor', 'objImages'));
     }
 
     /**
@@ -178,6 +161,8 @@ class ProductController extends Controller
         $request->validate([
             'title' => 'required'
         ]);
+        // $id2 = encrypt($id);
+        // $id1 = decrypt($id2);
 
         // Convert to lowercase
         $slug = strtolower($request->title);
@@ -237,7 +222,7 @@ class ProductController extends Controller
                 DB::commit();
                 return redirect()->route('admin.products.index')->with(Toastr::success('Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
@@ -316,6 +301,80 @@ class ProductController extends Controller
                 'message' => $message
             ]);
         }
+    }
+    public function storeProductHighlight(Request $request, $id)
+    {
+        $shopP = ShopProduct::find($id);
+
+        // Decode existing highlights JSON into an array
+        $hData = json_decode($shopP->heighlights, true) ?: [];
+
+        // Get the new highlight from the request
+        $newHighlight = $request->input('highlight');
+
+        // Ensure $newHighlight is not empty
+        if (empty($newHighlight)) {
+            return redirect()->back()->with(Toastr::error('Highlight cannot be empty', '', ["positionClass" => "toast-top-right"]));
+        }
+
+        // Check if the new highlight already exists in the array
+        if (array_intersect($newHighlight, $hData)) {
+            return redirect()->back()->with(Toastr::error('Highlight already exists', '', ["positionClass" => "toast-top-right"]));
+        }
+
+        // If $hData is null (no highlights yet), initialize it as an empty array
+        if (!is_array($hData)) {
+            $hData = [];
+        }
+
+        // Check if we have less than 3 highlights
+        if (count($hData) < 3) {
+            if ($request->has('highlight')) {
+                // Get the new highlights from the request
+                $newHighlights = $request->input('highlight');
+
+                // Append the new highlights to the existing array
+                $hData = array_merge($hData, (array)$newHighlights);
+
+                // Ensure we do not exceed the maximum of 3 highlights
+                $hData = array_slice($hData, 0, 3);
+
+                // Encode highlights back to JSON and save
+                $shopP->heighlights = json_encode($hData);
+            }
+
+            if ($shopP->save()) {
+                return redirect()->back()->with(Toastr::success('Highlights Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+        } else {
+            return redirect()->back()->with(Toastr::error('You have reached Max limit 3', '', ["positionClass" => "toast-top-right"]));
+        }
+    }
+
+
+    public function delete_p_highlight(Request $request)
+    {
+        $productH = ShopProduct::find($request->id);
+
+        // Decode the highlights JSON field
+        $highlights = json_decode($productH->heighlights, true);
+
+        // Check if the highlight exists in the array and remove it
+        if (($key = array_search($request->key, $highlights)) !== false) {
+            unset($highlights[$key]);
+        }
+
+        // Re-index the array (optional, but keeps the array tidy)
+        $highlights = array_values($highlights);
+
+        // Encode the modified array back to JSON
+        $productH->heighlights = json_encode($highlights);
+
+        // Save the updated product
+        $productH->save();
+        $pData = json_decode($productH->heighlights, true);
+
+        return response()->json(['status' => true, 'message' => 'Highlight removed successfully', 'pData' => $pData]);
     }
 
     public function update_product_description(Request $request, $id)
@@ -409,34 +468,6 @@ class ProductController extends Controller
 
         $product = json_decode($sProduct->specification, true);
         return response()->json(["status" => true, "product" => $product, "pid" => $request->id, 'message' => 'Specification Deleted']);
-    }
-
-    public function update_new_arrival(Request $request)
-    {
-        $newArrival = ShopProduct::find($request->id);
-
-        if ($newArrival) {
-            $key = $request->key;
-
-            if ($newArrival->new_arrival == 1) {
-                $newArrival->new_arrival = null;
-            } else {
-                $newArrival->new_arrival = 1;
-            }
-
-            $newArrival->save();
-
-            return response()->json([
-                "status" => true,
-                "product" => $newArrival,
-                "message" => 'New Arrival Status Updated'
-            ]);
-        } else {
-            return response()->json([
-                "status" => false,
-                "message" => 'Product not found'
-            ], 404);
-        }
     }
 
     /**
@@ -1208,6 +1239,15 @@ class ProductController extends Controller
 
         // Trim hyphens from the beginning and end of the string
         $slug = trim($slug, '-');
+
+        // Check if the slug already exists in the database
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (ShopProduct::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
 
         DB::beginTransaction();
         try {

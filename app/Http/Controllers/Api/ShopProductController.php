@@ -188,12 +188,12 @@ class ShopProductController extends Controller
     }
 
 
-    public function productDetails(Request $request, $id)
+    public function productDetails(Request $request, $slug)
     {
 
         // $id = encrypt($id);
         // $id = decrypt($id);
-        $product = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->find($id);
+        $product = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->where('slug',$slug)->first();
 
         $similarProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->take(10)->get();
 
@@ -211,7 +211,7 @@ class ShopProductController extends Controller
         }
         $filteredProduct = new ProductDetailsResource($product);
 
-        $rating = ProductRating::where('product_id', $id)->get();
+        $rating = ProductRating::where('product_id', $product->id)->get();
         $ratingCount = [
             '5 Star' => $rating->where('rating', 5)->count(),
             '4 Star' => $rating->where('rating', 4)->count(),

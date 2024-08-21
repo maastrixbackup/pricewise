@@ -240,13 +240,6 @@
                          </li>
 
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.ratings') }}">
-                              <i class="nav-main-link-icon fa-solid fa-star-o" aria-hidden="true"></i>
-                                 <span class="nav-main-link-name">Ratings</span>
-                             </a>
-                         </li>
-
-                         <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.shop-settings') }}">
                                  <i class="nav-main-link-icon fa-solid fa-cogs"></i>
                                  <span class="nav-main-link-name">Shop Settings</span>

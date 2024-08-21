@@ -28,12 +28,13 @@ class ProductDetailsResource extends JsonResource
             'color_id' => $this->color_id,
             'model' => $this->model,
             'size' => $this->size,
+            'highlights' => json_decode($this->heighlights, true),
             'rating' => $this->ratings,
             'reviews' => $this->review_count,
             'banner_image' => asset('storage/images/shops/' . $this->banner_image),
             'no_image' => asset('storage/images/no_image/no-image.png'),
             'about' => $this->about,
-            // 'description' => $this->description,
+            'description' => $this->description,
             'specification' => json_decode($this->specification, true),
             'reviews_details' => $reviews->map(function ($review) {
                 return [
@@ -68,12 +69,12 @@ class ProductDetailsResource extends JsonResource
             }),
             'available_status' => $this->p_status,
             'product_type' => $this->product_type,
-            'images' => $this->images->map(function ($image) {
+            'images' => $this->images ? $this->images->map(function ($image) {
                 return [
                     'product_id' => $image->product_id,
-                    'image' =>  asset('storage/images/shops/' . $image->image)
+                    'image' => asset('storage/images/shops/' . $image->image),
                 ];
-            })->all(),
+            })->all() : [],
         ];
     }
 }

@@ -16,8 +16,6 @@
             </nav>
         </div>
     </div>
-    <!--end breadcrumb-->
-
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs nav-success" role="tablist">
@@ -34,8 +32,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#internet" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="fa fa-text-width font-18 me-1" aria-hidden="true"></i>
-
+                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                             </div>
                             <div class="tab-title">Product Description</div>
                         </div>
@@ -45,7 +42,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#tv" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="fa fa-list-ul font-18 me-1" aria-hidden="true"></i>
+                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                             </div>
                             <div class="tab-title">Specification</div>
                         </div>
@@ -55,7 +52,7 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="tab" href="#serviceInfo" role="tab" aria-selected="false">
                         <div class="d-flex align-items-center">
-                            <div class="tab-icon"><i class="fa fa-file-image-o font-18 me-1" aria-hidden="true"></i>
+                            <div class="tab-icon"><i class='bx bx-badge-check font-18 me-1'></i>
                             </div>
                             <div class="tab-title">Product Images</div>
                         </div>
@@ -67,12 +64,21 @@
                         <div class="d-flex align-items-center">
                             <div class="tab-icon"><i class="fa fa-star-o font-18 me-1" aria-hidden="true"></i>
                             </div>
-                            <div class="tab-title">Product Ratings</div>
+                            <div class="tab-title">Ratings</div>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-bs-toggle="tab" href="#productHighlights" role="tab" aria-selected="false">
+                        <div class="d-flex align-items-center">
+                            <div class="tab-icon"><i class="fa fa-star-o font-18 me-1" aria-hidden="true"></i>
+                            </div>
+                            <div class="tab-title"> Highlights</div>
                         </div>
                     </a>
                 </li>
             </ul>
-
             <div class="tab-content py-3">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
                     <div class="row">
@@ -249,8 +255,7 @@
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" name="new_arrival"
                                                         @if ($objProduct->new_arrival == 1) checked @endif value="1">
-                                                    <label class="form-check-label" for="flexCheckDefault">New
-                                                        Arrival</label>
+                                                    <label class="form-check-label" for="flexCheckDefault">New Arrival</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -398,6 +403,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="tv" role="tabpanel">
+
                     <form id="tvForm" method="post"
                         action="{{ route('admin.update_product_features', $objProduct->id) }}"
                         enctype="multipart/form-data">
@@ -497,6 +503,7 @@
 
                 </div>
 
+
                 <div class="tab-pane fade" id="serviceInfo" role="tabpanel">
                     <form id="infoForm" method="post"
                         action="{{ route('admin.add_product_images', $objProduct->id) }}" enctype="multipart/form-data">
@@ -512,16 +519,15 @@
                                     @if (!$objImages->isEmpty())
                                         <div class="row" id="imgData">
                                             @foreach ($objImages as $image)
-                                                <div class="col-sm-3 mb-3" id="imdDiv_{{ $image->id }}">
+                                                <div class="col-sm-3 mb-3">
                                                     <div class="card" style="border: 1px solid gray;">
                                                         <span style="top: -5px;position: absolute;right: 0;"><a
-                                                                href="javascript:void(0);" id="img_{{ $image->id }}"
+                                                                href="javascript:void(0);"
                                                                 onclick="deleteImage('{{ $image->id }}', '{{ $objProduct->id }}')"><i
                                                                     class="fa fa-times-circle"
                                                                     aria-hidden="true"></i></a></span>
                                                         <img src="{{ asset('storage/images/shops/' . $image->image) }}"
-                                                            class="img-fluid" width="200" height="200"
-                                                            style="height: 86px">
+                                                            class="img-fluid" width="200" alt="">
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -594,9 +600,70 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="tab-pane fade" id="productHighlights" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-10 mx-auto">
+                            <div class="card">
+                                <div class="card-body">
+                                    @php
+                                        $heighlights = json_decode($objProduct->heighlights, true);
+                                        // dd($heighlights);
+                                    @endphp
+                                    <span id="hiData">
+                                        @if ($heighlights)
+                                            <table class="rating-bars table table-bordered" style="width: 100%;">
+                                                @foreach ($heighlights as $hh)
+                                                    <tr>
+                                                        <th>{{ $loop->iteration }}</th>
+                                                        <th>{{ $hh }}</th>
+                                                        <td><a href="javascript:;"class="text-danger"
+                                                                onclick="removeHighlight('{{ $hh }}', '{{ $objProduct->id }}')"><i
+                                                                    class="fa fa-trash-o" aria-hidden="true"></i></a></td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                        @endif
+                                    </span>
+                                    <form action="{{ route('admin.add_product_highlights', $objProduct->id) }}"
+                                        method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class=" mb-3">
+                                            <label for="internet_guarantee" class=" col-form-label">Highlights</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="highlight[]" required class="form-control"
+                                                    placeholder="Hightlights">
+                                                <div class="input-group-append">
+                                                    <a href="javascript:void(0);" class="btn btn-primary mx-1 AddH"><i
+                                                            class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div id="appDataH"></div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <label class="col-sm-3 col-form-label"></label>
+                                            <div class="col-sm-8">
+                                                <div class="d-md-flex d-grid align-items-center gap-3">
+                                                    <button type="submit" id="submitBtn4" class="btn btn-primary px-4"
+                                                        value="Save">Save</button>
+                                                    <button type="reset" class="btn btn-light px-4">Reset</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <!--end breadcrumb-->
 
 @endsection
 @push('scripts')
@@ -641,42 +708,14 @@
                             console.log(data);
                             // return false;
 
-                            var toastMixin = Swal.mixin({
-                                toast: true,
-                                icon: 'success',
-                                title: 'General Title',
-                                animation: false,
-                                position: 'top-right',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            });
+
                             if (data.status) {
-                                toastr.error(data.message.message, '');
-                                $('#imdDiv_' + id).remove();
-                                // toastMixin.fire({
-                                //     animation: true,
-                                //     title: data.message.message
-                                // });
+                                location.reload();
                             } else {
-                                toastr.error(data.message.message, '');
-                                // toastMixin.fire({
-                                //     icon: 'error',
-                                //     animation: true,
-                                //     title: data.message.message
-                                // });
+                                toastr.error(data.message.message, 'Already Exists!');
                             }
                         },
                         error: function(e) {
-                            // toastMixin.fire({
-                            //     icon: 'error',
-                            //     animation: true,
-                            //     title: 'Something went wrong. Please try again later!'
-                            // });
                             toastr.error('Something went wrong. Please try again later!', '');
                         }
                     });
@@ -711,7 +750,6 @@
                             console.log(data.status);
 
                             if (data.status) {
-                                toastr.success(data.message, '');
                                 $('#rData').html('');
                                 $.each(data.product, function(key, val) {
                                     var tableRows = '';
@@ -737,6 +775,74 @@
 
                                     $('#rData').append(cardHtml);
                                 });
+                            } else {
+                                toastr.error(data.message, 'Already Exists!');
+                            }
+                        },
+                        error: function(e) {
+                            toastr.error('Something went wrong. Please try again later!', '');
+                        }
+                    });
+
+                }
+            });
+
+        }
+
+
+        function removeHighlight(k, id) {
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "error",
+                showCancelButton: true,
+                dangerMode: true,
+                cancelButtonClass: '#DD6B55',
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Delete!',
+            }, function(result) {
+                if (result) {
+                    $.ajax({
+                        url: '{{ route('admin.delete_p_highlight') }}',
+                        method: "post",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            id: id,
+                            key: k
+                        },
+                        success: function(data) {
+                            // console.log(data);
+
+                            if (data.status) {
+                                toastr.success(data.message, '');
+                                // Clear existing highlights
+                                $('#hiData').html('');
+
+                                // Build the updated highlights HTML
+                                var cardHtml = `
+                                    <table class="rating-bars table table-bordered" style="width: 100%;">
+                                `;
+
+                                $.each(data.pData, function(key, val) {
+                                    cardHtml += `
+                                        <tr>
+                                            <th>${key + 1}</th>
+                                            <th>${val}</th>
+                                            <td>
+                                                <a href="javascript:;" class="text-danger"
+                                                    onclick="removeHighlight('${val}', '${id}')">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    `;
+                                });
+
+                                cardHtml += `</table>`;
+                                $('#hiData').append(cardHtml);
                             } else {
                                 toastr.error(data.message, 'Already Exists!');
                             }
@@ -784,6 +890,29 @@
 
         $(document).on('click', '.removeFd', function() {
             $(this).closest('.gropuData1').remove();
+        });
+
+        $(document).on('click', '.AddH', function() {
+            var count = $('#appDataH .input-group').length;
+
+            if (count < 2) {
+                var htmlData =
+                    `<div class="input-group mb-3">
+                <input type="text" name="highlight[]" class="form-control" placeholder="Highlights">
+                <div class="input-group-append">
+                    <a href="javascript:void(0);" class="btn btn-danger mx-1 removeH">
+                        <i class="fa fa-minus-square-o" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>`;
+                $('#appDataH').append(htmlData);
+            } else {
+                alert("You can only add up to 3 highlights.");
+            }
+        });
+
+        $(document).on('click', '.removeH', function() {
+            $(this).closest('.input-group').remove();
         });
 
         $(document).on('click', '.Add', function() {

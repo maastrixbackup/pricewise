@@ -24,9 +24,9 @@ class ProductCategoryResource extends JsonResource
             'slug' => $this->slug,
             'image' => asset('storage/images/shops/' . $this->image),
             'no_image' => asset('storage/images/no_image/no-image.png'),
-            'brands' => $brands->map(function($brand){
+            'brands' => $brands->map(function ($brand) {
                 return [
-                    'id' =>$brand->id,
+                    'id' => $brand->id,
                     'title' => $brand->title,
                     'slug' => $brand->slug,
                 ];
@@ -39,12 +39,12 @@ class ProductCategoryResource extends JsonResource
                     'sku' => $product->sku,
                     'color' => $product->colorDetails->title,
                     'banner_image' => asset('storage/images/shops/' . $this->banner_image),
-                    'images' => $product->images->map(function ($image) {
+                    'images' => $this->images ? $this->images->map(function ($image) {
                         return [
                             'product_id' => $image->product_id,
-                            'image' =>  asset('storage/images/shops/' . $image->image)
+                            'image' => asset('storage/images/shops/' . $image->image),
                         ];
-                    })->all(),
+                    })->all() : [],
                 ];
             })->values(),
         ];

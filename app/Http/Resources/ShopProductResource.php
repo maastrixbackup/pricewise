@@ -26,19 +26,20 @@ class ShopProductResource extends JsonResource
             'brand_id' => $this->brand_id,
             'category_id' => $this->category_id,
             'color_id' => $this->color_id,
+            'highlights' => json_decode($this->heighlights, true),
             'rating' => $this->ratings,
             'reviews' => $this->review_count,
             'available_status' => $this->p_status,
             'product_type' => $this->product_type,
-            'path' => asset('storage/images/shops/'),
-            'banner_image' =>  $this->banner_image,
+            // 'path' => asset('storage/images/shops/'),
+            'banner_image' => asset('storage/images/shops/' . $this->banner_image),
             'no_image' => asset('storage/images/no_image/no-image.png'),
-            'images' => $this->images->map(function ($image) {
+            'images' => $this->images ? $this->images->map(function ($image) {
                 return [
                     'product_id' => $image->product_id,
-                    'image' =>  asset('storage/images/shops/' . $image->image)
+                    'image' => asset('storage/images/shops/' . $image->image),
                 ];
-            })->all(),
+            })->all() : [],
         ];
     }
 }
