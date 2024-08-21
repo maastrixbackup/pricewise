@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\CyberSecurityController;
 use App\Http\Controllers\Api\FarmHouseInsuranceController;
 use App\Http\Controllers\Api\LegalCounselInsuranceController;
 use App\Http\Controllers\Api\LiabilityInsuranceController;
+use App\Http\Controllers\Api\ShopProductController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -107,7 +108,17 @@ Route::post('business-interruption-insurance', [BusinessInterruptionController::
 // Business Equipment Insurance
 Route::post('business-equipment-insurance', [BusinessEquipmentController::class, 'index']);
 
+// API on Shop Products
+Route::post('shop-products', [ShopProductController::class, 'index']);
+Route::get('product-details/{id}', [ShopProductController::class, 'productDetails']);
+Route::post('shop-filter', [ShopProductController::class, 'shopFilter']);
 
+// API on Cart
+Route::post('add-to-cart', [ShopProductController::class, 'addToCart']);
+Route::post('view-cart', [ShopProductController::class, 'viewCart']);
+Route::post('remove-cart', [ShopProductController::class, 'removeCart']);
+Route::post('add-quantity', [ShopProductController::class, 'addMoreQty']);
+Route::post('remove-quantity', [ShopProductController::class, 'removeQty']);
 
 
 //Frontend Guest

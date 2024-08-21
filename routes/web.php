@@ -131,9 +131,14 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('products', 'ProductController');
             Route::post('/add-product-images/{id}', 'ProductController@add_product_images')->name('add_product_images');
             Route::post('/update-product-description/{id}', 'ProductController@update_product_description')->name('update_product_description');
+            Route::post('/update-new-arrival', 'ProductController@update_new_arrival')->name('update_new_arrival');
             Route::post('/update-product-features/{id}', 'ProductController@update_product_features')->name('update_product_features');
             Route::post('/delete-product-images', 'ProductController@delete_product_images')->name('delete_p_image');
             Route::post('/delete-product-specification', 'ProductController@delete_p_specification')->name('delete_p_specification');
+            Route::post('/duplicate-product', 'ProductController@duplicateProduct')->name('duplicate_product');
+            Route::post('/store-product', 'ProductController@storeDuplicateProduct')->name('store_duplicate_product');
+            Route::post('/add-product-highlights/{id}', 'ProductController@storeProductHighlight')->name('add_product_highlights');
+            Route::post('/delete-product-highlight', 'ProductController@delete_p_highlight')->name('delete_p_highlight');
 
             // Product Category
             Route::prefix('product-color')->group(function () {
@@ -184,6 +189,11 @@ Route::group(['prefix' => 'pricewise'], function () {
                 Route::post('/update/{id}', 'ProductController@deals_update')->name('deals-product.update');
                 Route::post('/destroy', 'ProductController@deals_destroy')->name('deals-product.destroy');
             });
+
+            // Product Ratings
+            Route::get('ratings', 'ProductController@ratingsView')->name('ratings');
+            Route::post('show-product-ratings', 'ProductController@viewRatings')->name('show_product_ratings');
+            Route::post('get-review-details', 'ProductController@reviewDetails')->name('get_review_details');
 
 
             // Route::prefix('shop-settings')->group(function () {

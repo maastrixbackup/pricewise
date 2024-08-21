@@ -27,8 +27,11 @@ class ProductController extends Controller
     public function index()
     {
         $shopProducts = ShopProduct::with('categoryDetails', 'brandDetails')->get();
+        $objBrand = ProductBrand::latest()->get();
+        $objColor  = ProductColor::latest()->get();
+        $objCategory  = ProductCategory::latest()->get();
         // dd($shopProducts);
-        return view('admin.products.index', compact('shopProducts'));
+        return view('admin.products.index', compact('shopProducts', 'objBrand', 'objColor', 'objCategory'));
     }
 
     /**
@@ -92,6 +95,15 @@ class ProductController extends Controller
             $shopProduct->new_arrival = $request->new_arrival;
             $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $shopProduct->is_publish = $request->status;
+
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'banner_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/shops/'), $filename);
+            }
+            // Save the filename in the database
+            $shopProduct->banner_image = $filename ?? '';
 
             if ($shopProduct->save()) {
                 DB::commit();
@@ -187,6 +199,25 @@ class ProductController extends Controller
             $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $shopProduct->is_publish = $request->status;
 
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'banner_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/shops/'), $filename);
+
+                // Check if the dealProduct has an existing image
+                if (!empty($shopProduct->banner_image)) {
+                    $existingFilePath = public_path('storage/images/shops/') . $shopProduct->banner_image;
+                    if (file_exists($existingFilePath)) {
+                        // Delete the file if it exists
+                        unlink($existingFilePath);
+                    }
+                }
+            }
+
+            // Save the filename in the database
+            $shopProduct->banner_image = $filename ?? $shopProduct->banner_image;
+
             if ($shopProduct->save()) {
                 DB::commit();
                 return redirect()->route('admin.products.index')->with(Toastr::success('Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
@@ -270,6 +301,80 @@ class ProductController extends Controller
                 'message' => $message
             ]);
         }
+    }
+    public function storeProductHighlight(Request $request, $id)
+    {
+        $shopP = ShopProduct::find($id);
+
+        // Decode existing highlights JSON into an array
+        $hData = json_decode($shopP->heighlights, true) ?: [];
+
+        // Get the new highlight from the request
+        $newHighlight = $request->input('highlight');
+
+        // Ensure $newHighlight is not empty
+        if (empty($newHighlight)) {
+            return redirect()->back()->with(Toastr::error('Highlight cannot be empty', '', ["positionClass" => "toast-top-right"]));
+        }
+
+        // Check if the new highlight already exists in the array
+        if (array_intersect($newHighlight, $hData)) {
+            return redirect()->back()->with(Toastr::error('Highlight already exists', '', ["positionClass" => "toast-top-right"]));
+        }
+
+        // If $hData is null (no highlights yet), initialize it as an empty array
+        if (!is_array($hData)) {
+            $hData = [];
+        }
+
+        // Check if we have less than 3 highlights
+        if (count($hData) < 3) {
+            if ($request->has('highlight')) {
+                // Get the new highlights from the request
+                $newHighlights = $request->input('highlight');
+
+                // Append the new highlights to the existing array
+                $hData = array_merge($hData, (array)$newHighlights);
+
+                // Ensure we do not exceed the maximum of 3 highlights
+                $hData = array_slice($hData, 0, 3);
+
+                // Encode highlights back to JSON and save
+                $shopP->heighlights = json_encode($hData);
+            }
+
+            if ($shopP->save()) {
+                return redirect()->back()->with(Toastr::success('Highlights Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+        } else {
+            return redirect()->back()->with(Toastr::error('You have reached Max limit 3', '', ["positionClass" => "toast-top-right"]));
+        }
+    }
+
+
+    public function delete_p_highlight(Request $request)
+    {
+        $productH = ShopProduct::find($request->id);
+
+        // Decode the highlights JSON field
+        $highlights = json_decode($productH->heighlights, true);
+
+        // Check if the highlight exists in the array and remove it
+        if (($key = array_search($request->key, $highlights)) !== false) {
+            unset($highlights[$key]);
+        }
+
+        // Re-index the array (optional, but keeps the array tidy)
+        $highlights = array_values($highlights);
+
+        // Encode the modified array back to JSON
+        $productH->heighlights = json_encode($highlights);
+
+        // Save the updated product
+        $productH->save();
+        $pData = json_decode($productH->heighlights, true);
+
+        return response()->json(['status' => true, 'message' => 'Highlight removed successfully', 'pData' => $pData]);
     }
 
     public function update_product_description(Request $request, $id)
@@ -1003,6 +1108,186 @@ class ProductController extends Controller
                 return redirect()->back()->with(Toastr::warning('Unable to Update the setting !', '', ["positionClass" => "toast-top-right"]));
             }
         } catch (\Exception $e) {
+            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+        }
+    }
+
+    public function ratingsView(Request $request)
+    {
+        $ratings = ProductRating::with('productDetails', 'userDetails')->get();
+        return view('admin.products.ratings', compact('ratings'));
+    }
+
+    public function viewRatings(Request $request)
+    {
+        $id = $request->id;
+        $rating = ProductRating::where('product_id', $id)->get();
+        $reviewCount = $rating->count();
+        $averageRating = 0.0;
+
+        if ($reviewCount > 0) {
+            $totalRating = $rating->sum('rating');
+            $averageRating = $totalRating / $reviewCount;
+
+            $averageRating = round($averageRating, 1); // This will round it to 3.6
+        }
+
+        $ratingCount = [
+            '5 Star' => $rating->where('rating', 5)->count(),
+            '4 Star' => $rating->where('rating', 4)->count(),
+            '3 Star' => $rating->where('rating', 3)->count(),
+            '2 Star' => $rating->where('rating', 2)->count(),
+            '1 Star' => $rating->where('rating', 1)->count(),
+        ];
+
+        $totalRatings = array_sum($ratingCount);
+
+        $rateData = '';  // Initialize an empty string to hold the HTML output
+
+        foreach ($ratingCount as $key => $count) {
+            $percentage = $totalRatings > 0 ? ($count / $totalRatings) * 100 : 0;
+            $rateData .= '<tr class="rating-bar">
+                            <td style="width: 10%;">' . $key . '</td>
+                            <td style="width: 80%;">
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar" role="progressbar"
+                                        aria-valuenow="' . round($percentage) . '" aria-valuemin="0"
+                                        aria-valuemax="100"
+                                        style="width: ' . round($percentage) . '%; background-color: orange;">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 10%;">(' . $count . ')</td>
+                        </tr>';
+        }
+
+        return response()->json([
+            'success' => true,
+            'averageRating' => $averageRating,
+            'totalRatings' => $totalRatings,
+            'totalReview' => $reviewCount,
+            'rateData' => $rateData,
+            'message' => 'Showing..'
+        ]);
+    }
+
+    public function reviewDetails(Request $request)
+    {
+        // Retrieve the single ProductRating record with related user and product details
+        $reviewDetails = ProductRating::with('userDetails', 'productDetails')->find($request->id);
+
+        // Check if the record exists
+        if (!$reviewDetails) {
+            return response()->json(['error' => 'Review not found'], 404);
+        }
+
+        // Transform the data to the desired format
+        $reviewDetails = [
+            'id' => $reviewDetails->id,
+            'rating' => $reviewDetails->rating,
+            'review' => $reviewDetails->review,
+            'product' => [
+                'id' => $reviewDetails->productDetails->id,
+                'title' => $reviewDetails->productDetails->title,
+                'sku' => $reviewDetails->productDetails->sku,
+                'size' => $reviewDetails->productDetails->size,
+                'actual_price' => $reviewDetails->productDetails->actual_price,
+                'sell_price' => $reviewDetails->productDetails->sell_price,
+            ],
+            'user' => [
+                'id' => $reviewDetails->userDetails->id,
+                'name' => $reviewDetails->userDetails->name,
+                'email' => $reviewDetails->userDetails->email,
+                'mobile' => $reviewDetails->userDetails->mobile,
+                'photo' => asset('storage/images/customers/' . $reviewDetails->userDetails->photo)
+            ],
+        ];
+
+        return response()->json($reviewDetails);
+    }
+
+    public function duplicateProduct(Request $request)
+    {
+        $objBrand = ProductBrand::latest()->get();
+        $objColor = ProductColor::latest()->get();
+        $objCategory = ProductCategory::latest()->get();
+        $id = $request->product_id;
+        $objProduct = ShopProduct::find($id);
+
+        $productData = view('admin.partials.product-form', compact('objBrand', 'objColor', 'objCategory', 'objProduct'))->render();
+
+        return response()->json(['success' => true, 'html' => $productData], 200);
+    }
+
+    public function storeDuplicateProduct(Request $request)
+    {
+        if ($request->has('sku')) {
+            $product = ShopProduct::where('sku', $request->input('sku'))->first();
+            if ($product) { // Check if $product is not null
+                return redirect()->back()->with(Toastr::error('Product with Same SKU Already exists', '', ["positionClass" => "toast-top-right"]));
+            }
+        }
+
+        // dd($request->all());
+        $slug = strtolower($request->title);
+
+        // Remove special characters
+        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // Replace spaces and multiple hyphens with a single hyphen
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // Trim hyphens from the beginning and end of the string
+        $slug = trim($slug, '-');
+
+        // Check if the slug already exists in the database
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (ShopProduct::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        // dd($slug);
+        DB::beginTransaction();
+        try {
+            $shopProduct = new ShopProduct();
+            $shopProduct->title = trim($request->title);
+            $shopProduct->slug = $slug;
+            $shopProduct->model = $request->model;
+            $shopProduct->sku = $request->sku;
+            $shopProduct->size = $request->size;
+            $shopProduct->brand_id = $request->brand;
+            $shopProduct->category_id = $request->category;
+            $shopProduct->color_id = $request->color;
+            $shopProduct->actual_price = $request->actual_price;
+            $shopProduct->exp_delivery = $request->exp_delivery;
+            $shopProduct->sell_price = $request->selling_price;
+            $shopProduct->delivery_cost = $request->delivery_cost;
+            $shopProduct->qty = $request->qty;
+            $shopProduct->about = $request->about;
+            $shopProduct->p_status = $request->p_status;
+            $shopProduct->is_featured = $request->is_featured;
+            $shopProduct->new_arrival = $request->new_arrival;
+            $shopProduct->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $shopProduct->is_publish = $request->status;
+
+
+            if ($request->image) {
+                // Handle the image file upload
+                $filename = 'banner_' . time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/images/shops/'), $filename);
+            }
+            // Save the filename in the database
+            $shopProduct->banner_image = $filename ?? '';
+
+            if ($shopProduct->save()) {
+                DB::commit();
+                return redirect()->back()->with(Toastr::success('Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
     }
