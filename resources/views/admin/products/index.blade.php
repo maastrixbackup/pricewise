@@ -115,7 +115,7 @@
                                 <tr>
                                     <th>Sl</th>
                                     <th>Title</th>
-                                    <th>Brand</th>
+                                    <th>Category</th>
                                     <th>Availability</th>
                                     <th>Product Price</th>
                                     <th>Product Type</th>
@@ -129,7 +129,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $record->title ?? '' }}</td>
-                                            <td>{{ $record->brandDetails->title ?? '' }}</td>
+                                            <td>{{ $record->categoryDetails->title ?? '' }}</td>
                                             <td>
                                                 @if ($record->p_status == 1)
                                                     <span

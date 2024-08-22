@@ -179,23 +179,28 @@ class ProductController extends Controller
             'title' => 'required'
         ]);
 
-        // Convert to lowercase
-        $slug = strtolower($request->title);
 
-        // Remove special characters
-        $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+        // if ($shopProduct) {
+        //     $slug = $shopProduct->slug;
+        // }
 
-        // Replace spaces and multiple hyphens with a single hyphen
-        $slug = preg_replace('/[\s-]+/', '-', $slug);
+        // // Convert to lowercase
+        // $slug = strtolower($request->title);
 
-        // Trim hyphens from the beginning and end of the string
-        $slug = trim($slug, '-');
+        // // Remove special characters
+        // $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+
+        // // Replace spaces and multiple hyphens with a single hyphen
+        // $slug = preg_replace('/[\s-]+/', '-', $slug);
+
+        // // Trim hyphens from the beginning and end of the string
+        // $slug = trim($slug, '-');
 
         DB::beginTransaction();
         try {
             $shopProduct = ShopProduct::find($id);
             $shopProduct->title = trim($request->title);
-            $shopProduct->slug = $slug;
+            // $shopProduct->slug = $slug;
             $shopProduct->model = $request->model;
             $shopProduct->sku = $request->sku;
             $shopProduct->size = $request->size;
