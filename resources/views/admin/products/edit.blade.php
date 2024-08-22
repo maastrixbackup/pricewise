@@ -104,6 +104,7 @@
                                                 Name</label>
                                             <input type="text" class="form-control" id="title" name="title"
                                                 placeholder="Product Name" value="{{ $objProduct->title }}">
+                                                Slug: <a href="#">{{$objProduct->slug}}</a>
                                             @error('title')
                                                 <div class="alert alert-danger mb-3 py-1">{{ $message }}
                                                 </div>

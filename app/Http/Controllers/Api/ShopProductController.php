@@ -49,7 +49,7 @@ class ShopProductController extends Controller
                 return response()->json(['error' => 'Category not found'], 404);
             }
         } else {
-            $categories = ProductCategory::all()->toArray();
+            $categories = ProductCategory::take(5)->get();
         }
 
         // Prepare the product data grouped by category with filters applied
