@@ -103,9 +103,6 @@
     <div class="row">
         <div class="col-12 col-lg-12">
             <h6 class="mb-0 text-uppercase">Products</h6>
-            {{-- <a href="javascript:;" onclick="removeQty()" id="remB">rem</a>
-            <input type="number" id="qty" value="1" readonly>
-            <a href="javascript:;" onclick="addQty()">add</a> --}}
             <hr />
             <div class="card">
                 <div class="card-body">
@@ -117,7 +114,7 @@
                                     <th>Title</th>
                                     <th>Category</th>
                                     <th>Availability</th>
-                                    <th>Product Price</th>
+                                    <th>Selling Price</th>
                                     <th>Product Type</th>
                                     <th>New Arrival</th>
                                     <th>Action</th>
@@ -474,6 +471,22 @@
             });
         }
 
+
+        $('#p_status').on('change', function() {
+            var sts = $('#p_status').val();
+            console.log(sts);
+
+            if (sts == 3) {
+                $('#qty').val('');
+                $('#qty').attr('readonly', true);
+            } else if (sts == 0) {
+                $('#qty').val('0');
+                $('#qty').attr('readonly', true);
+            } else if (sts == 1 || sts == 2) {
+                $('#qty').val('');
+                $('#qty').attr('readonly', false);
+            }
+        });
         // function updateButtonState() {
         //     var qty = parseInt($('#qty').val(), 10); // Convert the value to an integer
 

@@ -104,8 +104,18 @@
                                                 Name</label>
                                             <input type="text" class="form-control" id="title" name="title"
                                                 placeholder="Product Name" value="{{ $objProduct->title }}">
-                                                Slug: <a href="#">{{$objProduct->slug}}</a>
+                                            Slug: <a href="#">{{ $objProduct->slug }}</a>
                                             @error('title')
+                                                <div class="alert alert-danger mb-3 py-1">{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="input35" class=" col-form-label">Long
+                                                Title</label>
+                                            <input type="text" class="form-control" id="long_title" name="long_title"
+                                                placeholder="Long Title" value="{{ $objProduct->long_title }}">
+                                            @error('long_title')
                                                 <div class="alert alert-danger mb-3 py-1">{{ $message }}
                                                 </div>
                                             @enderror
@@ -942,7 +952,11 @@
         tinymce.init({
             selector: '#description',
             license_key: 'gpl',
-            plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            image_class_list: [{
+                title: 'img-responsive',
+                value: 'img-responsive'
+            }, ],
+            plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak code table lists',
             toolbar_mode: 'floating',
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',
@@ -990,23 +1004,31 @@
                 }
             ],
 
-            file_picker_callback(callback, value, meta) {
-                let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
-                    'body')[0].clientWidth
-                let y = window.innerHeight || document.documentElement.clientHeight || document
-                    .getElementsByTagName('body')[0].clientHeight
+            image_title: true,
+            automatic_uploads: true,
+            images_upload_url: '/upload',
+            file_picker_types: 'image',
+            file_picker_callback: function(cb, value, meta) {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function() {
+                    var file = this.files[0];
 
-                tinymce.activeEditor.windowManager.openUrl({
-                    url: '/file-manager/tinymce5',
-                    title: 'Laravel File manager',
-                    width: x * 0.8,
-                    height: y * 0.8,
-                    onMessage: (api, message) => {
-                        callback(message.content, {
-                            text: message.text
-                        })
-                    }
-                })
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function() {
+                        var id = 'blobid' + (new Date()).getTime();
+                        var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        var base64 = reader.result.split(',')[1];
+                        var blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        cb(blobInfo.blobUri(), {
+                            title: file.name
+                        });
+                    };
+                };
+                input.click();
             }
         });
 

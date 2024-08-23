@@ -12,6 +12,8 @@ use App\Models\ProductCategory;
 use App\Models\ProductPromotion;
 use App\Models\ProductRating;
 use App\Models\ShopProduct;
+use App\Models\ShopSetting;
+use App\Models\WishlistProduct;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -118,6 +120,17 @@ class ShopProductController extends Controller
             ];
         });
 
+        $shopCommon = ShopSetting::find(1);
+
+        $shopCommon = [
+            'id' => $shopCommon->id,
+            'order_above' => $shopCommon->order_above,
+            'order_time' => $shopCommon->order_time,
+            'reflection_period' => $shopCommon->period,
+            'limited_stock' => $shopCommon->limited_stock,
+            'payment_image' => asset('storage/images/shops/' . $shopCommon->image)
+        ];
+
         // Final response
         return response()->json([
             'status' => true,
@@ -128,6 +141,7 @@ class ShopProductController extends Controller
             'deals' => $dealsProduct,
             'promotion' => $promotionProduct,
             'catWithProduct' => $filteredCat,
+            'commonSetting' => $shopCommon
         ], 200);
     }
 
@@ -192,7 +206,6 @@ class ShopProductController extends Controller
     {
 
         // $id = encrypt($id);
-        // $id = decrypt($id);
         $product = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->where('slug', $slug)->first();
 
         $similarProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')->take(10)->get();
@@ -213,11 +226,24 @@ class ShopProductController extends Controller
 
         $rating = ProductRating::where('product_id', $product->id)->get();
         $ratingCount = [
-            '5 Star' => $rating->where('rating', 5)->count(),
-            '4 Star' => $rating->where('rating', 4)->count(),
-            '3 Star' => $rating->where('rating', 3)->count(),
-            '2 Star' => $rating->where('rating', 2)->count(),
-            '1 Star' => $rating->where('rating', 1)->count(),
+            'fiveStar' => $rating->where('rating', 5)->count(),
+            'fourStar' => $rating->where('rating', 4)->count(),
+            'threeStar' => $rating->where('rating', 3)->count(),
+            'twoStar' => $rating->where('rating', 2)->count(),
+            'oneStar' => $rating->where('rating', 1)->count(),
+        ];
+
+        $totalRatings = $rating->count();
+
+        $shopCommon = ShopSetting::find(1);
+
+        $shopCommon = [
+            'id' => $shopCommon->id,
+            'order_above' => $shopCommon->order_above,
+            'order_time' => $shopCommon->order_time,
+            'reflection_period' => $shopCommon->period,
+            'limited_stock' => $shopCommon->limited_stock,
+            'payment_image' => asset('storage/images/shops/' . $shopCommon->image)
         ];
 
 
@@ -226,6 +252,9 @@ class ShopProductController extends Controller
             'productDetails' => $filteredProduct,
             'featuredProduct' => $featuredProduct,
             'ratingCountData' => $ratingCount,
+            'totalRatings' => $totalRatings,
+            'reviews' => $rating,
+            'commonData' => $shopCommon,
         ], 200);
     }
 
@@ -718,6 +747,75 @@ class ShopProductController extends Controller
             'data' => $cartItems
         ]);
     }
+
+    public function addToWishList(Request $request)
+    {
+
+        if ($request->has('user_id') && $request->has('product_id')) {
+            // Check if the product is already in the wishlist
+            $existingWishlist = WishlistProduct::where([
+                'user_id' => $request->input('user_id'),
+                'product_id' => $request->input('product_id')
+            ])->first();
+
+            if ($existingWishlist) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product is already in your wishlist.',
+                ], 409);
+            }
+
+            // Add the product to the wishlist
+            $wishlistAdd = new WishlistProduct();
+            $wishlistAdd->user_id = $request->input('user_id');
+            $wishlistAdd->product_id = $request->input('product_id');
+
+            if ($wishlistAdd->save()) {
+                return response()->json([
+                    'status' => true,
+                    'listData' => $wishlistAdd
+                ], 200);
+            }
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Failed to add product to wishlist. Please provide valid user_id and product_id.',
+        ], 400);
+    }
+
+    public function removeFromWishList(Request $request)
+    {
+        if ($request->has('user_id') && $request->has('product_id')) {
+            // Find the wishlist entry
+            $wishlistItem = WishlistProduct::where([
+                'user_id' => $request->input('user_id'),
+                'product_id' => $request->input('product_id')
+            ])->first();
+
+            // If the item exists, delete it
+            if ($wishlistItem) {
+                $wishlistItem->delete();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Product removed from wishlist successfully.'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product not found in your wishlist.'
+                ], 404);
+            }
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Failed to remove product from wishlist. Please provide valid user_id and product_id.',
+        ], 400);
+    }
+
+
 
 
 
