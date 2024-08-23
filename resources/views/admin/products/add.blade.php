@@ -19,8 +19,8 @@
     <!--end breadcrumb-->
     <form id="productFor" method="post" action="{{ route('admin.products.store') }}" enctype="multipart/form-data">
         @csrf
-        <div class="row">
-            <div class="col-md-9 col-lg-9 col-12">
+        <div class="row mb-3">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header px-4 py-3">
                         <h5 class="mb-0">Add New Product</h5>
@@ -33,6 +33,16 @@
                                     placeholder="Product Name" value="{{ old('title') }}">
                                 @error('title')
                                     <div class="alert alert-danger mb-3 py-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="input35" class=" col-form-label">Long
+                                    Title</label>
+                                <input type="text" class="form-control" id="long_title" name="long_title"
+                                    placeholder="Long Title" value="">
+                                @error('long_title')
+                                    <div class="alert alert-danger mb-3 py-1">{{ $message }}
+                                    </div>
                                 @enderror
                             </div>
 
@@ -152,7 +162,7 @@
                                 <div class="mb-3 add-scroll">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="new_arrival"
-                                             value="1">
+                                            value="1">
                                         <label class="form-check-label" for="flexCheckDefault">New Arrival</label>
                                     </div>
                                 </div>
@@ -201,20 +211,22 @@
                                 <div class="mb-3 add-scroll mt-2">
                                     <div class="form-check">
                                         <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" name="is_featured"
-                                            value="1"> Feature Product</label>
+                                            <input class="form-check-input" type="checkbox" name="is_featured"
+                                                value="1"> Feature Product</label>
                                     </div>
                                 </div>
                                 <!-- <label for="input35" class="col-form-label"><b>Top 3 Product</b></label> -->
                                 <div class="mb-3 add-scroll">
                                     <div class="form-check form-check-inline">
-                                        <label class="form-check-label" >
-                                        <input class="form-check-input" type="radio" class="form-control" name="status" value="1">Published</label>
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" class="form-control"
+                                                name="status" value="1">Published</label>
                                     </div>
 
                                     <div class="form-check form-check-inline">
-                                        <label class="form-check-label" >
-                                        <input class="form-check-input" type="radio" class="form-control" name="status" checked value="0">Draft</label>
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" class="form-control"
+                                                name="status" checked value="0">Draft</label>
                                     </div>
                                 </div>
                             </div>
@@ -222,16 +234,17 @@
                                 <label for="input35" class="col-form-label">Banner Image</label>
                             </div>
                             <label for="upload_image" class="mb-3">
-    
-                                <img src="#" id="uploaded_image" class="img img-responsive img-circle" width="100"
-                                    alt="Select image" />
-    
+
+                                <img src="#" id="uploaded_image" class="img img-responsive img-circle"
+                                    width="100" alt="Select image" />
+
                                 <div class="overlay" style="cursor: pointer">
                                     <div>Click to Change Image</div>
                                 </div>
-                                <input type="file" name="image" class="image" id="upload_image" style="display:none" />
+                                <input type="file" name="image" class="image" id="upload_image"
+                                    style="display:none" />
                                 <input type="hidden" name="cropped_image" id="cropped_image">
-    
+
                             </label>
                             @error('image')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>

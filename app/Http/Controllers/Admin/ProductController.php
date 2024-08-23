@@ -78,6 +78,7 @@ class ProductController extends Controller
             $shopProduct = new ShopProduct();
             $shopProduct->title = trim($request->title);
             $shopProduct->slug = $slug;
+            $shopProduct->long_title = $request->long_title;
             $shopProduct->model = $request->model;
             $shopProduct->sku = $request->sku;
             $shopProduct->size = $request->size;
@@ -202,6 +203,7 @@ class ProductController extends Controller
             $shopProduct->title = trim($request->title);
             // $shopProduct->slug = $slug;
             $shopProduct->model = $request->model;
+            $shopProduct->long_title = $request->long_title;
             $shopProduct->sku = $request->sku;
             $shopProduct->size = $request->size;
             $shopProduct->brand_id = $request->brand;
@@ -447,7 +449,7 @@ class ProductController extends Controller
 
         // Update or add new entries in the 'Product Details' section
         if (!empty($merged_array1)) {
-            $data['Product Details'] = array_merge($currentData['Product Details'] ?? [], $merged_array1);
+            $data['Product_Details'] = array_merge($currentData['Product_Details'] ?? [], $merged_array1);
         }
 
         // Debug output
@@ -1276,6 +1278,7 @@ class ProductController extends Controller
             }
         }
 
+        $exitProduct = ShopProduct::find($request->input('id')); 
         // dd($request->all());
         $slug = strtolower($request->title);
 
@@ -1314,6 +1317,9 @@ class ProductController extends Controller
             $shopProduct->delivery_cost = $request->delivery_cost;
             $shopProduct->qty = $request->qty;
             $shopProduct->about = $request->about;
+            $shopProduct->description = $exitProduct->description;
+            $shopProduct->specification = $exitProduct->specification;
+            $shopProduct->heighlights = $exitProduct->heighlights;
             $shopProduct->p_status = $request->p_status;
             $shopProduct->is_featured = $request->is_featured;
             $shopProduct->new_arrival = $request->new_arrival;

@@ -1,5 +1,6 @@
 <div class="row">
     <div class="col-md-6 mb-3">
+        <input type="hidden" value="{{ $objProduct->id }}" name="id">
         <label for="input35" class="col-form-label">Product Name</label>
         <input type="text" class="form-control" id="title" name="title" placeholder="Product Name"
             value="{{ $objProduct->title }}">
@@ -138,7 +139,12 @@
         <div class="mb-3">
             <label for="qty" class="col-form-label">Quantity</label>
             <input type="number" class="form-control" id="qty" name="qty" placeholder="Quantity"
-                value="{{ $objProduct->qty }}">
+                @if ($objProduct->p_status == '1') value="{{ $objProduct->qty }}"
+                @elseif ($objProduct->p_status == '2')
+             value="{{ $objProduct->qty }}"
+             @elseif ($objProduct->p_status == '0')
+             value="{{ $objProduct->qty }}"
+            @else value="" @endif>
         </div>
     </div>
 
@@ -244,7 +250,18 @@
                 reader.readAsDataURL(input.files[0]);
             }
         });
+
+        var sts = $('#p_status').val();
+
+        if (sts == 3) {
+            $('#qty').attr('readonly', true);
+        } else if (sts == 0) {
+            $('#qty').attr('readonly', true);
+        } else if (sts == 1 || sts == 2) {
+            $('#qty').attr('readonly', false);
+        }
     });
+    
     // Handle file input change event
     $('#upload_imagea').on('change', function(event) {
         var input = event.target;
@@ -258,6 +275,22 @@
 
             // Read the image file as a data URL
             reader.readAsDataURL(input.files[0]);
+        }
+    });
+
+    $('#p_status').on('change', function() {
+        var sts = $('#p_status').val();
+        console.log(sts);
+
+        if (sts == 3) {
+            $('#qty').val('');
+            $('#qty').attr('readonly', true);
+        } else if (sts == 0) {
+            $('#qty').val('0');
+            $('#qty').attr('readonly', true);
+        } else if (sts == 1 || sts == 2) {
+            $('#qty').val('');
+            $('#qty').attr('readonly', false);
         }
     });
 </script>

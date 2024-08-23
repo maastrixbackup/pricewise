@@ -55,6 +55,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('reset-password/{token}', 'NewPasswordController@create')->name('password.reset');
             Route::post('reset-password', 'NewPasswordController@store')->name('password.update');
         });
+        Route::post('/upload', 'RequestController@imageUploads');
         Route::middleware('admin')->group(function () {
             Route::get('file-manager', 'FileManagerController@index');
             Route::post('/upload-image', 'RequestController@imageUpload')->name('upload_image');
