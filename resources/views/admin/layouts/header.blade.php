@@ -26,7 +26,7 @@
             <div class="dropdown d-inline-block">
               <button type="button" class="btn btn-alt-secondary" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="far fa-fw fa-bell"></i>
-                <span class="badge bg-primary rounded-pill">3</span>
+                <span class="badge bg-primary rounded-pill" id="notify">0</span>
               </button>
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
                 <div class="bg-primary-dark rounded-top fw-semibold text-white text-center p-3">

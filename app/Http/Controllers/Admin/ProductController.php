@@ -10,6 +10,7 @@ use App\Models\ProductColor;
 use App\Models\ProductImage;
 use App\Models\ProductPromotion;
 use App\Models\ProductRating;
+use App\Models\ProductRequest;
 use App\Models\ShopProduct;
 use App\Models\ShopSetting;
 use Brian2694\Toastr\Facades\Toastr;
@@ -26,7 +27,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $shopProducts = ShopProduct::with('categoryDetails', 'brandDetails')->get();
+        $shopProducts = ShopProduct::with('categoryDetails', 'brandDetails')->orderBy('id', 'desc')->get();
         $objBrand = ProductBrand::latest()->get();
         $objColor  = ProductColor::latest()->get();
         $objCategory  = ProductCategory::latest()->get();
@@ -1278,7 +1279,7 @@ class ProductController extends Controller
             }
         }
 
-        $exitProduct = ShopProduct::find($request->input('id')); 
+        $exitProduct = ShopProduct::find($request->input('id'));
         // dd($request->all());
         $slug = strtolower($request->title);
 
@@ -1343,5 +1344,16 @@ class ProductController extends Controller
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
         }
+    }
+
+    public function requestedProduct(Request $req)
+    {
+        if ($req->has('id')) {
+            $rp = ProductRequest::latest()->get();
+            $count = $rp->count();
+            return response()->json($count);
+        }
+        $requestP = ProductRequest::orderBy('id', 'desc')->get();
+        return view('admin.products.request_products', compact('requestP'));
     }
 }
