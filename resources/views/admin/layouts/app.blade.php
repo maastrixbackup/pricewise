@@ -324,6 +324,8 @@
         });
 
         $(document).ready(function() {
+
+            fetchData(myParam);
             $("#category").on('change', function() {
                 var cat_val = $(this).val(); // Get the selected category value
 
@@ -351,6 +353,35 @@
                 });
             });
         });
+
+        // Function to perform the AJAX request
+        let myParam = 1;
+
+        function fetchData(param) {
+            $.ajax({
+                url: '{{ route('admin.request_products') }}', // Replace with your URL
+                method: 'GET', // Use 'POST' if required
+                data: {
+                    id: param
+                },
+                success: function(data) {
+                    // Handle the response data here
+                    console.log(data);
+                    $('#notify').html('');
+                    $('#notify').html(data);
+                    // toastr.success(data, 'New Notification Received');
+                },
+                error: function(xhr, status, error) {
+                    // Handle the error here
+                    console.error(error);
+                }
+            });
+        }
+
+        // Call fetchData every 10 seconds, passing the parameter
+        // setInterval(function() {
+        //     fetchData(myParam);
+        // }, 10000); // 10000 milliseconds = 10 seconds
     </script>
 
 
