@@ -220,7 +220,12 @@ class ShopProductController extends Controller
 
         if (!$product) {
             // Handle the case when the product is not found, e.g., throw an exception or return a 404 response.
-            abort(404, 'Product not found');
+            // abort(404, 'Product not found');
+            return response()->json([
+                'status' => false,
+                'message' => 'Product not found'
+
+            ]);
         }
         $filteredProduct = new ProductDetailsResource($product);
 
