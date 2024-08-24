@@ -201,6 +201,7 @@ return array(
     'App\\Models\\ProductImage' => $baseDir . '/app/Models/ProductImage.php',
     'App\\Models\\ProductPromotion' => $baseDir . '/app/Models/ProductPromotion.php',
     'App\\Models\\ProductRating' => $baseDir . '/app/Models/ProductRating.php',
+    'App\\Models\\ProductRequest' => $baseDir . '/app/Models/ProductRequest.php',
     'App\\Models\\Provider' => $baseDir . '/app/Models/Provider.php',
     'App\\Models\\ProviderDiscount' => $baseDir . '/app/Models/ProviderDiscount.php',
     'App\\Models\\ProviderFeature' => $baseDir . '/app/Models/ProviderFeature.php',
