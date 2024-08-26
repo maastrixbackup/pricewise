@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use UniSharp\LaravelFilemanager\Lfm;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\Admin\VacancyController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -227,6 +228,19 @@ Route::group(['prefix' => 'pricewise'], function () {
                 Route::post('/destroy', 'CyberSecurityController@sFeatures_destroy')->name('security-feature.destroy');
             });
 
+            
+            
+            Route::get('/create-new-job', [VacancyController::class, 'show'])->name('post-new-vacancy');
+            Route::get('/job_type', [VacancyController::class, 'job_type'])->name('job_type');
+            Route::get('/job_industry', [VacancyController::class, 'job_industry'])->name('job_industry');
+            Route::get('/job_role', [VacancyController::class, 'job_role'])->name('job_role');
+            Route::post('/submit-vacancy-form', [VacancyController::class, 'submit'])->name('vacancy.form.submit');
+            Route::post('/submit-job-type', [VacancyController::class, 'job_type_submit'])->name('vacancy.jobtype.submit');
+            Route::post('/submit-industry-type', [VacancyController::class, 'industry_type_submit'])->name('vacancy.jobindustry.submit');
+            Route::post('/submit-role', [VacancyController::class, 'role_submit'])->name('vacancy.role.submit');
+            Route::post('/delete-job-role/{id}', [VacancyController::class, 'destroy'])->name('deleteJobRole');
+
+            
 
             //Requests
             Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
@@ -250,9 +264,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             // Route::any('/caterer/edit/{id}', 'CatererController@editcaterer')->name('edit.caterer');
             // Route::post('/caterer/update/{id}', 'CatererController@updatecaterer')->name('update.caterer');
             // Route::any('/caterer/delete', 'CatererController@deletecaterer')->name('delete.caterer');
-
-
-
+            
 
             //Energy
             Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
