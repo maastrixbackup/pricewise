@@ -11,11 +11,19 @@ use App\Models\ProductCart;
 use App\Models\ProductCategory;
 use App\Models\ProductPromotion;
 use App\Models\ProductRating;
+use App\Models\ProductRequest;
 use App\Models\ShopProduct;
 use App\Models\ShopSetting;
 use App\Models\WishlistProduct;
 use Illuminate\Support\Facades\DB;
+use App\Mail\AdminNewRequestNotification;
+use Illuminate\Support\Facades\Log;
+use App\Mail\UserRequestConfirmation;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use App\Models\EmailTemplate;
+
+use App\Mail\WelcomeEmail;
 
 class ShopProductController extends Controller
 {
@@ -764,10 +772,11 @@ class ShopProductController extends Controller
             ])->first();
 
             if ($existingWishlist) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Product is already in your wishlist.',
-                ], 409);
+                return $this->removeFromWishList($request);
+                // return response()->json([
+                //     'status' => false,
+                //     'message' => 'Product is already in your wishlist.',
+                // ]);
             }
 
             // Add the product to the wishlist
@@ -778,15 +787,16 @@ class ShopProductController extends Controller
             if ($wishlistAdd->save()) {
                 return response()->json([
                     'status' => true,
-                    'listData' => $wishlistAdd
-                ], 200);
+                    'listData' => $wishlistAdd,
+                    'message' => 'Product Added in your wishlist.',
+                ]);
             }
         }
 
         return response()->json([
             'status' => false,
             'message' => 'Failed to add product to wishlist. Please provide valid user_id and product_id.',
-        ], 400);
+        ]);
     }
 
     public function removeFromWishList(Request $request)
@@ -804,7 +814,7 @@ class ShopProductController extends Controller
 
                 return response()->json([
                     'status' => true,
-                    'message' => 'Product removed from wishlist successfully.'
+                    'message' => 'Product removed from wishlist .'
                 ], 200);
             } else {
                 return response()->json([
@@ -818,6 +828,137 @@ class ShopProductController extends Controller
             'status' => false,
             'message' => 'Failed to remove product from wishlist. Please provide valid user_id and product_id.',
         ], 400);
+    }
+
+    public function productWishLists(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $productId = $request->input('product_id');
+
+        if ($userId && $productId) {
+            $wishlistProduct = WishlistProduct::where([
+                'user_id' => $userId,
+                'product_id' => $productId
+            ])->first();
+
+            if ($wishlistProduct) {
+                return response()->json([
+                    'status' => true,
+                    'wishlistProduct' => $wishlistProduct,
+                    'message' => 'Product found in wishlist.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'wishlistProduct' => null,
+                    'message' => 'Product not found in wishlist.'
+                ]);
+            }
+        }
+
+        if ($userId) {
+            $wishlistProducts = WishlistProduct::where('user_id', $userId)->get();
+
+            return response()->json([
+                'status' => true,
+                'wishlistProducts' => $wishlistProducts,
+                'message' => 'Successfully retrieved all products.'
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'wishlistProducts' => null,
+            'message' => 'User ID is required.'
+        ]);
+    }
+
+
+    public function storeProductRequest(Request $request)
+    {
+        // Set the default timezone
+        // date_default_timezone_set('GMT');
+        $current_time = date('H:i:s');
+
+        if ($request->has('user_id') && $request->has('product_id')) {
+            try {
+                // Create a new ProductRequest instance
+                $productReqs = new ProductRequest();
+                $productReqs->user_id = $request->input('user_id');
+                $productReqs->product_id = $request->input('product_id');
+                $productReqs->user_name = $request->input('user_name');
+                $productReqs->email = $request->input('email');
+                $productReqs->phone_number = $request->input('phone_number');
+                $productReqs->qty = $request->input('qty');
+                $productReqs->delivery_address = $request->input('delivery_address');
+                $productReqs->curr_time = $current_time;
+                $productReqs->callback_date = $request->input('callback_date');
+                $productReqs->additional_info = $request->input('additional_info');
+                $productReqs->terms_condition = $request->input('terms_condition'); // corrected field
+
+                // Save the product request to the database
+                $productReqs->save();
+
+                // Fetch product name
+                $product = ShopProduct::find($request->input('product_id'));
+                $product_name = $product->title;
+
+                // Prepare email data
+                $userName = $request->input('user_name');
+                $userEmail = $request->input('email');
+                $userNumber = $request->input('phone_number');
+                $quantity = $request->input('qty');
+                $deliveryAddress = $request->input('delivery_address');
+                $callbackDate = $request->input('callback_date');
+                $additionalInfo = $request->input('additional_info');
+
+                // Log email data
+                Log::info('Sending email with the following details:', [
+                    'user_name' => $userName,
+                    'product_name' => $product_name,
+                    'quantity' => $quantity,
+                    'delivery_address' => $deliveryAddress,
+                    'callback_date' => $callbackDate,
+                    'additional_info' => $additionalInfo,
+                ]);
+
+                // // Send confirmation email to the user
+                // Mail::to($userEmail)->send(new UserRequestConfirmation(
+                //     $userName,
+                //     $product_name,
+                //     $quantity,
+                //     $deliveryAddress,
+                //     $callbackDate,
+                //     $additionalInfo
+                // ));
+
+                // // Send notification email to the admin
+                // Mail::to('bibhuprasad.maastrix@gmail.com')->send(new AdminNewRequestNotification(
+                //     $userName,
+                //     $userEmail,
+                //     $userNumber,
+                //     $product_name,
+                //     $quantity,
+                //     $deliveryAddress,
+                //     $callbackDate,
+                //     $additionalInfo
+                // ));
+
+                // Prepare the HTML message
+                $message = "Hi <b>{$userName}</b>, your request has been received, and a confirmation email has been sent to this email address: <i>{$userEmail}</i>";
+
+                // Return a success response with the HTML message
+                return response()->json(['status' => true, 'message' => $message]);
+            } catch (\Exception $e) {
+                // Log the error
+                Log::error('Failed to process request or send email: ' . $e->getMessage());
+
+                // Return an error response
+                return response()->json(['status' => false, 'message' => $e->getMessage()]);
+            }
+        } else {
+            return response()->json(['status' => false, 'message' => 'Missing required user_id or product_id']);
+        }
     }
 
 

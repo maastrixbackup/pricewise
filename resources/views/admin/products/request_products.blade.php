@@ -112,8 +112,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-
+                                @if ($requestP)
+                                    @foreach ($requestP as $req)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $req->productDetails->title }}</td>
+                                            <td>{{ $req->userDetails->name }}</td>
+                                            <td>{{ $req->userDetails->email }}</td>
+                                            <td> {{ $req->userDetails->mobile }}</td>
+                                            <td>{{ $req->qty }}</td>
+                                            <td><a href="javascript:;" class="badge text-success"
+                                                    onclick="chkRequest('{{ $req->id }}')">Details</a></td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -130,7 +142,7 @@
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title">Duplicate Product</h4>
+                        <h4 class="modal-title">Requested Product</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
@@ -139,18 +151,25 @@
                         {{-- <div class="spinner-box">
                             <div class="three-quarter-spinner"></div>
                         </div> --}}
-                        <form id="productFor" method="post" action="{{ route('admin.store_duplicate_product') }}"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <div class="card">
-                                <div class="card-body p-4">
-                                    <div id="fData"></div>
+                        <div id="fData"></div>
+                        
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <img src="{{asset('storage/images/website/') . '/' . siteSettings()->logo }}" alt="" width="130px" >
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p>
+                                        <h3>Test <br><small>SKU: 154156</small></h3>
+                                        
+                                        <h3>5455 <span style="text-decoration: line-through;">444</span></h3>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-
+                        </div>
                     </div>
-
-                    </form>
                     <!-- Modal footer -->
                     {{-- <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -165,7 +184,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            fetchData(myParam);
+            // fetchData(myParam);
             var table = $('#RequestTable').DataTable({
                 lengthChange: false,
                 // buttons: [{
@@ -235,21 +254,26 @@
 
         });
 
-        // Function to perform the AJAX request
-        let myParam = 1;
-
-        function fetchData(param) {
+        function chkRequest(id) {
+            alert(id);
             $.ajax({
-                url: '{{ route('admin.request_products') }}', // Replace with your URL
-                method: 'GET', // Use 'POST' if required
+                url: '{{ route('admin.request_product_details') }}', // Replace with your URL
+                method: 'POST', // Use 'POST' if required
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 data: {
-                    id: param
+                    id: id
                 },
                 success: function(data) {
+                    // Open the modal
+                    $('#duplicateModal').modal('show');
                     // Handle the response data here
                     console.log(data);
-                    $('#notify').html('');
-                    $('#notify').html(data);
+                    return false;
+
+                    $('#notDY').html('');
+                    $('#notDY').html(data.notify);
                     // toastr.success(data, 'New Notification Received');
                 },
                 error: function(xhr, status, error) {
@@ -258,8 +282,39 @@
                 }
             });
         }
+        // Function to perform the AJAX request
+        // let myParam = 1;
 
-        // Call fetchData every 10 seconds, passing the parameter
+        // function fetchData(param) {
+        //     $.ajax({
+        //         url: '{{ route('admin.request_products') }}', // Replace with your URL
+        //         method: 'GET', // Use 'POST' if required
+        //         data: {
+        //             id: param
+        //         },
+        //         success: function(data) {
+        //             // Handle the response data here
+        //             console.log(data);
+        //             // Show or hide the button based on the count
+        //             if (data.count > 0) {
+        //                 $('#viewNotBtn').css('display', 'block');
+        //             } else {
+        //                 $('#viewNotBtn').css('display', 'none');
+        //             }
+        //             $('#notify').html('');
+        //             $('#notify').html(data.count);
+        //             $('#notDY').html('');
+        //             $('#notDY').html(data.notify);
+        //             // toastr.success(data, 'New Notification Received');
+        //         },
+        //         error: function(xhr, status, error) {
+        //             // Handle the error here
+        //             console.error(error);
+        //         }
+        //     });
+        // }
+
+        // // Call fetchData every 10 seconds, passing the parameter
         // setInterval(function() {
         //     fetchData(myParam);
         // }, 10000); // 10000 milliseconds = 10 seconds

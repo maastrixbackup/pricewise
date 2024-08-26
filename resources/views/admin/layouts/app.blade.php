@@ -354,7 +354,7 @@
             });
         });
 
-        // Function to perform the AJAX request
+        // // Function to perform the AJAX request
         let myParam = 1;
 
         function fetchData(param) {
@@ -366,9 +366,17 @@
                 },
                 success: function(data) {
                     // Handle the response data here
-                    console.log(data);
+                    // console.log(data);
+                    // Show or hide the button based on the count
+                    if (data.count > 0) {
+                        $('#viewNotBtn').css('display', 'block');
+                    } else {
+                        $('#viewNotBtn').css('display', 'none');
+                    }
                     $('#notify').html('');
-                    $('#notify').html(data);
+                    $('#notify').html(data.count);
+                    $('#notDY').html('');
+                    $('#notDY').html(data.notify);
                     // toastr.success(data, 'New Notification Received');
                 },
                 error: function(xhr, status, error) {
@@ -379,9 +387,9 @@
         }
 
         // Call fetchData every 10 seconds, passing the parameter
-        // setInterval(function() {
-        //     fetchData(myParam);
-        // }, 10000); // 10000 milliseconds = 10 seconds
+        setInterval(function() {
+            fetchData(myParam);
+        }, 10000); // 10000 milliseconds = 10 seconds
     </script>
 
 

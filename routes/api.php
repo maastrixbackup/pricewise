@@ -116,6 +116,7 @@ Route::post('shop-filter', [ShopProductController::class, 'shopFilter']);
 // API on Wish List
 Route::post('add-to-wishlist', [ShopProductController::class, 'addToWishList']);
 Route::post('remove-from-wishlist', [ShopProductController::class, 'removeFromWishList']);
+Route::post('wishlist-products', [ShopProductController::class, 'productWishLists']);
 
 // API on Cart
 Route::post('add-to-cart', [ShopProductController::class, 'addToCart']);
