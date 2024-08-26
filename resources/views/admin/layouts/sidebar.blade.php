@@ -364,6 +364,70 @@
                      </ul>
                  </li>
 
+                 <li class="nav-main-item">
+                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                         aria-expanded="false" href="#">
+                         <i class="nav-main-link-icon fa fa-shield"></i>
+                         <span class="nav-main-link-name">Vacancy</span>
+                     </a>
+                     <ul class="nav-main-submenu">
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="#">
+                                 <i class="nav-main-link-icon fa-regular fa fa-user-secret"></i>
+                                 <span class="nav-main-link-name">List All</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.post-new-vacancy') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-list-alt"></i>
+                                <span class="nav-main-link-name">Post New</span>
+                            </a>
+                        </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="#">
+                                 <i class="nav-main-link-icon fa-regular fa fa-list-alt"></i>
+                                 <span class="nav-main-link-name">Location</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.job_type') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                 <span class="nav-main-link-name">Type</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.job_industry') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                 <span class="nav-main-link-name">Industry</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.job_role') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Role</span>
+                            </a>
+                        </li>
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="#">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Exp Level</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link" href="#">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Educational Qualification</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link" href="#">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Pay per Hour</span>
+                            </a>
+                        </li>
+                     </ul>
+                 </li>
+
 
                  <li class="nav-main-item">
                      <a class="nav-main-link" href="{{ route('admin.requests.index') }}">
