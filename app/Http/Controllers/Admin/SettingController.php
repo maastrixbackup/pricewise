@@ -101,7 +101,7 @@ class SettingController extends Controller
             'mail_from_address' => 'required',
             'mail_from_name' => 'required',
         ]);
-        //logger()->debug('Request data:', $validatedData);
+        logger()->debug('Request data:', $validatedData);
         // Update .env file
         // foreach ($validatedData as $key => $value) {
         //     file_put_contents(base_path('.env'), "$key=$value" . PHP_EOL, FILE_APPEND | LOCK_EX);
@@ -110,7 +110,9 @@ class SettingController extends Controller
             // Read current .env content
             $envContent = File::get(base_path('.env'));
 
+            return response()->json($envContent);
             // Replace existing values with new ones
+            $kk = [];
             foreach ($validatedData as $key => $value) {
                 $key_config = str_replace('mail_', '', $key);
                 if ($key == 'mail_from_address' || $key == 'mail_from_name') {
@@ -120,6 +122,7 @@ class SettingController extends Controller
                         strtoupper("MAIL_$key_config") . "=$value",
                         $envContent
                     );
+                    // $kk[] = $key_config;
                 } else {
                     $envContent = Str::replaceFirst(
                         strtoupper("$key=") . config("mail.mailers.smtp.$key_config"),
@@ -128,14 +131,15 @@ class SettingController extends Controller
                     );
                 }
             }
-            //dd($envContent);
+            // return response()->json($envContent);
+            // dd($envContent);
             // Rewrite the .env file with updated content
             File::put(base_path('.env'), $envContent);
 
             // Clear config cache
             Artisan::call('config:cache');
 
-            $message = array("status" => true, 'message' => 'SMTP Setting Updated Successfully', 'title' => '');
+            $message = array("status" => true, 'message' => 'SMTP Setting Updated Successfully', 'title' => 'success');
             return response()->json(["status" => true, 'message' => $message]);
         } catch (\Exception $e) {
             $message = ['message' => 'Failed to update SMTP settings', 'title' => 'Error'];
