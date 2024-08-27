@@ -106,7 +106,6 @@
                                     <th>Product Name</th>
                                     <th>User Name</th>
                                     <th>Eamil</th>
-                                    <th>Number</th>
                                     <th>Quantity</th>
                                     <th>Action</th>
                                 </tr>
@@ -117,9 +116,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $req->productDetails->title }}</td>
-                                            <td>{{ $req->userDetails->name }}</td>
-                                            <td>{{ $req->userDetails->email }}</td>
-                                            <td> {{ $req->userDetails->mobile }}</td>
+                                            <td>{{ $req->user_name }}</td>
+                                            <td>{{ $req->email }}</td>
                                             <td>{{ $req->qty }}</td>
                                             <td><a href="javascript:;" class="badge text-success"
                                                     onclick="chkRequest('{{ $req->id }}')">Details</a></td>
@@ -137,7 +135,7 @@
 
         <!-- The Modal -->
         <div class="modal fade" tabindex="-1" role="dialog" id="duplicateModal">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog ">
                 <div class="modal-content ">
 
                     <!-- Modal Header -->
@@ -151,24 +149,8 @@
                         {{-- <div class="spinner-box">
                             <div class="three-quarter-spinner"></div>
                         </div> --}}
-                        <div id="fData"></div>
-                        
-                        <div class="card">
-                            <div class="card-body p-4">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <img src="{{asset('storage/images/website/') . '/' . siteSettings()->logo }}" alt="" width="130px" >
-                                    </div>
-                                    <div class="col-md-8">
-                                        <p>
-                                        <h3>Test <br><small>SKU: 154156</small></h3>
-                                        
-                                        <h3>5455 <span style="text-decoration: line-through;">444</span></h3>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="rqData"></div>
+
                     </div>
                     <!-- Modal footer -->
                     {{-- <div class="modal-footer">
@@ -267,14 +249,16 @@
                 },
                 success: function(data) {
                     // Open the modal
-                    $('#duplicateModal').modal('show');
                     // Handle the response data here
-                    console.log(data);
-                    return false;
-
-                    $('#notDY').html('');
-                    $('#notDY').html(data.notify);
-                    // toastr.success(data, 'New Notification Received');
+                    // console.log(data);
+                    if (data.status) {
+                        $('#rqData').html('');
+                        $('#rqData').html(data.htmlData);
+                        $('#duplicateModal').modal('show');
+                        toastr.success('Data Retrieved Successfully', '');
+                    } else {
+                        toastr.error('Something went wrong!', '');
+                    }
                 },
                 error: function(xhr, status, error) {
                     // Handle the error here

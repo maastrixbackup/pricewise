@@ -1397,6 +1397,60 @@ class ProductController extends Controller
 
     public function checkRequestDetails(Request $request)
     {
-        return $request->all();
+        $id = $request->id;
+        if ($id) {
+            $checkRequest = ProductRequest::with('userDetails', 'productDetails')->find($id);
+            $htmlData = '';
+            if ($checkRequest) {
+                $formattedCallbackDate = Carbon::parse($checkRequest->callback_date_time)->format('F j, Y g:i A'); // Format example: August 27, 2024 2:30 PM
+              
+                $htmlData = '
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <img src="' . asset('storage/images/shops/' . $checkRequest->productDetails->banner_image) . '"
+                                    alt="" width="200px">
+                            </div>
+                            <div class="col-md-6 pt-3">
+                                <div><b>' . $checkRequest->productDetails->title . '</b></div>
+                                <small>SKU: ' . $checkRequest->productDetails->sku . '</small>
+                                <div><b ><span style="font-size: 20px;">' . '€' . $checkRequest->productDetails->sell_price . ' </span><span style="text-decoration: line-through; font-size: 15px;">' . '€' . $checkRequest->productDetails->actual_price . '</span></b></div>
+                            </div>
+                                <hr/>
+                            <div class="col-md-12">
+                                <b>Customer Name:</b> ' . $checkRequest->user_name . '
+                            </div>
+                                <hr/>
+                            <div class="col-md-12">
+                                <b>Email:</b> ' . $checkRequest->email . '
+                            </div>
+                                <hr/>
+                            <div class="col-md-12">
+                                <b>Phone Number:</b> ' . $checkRequest->phone_number . '
+                            </div>
+                                <hr/>
+                            <div class="col-md-12">
+                                <b>Requested Quantity:</b> ' . $checkRequest->qty . '
+                            </div>
+                                <hr/>
+                            <div class="col-md-12">
+                                <b>Callback Date & Time:</b> ' . $formattedCallbackDate . '
+                            </div>
+                                <hr/>
+                            <div class="col-md-12">
+                                <b>Delivery Address:</b> ' . $checkRequest->delivery_address . '
+                            </div>
+                                <hr/>
+                            <div class="col-md-12">
+                                <b>Additional Message:</b> ' . $checkRequest->additional_info . '
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+            }
+            return response()->json(['status' => true, 'htmlData' => $htmlData]);
+        }
+        return response()->json(['status' => false, 'htmlData' => '']);
     }
 }
