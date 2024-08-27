@@ -142,8 +142,10 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::post('/add-product-highlights/{id}', 'ProductController@storeProductHighlight')->name('add_product_highlights');
             Route::post('/delete-product-highlight', 'ProductController@delete_p_highlight')->name('delete_p_highlight');
             Route::get('/request-products', 'ProductController@requestedProduct')->name('request_products');
+            Route::get('/notify-products', 'ProductController@notificationProduct')->name('notify_products');
             Route::post('/request-product-details', 'ProductController@checkRequestDetails')->name('request_product_details');
-
+            // Notification
+            Route::get('/notifications', 'ProductController@checkNotification')->name('notifications');
             // Product Category
             Route::prefix('product-color')->group(function () {
                 Route::get('/', 'ProductController@color_index')->name('product-color.index');

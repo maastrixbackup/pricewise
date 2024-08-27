@@ -15,10 +15,15 @@ use App\Models\ProductRequest;
 use App\Models\ShopProduct;
 use App\Models\ShopSetting;
 use App\Models\WishlistProduct;
+use App\Models\NotifyProduct;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mail\AdminNewRequestNotification;
 use Illuminate\Support\Facades\Log;
 use App\Mail\UserRequestConfirmation;
+use App\Mail\UserProductNotification;
+use App\Mail\AdminProductNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Models\EmailTemplate;
@@ -150,7 +155,7 @@ class ShopProductController extends Controller
             'promotion' => $promotionProduct,
             'catWithProduct' => $filteredCat,
             'commonSetting' => $shopCommon
-        ], 200);
+        ]);
     }
 
     public function shopFilter(Request $request)
@@ -268,7 +273,7 @@ class ShopProductController extends Controller
             'totalRatings' => $totalRatings,
             'reviews' => $rating,
             'commonData' => $shopCommon,
-        ], 200);
+        ]);
     }
 
 
@@ -342,7 +347,7 @@ class ShopProductController extends Controller
                         'ratingsCount' => $ratingCount,
                         'reviews' => $review,
                         'rating' => $rate
-                    ], 200);
+                    ]);
                 }
             }
         } catch (\Exception $e) {
@@ -378,7 +383,7 @@ class ShopProductController extends Controller
                     'status' => true,
                     'ratingsData' => $reviews,
                     'message' => 'Reviews Retrieved Successfully.'
-                ], 200);
+                ]);
             }
         }
 
@@ -495,7 +500,7 @@ class ShopProductController extends Controller
                     'existData' => $cartItems,
                     'cartCount' => $cartCount,
                     'message' => 'Product added to cart successfully!'
-                ], 200);
+                ]);
             }
         }
 
@@ -556,7 +561,7 @@ class ShopProductController extends Controller
             'cart_products' => $cartProducts,
             'cartCount' => $cartCount,
             'message' => 'Cart viewed successfully.'
-        ], 200);
+        ]);
     }
 
 
@@ -610,14 +615,14 @@ class ShopProductController extends Controller
                             'existData' => $cartItems,
                             'cartCount' => $cartCount,
                             'message' => 'Product removed from cart successfully!'
-                        ], 200);
+                        ]);
                     } else {
                         // If the cart is empty after deletion, return a message
                         return response()->json([
                             'success' => true,
                             'existData' => [],
                             'message' => 'Product removed from cart successfully, no items left in the cart.'
-                        ], 200);
+                        ]);
                     }
                 }
             } else {
@@ -829,7 +834,7 @@ class ShopProductController extends Controller
                     'status' => true,
                     'wishlistCount' => $wishlistCount,
                     'message' => 'Product removed from wishlist.'
-                ], 200);
+                ]);
             }
 
             return response()->json([
@@ -960,92 +965,234 @@ class ShopProductController extends Controller
     }
 
 
+    // public function storeProductRequest(Request $request)
+    // {
+    //     // Set the default timezone
+    //     // date_default_timezone_set('GMT');
+    //     $current_time = date('H:i:s');
+
+    //     // Create a DateTime object from the string
+    //     $date = $request->input('callback_date');
+    //     $dateTime = $date->datetime('Y-m-d H:i:s');
+    //     return $dateTime;
+    //     if ($request->has('user_id') && $request->has('product_id')) {
+    //         try {
+
+    //             // Format the date as 'Y-m-d H:i:s'
+    //             $formattedDate = $date->format('Y-m-d H:i:s');
+
+    //             // Create a new ProductRequest instance
+    //             $productReqs = new ProductRequest();
+    //             $productReqs->user_id = $request->input('user_id');
+    //             $productReqs->product_id = $request->input('product_id');
+    //             $productReqs->user_name = $request->input('user_name');
+    //             $productReqs->email = $request->input('email');
+    //             $productReqs->phone_number = $request->input('phone_number');
+    //             $productReqs->qty = $request->input('qty');
+    //             $productReqs->delivery_address = $request->input('delivery_address');
+    //             $productReqs->curr_time = $current_time;
+    //             $productReqs->callback_date = $request->input('callback_date');
+    //             $productReqs->additional_info = $request->input('additional_info');
+    //             $productReqs->terms_condition = $request->input('terms_condition'); // corrected field
+
+    //             // Save the product request to the database
+    //             $productReqs->save();
+
+    //             // Fetch product name
+    //             $product = ShopProduct::find($request->input('product_id'));
+    //             $product_name = $product->title;
+
+    //             // Prepare email data
+    //             $userName = $request->input('user_name');
+    //             $userEmail = $request->input('email');
+    //             $userNumber = $request->input('phone_number');
+    //             $quantity = $request->input('qty');
+    //             $deliveryAddress = $request->input('delivery_address');
+    //             $callbackDate = $request->input('callback_date');
+    //             $additionalInfo = $request->input('additional_info');
+
+    //             // Log email data
+    //             Log::info('Sending email with the following details:', [
+    //                 'user_name' => $userName,
+    //                 'product_name' => $product_name,
+    //                 'quantity' => $quantity,
+    //                 'delivery_address' => $deliveryAddress,
+    //                 'callback_date' => $callbackDate,
+    //                 'additional_info' => $additionalInfo,
+    //             ]);
+
+    //             // // Send confirmation email to the user
+    //             // Mail::to($userEmail)->send(new UserRequestConfirmation(
+    //             //     $userName,
+    //             //     $product_name,
+    //             //     $quantity,
+    //             //     $deliveryAddress,
+    //             //     $callbackDate,
+    //             //     $additionalInfo
+    //             // ));
+
+    //             // // Send notification email to the admin
+    //             // Mail::to('bibhuprasad.maastrix@gmail.com')->send(new AdminNewRequestNotification(
+    //             //     $userName,
+    //             //     $userEmail,
+    //             //     $userNumber,
+    //             //     $product_name,
+    //             //     $quantity,
+    //             //     $deliveryAddress,
+    //             //     $callbackDate,
+    //             //     $additionalInfo
+    //             // ));
+
+    //             // Prepare the HTML message
+    //             $message = "Hi <b>{$userName}</b>, your request has been received, and a confirmation email has been sent to this email address: <i>{$userEmail}</i>";
+
+    //             // Return a success response with the HTML message
+    //             return response()->json(['status' => true, 'message' => $message]);
+    //         } catch (\Exception $e) {
+    //             // Log the error
+    //             Log::error('Failed to process request or send email: ' . $e->getMessage());
+
+    //             // Return an error response
+    //             return response()->json(['status' => false, 'message' => $e->getMessage()]);
+    //         }
+    //     } else {
+    //         return response()->json(['status' => false, 'message' => 'Missing required user_id or product_id']);
+    //     }
+    // }
+
     public function storeProductRequest(Request $request)
     {
-        // Set the default timezone
-        // date_default_timezone_set('GMT');
-        $current_time = date('H:i:s');
+        // Validate required fields
+        $validatedData = $request->validate([
+            'user_id'          => 'required|integer|exists:users,id',
+            'product_id'       => 'required|integer|exists:shop_products,id',
+            'user_name'        => 'required|string|max:255',
+            'email'            => 'required|email|max:255',
+            'phone_number'     => 'required|string|max:20',
+            'qty'              => 'required|integer|min:1',
+            'delivery_address' => 'required|string|max:500',
+            'callback_date'    => 'required|date_format:Y-m-d\TH:i',
+            'additional_info'  => 'nullable|string|max:1000',
+            'terms_condition'  => 'required|boolean',
+        ]);
 
-        if ($request->has('user_id') && $request->has('product_id')) {
-            try {
-                // Create a new ProductRequest instance
-                $productReqs = new ProductRequest();
-                $productReqs->user_id = $request->input('user_id');
-                $productReqs->product_id = $request->input('product_id');
-                $productReqs->user_name = $request->input('user_name');
-                $productReqs->email = $request->input('email');
-                $productReqs->phone_number = $request->input('phone_number');
-                $productReqs->qty = $request->input('qty');
-                $productReqs->delivery_address = $request->input('delivery_address');
-                $productReqs->curr_time = $current_time;
-                $productReqs->callback_date = $request->input('callback_date');
-                $productReqs->additional_info = $request->input('additional_info');
-                $productReqs->terms_condition = $request->input('terms_condition'); // corrected field
+        try {
+            // Parse and format callback_date using Carbon
+            $callbackDate = Carbon::parse($validatedData['callback_date'])->format('Y-m-d H:i:s');
 
-                // Save the product request to the database
-                $productReqs->save();
+            // Get current time in 'H:i:s' format
+            $currentTime = Carbon::now()->format('H:i:s');
 
-                // Fetch product name
-                $product = ShopProduct::find($request->input('product_id'));
-                $product_name = $product->title;
+            // Create a new ProductRequest instance and fill data
+            $productRequest = new ProductRequest();
+            $productRequest->user_id          = $validatedData['user_id'];
+            $productRequest->product_id       = $validatedData['product_id'];
+            $productRequest->user_name        = $validatedData['user_name'];
+            $productRequest->email            = $validatedData['email'];
+            $productRequest->phone_number     = $validatedData['phone_number'];
+            $productRequest->qty              = $validatedData['qty'];
+            $productRequest->delivery_address = $validatedData['delivery_address'];
+            $productRequest->curr_time        = $currentTime;
+            $productRequest->callback_date    = $callbackDate;
+            $productRequest->additional_info  = $validatedData['additional_info'] ?? null;
+            $productRequest->terms_condition  = $validatedData['terms_condition'];
 
-                // Prepare email data
-                $userName = $request->input('user_name');
-                $userEmail = $request->input('email');
-                $userNumber = $request->input('phone_number');
-                $quantity = $request->input('qty');
-                $deliveryAddress = $request->input('delivery_address');
-                $callbackDate = $request->input('callback_date');
-                $additionalInfo = $request->input('additional_info');
+            // Save the product request to the database
+            $productRequest->save();
 
-                // Log email data
-                Log::info('Sending email with the following details:', [
-                    'user_name' => $userName,
-                    'product_name' => $product_name,
-                    'quantity' => $quantity,
-                    'delivery_address' => $deliveryAddress,
-                    'callback_date' => $callbackDate,
-                    'additional_info' => $additionalInfo,
-                ]);
+            // Fetch product details
+            $product = ShopProduct::findOrFail($validatedData['product_id']);
 
-                // // Send confirmation email to the user
-                // Mail::to($userEmail)->send(new UserRequestConfirmation(
-                //     $userName,
-                //     $product_name,
-                //     $quantity,
-                //     $deliveryAddress,
-                //     $callbackDate,
-                //     $additionalInfo
-                // ));
+            // Prepare email data
+            $emailData = [
+                'user_name'        => $validatedData['user_name'],
+                'user_email'       => $validatedData['email'],
+                'user_number'      => $validatedData['phone_number'],
+                'product_name'     => $product->title,
+                'quantity'         => $validatedData['qty'],
+                'delivery_address' => $validatedData['delivery_address'],
+                'callback_date'    => $callbackDate,
+                'additional_info'  => $validatedData['additional_info'] ?? 'N/A',
+            ];
 
-                // // Send notification email to the admin
-                // Mail::to('bibhuprasad.maastrix@gmail.com')->send(new AdminNewRequestNotification(
-                //     $userName,
-                //     $userEmail,
-                //     $userNumber,
-                //     $product_name,
-                //     $quantity,
-                //     $deliveryAddress,
-                //     $callbackDate,
-                //     $additionalInfo
-                // ));
+            // Log email data
+            Log::info('Sending email with the following details:', $emailData);
 
-                // Prepare the HTML message
-                $message = "Hi <b>{$userName}</b>, your request has been received, and a confirmation email has been sent to this email address: <i>{$userEmail}</i>";
+            // Uncomment and configure these lines if email functionality is set up
+            // Mail::to($emailData['user_email'])->send(new UserRequestConfirmation($emailData));
+            // Mail::to('admin@example.com')->send(new AdminNewRequestNotification($emailData));
 
-                // Return a success response with the HTML message
-                return response()->json(['status' => true, 'message' => $message]);
-            } catch (\Exception $e) {
-                // Log the error
-                Log::error('Failed to process request or send email: ' . $e->getMessage());
+            // Prepare the success message
+            $message = "Hi <b>{$emailData['user_name']}</b>, your request has been received, and a confirmation email has been sent to: <i>{$emailData['user_email']}</i>";
 
-                // Return an error response
-                return response()->json(['status' => false, 'message' => $e->getMessage()]);
-            }
-        } else {
-            return response()->json(['status' => false, 'message' => 'Missing required user_id or product_id']);
+            // Return a success response
+            return response()->json(['status' => true, 'message' => $message], 200);
+        } catch (\Exception $e) {
+            // Log the error details
+            Log::error('Error in storeProductRequest:', [
+                'message' => $e->getMessage(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+
+            // Return an error response
+            return response()->json(['status' => false, 'message' => 'An error occurred while processing your request. Please try again later.'], 500);
         }
     }
+
+    public function saveProductNotifyRequest(Request $req)
+    {
+        $userId = $req->input('user_id');
+        $productId = $req->input('product_id');
+        $email = $req->input('email');
+        $current_time = date('H:i:s');
+
+        if ($userId && $productId && $email) {
+
+            // Check if the notification request already exists and is not notified
+            $existNotify = NotifyProduct::where([
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'notified' => '0'
+            ])->first();
+
+            if ($existNotify) {
+                return response()->json(['status' => false, 'message' => 'Already requested for notification.']);
+            }
+
+            $productNotify = new NotifyProduct();
+            $productNotify->user_id = $userId;
+            $productNotify->product_id = $productId;
+            $productNotify->curr_time = $current_time;
+            $productNotify->notify_email = $email;
+
+            if ($productNotify->save()) {
+                // Fetch user details
+                $userDetails = User::find($userId);
+                $product = ShopProduct::find($productId);
+
+                if ($userDetails) {
+                    $userName = $userDetails->name;
+                    $p_name = $product->title;
+
+                    // Log the email details
+                    Log::info('Sending email with the following details:', [
+                        'user_name' => $userName,
+                        'product_name' => $p_name,
+                        'email' => $email,
+                    ]);
+
+                    // Send confirmation emails to the user and the admin
+                    // Mail::to($email)->send(new UserProductNotification($userName, $p_name, $email));
+                    // Mail::to('bibhuprasad.maastrix@gmail.com')->send(new AdminProductNotification($userName, $p_name, $email));
+
+                    return response()->json(['status' => true, 'message' => 'You will be notified']);
+                }
+            }
+        }
+
+        return response()->json(['status' => false, 'message' => 'Failed to process the request']);
+    }
+
 
 
 
@@ -1217,7 +1364,7 @@ class ShopProductController extends Controller
     //         'deals' => $dealsProduct,
     //         'promotion' => $promotionProduct,
     //         'catWithProduct' => $filteredCat,
-    //     ], 200);
+    //     ]);
     // }
 
 }
