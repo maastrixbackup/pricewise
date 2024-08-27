@@ -412,7 +412,7 @@ class ShopProductController extends Controller
                     'user_id' => $request->input('user_id'),
                 ])->with('productDetails')->get();
 
-
+                $cartCount = $viewCartProduct->count();
                 $cartAmount = $viewCartProduct->sum('amount'); // Calculate the total cart amount
                 $cartItems = $viewCartProduct->map(function ($cp) {
                     return [
@@ -443,8 +443,9 @@ class ShopProductController extends Controller
                     'success' =>  true,
                     'total_amount' => $cartAmount,
                     'existData' => $cartItems,
+                    'cartCount' => $cartCount,
                     'message' => 'Cart updated successfully!'
-                ], 200);
+                ]);
             }
         } else {
             // If the product is not in the cart, create a new cart entry
@@ -461,6 +462,7 @@ class ShopProductController extends Controller
                 ])->with('productDetails')->get();
 
 
+                $cartCount = $viewCartProduct->count();
                 $cartAmount = $viewCartProduct->sum('amount'); // Calculate the total cart amount
                 $cartItems = $viewCartProduct->map(function ($cp) {
                     return [
@@ -491,6 +493,7 @@ class ShopProductController extends Controller
                     'success' => true,
                     'total_amount' => $cartAmount,
                     'existData' => $cartItems,
+                    'cartCount' => $cartCount,
                     'message' => 'Product added to cart successfully!'
                 ], 200);
             }
@@ -519,6 +522,7 @@ class ShopProductController extends Controller
         }
 
 
+        $cartCount = $viewCartProduct->count();
         $cartAmount = $viewCartProduct->sum('amount'); // Calculate the total cart amount
         // Map the cart products to a simplified structure
         $cartProducts = $viewCartProduct->map(function ($cp) {
@@ -550,6 +554,7 @@ class ShopProductController extends Controller
             'success' => true,
             'total_amount' => $cartAmount,
             'cart_products' => $cartProducts,
+            'cartCount' => $cartCount,
             'message' => 'Cart viewed successfully.'
         ], 200);
     }
@@ -569,6 +574,7 @@ class ShopProductController extends Controller
                         ->with('productDetails')
                         ->get();
 
+                    $cartCount = $cartProducts->count();
                     $cartAmount = $cartProducts->sum('amount'); // Calculate the total cart amount
 
                     if ($cartProducts->isNotEmpty()) {
@@ -602,6 +608,7 @@ class ShopProductController extends Controller
                             'success' => true,
                             'total_amount' => $cartAmount,
                             'existData' => $cartItems,
+                            'cartCount' => $cartCount,
                             'message' => 'Product removed from cart successfully!'
                         ], 200);
                     } else {
@@ -763,32 +770,33 @@ class ShopProductController extends Controller
 
     public function addToWishList(Request $request)
     {
+        $userId = $request->input('user_id');
+        $productId = $request->input('product_id');
 
-        if ($request->has('user_id') && $request->has('product_id')) {
+        if ($userId && $productId) {
             // Check if the product is already in the wishlist
             $existingWishlist = WishlistProduct::where([
-                'user_id' => $request->input('user_id'),
-                'product_id' => $request->input('product_id')
+                'user_id' => $userId,
+                'product_id' => $productId
             ])->first();
 
             if ($existingWishlist) {
                 return $this->removeFromWishList($request);
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => 'Product is already in your wishlist.',
-                // ]);
             }
 
             // Add the product to the wishlist
             $wishlistAdd = new WishlistProduct();
-            $wishlistAdd->user_id = $request->input('user_id');
-            $wishlistAdd->product_id = $request->input('product_id');
+            $wishlistAdd->user_id = $userId;
+            $wishlistAdd->product_id = $productId;
 
             if ($wishlistAdd->save()) {
+                $wishlistItems = WishlistProduct::where('user_id', $userId)->get();
+                $wishlistCount = $wishlistItems->count();
                 return response()->json([
                     'status' => true,
                     'listData' => $wishlistAdd,
-                    'message' => 'Product Added in your wishlist.',
+                    'wishlistCount' => $wishlistCount,
+                    'message' => 'Product added to your wishlist.',
                 ]);
             }
         }
@@ -801,27 +809,33 @@ class ShopProductController extends Controller
 
     public function removeFromWishList(Request $request)
     {
-        if ($request->has('user_id') && $request->has('product_id')) {
+        $userId = $request->input('user_id');
+        $productId = $request->input('product_id');
+
+        if ($userId && $productId) {
             // Find the wishlist entry
             $wishlistItem = WishlistProduct::where([
-                'user_id' => $request->input('user_id'),
-                'product_id' => $request->input('product_id')
+                'user_id' => $userId,
+                'product_id' => $productId
             ])->first();
 
             // If the item exists, delete it
             if ($wishlistItem) {
                 $wishlistItem->delete();
 
+                $wishlistItems = WishlistProduct::where('user_id', $userId)->get();
+                $wishlistCount = $wishlistItems->count();
                 return response()->json([
                     'status' => true,
-                    'message' => 'Product removed from wishlist .'
+                    'wishlistCount' => $wishlistCount,
+                    'message' => 'Product removed from wishlist.'
                 ], 200);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Product not found in your wishlist.'
-                ], 404);
             }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Product not found in your wishlist.'
+            ], 404);
         }
 
         return response()->json([
@@ -829,6 +843,74 @@ class ShopProductController extends Controller
             'message' => 'Failed to remove product from wishlist. Please provide valid user_id and product_id.',
         ], 400);
     }
+    // public function addToWishList(Request $request)
+    // {
+
+    //     if ($request->has('user_id') && $request->has('product_id')) {
+    //         // Check if the product is already in the wishlist
+    //         $existingWishlist = WishlistProduct::where([
+    //             'user_id' => $request->input('user_id'),
+    //             'product_id' => $request->input('product_id')
+    //         ])->first();
+
+    //         if ($existingWishlist) {
+    //             return $this->removeFromWishList($request);
+    //             // return response()->json([
+    //             //     'status' => false,
+    //             //     'message' => 'Product is already in your wishlist.',
+    //             // ]);
+    //         }
+
+    //         // Add the product to the wishlist
+    //         $wishlistAdd = new WishlistProduct();
+    //         $wishlistAdd->user_id = $request->input('user_id');
+    //         $wishlistAdd->product_id = $request->input('product_id');
+
+    //         if ($wishlistAdd->save()) {
+    //             return response()->json([
+    //                 'status' => true,
+    //                 'listData' => $wishlistAdd,
+    //                 'message' => 'Product Added in your wishlist.'
+    //             ]);
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'status' => false,
+    //         'message' => 'Failed to add product to wishlist. Please provide valid user_id and product_id.',
+    //     ]);
+    // }
+
+    // public function removeFromWishList(Request $request)
+    // {
+    //     if ($request->has('user_id') && $request->has('product_id')) {
+    //         // Find the wishlist entry
+    //         $wishlistItem = WishlistProduct::where([
+    //             'user_id' => $request->input('user_id'),
+    //             'product_id' => $request->input('product_id')
+    //         ])->first();
+
+    //         // If the item exists, delete it
+    //         if ($wishlistItem) {
+    //             $wishlistItem->delete();
+
+    //             return response()->json([
+    //                 'status' => true,
+    //                 'message' => 'Product removed from wishlist.'
+    //             ]);
+    //         } else {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'Product not found in your wishlist.'
+    //             ]);
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'status' => false,
+    //         'message' => 'Failed to remove product from wishlist. Please provide valid user_id and product_id.',
+    //     ]);
+    // }
 
     public function productWishLists(Request $request)
     {
@@ -842,9 +924,12 @@ class ShopProductController extends Controller
             ])->first();
 
             if ($wishlistProduct) {
+                $wItems = WishlistProduct::where('user_id', $request->input('user_id'))->get();
+                $wCount = $wItems->count();
                 return response()->json([
                     'status' => true,
                     'wishlistProduct' => $wishlistProduct,
+                    'wishlistCount' => $wCount,
                     'message' => 'Product found in wishlist.'
                 ]);
             } else {
@@ -858,10 +943,11 @@ class ShopProductController extends Controller
 
         if ($userId) {
             $wishlistProducts = WishlistProduct::where('user_id', $userId)->get();
-
+            $wishListCount = $wishlistProducts->count();
             return response()->json([
                 'status' => true,
                 'wishlistProducts' => $wishlistProducts,
+                'wishlistCount' => $wishListCount,
                 'message' => 'Successfully retrieved all products.'
             ]);
         }
