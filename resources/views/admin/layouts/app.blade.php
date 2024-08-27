@@ -359,7 +359,7 @@
 
         function fetchData(param) {
             $.ajax({
-                url: '{{ route('admin.request_products') }}', // Replace with your URL
+                url: '{{ route('admin.notifications') }}', // Replace with your URL
                 method: 'GET', // Use 'POST' if required
                 data: {
                     id: param
@@ -369,7 +369,7 @@
                     // console.log(data);
                     // Show or hide the button based on the count
                     if (data.count > 0) {
-                        $('#viewNotBtn').css('display', 'block');
+                        $('#viewNotBtn').css('display', 'none');
                     } else {
                         $('#viewNotBtn').css('display', 'none');
                     }

@@ -242,7 +242,14 @@
                          <li class="nav-main-item">
                             <a class="nav-main-link" href="{{ route('admin.request_products') }}">
                              <i class="nav-main-link-icon fa-solid fa-envelope-o" aria-hidden="true"></i>
-                                <span class="nav-main-link-name">Request Product</span>
+                                <span class="nav-main-link-name">On Demand Product</span>
+                            </a>
+                        </li>
+
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.notify_products') }}">
+                             <i class="nav-main-link-icon fa-solid fa-envelope-o" aria-hidden="true"></i>
+                                <span class="nav-main-link-name">Notify Product</span>
                             </a>
                         </li>
 

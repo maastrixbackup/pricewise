@@ -128,6 +128,7 @@ Route::post('remove-quantity', [ShopProductController::class, 'removeQty']);
 Route::any('store-product-review', [ShopProductController::class, 'storeProductReviews']);
 Route::post('filter-reviews', [ShopProductController::class, 'filteredReviews']);
 Route::post('save-product-requests', [ShopProductController::class, 'storeProductRequest']);
+Route::post('product-notification-request', [ShopProductController::class, 'saveProductNotifyRequest']);
 
 //Frontend Guest
 // SmartPhone Deals

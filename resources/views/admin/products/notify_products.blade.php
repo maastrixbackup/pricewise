@@ -106,21 +106,24 @@
                                     <th>Product Name</th>
                                     <th>User Name</th>
                                     <th>Eamil</th>
-                                    <th>Quantity</th>
-                                    <th>Action</th>
+                                    <th>Notified  (Yes/No)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($requestP)
-                                    @foreach ($requestP as $req)
+                                @if ($notifyP)
+                                    @foreach ($notifyP as $req)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $req->productDetails->title }}</td>
-                                            <td>{{ $req->user_name }}</td>
-                                            <td>{{ $req->email }}</td>
-                                            <td>{{ $req->qty }}</td>
-                                            <td><a href="javascript:;" class="badge text-success"
-                                                    onclick="chkRequest('{{ $req->id }}')">Details</a></td>
+                                            <td>{{ $req->userDetails->name }}</td>
+                                            <td>{{ $req->notify_email }}</td>
+                                            <td>
+                                                @if ($req->notified == '0')
+                                                    <span class="badge text-danger">No</span>
+                                                    @else
+                                                    <span class="badge text-success">Yes</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -236,36 +239,6 @@
 
         });
 
-        function chkRequest(id) {
-            alert(id);
-            $.ajax({
-                url: '{{ route('admin.request_product_details') }}', // Replace with your URL
-                method: 'POST', // Use 'POST' if required
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    id: id
-                },
-                success: function(data) {
-                    // Open the modal
-                    // Handle the response data here
-                    // console.log(data);
-                    if (data.status) {
-                        $('#rqData').html('');
-                        $('#rqData').html(data.htmlData);
-                        $('#duplicateModal').modal('show');
-                        toastr.success('Data Retrieved Successfully', '');
-                    } else {
-                        toastr.error('Something went wrong!', '');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Handle the error here
-                    console.error(error);
-                }
-            });
-        }
         // Function to perform the AJAX request
         // let myParam = 1;
 
@@ -304,20 +277,6 @@
         // }, 10000); // 10000 milliseconds = 10 seconds
 
 
-        $('#p_status').on('change', function() {
-            var sts = $('#p_status').val();
-            console.log(sts);
-
-            if (sts == 3) {
-                $('#qty').val('');
-                $('#qty').attr('readonly', true);
-            } else if (sts == 0) {
-                $('#qty').val('0');
-                $('#qty').attr('readonly', true);
-            } else if (sts == 1 || sts == 2) {
-                $('#qty').val('');
-                $('#qty').attr('readonly', false);
-            }
-        });
+        
     </script>
 @endpush

@@ -12,6 +12,7 @@ use App\Models\ProductPromotion;
 use App\Models\ProductRating;
 use App\Models\ProductRequest;
 use App\Models\ShopProduct;
+use App\Models\NotifyProduct;
 use App\Models\ShopSetting;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\DB;
@@ -1347,54 +1348,6 @@ class ProductController extends Controller
         }
     }
 
-    public function requestedProduct(Request $req)
-    {
-        if ($req->has('id')) {
-            $rp = ProductRequest::latest()->take(10)->where('status', '0')->with('userDetails', 'productDetails')->get();
-            $count = $rp->count();
-            $notify = '';
-
-            if ($count > 0) {
-                foreach ($rp as $v) {
-                    $specificTime = Carbon::parse($v->curr_time); // Adjust if needed
-                    // Format the notification item
-                    $notify .= '
-                    <li>
-                        <a class="d-flex text-dark py-2" href="javascript:void(0)">
-                            <div class="flex-shrink-0 mx-3">
-                                <i class="fa fa-fw fa-bell text-success"></i>
-                            </div>
-                            <div class="flex-grow-1 fs-sm pe-2">
-                                <div class="fw-semibold"> New request Added</div>
-                                <div class="text-muted">' . $specificTime->diffForHumans() . '</div>
-                            </div>
-                        </a>
-                    </li>';
-                }
-
-                return response()->json(['count' => $count, 'notify' => $notify]);
-            } else {
-                $notify = '
-                    <li>
-                        <a class="d-flex text-center text-dark py-2" href="javascript:void(0)">
-
-                            <div class="flex-grow-1 fs-sm pe-2">
-                                <i class="fa fa-fw fa-bell-o text-danger"></i>
-                                <div class="fw-semibold">There is No Notifications</div>
-                                <div class="text-muted"></div>
-                            </div>
-                        </a>
-                    </li>';
-                return response()->json(['count' => $count, 'notify' => $notify]);
-            }
-        }
-
-        // Update the status of all relevant requests
-        ProductRequest::where('status', '0')->update(['status' => '1']);
-        $requestP = ProductRequest::latest()->with('userDetails', 'productDetails')->get();
-        return view('admin.products.request_products', compact('requestP'));
-    }
-
     public function checkRequestDetails(Request $request)
     {
         $id = $request->id;
@@ -1403,7 +1356,7 @@ class ProductController extends Controller
             $htmlData = '';
             if ($checkRequest) {
                 $formattedCallbackDate = Carbon::parse($checkRequest->callback_date_time)->format('F j, Y g:i A'); // Format example: August 27, 2024 2:30 PM
-              
+
                 $htmlData = '
                 <div class="card">
                     <div class="card-body p-4">
@@ -1453,4 +1406,106 @@ class ProductController extends Controller
         }
         return response()->json(['status' => false, 'htmlData' => '']);
     }
+
+    public function requestedProduct(Request $req)
+    {
+        // Update the status of all relevant requests
+        ProductRequest::where('status', '0')->update(['status' => '1']);
+        $requestP = ProductRequest::latest()->with('userDetails', 'productDetails')->get();
+        return view('admin.products.request_products', compact('requestP'));
+    }
+
+    public function notificationProduct(Request $request)
+    {
+        // Update the status of all relevant requests
+        NotifyProduct::where('viewed', 'unread')->update(['viewed' => 'read']);
+        $notifyP = NotifyProduct::latest()->with('userDetails', 'productDetails')->get();
+        return view('admin.products.notify_products', compact('notifyP'));
+
+    }
+
+    public function checkNotification(Request $req)
+    {
+        if ($req->has('id')) {
+            // Fetch the latest 5 product requests with status '0' and related data
+            $rp = ProductRequest::latest()->where('status', '0')->with('userDetails', 'productDetails')->get();
+            // Fetch the latest 5 notifications for products
+            $np = NotifyProduct::latest()->where('viewed', 'unread')->get();
+            // Initialize the notification output and count variables
+            $notify = '';
+            $count = 0;
+
+            if ($rp->isNotEmpty()) {
+                $count += $rp->count();
+                foreach ($rp as $v) {
+                    $specificTime = Carbon::parse($v->created_at);
+                    // Format the notification item
+                    $notify .= '
+                                <li>
+                                    <a class="d-flex text-dark py-2" href="' . route('admin.request_products') . '">
+                                        <div class="flex-shrink-0 mx-3">
+                                            <i class="fa fa-fw fa-bell text-success"></i>
+                                        </div>
+                                        <div class="flex-grow-1 fs-sm pe-2">
+                                            <div class="fw-semibold">New request Added</div>
+                                            <div class="text-muted">' . $specificTime->diffForHumans() . '</div>
+                                        </div>
+                                    </a>
+                                </li>';
+                }
+            }
+
+            if ($np->isNotEmpty()) {
+                $count += $np->count();
+                foreach ($np as $v) {
+                    $specificTime = Carbon::parse($v->created_at);
+                    // Format the notification item
+                    $notify .= '
+                            <li>
+                                <a class="d-flex text-dark py-2" href="' . route('admin.notify_products') . '">
+                                    <div class="flex-shrink-0 mx-3">
+                                        <i class="fa fa-fw fa-bell text-success"></i>
+                                    </div>
+                                    <div class="flex-grow-1 fs-sm pe-2">
+                                        <div class="fw-semibold">New request for notification</div>
+                                        <div class="text-muted">' . $specificTime->diffForHumans() . '</div>
+                                    </div>
+                                </a>
+                            </li>';
+                }
+            }
+
+            // If no notifications found, display a default message
+            if ($count === 0) {
+                $notify = '
+            <li>
+                <a class="d-flex text-center text-dark py-2" href="javascript:void(0)">
+                    <div class="flex-grow-1 fs-sm pe-2">
+                        <i class="fa fa-fw fa-bell-o text-danger"></i>
+                        <div class="fw-semibold">There are No Notifications</div>
+                    </div>
+                </a>
+            </li>';
+            }
+
+            return response()->json(['count' => $count, 'notify' => $notify]);
+        }
+
+        // Return default response if 'id' is not present in the request
+        return response()->json(['count' => 0, 'notify' => $this->noNotificationsMessage()]);
+    }
+
+    private function noNotificationsMessage()
+    {
+        return '
+            <li>
+                <a class="d-flex text-center text-dark py-2" href="javascript:void(0)">
+                    <div class="flex-grow-1 fs-sm pe-2">
+                        <i class="fa fa-fw fa-bell-o text-danger"></i>
+                        <div class="fw-semibold">There are No Notifications</div>
+                    </div>
+                </a>
+            </li>';
+    }
+    
 }
