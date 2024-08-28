@@ -129,6 +129,7 @@ Route::any('store-product-review', [ShopProductController::class, 'storeProductR
 Route::post('filter-reviews', [ShopProductController::class, 'filteredReviews']);
 Route::post('save-product-requests', [ShopProductController::class, 'storeProductRequest']);
 Route::post('product-notification-request', [ShopProductController::class, 'saveProductNotifyRequest']);
+Route::post('send-email-notification', [ShopProductController::class, 'productNotifySend']);
 
 //Frontend Guest
 // SmartPhone Deals

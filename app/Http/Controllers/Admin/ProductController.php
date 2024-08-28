@@ -16,9 +16,15 @@ use App\Models\NotifyProduct;
 use App\Models\ShopSetting;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\DB;
+use App\Mail\AvailableProductNotification;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+
+
+use App\Http\Controllers\Api\ShopProductController;
 
 class ProductController extends Controller
 {
@@ -177,7 +183,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, \App\Http\Controllers\Api\ShopProductController $shopProductController)
     {
         $request->validate([
             'title' => 'required'
@@ -244,9 +250,36 @@ class ProductController extends Controller
             $shopProduct->banner_image = $filename ?? $shopProduct->banner_image;
 
             if ($shopProduct->save()) {
+
+                // Notify users about product availability
+                if ($shopProduct->qty > 0) {
+                    $notifyProducts = NotifyProduct::where(['product_id' => $shopProduct->id, 'notified' => '0'])->get();
+
+                    $shopProductController = new \App\Http\Controllers\Api\ShopProductController();
+
+                    foreach ($notifyProducts as $notifyProduct) {
+                        $params = [
+                            'user_name' => $notifyProduct->userDetails->name,
+                            'product_name' => $shopProduct->title,
+                            'url' => config('frontend.url') . 'shop/' . $shopProduct->slug,
+                            'email' => $notifyProduct->email,
+                            'notify_id' => $notifyProduct->id
+                        ];
+
+                        // Call the method in the ShopProductController
+                        $response = $shopProductController->productNotifySend($params);
+                        if ($response['status'] == 'success') {
+                            // Update the notification status to 'notified'
+                            NotifyProduct::where('id', $notifyProduct->id)->update(['notified' => '1']);
+                        }
+                    }
+                }
+
                 DB::commit();
                 return redirect()->route('admin.products.index')->with(Toastr::success('Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
             }
+
+            throw new \Exception('Failed to update product');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
@@ -1421,7 +1454,6 @@ class ProductController extends Controller
         NotifyProduct::where('viewed', 'unread')->update(['viewed' => 'read']);
         $notifyP = NotifyProduct::latest()->with('userDetails', 'productDetails')->get();
         return view('admin.products.notify_products', compact('notifyP'));
-
     }
 
     public function checkNotification(Request $req)
@@ -1507,5 +1539,4 @@ class ProductController extends Controller
                 </a>
             </li>';
     }
-    
 }
