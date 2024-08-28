@@ -94,7 +94,7 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">On Demand Products</h6>
+            <h6 class="mb-0 text-uppercase">Notification Products</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
@@ -114,7 +114,7 @@
                                     @foreach ($notifyP as $req)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $req->productDetails->title }}</td>
+                                            <td title="{{$req->product_id}}">{{ $req->productDetails->title }}</td>
                                             <td>{{ $req->userDetails->name }}</td>
                                             <td>{{ $req->notify_email }}</td>
                                             <td>
@@ -277,6 +277,6 @@
         // }, 10000); // 10000 milliseconds = 10 seconds
 
 
-        
+
     </script>
 @endpush

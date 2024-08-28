@@ -687,10 +687,13 @@
             var sts = $('#p_status').val();
 
             if (sts == 3) {
+                $('#qty').val('');
                 $('#qty').attr('readonly', true);
             } else if (sts == 0) {
+                $('#qty').val('0');
                 $('#qty').attr('readonly', true);
             } else if (sts == 1 || sts == 2) {
+                $('#qty').val('');
                 $('#qty').attr('readonly', false);
             }
         });

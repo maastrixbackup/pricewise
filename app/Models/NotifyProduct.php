@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class NotifyProduct extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'notify_email',
+        'curr_time',
+        'viewed',
+        'notified',
+    ];
+
 
     public function userDetails()
     {
