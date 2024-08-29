@@ -116,6 +116,7 @@
                                     <th>Availability</th>
                                     <th>Selling Price</th>
                                     <th>Product Type</th>
+                                    {{-- <th>Featured Product</th> --}}
                                     <th>New Arrival</th>
                                     <th>Action</th>
                                 </tr>
@@ -156,6 +157,13 @@
                                                     <span class="  text-uppercase">Large Bussiness</span>
                                                 @endif
                                             </td>
+                                            {{-- <td>
+                                                <input type="checkbox" style="width: 20px; height:20px;"
+                                                    id="a_{{ $loop->iteration }}" name="featured[]"
+                                                    onclick="chFeatured('{{ $record->id }}', '{{ $loop->iteration }}')"
+                                                    value="1" @if ($record->is_featured == 1) checked @endif><label
+                                                    for="a"></label>
+                                            </td> --}}
                                             <td>
                                                 {{-- <div class=" form-check-pr"> --}}
                                                 <input type="checkbox" style="width: 20px; height:20px;"
@@ -397,6 +405,10 @@
             });
 
         }
+
+        // function chFeatured(id) {
+        //     alert('Are You want to set as featured product?');
+        // }
 
         function duplicateP(pid) {
             // console.log('Function called with pid:', pid);

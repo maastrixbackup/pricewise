@@ -112,6 +112,8 @@ Route::post('business-equipment-insurance', [BusinessEquipmentController::class,
 Route::post('shop-products', [ShopProductController::class, 'index']);
 Route::get('product-details/{id}', [ShopProductController::class, 'productDetails']);
 Route::post('shop-filter', [ShopProductController::class, 'shopFilter']);
+Route::post('category-filter', [ShopProductController::class, 'categoryFilter']);
+Route::get('category-product/{slug}', [ShopProductController::class, 'categoryWiseProducts']);
 
 // API on Wish List
 Route::post('add-to-wishlist', [ShopProductController::class, 'addToWishList']);
