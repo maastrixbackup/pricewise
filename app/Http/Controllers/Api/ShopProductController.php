@@ -27,6 +27,7 @@ use App\Mail\AdminProductNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Models\EmailTemplate;
+use App\Mail\AvailableProductNotification;
 
 use App\Mail\WelcomeEmail;
 
@@ -73,6 +74,9 @@ class ShopProductController extends Controller
             $categoryProductsQuery = ShopProduct::where('category_id', $category['id']);
 
             // Apply additional filters within the category
+            if ($request->has('search')) {
+                $categoryProductsQuery->where('title', 'like', '%' . $request->input('search') . '%');
+            }
             if ($request->has('color_id')) {
                 $categoryProductsQuery->where('color_id', $request->input('color_id'));
             }
@@ -83,6 +87,17 @@ class ShopProductController extends Controller
                 $categoryProductsQuery->where('sell_price', '>=', $request->input('sell_price'));
             }
 
+            if ($request->has('filter')) {
+                if ($request->input('filter') == 1) {
+                    $categoryProductsQuery->orderBy('sell_price', 'desc');
+                }
+                if ($request->input('filter') == 2) {
+                    $categoryProductsQuery->orderBy('sell_price', 'asc');
+                }
+                if ($request->input('filter') == 3) {
+                    $categoryProductsQuery->orderBy('sell_count', 'desc');
+                }
+            }
             // Get the filtered products for the category
             $products = $categoryProductsQuery->get();
             $productData = $products->map(function ($product) use ($request) {
@@ -157,6 +172,86 @@ class ShopProductController extends Controller
             'commonSetting' => $shopCommon
         ]);
     }
+
+    public function categoryFilter(Request $request)
+    {
+        $productCategories = ProductCategory::orderBy('id', 'asc')->where('status', 'active')->get();
+        $productCategories = $productCategories->map(function ($cat) {
+            return [
+                'id' => $cat->id,
+                'title' => $cat->title,
+                'slug' => $cat->slug
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'categories' => $productCategories,
+            'message' => 'Data retrieved successfully.'
+        ]);
+    }
+
+
+    public function categoryWiseProducts(Request $request, $slug)
+    {
+        // Check if slug is empty
+        if (empty($slug)) {
+            return response()->json(['status' => false, 'message' => 'Slug cannot be empty']);
+        }
+
+        $pageNo = $request->pageNo ?? 1;
+        $postsPerPage = $request->postsPerPage ?? 12;
+        $toSkip = ($postsPerPage * $pageNo) - $postsPerPage;
+
+        $category = ProductCategory::where('slug', $slug)->first();
+
+        // Fetch similar products
+        $similarProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')
+            ->orderBy('id', 'DESC')
+            ->take(10)
+            ->get();
+
+        $featuredProduct = [];
+        if ($similarProducts->isNotEmpty()) {
+            foreach ($similarProducts as $pdt) {
+                $filterData = (new ShopProductResource($pdt))->toArray($request);
+                $featuredProduct[] = $filterData;
+            }
+        }
+
+        if ($category) {
+            // Fetch products by category
+            $catProducts = ShopProduct::where('category_id', $category->id)
+                ->with('categoryDetails', 'brandDetails', 'colorDetails', 'images')
+                ->skip($toSkip)
+                ->take($postsPerPage)
+                ->get();
+
+            // Check if catProducts is empty
+            if ($catProducts->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'featuredProduct' => $featuredProduct,
+                    'message' => 'No products found in this category'
+                ]);
+            }
+
+            // Filter the products
+            $filteredProducts = $catProducts->map(function ($product) use ($request) {
+                return (new ShopProductResource($product))->toArray($request);
+            });
+
+            return response()->json([
+                'status' => true,
+                'productsData' => $filteredProducts,
+                'featuredProduct' => $featuredProduct,
+                'message' => 'Products retrieved successfully'
+            ]);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Category not found'], 404);
+        }
+    }
+
 
     public function shopFilter(Request $request)
     {
@@ -1088,7 +1183,7 @@ class ShopProductController extends Controller
             $productRequest->user_id          = $validatedData['user_id'];
             $productRequest->product_id       = $validatedData['product_id'];
             $productRequest->user_name        = $validatedData['user_name'];
-            $productRequest->email            = $validatedData['email'];
+            $productRequest->email            = trim($validatedData['email']);
             $productRequest->phone_number     = $validatedData['phone_number'];
             $productRequest->qty              = $validatedData['qty'];
             $productRequest->delivery_address = $validatedData['delivery_address'];
@@ -1163,7 +1258,7 @@ class ShopProductController extends Controller
             $productNotify->user_id = $userId;
             $productNotify->product_id = $productId;
             $productNotify->curr_time = $current_time;
-            $productNotify->notify_email = $email;
+            $productNotify->notify_email = trim($email);
 
             if ($productNotify->save()) {
                 // Fetch user details
@@ -1191,6 +1286,35 @@ class ShopProductController extends Controller
         }
 
         return response()->json(['status' => false, 'message' => 'Failed to process the request']);
+    }
+
+    public function productNotifySend($params)
+    {
+        $userName = $params['user_name'];
+        $productName = $params['product_name'];
+        $productUrl = $params['url'];
+        $email = $params['email'];
+        $notifyId = $params['notify_id'];
+
+        try {
+            // Send the email
+            Mail::to($email)->send(new AvailableProductNotification($userName, $productName, $productUrl));
+            // Return the params or any other relevant data
+            return [
+                'status' => 'success',
+                'message' => 'Notification sent successfully',
+                'params' => $params
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error sending product availability notification: ' . $e->getMessage());
+
+            // Return error data
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'params' => $params
+            ];
+        }
     }
 
 

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Energise- Insurance Edit')
+@section('title', 'Shop - Product Edit')
 @section('content')
     <!--breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -693,7 +693,7 @@
                 $('#qty').val('0');
                 $('#qty').attr('readonly', true);
             } else if (sts == 1 || sts == 2) {
-                $('#qty').val('');
+                // $('#qty').val('');
                 $('#qty').attr('readonly', false);
             }
         });
