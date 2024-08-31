@@ -9,6 +9,7 @@ use App\Http\Resources\ShopProductResource;
 use App\Models\DealProduct;
 use App\Models\ProductCart;
 use App\Models\ProductCategory;
+use App\Models\ProductColor;
 use App\Models\ProductPromotion;
 use App\Models\ProductRating;
 use App\Models\ProductRequest;
@@ -74,30 +75,36 @@ class ShopProductController extends Controller
             $categoryProductsQuery = ShopProduct::where('category_id', $category['id']);
 
             // Apply additional filters within the category
-            if ($request->has('search')) {
+            if ($request->filled('search')) {
                 $categoryProductsQuery->where('title', 'like', '%' . $request->input('search') . '%');
             }
-            if ($request->has('color_id')) {
+
+            if ($request->filled('color_id')) {
                 $categoryProductsQuery->where('color_id', $request->input('color_id'));
             }
-            if ($request->has('product_type')) {
+
+            if ($request->filled('product_type')) {
                 $categoryProductsQuery->where('product_type', $request->input('product_type'));
             }
-            if ($request->has('sell_price')) {
+
+            if ($request->filled('sell_price')) {
                 $categoryProductsQuery->where('sell_price', '>=', $request->input('sell_price'));
             }
 
-            if ($request->has('filter')) {
-                if ($request->input('filter') == 1) {
-                    $categoryProductsQuery->orderBy('sell_price', 'desc');
-                }
-                if ($request->input('filter') == 2) {
-                    $categoryProductsQuery->orderBy('sell_price', 'asc');
-                }
-                if ($request->input('filter') == 3) {
-                    $categoryProductsQuery->orderBy('sell_count', 'desc');
+            if ($request->filled('filter')) {
+                switch ($request->input('filter')) {
+                    case 1:
+                        $categoryProductsQuery->orderBy('sell_price', 'desc');
+                        break;
+                    case 2:
+                        $categoryProductsQuery->orderBy('sell_price', 'asc');
+                        break;
+                    case 3:
+                        $categoryProductsQuery->orderBy('sell_count', 'desc');
+                        break;
                 }
             }
+
             // Get the filtered products for the category
             $products = $categoryProductsQuery->get();
             $productData = $products->map(function ($product) use ($request) {
@@ -107,13 +114,23 @@ class ShopProductController extends Controller
             $finalProducts[$category['title']] = $productData;
         }
 
+
         // Prepare new arrivals data
-        $newArrivalProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'colorDetails', 'images')
-            ->where('new_arrival', 1)
-            ->get();
+        if ($request->filled('category_id')) {
+            $newArrivalProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'colorDetails', 'images')
+                ->where('new_arrival', 1)
+                ->where('category_id', $request->input('category_id'))
+                ->get();
+        } else {
+            $newArrivalProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'colorDetails', 'images')
+                ->where('new_arrival', 1)
+                ->get();
+        }
+
         $filteredNewArrivals = $newArrivalProducts->map(function ($product) use ($request) {
             return (new ShopProductResource($product))->toArray($request);
         });
+
 
         // Prepare product category data
         $productCategory = ProductCategory::orderBy('id', 'asc')->where('status', 'active')->get();
@@ -136,7 +153,14 @@ class ShopProductController extends Controller
         });
 
         // Prepare deals products data
-        $dealsProduct = DealProduct::where('status', 'active')->get();
+        if ($request->filled('category_id')) {
+            $dealsProduct = DealProduct::where([
+                'status' => 'active',
+                'category' => $request->input('category_id')
+            ])->get();
+        } else {
+            $dealsProduct = DealProduct::where('status', 'active')->get();
+        }
         $dealsProduct = $dealsProduct->map(function ($deal) {
             return [
                 'id' => $deal->id,
@@ -293,6 +317,15 @@ class ShopProductController extends Controller
             })->values(); // Use values() to reset the keys
         }
 
+        // Product Color
+        $productColors = ProductColor::orderBy('id', 'asc')->where('status', 'active')->get();
+        $productColors = $productColors->map(function ($clr) {
+            return [
+                'id' => $clr->id,
+                'title' => $clr->title,
+
+            ];
+        });
         // Define the available product types
         $productType = [
             'personal' => 'Personal',
@@ -305,6 +338,7 @@ class ShopProductController extends Controller
             'success' => true,
             'productTypes' => $productType,
             'categories' => $filterCat,
+            'productColors' => $productColors,
             'products' => $filterProduct
         ]);
     }

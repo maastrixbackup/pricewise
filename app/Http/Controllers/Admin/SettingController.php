@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\WebsiteSetting;
+use App\Models\Category;
 use App\Models\Setting;
+use App\Models\FeeSetting;
 use App\Models\MailchimpSetting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
@@ -167,7 +169,7 @@ class SettingController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update Payment settings: ' . $e->getMessage();
             // Log the error for further investigation
-            \Log::error($errorMessage);
+            Log::error($errorMessage);
             $message = ['message' => 'Failed to update Payment settings', 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
@@ -191,7 +193,7 @@ class SettingController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update Business Settings: ' . $e->getMessage();
             // Log the error for further investigation
-            \Log::error($errorMessage);
+            Log::error($errorMessage);
             $message = ['message' => 'Failed to update Business Settings', 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
@@ -214,6 +216,58 @@ class SettingController extends Controller
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
+        }
+    }
+
+    public function nominalFeesEdit()
+    {
+        $categories = Category::orderBy('name', 'asc')->whereNull('parent')->get();
+        $settingFees = FeeSetting::latest()->get();
+        return view('admin.settings.nominal_fees_edit', compact('categories', 'settingFees'));
+    }
+
+    public function nominalFeesStore(Request $request)
+    {
+
+        // Check if both arrays are present or both are null
+        if ((is_array($request->cat_id) && is_array($request->fees)) ||
+            ($request->cat_id === null && $request->fees === null)
+        ) {
+            $catIds = $request->cat_id;
+            $fees = $request->fees;
+
+            // Ensure both arrays have the same length
+            if (count($catIds) === count($fees)) {
+
+                try {
+                    $data = array_combine($catIds, $fees);
+                    // dd($data);
+                    foreach ($data as $categoryId => $amount) {
+                        $feeSetting = FeeSetting::where('category_id', $categoryId)->first();
+
+                        if ($feeSetting) {
+                            // Update the amount if the fee setting already exists
+                            $feeSetting->update(['amount' => $amount]);
+                        } else {
+                            // Create a new fee setting if it doesn't exist
+                            FeeSetting::create([
+                                'category_id' => $categoryId,
+                                'amount' => $amount
+                            ]);
+                        }
+                    }
+                    return redirect()->back()->with(Toastr::success('Fees updated successfully', '', ["positionClass" => "toast-top-right"]));
+                } catch (\Exception $e) {
+                    return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+                }
+            } else {
+                return redirect()->back()->with(Toastr::error('Category IDs and fees counts do not match', '', ["positionClass" => "toast-top-right"]));
+                // return response()->json(['error' => 'Category IDs and fees counts do not match'], 400);
+            }
+        } else {
+            return redirect()->back()->with(Toastr::error('Invalid input', '', ["positionClass" => "toast-top-right"]));
+            // Handle the case where inputs are not set correctly
+            // return response()->json(['error' => 'Invalid input'], 400);
         }
     }
 }

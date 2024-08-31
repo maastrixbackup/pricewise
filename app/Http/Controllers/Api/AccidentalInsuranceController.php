@@ -8,6 +8,7 @@ use App\Models\Feature;
 use App\Models\insuranceCoverage;
 use App\Models\InsuranceProduct;
 use App\Models\Provider;
+use App\Models\FeeSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -30,7 +31,7 @@ class AccidentalInsuranceController extends Controller
         $insuredAmount = $request->insured_amount;
         $theftAmount =  $request->theft_amount;
         $homeType  = $request->home_type;
-        
+
         $products = InsuranceProduct::where('sub_category', config('constant.subcategory.AccidentalInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails','providerDetails');
 
         $products->when($postalCode, function ($query) use ($postalCode) {
@@ -110,6 +111,7 @@ class AccidentalInsuranceController extends Controller
             $coverage->image = asset('storage/images/insurance_coverages/' . $coverage->image);
             return $coverage;
         });
+        $nominalFee = FeeSetting::where('category_id', config('constant.category.Insurance'))->first()->amount;
 
         return response()->json([
             'success' => true,
@@ -118,6 +120,7 @@ class AccidentalInsuranceController extends Controller
             // 'coverages' => $coverages,
             'recordsCount' => $recordsCount,
             'filters' => $filters,
+            'nominalFees' => $nominalFee,
             'message' => $message
         ], 200);
     }
@@ -150,19 +153,19 @@ class AccidentalInsuranceController extends Controller
                             return (object) $item->toArray();
                         })->toArray()
                     ];
-                }                             
-            
+                }
+
                 $filteredProductsFormatted = AccidentalInsuranceResource::collection($filteredProducts);
 
-    
+
                 return response()->json([
                     'success' => true,
                     'data'    => $filteredProductsFormatted,
                     'filters' =>  $filters,
                     'message' => 'Products retrieved successfully.',
                 ], 200);
-                 
-                
+
+
             } else {
                 return $this->sendError('No products found -for comparison.', [], 404);
             }

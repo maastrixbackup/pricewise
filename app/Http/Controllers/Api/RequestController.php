@@ -15,6 +15,7 @@ use App\Models\EnergyProduct;
 use App\Models\Provider;
 use App\Models\SmartPhone;
 use App\Models\Feature;
+use App\Models\FeeSetting;
 use App\Models\PostRequest;
 use App\Models\InsuranceProduct;
 use Validator;
@@ -901,6 +902,30 @@ class RequestController extends BaseController
                 'recordsCount' => $recordsCount,
                 'message' => $message
             ], $code);
+        }
+    }
+
+    public function nominalFees(Request $request)
+    {
+        if ($request->input('category_id') != null) {
+            $feeSetting = FeeSetting::where('category_id', $request->input('category_id'))->first();
+            if ($feeSetting) {
+                return response()->json([
+                    'status' => true,
+                    'feeAmount' => $feeSetting->amount,
+                    'message' => 'Nominal Fee Retrieved.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Nominal Fee not found for the provided Category ID.'
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Category ID required'
+            ]);
         }
     }
 
