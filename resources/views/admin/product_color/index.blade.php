@@ -27,7 +27,7 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">Product Brands</h6>
+            <h6 class="mb-0 text-uppercase">Product Colors</h6>
             <hr />
             <div class="card">
                 <div class="card-body">

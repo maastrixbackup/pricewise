@@ -101,6 +101,10 @@ Route::post('get-cyber-security', [RequestController::class, 'cyberSecurity']);
 // API on Loan
 Route::post('get-loan-details', [RequestController::class, 'getLoanDetails']);
 Route::post('get-loan-type', [RequestController::class,  'getPurposeData']);
+
+// API on Nominal Fees
+Route::post('get-nominal-fee', [RequestController::class,  'nominalFees']);
+
 //Commercial Insurance
 // Business Interruption Insurance
 Route::post('business-interruption-insurance', [BusinessInterruptionController::class, 'index']);

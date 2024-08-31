@@ -568,6 +568,12 @@
                              </a>
                          </li>
                          <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.nominal-fees-setting') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-circle"></i>
+                                 <span class="nav-main-link-name">Nominal Fees</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.email-templates.index') }}">
                                  <i class="nav-main-link-icon fa-regular fa-circle"></i>
                                  <span class="nav-main-link-name">Email Template</span>

@@ -363,6 +363,9 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::post('smtp-store', 'SettingController@smtpStore')->name('smtp-store');
             Route::get('payment-setting', 'SettingController@paymentEdit')->name('payment-setting');
             Route::post('payment-store', 'SettingController@paymentStore')->name('payment-store');
+            Route::get('nominal-fees-setting', 'SettingController@nominalFeesEdit')->name('nominal-fees-setting');
+            Route::post('nominal-fees-store', 'SettingController@nominalFeesStore')->name('nominal-fees-store');
+
             //Newsletter Template
             Route::get('newsletter-template', 'NewsletterTemplateController@index')->name('newsletter-template');
             Route::get('newsletter-template-view/{id}', 'NewsletterTemplateController@show')->name('newsletter-template-view');
