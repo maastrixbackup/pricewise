@@ -122,13 +122,14 @@ class AccidentalInsuranceController extends Controller
             'filters' => $filters,
             'nominalFees' => $nominalFee,
             'message' => $message
-        ], 200);
+        ]);
     }
 
 
     public function accidentalInsuranceCompare(Request $request)
     {
-        $compareIds = $request->compare_ids;
+        $compareIds = $request->input('compare_ids');
+        // $compareIds = json_decode($request->input('compare_ids'), true);
 
         if (!empty($compareIds)) {
             $products = InsuranceProduct::where('sub_category',config('constant.subcategory.AccidentalInsurance'))->with('postFeatures', 'categoryDetail','coverages.coverageDetails');

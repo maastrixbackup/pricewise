@@ -169,7 +169,7 @@ class InsuranceController extends Controller
             $default_link = '  <a title="Default" class="btn1 btn-outline-success" href="' . $default_btn . '"><i class="bx bx-star me-0"></i></a>';
             //}
             //if (Auth::guard('admin')->user()->can('internet-tv-duplicate')) {
-            $duplicate_link = ' <a title="Duplicate" class="btn1 btn-outline-warning" href="' . $duplicate_btn . '"><i class="bx bx-copy me-0"></i></a>';
+            // $duplicate_link = ' <a title="Duplicate" class="btn1 btn-outline-warning" href="' . $duplicate_btn . '"><i class="bx bx-copy me-0"></i></a>';
             //}
 
             if ($record->add_extras || $record->related_products) {
@@ -397,7 +397,7 @@ class InsuranceController extends Controller
         $objTv->is_featured = $request->is_featured;
         $objTv->mechanic_install = $request->mechanic_install;
         $objTv->mechanic_charge = $request->mechanic_charge;
-        $objTv->slug = $slug;
+        // $objTv->slug = $slug;
         $objTv->provider = $request->provider;
         // if ($request->file('image') == null || $request->file('image') == '') {
         //     $image = $objTv->image;

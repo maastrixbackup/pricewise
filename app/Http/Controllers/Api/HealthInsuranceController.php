@@ -112,10 +112,11 @@ class HealthInsuranceController extends BaseController
             'message' => $message
         ], 200);
     }
-    
+
     public function healthInsuranceCompare(Request $request)
     {
-        $compareIds = $request->compare_ids;
+        $compareIds = $request->input('compare_ids');
+        // $compareIds = json_decode($request->input('compare_ids'), true);
 
         if (!empty($compareIds)) {
             $products = InsuranceProduct::where('sub_category', config('constant.subcategory.HealthInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails');
@@ -152,10 +153,10 @@ class HealthInsuranceController extends BaseController
                     'message' => 'Products retrieved successfully.',
                 ], 200);
             } else {
-                return $this->sendError('No products found -for comparison.', [], 404);
+                return $this->sendError('No products found -for comparison.', []);
             }
         } else {
-            return $this->sendError('No comparison IDs provided.', [], 400);
+            return $this->sendError('No comparison IDs provided.', []);
         }
     }
 }

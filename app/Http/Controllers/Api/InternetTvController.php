@@ -108,7 +108,8 @@ class InternetTvController extends BaseController
 
     public function internetCompare(Request $request)
     {
-        $compareIds = $request->compare_ids;
+        $compareIds = $request->input('compare_ids');
+        // $compareIds = json_decode($request->input('compare_ids'), true);
 
         if (!empty($compareIds)) {
             $products = TvInternetProduct::with('postFeatures', 'documents', 'providerDetails')
@@ -186,14 +187,14 @@ class InternetTvController extends BaseController
     {
         $input = $request->all();
 
-        $validator = Validator::make($input, [
+        $validator = $request->validate([
             'name' => 'required',
             'detail' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
+        // if ($validator->fails()) {
+        //     return $this->sendError('Validation Error.', $validator->errors());
+        // }
 
         $product = TvInternetProduct::create($input);
 

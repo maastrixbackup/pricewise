@@ -87,11 +87,12 @@ Route::post('funeral-insurance-compare', [FuneralInsuranceController::class, 'fu
 Route::post('cyber-security-insurance', [CyberSecurityController::class, 'index']);
 Route::post('cyber-security-insurance-compare', [CyberSecurityController::class, 'cybersecurityInsuranceCompare']);
 
-//CyeberSecurity Insurance
+//Liability Insurance
 Route::post('liability-insurance', [LiabilityInsuranceController::class, 'index']);
 Route::post('liability-insurance-compare', [LiabilityInsuranceController::class, 'liabilityInsuranceCompare']);
 // Legal Counsel
 Route::post('legal-counsel-insurance', [LegalCounselInsuranceController::class, 'index']);
+Route::post('legal-counsel-compare', [LiabilityInsuranceController::class, 'legalCounselCompare']);
 // Api on events
 Route::post('get-events-list', [RequestController::class, 'eventList']);
 
@@ -114,6 +115,7 @@ Route::post('business-equipment-insurance', [BusinessEquipmentController::class,
 
 // API on Shop Products
 Route::post('shop-products', [ShopProductController::class, 'index']);
+Route::post('compare-shop-product', [ShopProductController::class, 'shopProductCompare']);
 Route::get('product-details/{id}', [ShopProductController::class, 'productDetails']);
 Route::post('shop-filter', [ShopProductController::class, 'shopFilter']);
 Route::post('category-filter', [ShopProductController::class, 'categoryFilter']);

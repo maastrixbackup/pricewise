@@ -27,18 +27,13 @@ use App\Mail\UserProductNotification;
 use App\Mail\AdminProductNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use App\Http\Resources\CompareProductResource;
 use App\Models\EmailTemplate;
 use App\Mail\AvailableProductNotification;
-
 use App\Mail\WelcomeEmail;
 
 class ShopProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
 
     public function index(Request $request)
     {
@@ -195,6 +190,42 @@ class ShopProductController extends Controller
             'catWithProduct' => $filteredCat,
             'commonSetting' => $shopCommon
         ]);
+    }
+
+    public function shopProductCompare(Request $request)
+    {
+        $productIds = $request->input('product_ids');
+        // $productIds = json_decode($request->input('product_ids'), true);
+        if ($productIds) {
+
+            $shopProducts = ShopProduct::with('categoryDetails', 'brandDetails', 'images', 'colorDetails')
+                ->whereIn('id', $productIds)->get();
+
+            if ($shopProducts->isNotEmpty()) {
+
+                $shopProducts = $shopProducts->map(function ($product) use ($request) {
+                    return (new CompareProductResource($product))->toArray($request);
+                });
+
+                return response()->json([
+                    'status' => true,
+                    'productData' => $shopProducts,
+                    'message' => 'Products retrieved successfully.'
+                ]);
+            } else {
+
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No Products found for Comparison.'
+                ]);
+            }
+        } else {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'No Product IDs found.'
+            ]);
+        }
     }
 
     public function categoryFilter(Request $request)
