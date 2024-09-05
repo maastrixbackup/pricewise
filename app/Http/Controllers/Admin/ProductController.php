@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DealProduct;
+use App\Models\ComboProduct;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
 use App\Models\ProductColor;
@@ -552,7 +553,7 @@ class ProductController extends Controller
             return response()->json([
                 "status" => false,
                 "message" => 'Product not found'
-            ], 404);
+            ]);
         }
     }
 
@@ -1264,7 +1265,7 @@ class ProductController extends Controller
 
         // Check if the record exists
         if (!$reviewDetails) {
-            return response()->json(['error' => 'Review not found'], 404);
+            return response()->json(['error' => 'Review not found']);
         }
 
         // Transform the data to the desired format
@@ -1538,5 +1539,65 @@ class ProductController extends Controller
                     </div>
                 </a>
             </li>';
+    }
+
+    public function comboDealsCreate(Request $request, $id)
+    {
+        $shopProduct = ShopProduct::where('id', '!=', $id)
+            ->whereNotIn('p_status', ['0', '3'])
+            ->get();
+        $comboProducts = ComboProduct::where('product_id', $id)->with('comboProductDetails')->get();
+        return view('admin.products.bulk_combos', compact('id', 'comboProducts', 'shopProduct'));
+    }
+
+    public function comboDealsStore(Request $request)
+    {
+        $dealNew = new ComboProduct();
+        $dealNew->product_id = $request->product_id;
+        $dealNew->deal_id = $request->deal_id;
+        $dealNew->deal_price = $request->deal_price;
+        $dealNew->status = $request->status;
+
+        DB::beginTransaction();
+        try {
+            $dealNew->save();
+            DB::commit();
+            return redirect()->back()->with(Toastr::success('Product Deal Added Successfully', '', ["positionClass" => "toast-top-right"]));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+        }
+    }
+
+    public function comboStatusUpdate(Request $request)
+    {
+        $chkDeal = ComboProduct::find($request->id);
+
+        if ($chkDeal) {
+            // Update the status based on the received value
+            $chkDeal->status = $request->status;
+            $chkDeal->save();
+
+            return response()->json([
+                "status" => true,
+                "message" => 'Deal Product Status Updated'
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => 'Deal Product not found.'
+            ]);
+        }
+    }
+
+    public function comboDealsDelete(Request $request)
+    {
+        try {
+            ComboProduct::find($request->id)->delete();
+            return redirect()->back()->with(Toastr::error(__('Deal deleted successfully!')));
+        } catch (\Exception $e) {
+            $error_msg = Toastr::error(__($e->getMessage()));
+            return redirect()->back()->with($error_msg);
+        }
     }
 }

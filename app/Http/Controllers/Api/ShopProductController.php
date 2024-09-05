@@ -31,6 +31,11 @@ use App\Http\Resources\CompareProductResource;
 use App\Models\EmailTemplate;
 use App\Mail\AvailableProductNotification;
 use App\Mail\WelcomeEmail;
+use App\Models\ShopOrder;
+use App\Models\ComboProduct;
+use App\Models\ShopOrderDetail;
+use App\Models\ExtraProduct;
+use Illuminate\Support\Str;
 
 class ShopProductController extends Controller
 {
@@ -53,13 +58,13 @@ class ShopProductController extends Controller
 
         // Handle category filtering and data retrieval
         $categories = [];
-        if ($request->has('category_id')) {
+        if ($request->filled('category_id')) {
             $categoryDetails = ProductCategory::find($request->input('category_id'));
-            if ($categoryDetails) {
-                $categories = [$categoryDetails->toArray()];
-            } else {
-                return response()->json(['error' => 'Category not found'], 404);
-            }
+            $categories = [$categoryDetails->toArray()];
+            // if ($categoryDetails) {
+            // } else {
+            //     return response()->json(['error' => 'Category not found']);
+            // }
         } else {
             $categories = ProductCategory::take(5)->get();
         }
@@ -303,7 +308,7 @@ class ShopProductController extends Controller
                 'message' => 'Products retrieved successfully'
             ]);
         } else {
-            return response()->json(['status' => false, 'message' => 'Category not found'], 404);
+            return response()->json(['status' => false, 'message' => 'Category not found']);
         }
     }
 
@@ -445,7 +450,7 @@ class ShopProductController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'You Have already rated the product.',
-            ], 400);
+            ]);
         }
 
 
@@ -551,7 +556,7 @@ class ShopProductController extends Controller
             'status' => false,
             'ratingsData' => [],
             'message' => 'Reviews Not Found.'
-        ], 404);
+        ]);
     }
 
 
@@ -600,6 +605,7 @@ class ShopProductController extends Controller
                                 ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                                 : ''
                         ],
+                        'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
                         // 'pd' => $cp->productDetails,
                     ];
                 });
@@ -650,7 +656,7 @@ class ShopProductController extends Controller
                                 ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                                 : ''
                         ],
-                        // 'pd' => $cp->productDetails,
+                        'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
                     ];
                 });
                 // Return success response or any other appropriate action
@@ -683,7 +689,7 @@ class ShopProductController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'No products in the cart.'
-            ], 404);
+            ]);
         }
 
 
@@ -707,10 +713,13 @@ class ShopProductController extends Controller
                     'sell_price' => $cp->productDetails->sell_price,
                     'actual_price' => $cp->productDetails->actual_price,
                     'ratings' => $cp->productDetails->ratings,
+                    'highlights' => $cp->productDetails->heighlights,
+                    'banner_image' => asset('storage/images/shops/' . $cp->productDetails->banner_image),
                     'image' => !empty($cp->productDetails->images) && isset($cp->productDetails->images[0])
                         ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                         : ''
                 ],
+                'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
                 // 'pd' => $cp->productDetails,
             ];
         });
@@ -765,6 +774,7 @@ class ShopProductController extends Controller
                                         ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                                         : ''
                                 ],
+                                'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
                             ];
                         });
 
@@ -789,13 +799,13 @@ class ShopProductController extends Controller
                 // If the cart item is not found, return an error
                 return response()->json([
                     'error' => 'Cart item not found!'
-                ], 404);
+                ]);
             }
         } else {
             // If required parameters are missing, return an error
             return response()->json([
                 'error' => 'Invalid request! Missing required parameters.'
-            ], 400);
+            ]);
         }
     }
 
@@ -815,13 +825,13 @@ class ShopProductController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Product not found in cart'
-                ], 404);
+                ]);
             }
         } else {
             return response()->json([
                 'status' => 'error',
                 'message' => 'cart_id is required'
-            ], 400);
+            ]);
         }
 
         if ($request->has('user_id')) {
@@ -853,6 +863,7 @@ class ShopProductController extends Controller
                                 ? asset('storage/images/shops/' . $cp->productDetails->banner_image)
                                 : ''
                         ],
+                        'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
                     ];
                 });
             }
@@ -860,7 +871,7 @@ class ShopProductController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'user_id is required'
-            ], 400);
+            ]);
         }
 
         return response()->json([
@@ -921,6 +932,7 @@ class ShopProductController extends Controller
                             ? asset('storage/images/shops/' . $cp->productDetails->banner_image)
                             : ''
                     ],
+                    'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
                 ];
             });
         }
@@ -1000,14 +1012,15 @@ class ShopProductController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Product not found in your wishlist.'
-            ], 404);
+            ]);
         }
 
         return response()->json([
             'status' => false,
             'message' => 'Failed to remove product from wishlist. Please provide valid user_id and product_id.',
-        ], 400);
+        ]);
     }
+
     // public function addToWishList(Request $request)
     // {
 
@@ -1382,6 +1395,149 @@ class ShopProductController extends Controller
         }
     }
 
+    public function placeOrderCreate(Request $request)
+    {
+        // Input data retrieval
+        $userId = $request->input('user_id');
+        $fName = $request->input('f_name');
+        $lName = $request->input('l_name');
+        $email = trim($request->input('email'));
+        $phoneNumber = $request->input('phone_number');
+        $userType = $request->input('user_type');
+        $salutation = $request->input('salutation');
+        $diffBilling = $request->input('diff_billing');
+        $deliveredBy = $request->input('exp_delivery');
+        $totalAmount = $request->input('total_amount');
+        $orderDate = now()->format('Y-m-d H:i:s');
+        $orderNumber = 'ORD-' . strtoupper(Str::random(5)) . '-' . time();
+        $productData = $request->input('product_data');
+
+        // $productData = [
+        //     [
+        //         "product_id" => "1",
+        //         "qty" => "5",
+        //         "price" => "506",
+        //         "extras" => [
+        //             [
+        //                 "ext_id" => "5",
+        //                 "amount" => "205"
+        //             ],
+        //             [
+        //                 "ext_id" => "6",
+        //                 "amount" => "305"
+        //             ]
+        //         ]
+        //     ],
+        //     // Add more products here if needed
+        // ];
+
+        // Company details (if applicable)
+        $companyDetails = ($userType == 2 || $userType == 3) ? [
+            'company_name' => $request->input('company_name'),
+            'vat_no' => $request->input('vat_no'),
+        ] : null;
+
+        // Billing address (if different)
+        $billingAddress = ($diffBilling == '1') ? [
+            'postal_code' => $request->input('billing_post_code'),
+            'place' => $request->input('billing_place'),
+            'house_no' => $request->input('billing_house'),
+            'street' => $request->input('billing_street'),
+            'shipping_address' => $request->input('billing_address'),
+        ] : null;
+
+        // Shipping address
+        $shippingAddress = [
+            'postal_code' => $request->input('post_code'),
+            'place' => $request->input('place'),
+            'house_no' => $request->input('house_no'),
+            'street' => $request->input('street'),
+            'shipping_address' => $request->input('shipping_address'),
+        ];
+
+        // Initialize order object
+        $orderNew = new ShopOrder();
+        $orderNew->fill([
+            'user_id' => $userId,
+            'order_number' => $orderNumber,
+            'user_type' => $userType,
+            'salutation' => $salutation,
+            'guest_fname' => $fName,
+            'guest_lname' => $lName,
+            'guest_phone' => $phoneNumber,
+            'guest_email' => $email,
+            'total_amount' => $totalAmount,
+            'order_date' => $orderDate,
+            'exp_delivery' => $deliveredBy,
+            'bill_different' => $diffBilling,
+            'shipping_address' => json_encode($shippingAddress),
+            'company_details' => json_encode($companyDetails),
+            'billing_address' => json_encode($billingAddress),
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $orderNew->save();
+            $orderId = $orderNew->id;
+
+            // Prepare product details and extras data
+            $orderDetails = [];
+            $extras = [];
+
+            if (!empty($productData) && is_array($productData)) {
+                foreach ($productData as $product) {
+                    $orderDetails[] = [
+                        'order_id' => $orderId,
+                        'product_id' => $product['product_id'],
+                        'quantity' => $product['qty'],
+                        'price' => $product['price'],
+                        'total' => $product['qty'] * $product['price'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    if (!empty($product['extras']) && is_array($product['extras'])) {
+                        foreach ($product['extras'] as $extra) {
+                            $extras[] = [
+                                'order_id' => $orderId,
+                                'product_id' => $product['product_id'],
+                                'extra_id' => $extra['ext_id'],
+                                'extra_price' => $extra['amount'],
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ];
+                        }
+                    }
+                }
+
+                // Insert product details and extras
+                ShopOrderDetail::insert($orderDetails);
+                if (!empty($extras)) {
+                    ExtraProduct::insert($extras);
+                }
+
+                DB::commit();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Order Created Successfully.',
+                    'order_number' => $orderNumber,
+                    'order_id' => $orderId
+                ]);
+            } else {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product data is empty or invalid.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => false,'message' => $e->getMessage()]);
+        }
+    }
+
+
+
 
 
 
@@ -1430,7 +1586,7 @@ class ShopProductController extends Controller
     //             $categories = [$categoryDetails]; // Convert to an array to handle single category uniformly
     //         } else {
     //             // Handle the case where the category_id does not exist
-    //             return response()->json(['error' => 'Category not found'], 404);
+    //             return response()->json(['error' => 'Category not found'] );
     //         }
     //     } else {
     //         // Retrieve all category details if no category_id is provided

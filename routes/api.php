@@ -121,6 +121,11 @@ Route::post('shop-filter', [ShopProductController::class, 'shopFilter']);
 Route::post('category-filter', [ShopProductController::class, 'categoryFilter']);
 Route::get('category-product/{slug}', [ShopProductController::class, 'categoryWiseProducts']);
 
+// API on Product Order
+Route::post('place-order', [ShopProductController::class, 'placeOrderCreate']);
+Route::post('make-order-payment', [ShopProductController::class, 'makeOrderPayment']);
+
+
 // API on Wish List
 Route::post('add-to-wishlist', [ShopProductController::class, 'addToWishList']);
 Route::post('remove-from-wishlist', [ShopProductController::class, 'removeFromWishList']);
