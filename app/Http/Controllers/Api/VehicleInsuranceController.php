@@ -121,7 +121,8 @@ class VehicleInsuranceController extends Controller
     public function vehicleInsuranceCompare(Request $request)
     {
 
-        $compareIds = $request->compare_ids;
+        $compareIds = $request->input('compare_ids');
+        // $compareIds = json_decode($request->input('compare_ids'), true);
 
         if (!empty($compareIds)) {
             $products = InsuranceProduct::where('sub_category', config('constant.subcategory.VehicleInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails');

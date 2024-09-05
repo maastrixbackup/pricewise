@@ -342,7 +342,7 @@ class EnergyController extends Controller
 
     public function update(Request $request, $id)
     {
-        //dd($request->data);
+        //dd($request->all());
 
         // Convert to lowercase
         $slug = strtolower($request->title);

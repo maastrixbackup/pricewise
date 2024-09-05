@@ -21,46 +21,46 @@ class InsuranceController extends BaseController
         $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost');
 
         // Filter by postal code
-        if ($request->has('postal_code')) {
+        if ($request->filled('postal_code')) {
            $postalCode = json_encode($request->input('postal_code'));
             // Use whereRaw with JSON_CONTAINS to check if the postal code is present in the pin_codes array
             $products->whereRaw('JSON_CONTAINS(pin_codes, ?)', [$postalCode]);
         }
 
         // Filter by number of persons
-        if ($request->has('no_of_person')) {
+        if ($request->filled('no_of_person')) {
             $products->where('no_of_person', '<=', $request->input('no_of_person'));
         }
 
         // Filter by house type
-        if ($request->has('house_type')) {
+        if ($request->filled('house_type')) {
             $products->where('house_type', $request->input('house_type'));
         }
 
         // Filter by current supplier
-        if ($request->has('current_supplier')) {
+        if ($request->filled('current_supplier')) {
             $products->where('provider', $request->input('current_supplier'));
         }
 
         // Filter by meter type
-        if ($request->has('meter_type')) {
+        if ($request->filled('meter_type')) {
             $products->where('meter_type', $request->input('meter_type'));
         }
 
         // Filter by gas availability
-        if ($request->has('no_gas')) {
+        if ($request->filled('no_gas')) {
             $products->where('no_gas', $request->input('no_gas'));
         }
 
         // Filter by energy label
-        if ($request->has('energy_label')) {
+        if ($request->filled('energy_label')) {
 
             $energy_label = json_encode($request->input('energy_label'));
             // Use whereRaw with JSON_CONTAINS to check if the energy_label is present in the energy_label array
             $products->whereRaw('JSON_CONTAINS(energy_label, ?)', [$energy_label]);
         }
 
-        if ($request->has('features')) {
+        if ($request->filled('features')) {
             $features = $request->input('features');
             $products->whereHas('postFeatures', function ($query) use ($features) {
                 $query->whereIn('feature_id', $features);
@@ -86,7 +86,8 @@ class InsuranceController extends BaseController
 
     public function energyCompare(Request $request)
     {
-        $compareIds = $request->compare_ids;
+        $compareIds = $request->input('compare_ids');
+        // $compareIds = json_decode($request->input('compare_ids'), true);
 
         if (!empty($compareIds)) {
             $products = EnergyProduct::with('postFeatures', 'prices', 'feedInCost');
@@ -133,14 +134,14 @@ class InsuranceController extends BaseController
     {
         $input = $request->all();
 
-        $validator = Validator::make($input, [
+        $validator = $request->validate([
             'name' => 'required',
             'detail' => 'required'
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
+        // if($validator->fails()){
+        //     return $this->sendError('Validation Error.', $validator->errors());
+        // }
 
         $product = TvInternetProduct::create($input);
 
@@ -175,14 +176,14 @@ class InsuranceController extends BaseController
     {
         $input = $request->all();
 
-        $validator = Validator::make($input, [
+        $validator = $request->validate([
             'name' => 'required',
             'detail' => 'required'
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
+        // if($validator->fails()){
+        //     return $this->sendError('Validation Error.', $validator->errors());
+        // }
 
         $product->name = $input['name'];
         $product->detail = $input['detail'];

@@ -115,7 +115,7 @@
                                     <th>Category</th>
                                     <th>Availability</th>
                                     <th>Selling Price</th>
-                                    <th>Product Type</th>
+                                    {{-- <th>Product Type</th> --}}
                                     {{-- <th>Featured Product</th> --}}
                                     <th>New Arrival</th>
                                     <th>Action</th>
@@ -148,7 +148,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ '€' . $record->sell_price }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 @if ($record->product_type == 'personal')
                                                     <span class="  text-uppercase">Personal</span>
                                                 @elseif ($record->product_type == 'commercial')
@@ -156,7 +156,7 @@
                                                 @else
                                                     <span class="  text-uppercase">Large Bussiness</span>
                                                 @endif
-                                            </td>
+                                            </td> --}}
                                             {{-- <td>
                                                 <input type="checkbox" style="width: 20px; height:20px;"
                                                     id="a_{{ $loop->iteration }}" name="featured[]"
@@ -185,12 +185,17 @@
                                                             class="bx bx-trash me-0"></i></a>
                                                     <a href="javascript:;" title="Duplicate"
                                                         onclick="duplicateP('{{ $record->id }}')"><i
-                                                            class="fa fa-files-o" aria-hidden="true"></i>
-                                                    </a>
+                                                            class="fa fa-files-o" aria-hidden="true"></i></a>
                                                     <a href="javascript:;" title="Ratings"
                                                         onclick="showRateings('{{ $record->id }}')"><i
                                                             class="fa fa-star-o" aria-hidden="true"></i>
                                                     </a>
+                                                    @if ($record->p_status == 1 || $record->p_status == 2)
+                                                        <a href="{{ route('admin.combo-deals', $record->id) }}"
+                                                            title="Combo Deals"><i class="fa fa-plus-square"
+                                                                aria-hidden="true"></i>
+                                                        </a>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>

@@ -144,6 +144,10 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('/request-products', 'ProductController@requestedProduct')->name('request_products');
             Route::get('/notify-products', 'ProductController@notificationProduct')->name('notify_products');
             Route::post('/request-product-details', 'ProductController@checkRequestDetails')->name('request_product_details');
+            Route::get('/combo-deals/{id}', 'ProductController@comboDealsCreate')->name('combo-deals');
+            Route::post('/store-product-deals', 'ProductController@comboDealsStore')->name('store_product_deals');
+            Route::post('/update-deals-status', 'ProductController@comboStatusUpdate')->name('update_deals_status');
+            Route::post('/delete-product-deal', 'ProductController@comboDealsDelete')->name('delete_product_deals');
             // Notification
             Route::get('/notifications', 'ProductController@checkNotification')->name('notifications');
             // Product Category

@@ -129,7 +129,8 @@ class FuneralInsuranceController extends Controller
 
     public function funeralInsuranceCompare(Request $request)
     {
-        $compareIds = $request->compare_ids;
+        $compareIds = $request->input('compare_ids');
+        // $compareIds = json_decode($request->input('compare_ids'), true);
 
         if (!empty($compareIds)) {
             $products = InsuranceProduct::where('sub_category', config('constant.subcategory.FuneralInsurance'))->with('postFeatures', 'categoryDetail', 'coverages.coverageDetails');
