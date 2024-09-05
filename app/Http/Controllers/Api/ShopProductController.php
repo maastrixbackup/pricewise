@@ -1475,6 +1475,7 @@ class ShopProductController extends Controller
             'billing_address' => json_encode($billingAddress),
         ]);
 
+        
         DB::beginTransaction();
         try {
             $orderNew->save();
