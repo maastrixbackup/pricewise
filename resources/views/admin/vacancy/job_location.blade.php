@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Pricewise : List all jobs')
+@section('title', 'Pricewise : Job Location')
 
 
 @section('content')
@@ -22,11 +22,11 @@
 
     @php
         use Illuminate\Support\Facades\DB;
-        $jobTypes = DB::table('job_industry')->get();
+        $qry_set = DB::table('job_location')->get();
     @endphp
     <div class="row">
         <div class="col-lg-12">
-            <h6 class="mb-0 text-uppercase">Industry Type</h6>
+            <h6 class="mb-0 text-uppercase">Job Location</h6>
             <hr>
             <div class="card" style="margin-bottom: 15px;">
                 <div class="card-body">
@@ -43,19 +43,16 @@
                             <table class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Sl.</th>
-                                        <th>Industry</th>
+                                        <th>Location</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
-                                    @foreach ($jobTypes as $jobType)
+                                    @foreach ($qry_set as $qry)
                                         <tr>
-                                            <td>{{ $jobType->id }}</td>
-                                            <td>{{ $jobType->job_industry }}</td>
-                                            <td><button type="button" class="btn btn-danger" data-toggle="modal"
-                                                    data-target="#deleteModal" data-id="{{ $jobType->id }}">
+                                            <td>{{ $qry->job_location }} </td>
+                                            <td><button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
+                                                    data-target="#deleteModal" data-id="{{ $qry->id }}">
                                                     <i class="fas fa-trash"></i> Delete
                                                 </button>
                                             </td>
@@ -74,29 +71,11 @@
         <div class="col-12 col-lg-12">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New Industry Type</h5>
+                    <h5 class="mb-0">Add New (Location)</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.vacancy.jobindustry.submit') }}">
+                    <form method="post" action="{{ route('admin.addlocation') }}">
                         @csrf
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="input_type" class="col-form-label">Add New Industry Type</label>
-                                <input type="text" class="form-control" name="industry_type">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label class="col-form-label"></label>
-                            <div class="">
-                                <div class="d-md-flex d-grid align-items-center gap-3">
-                                    <button type="submit" class="btn btn-primary px-4">Submit</button>
-                                    <button type="reset" class="btn btn-light px-4">Reset</button>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
                         <div class="row">
                             <div class="col-12 ">
                                 @if (session('success'))
@@ -111,6 +90,24 @@
                             </div>
                             @endif
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="input_type" class="col-form-label">Add New (Location)</label>
+                                <input type="text" class="form-control" name="locate">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-form-label"></label>
+                            <div class="">
+                                <div class="d-md-flex d-grid align-items-center gap-3">
+                                    <button type="submit" class="btn btn-primary px-4">Submit</button>
+                                    <button type="reset" class="btn btn-light px-4">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
                     </form>
                 </div>
             </div>
@@ -128,11 +125,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{{ route('admin.deleteIndustry') }}">
+                <form method="POST" action="{{ route('admin.deletelocation') }}">
                     @csrf
-                    @method('DELETE')
                     <div class="modal-body">
-                        <p>Are you sure you want to delete this item?</p>
+                        <p>Are you sure you want to delete?</p>
                         <input type="hidden" name="id" id="delete-id" value="">
                     </div>
                     <div class="modal-footer">
@@ -149,6 +145,13 @@
 
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable();
+        });
+    </script>
 
     <script>
         $('#deleteModal').on('show.bs.modal', function(event) {

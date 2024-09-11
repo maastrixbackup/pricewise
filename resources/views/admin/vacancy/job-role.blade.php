@@ -32,6 +32,11 @@
                 <div class="card-body">
 
                     <div class="row">
+                        @if (session('deleted'))
+                                <div class="alert alert-success">
+                                    {{ session('deleted') }}
+                                </div>
+                            @endif
                         <div class="col-lg-12">
                             <table class="table table-striped table-bordered">
                                 <thead>
@@ -49,7 +54,11 @@
                                             <td>{{ $jobType->id }}</td>
                                             <td>{{ $jobType->job_industry }}</td>
                                             <td>{{ $jobType->job_role }}</td>
-                                            <td><a href="#"><i class="bx bx-trash me-0"></i></a></td>
+                                            <td><a href="#"><button type="button" class="btn btn-danger" data-toggle="modal"
+                                                    data-target="#deleteModal" data-id="{{ $jobType->id }}">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -77,7 +86,7 @@
                                 <select class="form-control" name="industry">
                                     <option value="" disabled selected>Select Industry</option>
                                     @foreach ($jobIndustry as $ji)
-                                    <option value="{{ $ji->job_industry }}">{{ $ji->job_industry }}</option>
+                                        <option value="{{ $ji->job_industry }}">{{ $ji->job_industry }}</option>
                                     @endforeach
                                     <!-- Add more options as needed -->
                                 </select>
@@ -118,6 +127,49 @@
 
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{{ route('admin.deleteRow') }}">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this item?</p>
+                        <input type="hidden" name="id" id="delete-id" value="">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var id = button.data('id'); // Extract the id from data-* attributes
+            console.log("Button ID:", id); // Log the ID to see if it's correctly retrieved
+            var modal = $(this);
+            modal.find('.modal-body #delete-id').val(id);
+        });
+    </script>
 
 @endsection
 @push('scripts')
