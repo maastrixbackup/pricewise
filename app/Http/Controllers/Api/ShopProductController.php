@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductCategoryResource;
 use App\Http\Resources\ProductDetailsResource;
 use App\Http\Resources\ShopProductResource;
+use App\Http\Resources\ComboDealProductResource;
 use App\Models\DealProduct;
 use App\Models\ProductCart;
 use App\Models\ProductCategory;
@@ -605,7 +606,7 @@ class ShopProductController extends Controller
                                 ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                                 : ''
                         ],
-                        'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
+                        'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
                         // 'pd' => $cp->productDetails,
                     ];
                 });
@@ -656,7 +657,7 @@ class ShopProductController extends Controller
                                 ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                                 : ''
                         ],
-                        'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
+                        'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
                     ];
                 });
                 // Return success response or any other appropriate action
@@ -719,8 +720,7 @@ class ShopProductController extends Controller
                         ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                         : ''
                 ],
-                'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
-                // 'pd' => $cp->productDetails,
+                'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
             ];
         });
 
@@ -863,7 +863,7 @@ class ShopProductController extends Controller
                                 ? asset('storage/images/shops/' . $cp->productDetails->banner_image)
                                 : ''
                         ],
-                        'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
+                        'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
                     ];
                 });
             }
@@ -932,7 +932,7 @@ class ShopProductController extends Controller
                             ? asset('storage/images/shops/' . $cp->productDetails->banner_image)
                             : ''
                     ],
-                    'combo_product' => ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get(),
+                    'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
                 ];
             });
         }
@@ -1475,7 +1475,7 @@ class ShopProductController extends Controller
             'billing_address' => json_encode($billingAddress),
         ]);
 
-        
+
         DB::beginTransaction();
         try {
             $orderNew->save();
@@ -1533,8 +1533,13 @@ class ShopProductController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => false,'message' => $e->getMessage()]);
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function makeOrderPayment(Request $request)
+    {
+        return 123;
     }
 
 
