@@ -190,6 +190,7 @@
                                                         onclick="showRateings('{{ $record->id }}')"><i
                                                             class="fa fa-star-o" aria-hidden="true"></i>
                                                     </a>
+                                                    
                                                     @if ($record->p_status == 1 || $record->p_status == 2)
                                                         <a href="{{ route('admin.combo-deals', $record->id) }}"
                                                             title="Combo Deals"><i class="fa fa-plus-square"

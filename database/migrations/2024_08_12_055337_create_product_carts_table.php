@@ -22,7 +22,7 @@ class CreateProductCartsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('product_id')->references('id')->on('shop_products')->onDelete('cascade');
         });
 

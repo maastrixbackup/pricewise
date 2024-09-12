@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ComboProduct;
 use App\Models\ProductRating;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,6 +17,7 @@ class ProductDetailsResource extends JsonResource
      */
     public function toArray($request)
     {
+        $comboDeals = ComboProduct::where('product_id', $this->id)->with('comboProductDetails')->get();
         $reviews = ProductRating::where('product_id', $this->id)->get();
         return [
             'id' => $this->id,
@@ -76,6 +78,7 @@ class ProductDetailsResource extends JsonResource
                     'image' => asset('storage/images/shops/' . $image->image),
                 ];
             })->all() : [],
+            'combo_deals' => ComboDealProductResource::collection($comboDeals),
         ];
     }
 }
