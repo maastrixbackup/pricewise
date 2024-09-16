@@ -47,7 +47,8 @@
                     @endif
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" id="new_job" action="{{ route('admin.vacancy.form.submit') }}">
+                    <form method="POST" action="{{ route('admin.vacancy.update', $job->id) }}">
+                    {{-- <form method="post" id="new_job" action="{{ route('admin.vacancy.form.submit') }}"> --}}
                         @csrf
                         <div class="row mb-3">
                             <div class="col-md-4">

@@ -44,6 +44,7 @@
                                         <th>Sl.</th>
                                         <th>Job Title</th>
                                         <th>Location</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -54,7 +55,11 @@
                                             <td>{{ $jobType->id }}</td>
                                             <td>{{ $jobType->job_title }}</td>
                                             <td>{{ $jobType->job_location }}</td>
+                                            <td>{{ $jobType->job_status }}</td>
                                             <td>
+                                                <a href="{{ route('admin.edit', $jobType->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
                                                 <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
                                                     data-target="#deleteModal" data-id="{{ $jobType->id }}">
                                                     <i class="fas fa-trash"></i> Delete
@@ -103,6 +108,12 @@
 
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable();
+        });
+    </script>
 
     <script>
         $('#deleteModal').on('show.bs.modal', function(event) {

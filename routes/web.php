@@ -258,6 +258,11 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('/get-job-roles/{industry_id}', [VacancyController::class, 'getJobRoles']);
             Route::get('/list-all-jobs', [VacancyController::class, 'list_all_jobs'])->name('list-all-jobs');
             Route::delete('/delete-job', [VacancyController::class, 'delete_job'])->name('deleteJob');
+            
+            Route::get('/edit-job/{id}', [VacancyController::class, 'edit'])->name('edit');
+            Route::post('/update-job/{id}', [VacancyController::class, 'update'])->name('vacancy.update');
+
+
 
 
 

@@ -48,7 +48,7 @@ class VacancyController extends Controller
     {
         return view('admin.vacancy.job_location');
     }
-    
+
     public function list_all_jobs()
     {
         return view('admin.vacancy.list-all-jobs');
@@ -67,7 +67,7 @@ class VacancyController extends Controller
         $job_desc = $request->input('job_desc');
         $remote_job = $request->input('remote_job');
         $job_status = $request->input('job_status');
-        
+
         $insert = DB::table('job_all_jobs')->insert([
             'job_industry' => $job_industry,
             'job_role' => $job_role,
@@ -81,7 +81,7 @@ class VacancyController extends Controller
             'remote_job' => $remote_job,
             'job_status' => $job_status,
         ]);
-        
+
         if ($insert) {
             // Entry was successful
             return redirect()->back()->with('success', 'Data Submitted Successfully!');
@@ -273,15 +273,15 @@ class VacancyController extends Controller
     public function getJobRoles($industry_id)
     {
         // Validate the input
-        
+
         if (!$industry_id) {
             return response()->json(['error' => 'Invalid industry ID'], 400);
         }
 
         // Fetch job roles from the database
         $jobRoles = DB::table('job_role') // Use your table name
-                        ->where('job_industry', $industry_id) // Filter by job_industry
-                        ->get(['id', 'job_role']); // Adjust columns if necessary
+            ->where('job_industry', $industry_id) // Filter by job_industry
+            ->get(['id', 'job_role']); // Adjust columns if necessary
 
         // Check if any job roles are found
         if ($jobRoles->isEmpty()) {
@@ -290,5 +290,25 @@ class VacancyController extends Controller
 
         // Return the job roles as a JSON response
         return response()->json($jobRoles);
+    }
+
+    public function edit($id)
+    {
+        $job = DB::table('job_all_jobs')->where('id', $id)->first();
+        return view('admin.vacancy.edit-job', compact('job'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        dd("hello");
+        DB::table('job_all_jobs')
+            ->where('id', $id)
+            ->update([
+                'job_title' => $request->job_title,
+                'job_location' => $request->job_location,
+                'job_status' => $request->job_status
+            ]);
+
+        return redirect()->route('job.index')->with('success', 'Job updated successfully');
     }
 }
