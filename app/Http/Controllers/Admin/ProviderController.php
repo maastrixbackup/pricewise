@@ -43,7 +43,7 @@ class ProviderController extends Controller
      */
     public function create()
     {
-        $categories = Category::whereNull('parent')->latest()->get();
+        $categories = Category::latest()->get();
         return view('admin.providers.add', compact('categories'));
     }
 
@@ -80,23 +80,6 @@ class ProviderController extends Controller
         }
         // Save the filename in the database
         $objProvider->image = $filename ?? '';
-
-        // $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-        // $imageName = 'provider_' . time() . '.png';
-        // $destinationDirectory = 'public/images/providers';
-        // Storage::makeDirectory($destinationDirectory);
-        // $filePath = $destinationDirectory . '/' . $imageName;
-        // Storage::put($filePath, $imgData);
-        // $objProvider->image = $imageName;
-        // if ($objProvider->save()) {
-        //     return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]));
-        //     // Toastr::success('Provider Created Successfully', '', ["positionClass" => "toast-top-right"]);
-        //     // return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
-        // } else {
-        //     $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-        //     return response()->json(["status" => false, 'message' => $message]);
-        // }
-
 
         try {
             if ($objProvider->save()) {
@@ -178,12 +161,8 @@ class ProviderController extends Controller
 
         if ($objProvider->save()) {
             return redirect()->route('admin.providers.index')->with(Toastr::success('Provider Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-            // Toastr::success('Provider Updated Successfully', '', ["positionClass" => "toast-top-right"]);
-            // return response()->json(["status" => true, "redirect_location" => route("admin.providers.index")]);
         } else {
             return redirect()->route('admin.providers.index')->with(Toastr::error('Unable to Updated!', '', ["positionClass" => "toast-top-right"]));
-            // $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
-            // return response()->json(["status" => true, 'message' => $message]);
         }
     }
 
