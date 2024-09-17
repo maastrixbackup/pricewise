@@ -17,6 +17,7 @@ use App\Models\Affiliate;
 use App\Models\Feature;
 use App\Models\EnergyRateChat;
 use App\Models\FeedInCost;
+use App\Models\PostalCode;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -60,12 +61,13 @@ class EnergyController extends Controller
     {
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
+        $postalCodes = PostalCode::latest()->get();
         $combos = Combo::where('category', 16)->latest()->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::whereNull('parent')->latest()->get();
         $providers = Provider::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.energy.add', compact('objCategory', 'objRelatedProducts', 'providers', 'combos'));
+        return view('admin.energy.add', compact('objCategory', 'objRelatedProducts', 'providers', 'combos', 'postalCodes'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -243,7 +245,7 @@ class EnergyController extends Controller
             $objEnergy->contract_length = $request->contract_length;
             $objEnergy->contract_type = $request->contract_type;
             $objEnergy->transfer_service = $request->transfer_service;
-            $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $objEnergy->pin_codes = json_encode($request->pin_codes ?  $request->pin_codes : []);
             //$combos = implode(",", $request->combos);
             $objEnergy->combos = json_encode($request->combos ? $request->combos : []);
             $objEnergy->status = $request->status ? $request->status : 0;
@@ -294,9 +296,7 @@ class EnergyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-    }
+    public function show($id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -306,6 +306,7 @@ class EnergyController extends Controller
      */
     public function edit($id)
     {
+        $postalCodes = PostalCode::latest()->get();
         $combos = Combo::where('category', 16)->latest()->get();
         $objEnergy = EnergyProduct::find($id);
         $providers = Provider::where('category', config('constant.category.energy'))->get();
@@ -329,7 +330,7 @@ class EnergyController extends Controller
         $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objEnergy->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::whereNull('parent')->latest()->get();
-        return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents', 'combos'));
+        return view('admin.energy.edit', compact('objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents', 'combos', 'postalCodes'));
     }
 
     /**
@@ -365,7 +366,7 @@ class EnergyController extends Controller
         $objEnergy->contract_length = $request->contract_length;
         $objEnergy->contract_type = $request->contract_type;
         $objEnergy->transfer_service = $request->transfer_service;
-        $objEnergy->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+        $objEnergy->pin_codes = json_encode($request->pin_codes ?  $request->pin_codes : []); //json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
         $objEnergy->combos = $request->combos ? json_encode($request->combos) : [];
         $objEnergy->status = $request->online_status ? $request->online_status : 0;
         $objEnergy->valid_till = $request->valid_till;

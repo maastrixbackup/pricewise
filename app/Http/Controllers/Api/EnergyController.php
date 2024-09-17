@@ -66,17 +66,17 @@ class EnergyController extends BaseController
         }
 
         // Filter by meter type
-        if ($request->has('meter_type')) {
+        if ($request->filled('meter_type')) {
             $products->where('meter_type', $request->input('meter_type'));
         }
 
         // Filter by gas availability
-        if ($request->has('no_gas') && $request->no_gas == 1) {
+        if ($request->filled('no_gas') && $request->no_gas == 1) {
             $products->where('no_gas', $request->input('no_gas'));
         }
 
         // Filter by energy label
-        if ($request->has('energy_label')) {
+        if ($request->filled('energy_label')) {
             $energy_label = json_encode($request->input('energy_label'));
             $products->whereRaw('JSON_CONTAINS(energy_label, ?)', [$energy_label]);
         }

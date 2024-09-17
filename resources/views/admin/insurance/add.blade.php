@@ -67,8 +67,16 @@
                             <div class="col-md-6 col-12">
                                 <div class=" mb-3">
                                     <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
-                                    <input type="text" class="form-control" id="pin_codes" name="pin_codes"
-                                        placeholder="PIN codes with coma separated">
+
+                                    <select name="pin_codes[]" id="pin_codes" class="form-control" multiple>
+                                        <option value="" disabled>Select Pin Codes</option>
+                                        @foreach ($postalCodes as $code => $cod)
+                                            <option value="{{ $cod->post_code }}">{{ $cod->post_code }}</option>
+                                        @endforeach
+                                    </select>
+
+                                    {{-- <input type="text" class="form-control" id="pin_codes" name="pin_codes"
+                                        placeholder="PIN codes with coma separated"> --}}
                                 </div>
                             </div>
 
@@ -271,6 +279,9 @@
             $('#affiliate_name').on('change', function() {
                 $("temp_old").hide();
                 $("#temp").show();
+            });
+            new Choices(document.querySelector("#pin_codes"), {
+                removeItemButton: true
             });
         });
     </script>

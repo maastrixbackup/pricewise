@@ -91,6 +91,16 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('smartphone-faq', 'SmartPhoneFaqController');
             Route::resource('provider-discount', 'ProviderDiscountController');
             Route::resource('provider-feature', 'ProviderFeatureController');
+            // Common Data
+            Route::resource('post-codes', 'PostalCodeController');
+            Route::prefix('house-numbers')->group(function () {
+                Route::get('/', 'PostalCodeController@houseNumberIndex')->name('house-numbers.index');
+                Route::get('/create', 'PostalCodeController@houseNumberCreate')->name('house-numbers.create');
+                Route::post('/store', 'PostalCodeController@houseNumberStore')->name('house-numbers.store');
+                Route::get('/edit/{id}', 'PostalCodeController@houseNumberEdit')->name('house-numbers.edit');
+                Route::post('/update/{id}', 'PostalCodeController@houseNumberUpdate')->name('house-numbers.update');
+                Route::post('/destroy', 'PostalCodeController@houseNumberDestroy')->name('house-numbers.destroy');
+            });
 
 
             //Bank
@@ -147,7 +157,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::post('/store-product-deals', 'ProductController@comboDealsStore')->name('store_product_deals');
             Route::post('/update-deals-status', 'ProductController@comboStatusUpdate')->name('update_deals_status');
             Route::post('/delete-product-deal', 'ProductController@comboDealsDelete')->name('delete_product_deals');
-            
+
             // Notification
             Route::get('/notifications', 'ProductController@checkNotification')->name('notifications');
             // Product Category

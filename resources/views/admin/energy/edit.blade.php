@@ -181,15 +181,28 @@
 
 
 
+                                                    @php
+                                                        $objPinCodes = json_decode($objEnergy->pin_codes, true);
+                                                    @endphp
                                                     <div class="row">
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
                                                                 <label for="pin_codes" class="col-form-label">Area PIN
                                                                     Codes</label>
-                                                                <input type="text" class="form-control" id="pin_codes"
+                                                                <select name="pin_codes[]" id="pin_codes"
+                                                                    class="form-control" multiple>
+                                                                    <option value="" disabled>Select Pin Codes
+                                                                    </option>
+                                                                    @foreach ($postalCodes as $code => $cod)
+                                                                        <option value="{{ $cod->post_code }}"
+                                                                            {{ in_array($cod->post_code, $objPinCodes) ? 'selected' : '' }}>
+                                                                            {{ $cod->post_code }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                {{-- <input type="text" class="form-control" id="pin_codes"
                                                                     name="pin_codes"
                                                                     placeholder="PIN codes with coma separated"
-                                                                    value="{{ implode(',', json_decode($objEnergy->pin_codes)) }}">
+                                                                    value="{{ implode(',', json_decode($objEnergy->pin_codes)) }}"> --}}
                                                             </div>
                                                         </div>
 
@@ -521,7 +534,8 @@
                             <div class="col-md-4 mb-3">
                                 <label for="input37" class="col-form-label">Gas Price/m<sup>3</sup></label>
                                 <input type="number" class="form-control" id="gas_price" name="gas_price"
-                                    placeholder="Price" value="{{ $objEnergy->prices ? $objEnergy->prices->gas_rate : '' }}"
+                                    placeholder="Price"
+                                    value="{{ $objEnergy->prices ? $objEnergy->prices->gas_rate : '' }}"
                                     readonly="readonly">
                             </div>
 
@@ -877,6 +891,11 @@
     <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
 
     <script>
+        $(document).ready(function() {
+            new Choices(document.querySelector("#pin_codes"), {
+                removeItemButton: true
+            });
+        });
         tinymce.init({
             selector: '#description',
             plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
