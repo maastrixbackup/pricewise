@@ -20,7 +20,7 @@
     </div>
     <!--end breadcrumb-->
     <div class="row">
-        <div class="col-12 col-lg-8">
+        <div class="col-12 col-lg-12">
             <div class="card">
                 <div class="card-header px-4 py-3">
                     <h5 class="mb-0">Edit Provider</h5>
@@ -28,30 +28,16 @@
                 <div class="card-body p-4">
                     <form id="categoryFo" method="POST" action="{{ route('admin.providers.update', $provider->id) }}" enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')
+                        @method('PUT')                
                         <div class="row mb-3">
-                            <label for="input35" class=" col-form-label">Name</label>
-                            <div class="">
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Name"
-                                    value="{{ $provider->name }}">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6 mb-3">
-                                <label for="status" class=" col-form-label">Status</label>
+                            <div class="col-md-4 mb-3">
+                                <label for="input35" class=" col-form-label">Name</label>
                                 <div class="">
-                                    <select class="form-control" id="status" name="status">
-                                        <option value="" disabled>Select</option>
-                                        <option value="1" @if ($provider->status == 1) selected @endif>Active
-                                        </option>
-                                        <option value="0" @if ($provider->status == 0) selected @endif>Inactive
-                                        </option>
-
-                                    </select>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name"
+                                        value="{{ $provider->name }}">
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="input_type" class=" col-form-label">Category</label>
                                 <div class="">
                                     <select class="form-control" id="category" name="category">
@@ -65,22 +51,21 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="input_type" class=" col-form-label">About</label>
-                            <div class="">
-                                <textarea name="about" id="about" class="form-control">{{ $provider->about }}</textarea>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-8 mb-3">
-                                <label for="payment_options" class=" col-form-label">Payment Options</label>
+                            <div class="col-md-4 mb-3">
+                                <label for="status" class=" col-form-label">Status</label>
                                 <div class="">
-                                    <input type="text" class="form-control" id="payment_options" name="payment_options"
-                                        placeholder="Payment Options" value="{{ $provider->payment_options }}">
+                                    <select class="form-control" id="status" name="status">
+                                        <option value="" disabled>Select</option>
+                                        <option value="1" @if ($provider->status == 1) selected @endif>Active
+                                        </option>
+                                        <option value="0" @if ($provider->status == 0) selected @endif>Inactive
+                                        </option>
+
+                                    </select>
                                 </div>
                             </div>
-
+                        </div>
+                        <div class="row mb-3">
                             <div class="col-md-4 mb-3">
                                 <label for="input40" class="col col-form-label mb-1"><b>Provider Logo </b></label>
 
@@ -96,55 +81,6 @@
                                     <input type="hidden" name="cropped_image" id="cropped_image">
 
                                 </label>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6 mb-3">
-                                <label for="meter_readings" class=" col-form-label">Meter Readings</label>
-                                <div class="">
-                                    <input type="text" class="form-control" id="meter_readings" name="meter_readings"
-                                        placeholder="Meter Readings" value="{{ $provider->payment_options }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="annual_accounts" class=" col-form-label">Anual Accounts</label>
-                                <div class="">
-                                    <input type="text" class="form-control" id="annual_accounts"
-                                        name="annual_accounts" placeholder="Anual Accounts"
-                                        value="{{ $provider->payment_options }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6 mb-3">
-                                <label for="adjust_installments" class=" col-form-label">Adjust Installments</label>
-                                <div class="">
-                                    <input type="text" class="form-control" id="adjust_installments"
-                                        name="adjust_installments" placeholder="Adjust Installments"
-                                        value="{{ $provider->payment_options }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="view_consumption" class=" col-form-label">View Consumption</label>
-                                <div class="">
-                                    <input type="text" class="form-control" id="view_consumption"
-                                        name="view_consumption" placeholder="View Consumption"
-                                        value="{{ $provider->payment_options }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6 mb-3">
-                                <label for="rose_scheme" class=" col-form-label">Rose Scheme</label>
-
-                                <div class="mb-3 add-scroll">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="rose_scheme"
-                                            value="1" @if ($provider->rose_scheme == 1) checked @endif>
-                                        <label class="form-check-label" for="flexCheckDefault">Active</label>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 

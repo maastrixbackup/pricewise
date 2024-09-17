@@ -251,14 +251,41 @@ Route::group(['prefix' => 'pricewise'], function () {
             
             
             Route::get('/create-new-job', [VacancyController::class, 'show'])->name('post-new-vacancy');
-            Route::get('/job_type', [VacancyController::class, 'job_type'])->name('job_type');
-            Route::get('/job_industry', [VacancyController::class, 'job_industry'])->name('job_industry');
+            
+            
             Route::get('/job_role', [VacancyController::class, 'job_role'])->name('job_role');
-            Route::post('/submit-vacancy-form', [VacancyController::class, 'submit'])->name('vacancy.form.submit');
-            Route::post('/submit-job-type', [VacancyController::class, 'job_type_submit'])->name('vacancy.jobtype.submit');
-            Route::post('/submit-industry-type', [VacancyController::class, 'industry_type_submit'])->name('vacancy.jobindustry.submit');
             Route::post('/submit-role', [VacancyController::class, 'role_submit'])->name('vacancy.role.submit');
             Route::post('/delete-job-role/{id}', [VacancyController::class, 'destroy'])->name('deleteJobRole');
+            Route::post('/submit-vacancy-form', [VacancyController::class, 'submit'])->name('vacancy.form.submit');
+            Route::get('/job_type', [VacancyController::class, 'job_type'])->name('job_type');
+            Route::post('/submit-job-type', [VacancyController::class, 'job_type_submit'])->name('vacancy.jobtype.submit');
+            Route::delete('/delete-row', [VacancyController::class, 'deleteRow'])->name('deleteRow');
+            Route::get('/job_industry', [VacancyController::class, 'job_industry'])->name('job_industry');
+            Route::post('/submit-industry-type', [VacancyController::class, 'industry_type_submit'])->name('vacancy.jobindustry.submit');
+            Route::delete('/delete-industry', [VacancyController::class, 'deleteIndustry'])->name('deleteIndustry');
+            Route::get('/work_experience', [VacancyController::class, 'work_experience'])->name('work_exp');
+            Route::post('/submit-job-exp', [VacancyController::class, 'job_exp_submit'])->name('job.exp.submit');
+            Route::delete('/delete-experience', [VacancyController::class, 'delete_exp'])->name('deleteExp');
+            Route::get('/educational_qualificaton', [VacancyController::class, 'educational_qualification'])->name('edu-qual');
+            Route::delete('/delete-education', [VacancyController::class, 'delete_education'])->name('deleteEducation');
+            Route::post('/add-new-qual', [VacancyController::class, 'add_new_qual'])->name('add-qualification');
+            Route::get('/set-salary', [VacancyController::class, 'set_salary'])->name('set_salary');
+            Route::delete('/delete-pph', [VacancyController::class, 'delete_pph'])->name('deletePph');
+            Route::post('/add-pph', [VacancyController::class, 'add_pph'])->name('addpph');
+            Route::get('/job-location', [VacancyController::class, 'job_location'])->name('job_location');
+            Route::post('/add-location', [VacancyController::class, 'add_location'])->name('addlocation');
+            Route::post('/delete-location', [VacancyController::class, 'delete_location'])->name('deletelocation');
+            Route::get('/get-job-roles/{industry_id}', [VacancyController::class, 'getJobRoles']);
+            Route::get('/list-all-jobs', [VacancyController::class, 'list_all_jobs'])->name('list-all-jobs');
+            Route::delete('/delete-job', [VacancyController::class, 'delete_job'])->name('deleteJob');
+            
+            Route::get('/edit-job/{id}', [VacancyController::class, 'edit'])->name('edit');
+            Route::post('/update-job/{id}', [VacancyController::class, 'update'])->name('vacancy.update');
+
+
+
+
+
 
             
 

@@ -33,6 +33,11 @@
 
                     <div class="row">
                         <div class="col-lg-12">
+                            @if (session('deleted'))
+                                <div class="alert alert-success">
+                                    {{ session('deleted') }}
+                                </div>
+                            @endif
                             <table class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
