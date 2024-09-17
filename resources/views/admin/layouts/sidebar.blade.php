@@ -379,7 +379,7 @@
                      </a>
                      <ul class="nav-main-submenu">
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="#">
+                            <a class="nav-main-link" href="{{ route('admin.list-all-jobs') }}">
                                  <i class="nav-main-link-icon fa-regular fa fa-user-secret"></i>
                                  <span class="nav-main-link-name">List All</span>
                              </a>
@@ -391,7 +391,7 @@
                              </a>
                          </li>
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="#">
+                             <a class="nav-main-link" href="{{ route('admin.job_location') }}">
                                  <i class="nav-main-link-icon fa-regular fa fa-list-alt"></i>
                                  <span class="nav-main-link-name">Location</span>
                              </a>
@@ -415,23 +415,23 @@
                              </a>
                          </li>
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="#">
-                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
-                                 <span class="nav-main-link-name">Exp Level</span>
-                             </a>
-                         </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="#">
-                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
-                                 <span class="nav-main-link-name">Educational Qualification</span>
-                             </a>
-                         </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link" href="#">
-                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
-                                 <span class="nav-main-link-name">Pay per Hour</span>
-                             </a>
-                         </li>
+                            <a class="nav-main-link" href="{{ route('admin.work_exp') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Exp Level</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.edu-qual') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Educational Qualification</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.set_salary') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Pay per Hour</span>
+                            </a>
+                        </li>
                      </ul>
                  </li>
 

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Pricewise : List all jobs')
+@section('title', 'Pricewise : Job Experience')
 
 
 @section('content')
@@ -22,11 +22,11 @@
 
     @php
         use Illuminate\Support\Facades\DB;
-        $jobTypes = DB::table('job_industry')->get();
+        $jobTypes = DB::table('job_exp')->get();
     @endphp
     <div class="row">
         <div class="col-lg-12">
-            <h6 class="mb-0 text-uppercase">Industry Type</h6>
+            <h6 class="mb-0 text-uppercase">Experience</h6>
             <hr>
             <div class="card" style="margin-bottom: 15px;">
                 <div class="card-body">
@@ -44,7 +44,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sl.</th>
-                                        <th>Industry</th>
+                                        <th>Experience</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -53,8 +53,8 @@
                                     @foreach ($jobTypes as $jobType)
                                         <tr>
                                             <td>{{ $jobType->id }}</td>
-                                            <td>{{ $jobType->job_industry }}</td>
-                                            <td><button type="button" class="btn btn-danger" data-toggle="modal"
+                                            <td>{{ $jobType->exp }}</td>
+                                            <td><button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
                                                     data-target="#deleteModal" data-id="{{ $jobType->id }}">
                                                     <i class="fas fa-trash"></i> Delete
                                                 </button>
@@ -74,16 +74,16 @@
         <div class="col-12 col-lg-12">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New Industry Type</h5>
+                    <h5 class="mb-0">Add New (Experience)</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" action="{{ route('admin.vacancy.jobindustry.submit') }}">
+                    <form method="post" action="{{ route('admin.job.exp.submit') }}">
                         @csrf
 
                         <div class="row">
                             <div class="col-md-4">
-                                <label for="input_type" class="col-form-label">Add New Industry Type</label>
-                                <input type="text" class="form-control" name="industry_type">
+                                <label for="input_type" class="col-form-label">Add New (Experience)</label>
+                                <input type="text" class="form-control" name="job_exp">
                             </div>
                         </div>
 
@@ -128,11 +128,11 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{{ route('admin.deleteIndustry') }}">
+                <form method="POST" action="{{ route('admin.deleteExp') }}">
                     @csrf
                     @method('DELETE')
                     <div class="modal-body">
-                        <p>Are you sure you want to delete this item?</p>
+                        <p>Are you sure you want to delete?</p>
                         <input type="hidden" name="id" id="delete-id" value="">
                     </div>
                     <div class="modal-footer">
