@@ -109,7 +109,7 @@
                                 <input type="number" class="form-control" placeholder="max-100GB" name="cloud_backup"
                                     id="cloud_backup" value="{{ old('cloud_backup') }}" onchange="chkBackup()">
                                 @error('cloud_backup')
-                                    <div class="alert alert-danger py-1 mt-1">{{ $message }}</div>
+                                    <span class="alert alert-danger py-1 mt-1">{{ $message }}</span>
                                 @enderror
                             </div>
 

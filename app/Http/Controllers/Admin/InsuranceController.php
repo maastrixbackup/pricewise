@@ -14,6 +14,7 @@ use App\Models\AdditionalInfo;
 use App\Models\Category;
 use App\Models\Combo;
 use App\Models\PostFeature;
+use App\Models\PostalCode;
 use App\Models\Feature;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Storage;
@@ -58,12 +59,13 @@ class InsuranceController extends Controller
     {
         // $objContract = TvContractLength::latest()->get();
         // $objCommission = CommissionType::latest()->get();
+        $postalCodes = PostalCode::latest()->get();
         $combos = Combo::where('category', 5)->latest()->get();
         $objRelatedProducts = InsuranceProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::whereNull('parent')->latest()->get();
         $providers = Provider::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.insurance.add', compact('objCategory', 'objRelatedProducts', 'providers', 'combos'));
+        return view('admin.insurance.add', compact('postalCodes', 'objCategory', 'objRelatedProducts', 'providers', 'combos'));
         //, compact('objContract', 'objCommission', 'objAdditionalCategories', 'objRelatedProducts', 'objCategory', 'objAffiliates', 'objFeature')
     }
 
@@ -243,7 +245,7 @@ class InsuranceController extends Controller
             $objTv->contract_length = $request->contract_length;
             $objTv->contract_type = $request->contract_type;
             $objTv->transfer_service = $request->transfer_service;
-            $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+            $objTv->pin_codes = json_encode($request->pin_codes ?  $request->pin_codes : []); //json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
             $combos = $request->combos ? implode(",", $request->combos) : Null;
             $objTv->combos = $request->combos ? json_encode($request->combos) : [];
             $objTv->status = $request->status ? $request->status : 0;
@@ -310,9 +312,7 @@ class InsuranceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-    }
+    public function show($id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -323,6 +323,7 @@ class InsuranceController extends Controller
     public function edit($id)
     {
         $objTv = InsuranceProduct::find($id);
+        $postalCodes = PostalCode::latest()->get();
         $objInternetFeatures = Feature::select('id', 'features', 'input_type')->where('category', $objTv->category)->orWhere('sub_category', $objTv->sub_category)->get();
         $postInternetFeatures = PostFeature::where('post_id', $id)
             ->where('category_id', $objTv->category)
@@ -349,7 +350,7 @@ class InsuranceController extends Controller
         $objCategory = Category::whereNull('parent')->latest()->get();
         //$objAffiliates = Affiliate::latest()->get();
         //$objFeature = TvFeature::latest()->get();
-        return view('admin.insurance.edit', compact('objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'objReimburseFeatures', 'postReimburseFeatures', 'serviceInfo', 'combos'));
+        return view('admin.insurance.edit', compact('postalCodes', 'objTv', 'objRelatedProducts', 'objCategory', 'objInternetFeatures', 'postInternetFeatures', 'objReimburseFeatures', 'postReimburseFeatures', 'serviceInfo', 'combos'));
     }
 
     /**
@@ -385,7 +386,7 @@ class InsuranceController extends Controller
         $objTv->contract_length = $request->contract_length;
         $objTv->contract_type = $request->contract_type;
         $objTv->transfer_service = $request->transfer_service;
-        $objTv->pin_codes = json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
+        $objTv->pin_codes = json_encode($request->pin_codes ?  $request->pin_codes : []); //json_encode($request->pin_codes ? explode(",", $request->pin_codes) : []);
         $combos = $request->combos ? implode(",", $request->combos) : Null;
         $objTv->combos = $request->combos ? json_encode($request->combos) : [];
         $objTv->status = $request->online_status ? $request->online_status : 0;

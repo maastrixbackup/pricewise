@@ -130,12 +130,25 @@
 
                                                         <div class="col-md-6 col-12">
                                                             <div class=" mb-3">
+                                                                @php
+                                                                    $objPinCodes = json_decode($objTv->pin_codes, true);
+                                                                @endphp
                                                                 <label for="pin_codes" class="col-form-label">Area PIN
                                                                     Codes</label>
-                                                                <input type="text" class="form-control" id="pin_codes"
+                                                                <select name="pin_codes[]" id="pin_codes"
+                                                                    class="form-control" multiple>
+                                                                    <option value="" disabled>Select Pin Codes
+                                                                    </option>
+                                                                    @foreach ($postalCodes as $code => $cod)
+                                                                        <option value="{{ $cod->post_code }}"
+                                                                            {{ in_array($cod->post_code, $objPinCodes) ? 'selected' : '' }}>
+                                                                            {{ $cod->post_code }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                {{-- <input type="text" class="form-control" id="pin_codes"
                                                                     name="pin_codes"
                                                                     placeholder="PIN codes with coma separated"
-                                                                    value="{{ implode(',', json_decode($objTv->pin_codes)) }}">
+                                                                    value="{{ implode(',', json_decode($objTv->pin_codes)) }}"> --}}
                                                             </div>
                                                         </div>
 
@@ -540,6 +553,11 @@
         CKEDITOR.replace('description', {
             allowedContent: true,
             extraPlugins: 'colorbutton'
+        });
+        $(document).ready(function() {
+            new Choices(document.querySelector("#pin_codes"), {
+                removeItemButton: true
+            });
         });
     </script>
 
