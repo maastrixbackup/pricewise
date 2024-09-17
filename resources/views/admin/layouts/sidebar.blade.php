@@ -212,11 +212,11 @@
                          </li>
 
                          <li class="nav-main-item">
-                            <a class="nav-main-link" href="{{ route('admin.deals-product.index') }}">
-                                <i class="nav-main-link-icon fa-solid fa-list"></i>
-                                <span class="nav-main-link-name">Deals Product</span>
-                            </a>
-                        </li>
+                             <a class="nav-main-link" href="{{ route('admin.deals-product.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                 <span class="nav-main-link-name">Deals Product</span>
+                             </a>
+                         </li>
 
                          <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.product-brands.index') }}">
@@ -240,25 +240,25 @@
                          </li>
 
                          <li class="nav-main-item">
-                            <a class="nav-main-link" href="{{ route('admin.request_products') }}">
-                             <i class="nav-main-link-icon fa-solid fa-envelope-o" aria-hidden="true"></i>
-                                <span class="nav-main-link-name">On Demand Product</span>
-                            </a>
-                        </li>
+                             <a class="nav-main-link" href="{{ route('admin.request_products') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-envelope-o" aria-hidden="true"></i>
+                                 <span class="nav-main-link-name">On Demand Product</span>
+                             </a>
+                         </li>
 
                          <li class="nav-main-item">
-                            <a class="nav-main-link" href="{{ route('admin.notify_products') }}">
-                             <i class="nav-main-link-icon fa-solid fa-envelope-o" aria-hidden="true"></i>
-                                <span class="nav-main-link-name">Notify Product</span>
-                            </a>
-                        </li>
+                             <a class="nav-main-link" href="{{ route('admin.notify_products') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-envelope-o" aria-hidden="true"></i>
+                                 <span class="nav-main-link-name">Notify Product</span>
+                             </a>
+                         </li>
 
                          <li class="nav-main-item">
-                            <a class="nav-main-link" href="{{ route('admin.ratings') }}">
-                             <i class="nav-main-link-icon fa-solid fa-star-o" aria-hidden="true"></i>
-                                <span class="nav-main-link-name">Ratings</span>
-                            </a>
-                        </li>
+                             <a class="nav-main-link" href="{{ route('admin.ratings') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-star-o" aria-hidden="true"></i>
+                                 <span class="nav-main-link-name">Ratings</span>
+                             </a>
+                         </li>
 
                          <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.shop-settings') }}">
@@ -371,6 +371,70 @@
                      </ul>
                  </li>
 
+                 <li class="nav-main-item">
+                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                         aria-expanded="false" href="#">
+                         <i class="nav-main-link-icon fa fa-shield"></i>
+                         <span class="nav-main-link-name">Vacancy</span>
+                     </a>
+                     <ul class="nav-main-submenu">
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.list-all-jobs') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-user-secret"></i>
+                                 <span class="nav-main-link-name">List All</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.post-new-vacancy') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-list-alt"></i>
+                                 <span class="nav-main-link-name">Post New</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.job_location') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-list-alt"></i>
+                                 <span class="nav-main-link-name">Location</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.job_type') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                 <span class="nav-main-link-name">Type</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.job_industry') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                 <span class="nav-main-link-name">Industry</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.job_role') }}">
+                                 <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                 <span class="nav-main-link-name">Role</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.work_exp') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Exp Level</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.edu-qual') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Educational Qualification</span>
+                            </a>
+                        </li>
+                        <li class="nav-main-item">
+                            <a class="nav-main-link" href="{{ route('admin.set_salary') }}">
+                                <i class="nav-main-link-icon fa-regular fa fa-lock"></i>
+                                <span class="nav-main-link-name">Pay per Hour</span>
+                            </a>
+                        </li>
+                     </ul>
+                 </li>
+
 
                  <li class="nav-main-item">
                      <a class="nav-main-link" href="{{ route('admin.requests.index') }}">
@@ -399,12 +463,12 @@
                                  <span class="nav-main-link-name">Features</span>
                              </a>
                          </li>
-                         <li class="nav-main-item">
+                         {{-- <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.providers.index') }}">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                                  <span class="nav-main-link-name">Companies</span>
                              </a>
-                         </li>
+                         </li> --}}
                          <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.house-type.index') }}">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
@@ -417,7 +481,7 @@
                                  <span class="nav-main-link-name">Options</span>
                              </a>
                          </li>
-                         <li class="nav-main-item">
+                         {{-- <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.categories.index') }}">
                                  <i class="nav-main-link-icon fa-solid fa-list"></i>
                                  <span class="nav-main-link-name">Categories</span>
@@ -429,7 +493,7 @@
                                  <i class="nav-main-link-icon fa-solid fa-list"></i>
                                  <span class="nav-main-link-name">Sub Categories</span>
                              </a>
-                         </li>
+                         </li> --}}
                      </ul>
                  </li>
 
@@ -624,6 +688,13 @@
                         <span class="nav-main-link-name">Manage House Number</span>
                     </a>
                 </li>
+
+                 <li class="nav-main-item">
+                     <a class="nav-main-link" href="{{ route('admin.providers.index') }}">
+                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                         <span class="nav-main-link-name">Provider</span>
+                     </a>
+                 </li>
 
                  {{-- <li class="nav-main-item">
                      <a class="nav-main-link" href="{{ route('admin.reimbursement.index') }}">
