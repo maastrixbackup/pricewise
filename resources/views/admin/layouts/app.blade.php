@@ -400,6 +400,42 @@
     @stack('scripts')
     {!! Toastr::message() !!}
     <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        @if (Session::has('toastr'))
+            var type = "{{ Session::get('toastr')['type'] }}";
+            var message = "{{ Session::get('toastr')['message'] }}";
+            var title = "{{ Session::get('toastr')['title'] }}";
+
+            switch (type) {
+                case 'info':
+                    toastr.info(message, title);
+                    break;
+
+                case 'warning':
+                    toastr.warning(message, title);
+                    break;
+
+                case 'success':
+                    toastr.success(message, title);
+                    break;
+
+                case 'error':
+                    toastr.error(message, title);
+                    break;
+            }
+        @endif
         $('.btn-close').on('click', function() {
             $('#modal').modal('hide');
         });

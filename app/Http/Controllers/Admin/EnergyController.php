@@ -282,7 +282,12 @@ class EnergyController extends Controller
 
 
             if ($objEnergy->save()) {
-                return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',  // success, error, info, warning
+                    'message' => 'Energy Product Added successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->route('admin.energy.index');
             } else {
                 $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
                 return response()->json(["status" => false, 'message' => $message]);
@@ -412,7 +417,13 @@ class EnergyController extends Controller
         if ($objEnergy->save()) {
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.energy.index")]);
-            return redirect()->route('admin.energy.index')->with(Toastr::success('Energy Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+
+            session()->flash('toastr', [
+                'type' => 'success',  // success, error, info, warning
+                'message' => 'Energy Product Updated successfully.',
+                'title' => ''
+            ]);
+            return redirect()->route('admin.energy.index');
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -428,10 +439,19 @@ class EnergyController extends Controller
     {
         $objEnergy = EnergyProduct::find($id);
         if ($objEnergy->delete()) {
-            return back()->with(Toastr::error(__('Energy deleted successfully!')));
+                session()->flash('toastr', [
+                    'type' => 'success',  // success, error, info, warning
+                    'message' => 'Energy Deleted successfully.',
+                    'title' => ''
+                ]);
+            return back();
         } else {
-            $error_msg = Toastr::error(__('There is an error! Please try later!'));
-            return redirect()->route('admin.energy.index')->with($error_msg);
+                session()->flash('toastr', [
+                    'type' => 'error',  // success, error, info, warning
+                    'message' => 'There is an error ! Please try again later.',
+                    'title' => ''
+                ]);
+            return redirect()->route('admin.energy.index');
         }
     }
     public function default(Request $request, $id)
