@@ -118,11 +118,21 @@ class ProductController extends Controller
 
             if ($shopProduct->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Product Added successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -277,13 +287,23 @@ class ProductController extends Controller
                 }
 
                 DB::commit();
-                return redirect()->route('admin.products.index')->with(Toastr::success('Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Product updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->route('admin.products.index');
             }
 
             throw new \Exception('Failed to update product');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -312,10 +332,20 @@ class ProductController extends Controller
             try {
                 ProductImage::insert($insert);
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Image Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Image updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'error',
+                    'message' => $e->getMessage(),
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         }
     }
@@ -373,12 +403,22 @@ class ProductController extends Controller
 
         // Ensure $newHighlight is not empty
         if (empty($newHighlight)) {
-            return redirect()->back()->with(Toastr::error('Highlight cannot be empty', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => 'Highlights Cannot be Empty.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
 
         // Check if the new highlight already exists in the array
         if (array_intersect($newHighlight, $hData)) {
-            return redirect()->back()->with(Toastr::error('Highlight already exists', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => 'Highlights Already Exists.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
 
         // If $hData is null (no highlights yet), initialize it as an empty array
@@ -403,10 +443,20 @@ class ProductController extends Controller
             }
 
             if ($shopP->save()) {
-                return redirect()->back()->with(Toastr::success('Highlights Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Highlights updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } else {
-            return redirect()->back()->with(Toastr::error('You have reached Max limit 3', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => 'You have reached Max Limit 3.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -444,11 +494,21 @@ class ProductController extends Controller
         try {
             if ($pDescription->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Description Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Description updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -460,7 +520,12 @@ class ProductController extends Controller
 
         // Check if the record exists
         if (!$pFeatures) {
-            return redirect()->back()->with(Toastr::error('Record not found.', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => 'Record Not Found.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
 
         // Fetch the current specification from the record
@@ -500,11 +565,21 @@ class ProductController extends Controller
         try {
             if ($pFeatures->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Specification Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Specification updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -567,10 +642,19 @@ class ProductController extends Controller
     {
         try {
             ShopProduct::find($id)->delete();
-            return redirect()->back()->with(Toastr::error(__('Product deleted successfully!')));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Product deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
-            $error_msg = Toastr::error(__($e->getMessage()));
-            return redirect()->back()->with($error_msg);
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -614,11 +698,21 @@ class ProductController extends Controller
             $productBrand->status = $request->status;
             if ($productBrand->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Brand Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Brand Added successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function brand_edit(Request $request, $id)
@@ -655,20 +749,40 @@ class ProductController extends Controller
             $productBrand->status = $request->status;
             if ($productBrand->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Brand Upodated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Brand updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function brand_destroy(Request $request)
     {
         try {
             ProductBrand::where('id', $request->id)->delete();
-            return redirect()->back()->with(Toastr::success('Deal Deleted Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Deal Deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -719,11 +833,21 @@ class ProductController extends Controller
 
             if ($category->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Data Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Data Added successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function pCategory_edit(Request $request, $id)
@@ -778,20 +902,40 @@ class ProductController extends Controller
 
             if ($category->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Data Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Data updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function pCategory_destroy(Request $request)
     {
         try {
             ProductCategory::where('id', $request->id)->delete();
-            return redirect()->back()->with(Toastr::success('Data Deleted Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Data Deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -849,11 +993,21 @@ class ProductController extends Controller
             $promotion->image = $filename ?? '';
             if ($promotion->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Promotion Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Promotion Added successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function promotion_edit(Request $request, $id)
@@ -914,20 +1068,40 @@ class ProductController extends Controller
             $promotion->image = $filename ?? $promotion->image;
             if ($promotion->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Promotion Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Promotion Updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function promotion_destroy(Request $request)
     {
         try {
             ProductPromotion::where('id', $request->id)->delete();
-            return redirect()->back()->with(Toastr::success('Promotion Deleted Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Promotion Deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -984,11 +1158,21 @@ class ProductController extends Controller
 
             if ($dealProduct->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Deal Created Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Deal Created successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function deals_edit(Request $request, $id)
@@ -1047,20 +1231,40 @@ class ProductController extends Controller
 
             if ($dealProduct->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Deal Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Deal Updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function deals_destroy(Request $request)
     {
         try {
             DealProduct::where('id', $request->id)->delete();
-            return redirect()->back()->with(Toastr::success('Deal Deleted Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Deal Deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::warning($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -1100,11 +1304,21 @@ class ProductController extends Controller
             $color->status = $request->status;
             if ($color->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Color Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Color Added successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function color_edit(Request $request, $id)
@@ -1138,20 +1352,40 @@ class ProductController extends Controller
             $color->status = $request->status;
             if ($color->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Color Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Color Updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
     public function color_destroy(Request $request)
     {
         try {
             ProductColor::where('id', $request->id)->delete();
-            return redirect()->back()->with(Toastr::success('Color Deleted Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Color Deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -1190,12 +1424,27 @@ class ProductController extends Controller
             $shopSetting->image = $filename ?? $shopSetting->image;
 
             if ($shopSetting->save()) {
-                return redirect()->back()->with(Toastr::success('Shop Setting Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Shop Setting Updated successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with(Toastr::warning('Unable to Update the setting !', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'warning',
+                    'message' => 'Unable to update the setting',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -1311,7 +1560,12 @@ class ProductController extends Controller
         if ($request->has('sku')) {
             $product = ShopProduct::where('sku', $request->input('sku'))->first();
             if ($product) { // Check if $product is not null
-                return redirect()->back()->with(Toastr::error('Product with Same SKU Already exists', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'warning',
+                    'message' => 'Product with n same SKU Already Exists.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         }
 
@@ -1374,11 +1628,21 @@ class ProductController extends Controller
 
             if ($shopProduct->save()) {
                 DB::commit();
-                return redirect()->back()->with(Toastr::success('Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'Product Added successfully.',
+                    'title' => ''
+                ]);
+                return redirect()->back();
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -1562,10 +1826,20 @@ class ProductController extends Controller
         try {
             $dealNew->save();
             DB::commit();
-            return redirect()->back()->with(Toastr::success('Product Deal Added Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Product Deal Added successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with(Toastr::success($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 
@@ -1595,10 +1869,19 @@ class ProductController extends Controller
     {
         try {
             ComboProduct::find($request->id)->delete();
-            return redirect()->back()->with(Toastr::error(__('Deal deleted successfully!')));
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Deal Deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->back();
         } catch (\Exception $e) {
-            $error_msg = Toastr::error(__($e->getMessage()));
-            return redirect()->back()->with($error_msg);
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->back();
         }
     }
 }

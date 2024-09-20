@@ -34,6 +34,7 @@ use App\Mail\AvailableProductNotification;
 use App\Mail\WelcomeEmail;
 use App\Models\ShopOrder;
 use App\Models\ComboProduct;
+use App\Models\ProductCartExtra;
 use App\Models\ShopOrderDetail;
 use App\Models\ExtraProduct;
 use Illuminate\Support\Str;
@@ -563,141 +564,113 @@ class ShopProductController extends Controller
 
     public function addToCart(Request $request)
     {
-        // Check if the product already exists in the cart for the user
-        $cartExist = ProductCart::where([
-            'user_id' => $request->input('user_id'),
-            'product_id' => $request->input('product_id')
-        ])->with('productDetails')->first();
+        if ($request->filled('user_id')) {
+            $userId = $request->input('user_id');
+            if ($request->filled('product_data')) {
 
-        if ($cartExist) {
-            // If the product is already in the cart, increase the quantity and update the amount
-            $addQty = $cartExist->qty + 1;
-            // $price = $request->input('price'); // assuming 'price' is the price of one unit
-            $price = $cartExist->productDetails->sell_price;
-            $cartExist->qty = $addQty;
-            $finalPrice = $addQty * $price; // calculate the total price for the updated quantity
-            $cartExist->amount = $finalPrice;
-
-            if ($cartExist->save()) {
-                $viewCartProduct = ProductCart::where([
-                    'user_id' => $request->input('user_id'),
-                ])->with('productDetails')->get();
-
-                $cartCount = $viewCartProduct->count();
-                $cartAmount = $viewCartProduct->sum('amount'); // Calculate the total cart amount
-                $cartItems = $viewCartProduct->map(function ($cp) {
-                    return [
-                        'id' => $cp->id,
-                        'user_id' => $cp->user_id,
-                        'product_id' => $cp->product_id,
-                        'qty' => $cp->qty,
-                        'amount' => $cp->amount,
-                        'product_details' => [
-                            'pid' => $cp->productDetails->id,
-                            'title' => $cp->productDetails->title,
-                            'slug' => $cp->productDetails->slug,
-                            'sku' => $cp->productDetails->sku,
-                            'size' => $cp->productDetails->size,
-                            'model' => $cp->productDetails->model,
-                            'sell_price' => $cp->productDetails->sell_price,
-                            'actual_price' => $cp->productDetails->actual_price,
-                            'ratings' => $cp->productDetails->ratings,
-                            'image' => !empty($cp->productDetails->images) && isset($cp->productDetails->images[0])
-                                ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
-                                : ''
-                        ],
-                        'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
-                        // 'pd' => $cp->productDetails,
-                    ];
-                });
-                // Return success response or any other appropriate action
-                return response()->json([
-                    'success' =>  true,
-                    'total_amount' => $cartAmount,
-                    'existData' => $cartItems,
-                    'cartCount' => $cartCount,
-                    'message' => 'Cart updated successfully!'
+                // $productArr = $request->input('product_data') ?? [];
+                $productArr = $request->input('product_data', [
+                    [
+                        "product_id" => "1",
+                        "qty" => "5",
+                        "price" => "506",
+                        "extras" => [
+                            [
+                                "ext_id" => "5",
+                                "amount" => "205"
+                            ],
+                            [
+                                "ext_id" => "6",
+                                "amount" => "305"
+                            ]
+                        ]
+                    ],
+                    // Add more products here if needed
                 ]);
+
+                // if ($productArr && is_array($productArr)) {
+                foreach ($productArr as $product) {
+                    $existCart = ProductCart::where([
+                        'user_id' => $userId,
+                        'product_id' => $product['product_id']
+                    ])->first();
+
+                    if ($existCart) {
+                        $existCart->delete();
+                    }
+                    $cartProduct = new ProductCart();
+                    $cartProduct->user_id = $userId;
+                    $cartProduct->product_id = $product['product_id'];
+                    $cartProduct->qty = $product['qty'];
+                    $cartProduct->amount = $product['price'];
+                    $cartProduct->bulk_deals = $product['extras'] ??  json_encode($product['extras']) ?? '';
+                    if ($cartProduct->save()) {
+                        // Handle extras if they exist
+                        if (!empty($product['extras'])) {
+                            foreach ($product['extras'] as $extra) {
+                                // Add extra to the cart or update existing extra entry
+                                ProductCartExtra::updateOrCreate(
+                                    [
+                                        'cart_id' => $cartProduct->id,
+                                        'product_id' => $product['product_id'],
+                                        'ext_id' => $extra['ext_id']
+                                    ],
+                                    ['amount' => $extra['amount']],
+                                );
+                            }
+                        }
+                        return $this->viewCart($request);
+                    }
+                }
+                // }
             }
-        } else {
-            // If the product is not in the cart, create a new cart entry
-            $cartProduct = new ProductCart();
-            $cartProduct->user_id = $request->input('user_id');
-            $cartProduct->product_id = $request->input('product_id');
-            $cartProduct->qty = 1; // initialize quantity as 1
-            $price = ShopProduct::find($request->input('product_id'))->sell_price; // Fetch the price from the product details
-            $cartProduct->amount = $price; // set the amount to the price of one unit
 
-            if ($cartProduct->save()) {
-                $viewCartProduct = ProductCart::where([
-                    'user_id' => $request->input('user_id'),
-                ])->with('productDetails')->get();
+            if ($request->filled('product_id')) {
+                $productId = $request->input('product_id');
+                // Check if the product already exists in the cart for the user
+                $cartExist = ProductCart::where([
+                    'user_id' => $userId,
+                    'product_id' => $productId
+                ])->with('productDetails')->first();
 
-
-                $cartCount = $viewCartProduct->count();
-                $cartAmount = $viewCartProduct->sum('amount'); // Calculate the total cart amount
-                $cartItems = $viewCartProduct->map(function ($cp) {
-                    return [
-                        'id' => $cp->id,
-                        'user_id' => $cp->user_id,
-                        'product_id' => $cp->product_id,
-                        'qty' => $cp->qty,
-                        'amount' => $cp->amount,
-                        'product_details' => [
-                            'pid' => $cp->productDetails->id,
-                            'title' => $cp->productDetails->title,
-                            'slug' => $cp->productDetails->slug,
-                            'sku' => $cp->productDetails->sku,
-                            'size' => $cp->productDetails->size,
-                            'model' => $cp->productDetails->model,
-                            'sell_price' => $cp->productDetails->sell_price,
-                            'actual_price' => $cp->productDetails->actual_price,
-                            'ratings' => $cp->productDetails->ratings,
-                            'image' => !empty($cp->productDetails->images) && isset($cp->productDetails->images[0])
-                                ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
-                                : ''
-                        ],
-                        'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
-                    ];
-                });
-                // Return success response or any other appropriate action
-                return response()->json([
-                    'success' => true,
-                    'total_amount' => $cartAmount,
-                    'existData' => $cartItems,
-                    'cartCount' => $cartCount,
-                    'message' => 'Product added to cart successfully!'
-                ]);
+                if ($cartExist) {
+                    $cartExist->qty += 1;
+                    $price = $cartExist->productDetails->sell_price;
+                    $cartExist->amount = $cartExist->qty * $price;
+                    if ($cartExist->save()) {
+                        return $this->viewCartWithResponse($userId);
+                    }
+                } else {
+                    // If the product is not in the cart, create a new cart entry
+                    $cartProduct = new ProductCart();
+                    $cartProduct->user_id = $userId;
+                    $cartProduct->product_id = $productId;
+                    $cartProduct->qty = 1; // initialize quantity as 1
+                    $price = ShopProduct::find($productId)->sell_price; // Fetch the price from the product details
+                    $cartProduct->amount = $price; // set the amount to the price of one unit
+                    if ($cartProduct->save()) {
+                        return $this->viewCartWithResponse($userId);
+                    }
+                }
             }
         }
-
         // If something goes wrong, return an error response
         return response()->json([
             'error' => false,
             'message' => 'Failed to update cart!'
-        ], 500);
+        ]);
     }
 
-
-    public function viewCart(Request $request)
+    private function viewCartWithResponse($userId)
     {
-        // Retrieve the products in the cart along with their details for the specified user
-        $viewCartProduct = ProductCart::with('productDetails')
-            ->where('user_id', $request->input('user_id'))
+        $viewCartProduct = ProductCart::where('user_id', $userId)
+            ->with('productDetails')
             ->get();
 
-        if ($viewCartProduct->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No products in the cart.'
-            ]);
-        }
-
-
         $cartCount = $viewCartProduct->count();
-        $cartAmount = $viewCartProduct->sum('amount'); // Calculate the total cart amount
-        // Map the cart products to a simplified structure
-        $cartProducts = $viewCartProduct->map(function ($cp) {
+        $cartAmount = $viewCartProduct->sum('amount');
+
+        $cartItems = $viewCartProduct->map(function ($cp) {
             return [
                 'id' => $cp->id,
                 'user_id' => $cp->user_id,
@@ -714,22 +687,91 @@ class ShopProductController extends Controller
                     'sell_price' => $cp->productDetails->sell_price,
                     'actual_price' => $cp->productDetails->actual_price,
                     'ratings' => $cp->productDetails->ratings,
-                    'highlights' => $cp->productDetails->heighlights,
                     'banner_image' => asset('storage/images/shops/' . $cp->productDetails->banner_image),
                     'image' => !empty($cp->productDetails->images) && isset($cp->productDetails->images[0])
                         ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
                         : ''
                 ],
-                'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
+                'combo_product' => ComboDealProductResource::collection(
+                    ComboProduct::where('product_id', $cp->product_id)
+                        ->with('comboProductDetails')
+                        ->get()
+                )
             ];
         });
 
         return response()->json([
             'success' => true,
             'total_amount' => $cartAmount,
-            'cart_products' => $cartProducts,
+            'existData' => $cartItems,
             'cartCount' => $cartCount,
-            'message' => 'Cart viewed successfully.'
+            'message' => 'Cart updated successfully!'
+        ]);
+    }
+
+
+    public function viewCart(Request $request)
+    {
+        if ($request->filled('user_id')) {
+            if ($request->filled('product_data')) {
+                return $this->addToCart($request);
+            }
+
+            // Retrieve the products in the cart along with their details for the specified user
+            $viewCartProduct = ProductCart::with('productDetails')
+                ->where('user_id', $request->input('user_id'))
+                ->get();
+
+            if ($viewCartProduct->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No products in the cart.'
+                ]);
+            }
+
+
+            $cartCount = $viewCartProduct->count();
+            $cartAmount = $viewCartProduct->sum('amount'); // Calculate the total cart amount
+            // Map the cart products to a simplified structure
+            $cartProducts = $viewCartProduct->map(function ($cp) {
+                return [
+                    'id' => $cp->id,
+                    'user_id' => $cp->user_id,
+                    'product_id' => $cp->product_id,
+                    'qty' => $cp->qty,
+                    'amount' => $cp->amount,
+                    'product_details' => [
+                        'pid' => $cp->productDetails->id,
+                        'title' => $cp->productDetails->title,
+                        'slug' => $cp->productDetails->slug,
+                        'sku' => $cp->productDetails->sku,
+                        'size' => $cp->productDetails->size,
+                        'model' => $cp->productDetails->model,
+                        'sell_price' => $cp->productDetails->sell_price,
+                        'actual_price' => $cp->productDetails->actual_price,
+                        'ratings' => $cp->productDetails->ratings,
+                        'highlights' => $cp->productDetails->heighlights,
+                        'banner_image' => asset('storage/images/shops/' . $cp->productDetails->banner_image),
+                        'image' => !empty($cp->productDetails->images) && isset($cp->productDetails->images[0])
+                            ? asset('storage/images/shops/' . $cp->productDetails->images[0]->image)
+                            : ''
+                    ],
+                    'combo_product' => ComboDealProductResource::collection(ComboProduct::where('product_id', $cp->product_id)->with('comboProductDetails')->get()),
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'total_amount' => $cartAmount,
+                'cart_products' => $cartProducts,
+                'cartCount' => $cartCount,
+                'message' => 'Cart viewed successfully.'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User ID is missing.'
         ]);
     }
 
@@ -1021,75 +1063,6 @@ class ShopProductController extends Controller
         ]);
     }
 
-    // public function addToWishList(Request $request)
-    // {
-
-    //     if ($request->has('user_id') && $request->has('product_id')) {
-    //         // Check if the product is already in the wishlist
-    //         $existingWishlist = WishlistProduct::where([
-    //             'user_id' => $request->input('user_id'),
-    //             'product_id' => $request->input('product_id')
-    //         ])->first();
-
-    //         if ($existingWishlist) {
-    //             return $this->removeFromWishList($request);
-    //             // return response()->json([
-    //             //     'status' => false,
-    //             //     'message' => 'Product is already in your wishlist.',
-    //             // ]);
-    //         }
-
-    //         // Add the product to the wishlist
-    //         $wishlistAdd = new WishlistProduct();
-    //         $wishlistAdd->user_id = $request->input('user_id');
-    //         $wishlistAdd->product_id = $request->input('product_id');
-
-    //         if ($wishlistAdd->save()) {
-    //             return response()->json([
-    //                 'status' => true,
-    //                 'listData' => $wishlistAdd,
-    //                 'message' => 'Product Added in your wishlist.'
-    //             ]);
-    //         }
-    //     }
-
-    //     return response()->json([
-    //         'status' => false,
-    //         'message' => 'Failed to add product to wishlist. Please provide valid user_id and product_id.',
-    //     ]);
-    // }
-
-    // public function removeFromWishList(Request $request)
-    // {
-    //     if ($request->has('user_id') && $request->has('product_id')) {
-    //         // Find the wishlist entry
-    //         $wishlistItem = WishlistProduct::where([
-    //             'user_id' => $request->input('user_id'),
-    //             'product_id' => $request->input('product_id')
-    //         ])->first();
-
-    //         // If the item exists, delete it
-    //         if ($wishlistItem) {
-    //             $wishlistItem->delete();
-
-    //             return response()->json([
-    //                 'status' => true,
-    //                 'message' => 'Product removed from wishlist.'
-    //             ]);
-    //         } else {
-    //             return response()->json([
-    //                 'status' => false,
-    //                 'message' => 'Product not found in your wishlist.'
-    //             ]);
-    //         }
-    //     }
-
-    //     return response()->json([
-    //         'status' => false,
-    //         'message' => 'Failed to remove product from wishlist. Please provide valid user_id and product_id.',
-    //     ]);
-    // }
-
     public function productWishLists(Request $request)
     {
         $userId = $request->input('user_id');
@@ -1136,8 +1109,6 @@ class ShopProductController extends Controller
             'message' => 'User ID is required.'
         ]);
     }
-
-
     // public function storeProductRequest(Request $request)
     // {
     //     // Set the default timezone

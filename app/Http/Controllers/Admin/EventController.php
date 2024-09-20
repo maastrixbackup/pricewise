@@ -30,7 +30,7 @@ class EventController extends Controller
      */
     public function create()
     {
-       return view('admin.events.add');
+        return view('admin.events.add');
     }
 
     /**
@@ -93,7 +93,12 @@ class EventController extends Controller
             //    EventDoc::insert($insert);
             // }
 
-            return redirect()->route('admin.events.index')->with(Toastr::success('Event Created Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',  // success, error, info, warning
+                'message' => 'Event Created successfully.',
+                'title' => ''
+            ]);
+            return redirect()->route('admin.events.index');
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -183,11 +188,21 @@ class EventController extends Controller
 
             //    EventDoc::insert($insert);
             // }
-            return redirect()->route('admin.events.index')->with(Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'success',  // success, error, info, warning
+                'message' => 'Event Updated successfully.',
+                'title' => ''
+            ]);
+            return redirect()->route('admin.events.index');
             // Toastr::success('Event Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             // return redirect()->route("admin.events.index");
         } else {
-            return redirect()->route('admin.events.index')->with(Toastr::error('Something went wrong !! Please Try again later', '', ["positionClass" => "toast-top-right"]));
+            session()->flash('toastr', [
+                'type' => 'error',  // success, error, info, warning
+                'message' => 'Something went wrong !! Please Try again later.',
+                'title' => ''
+            ]);
+            return redirect()->route('admin.events.index');
             // $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             // return response()->json(["status" => true, 'message' => $message]);
         }
@@ -205,12 +220,19 @@ class EventController extends Controller
         $getEvent = Event::find($id);
         try {
             Event::find($id)->delete();
-            return back()->with(Toastr::error(__('Event deleted successfully!')));
+            session()->flash('toastr', [
+                'type' => 'success',  // success, error, info, warning
+                'message' => 'Event Deleted successfully.',
+                'title' => ''
+            ]);
+            return redirect()->route('admin.events.index');
         } catch (\Exception $e) {
-            $error_msg = Toastr::error(__('There is an error! Please try later!'));
-            return redirect()->route('admin.events.index')->with($error_msg);
+            session()->flash('toastr', [
+                'type' => 'error',  // success, error, info, warning
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->route('admin.events.index');
         }
     }
-
 }
-
