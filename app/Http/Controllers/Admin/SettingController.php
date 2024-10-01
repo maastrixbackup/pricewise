@@ -63,15 +63,15 @@ class SettingController extends Controller
 
             // Save the updated website settings
             if ($website->save()) {
-                Toastr::success('Website Settings Updated Successfully', '', ["positionClass" => "toast-top-right"]);
+                $this->sendToastResponse('success', 'Website Settings Updated Successfully');
                 return response()->json(["status" => true]);
             } else {
-                Toastr::error('Something went wrong. Please try again later.', '', ["positionClass" => "toast-top-right"]);
+                $this->sendToastResponse('error', 'Something Went wrong! try After Sometimes');
                 return response()->json(["status" => false]);
             }
         } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
             Log::error('Error updating website settings: ' . $e->getMessage());
-            Toastr::error('Something went wrong. Please try again later.', '', ["positionClass" => "toast-top-right"]);
             return response()->json(["status" => false]);
         }
     }
@@ -256,18 +256,29 @@ class SettingController extends Controller
                             ]);
                         }
                     }
-                    return redirect()->back()->with(Toastr::success('Fees updated successfully', '', ["positionClass" => "toast-top-right"]));
+                    $this->sendToastResponse('success', 'Fees Updated Successfully');
+                    return redirect()->back();
                 } catch (\Exception $e) {
-                    return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+                    $this->sendToastResponse('error', $e->getMessage());
+                    return redirect()->back();
                 }
             } else {
-                return redirect()->back()->with(Toastr::error('Category IDs and fees counts do not match', '', ["positionClass" => "toast-top-right"]));
+                $this->sendToastResponse('error', 'Category IDs and fees counts do not match');
+                return redirect()->back();
                 // return response()->json(['error' => 'Category IDs and fees counts do not match'], 400);
             }
         } else {
-            return redirect()->back()->with(Toastr::error('Invalid input', '', ["positionClass" => "toast-top-right"]));
-            // Handle the case where inputs are not set correctly
-            // return response()->json(['error' => 'Invalid input'], 400);
+            $this->sendToastResponse('error', 'Invalid Input');
+            return redirect()->back();
         }
+    }
+    public function sendToastResponse($type, $message, $title = '')
+    {
+        // Set up toast response with type, message, and optional title
+        return session()->flash('toastr', [
+            'type' => $type,
+            'message' => $message,
+            'title' => $title
+        ]);
     }
 }
