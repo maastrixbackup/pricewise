@@ -68,6 +68,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('pages', 'PageController');
             Route::resource('users', 'UserController');
             Route::resource('providers', 'ProviderController');
+            Route::get('providers/{id}', 'ProviderController@show')->name('providers');
             //Tv Product
             Route::get('/fetch/internet-tv', 'TvInternetController@gettvproducts')->name('get.internet-tv');
             Route::resource('internet-tv', 'TvInternetController');
@@ -248,11 +249,11 @@ Route::group(['prefix' => 'pricewise'], function () {
                 Route::post('/destroy', 'CyberSecurityController@sFeatures_destroy')->name('security-feature.destroy');
             });
 
-            
-            
+
+
             Route::get('/create-new-job', [VacancyController::class, 'show'])->name('post-new-vacancy');
-            
-            
+
+
             Route::get('/job_role', [VacancyController::class, 'job_role'])->name('job_role');
             Route::post('/submit-role', [VacancyController::class, 'role_submit'])->name('vacancy.role.submit');
             Route::post('/delete-job-role/{id}', [VacancyController::class, 'destroy'])->name('deleteJobRole');
@@ -278,7 +279,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('/get-job-roles/{industry_id}', [VacancyController::class, 'getJobRoles']);
             Route::get('/list-all-jobs', [VacancyController::class, 'list_all_jobs'])->name('list-all-jobs');
             Route::delete('/delete-job', [VacancyController::class, 'delete_job'])->name('deleteJob');
-            
+
             Route::get('/edit-job/{id}', [VacancyController::class, 'edit'])->name('edit');
             Route::post('/update-job/{id}', [VacancyController::class, 'update'])->name('vacancy.update');
 
@@ -287,7 +288,7 @@ Route::group(['prefix' => 'pricewise'], function () {
 
 
 
-            
+
 
             //Requests
             Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
@@ -311,7 +312,10 @@ Route::group(['prefix' => 'pricewise'], function () {
             // Route::any('/caterer/edit/{id}', 'CatererController@editcaterer')->name('edit.caterer');
             // Route::post('/caterer/update/{id}', 'CatererController@updatecaterer')->name('update.caterer');
             // Route::any('/caterer/delete', 'CatererController@deletecaterer')->name('delete.caterer');
-            
+
+            Route::post('/get-provider', 'CommonController@getProviderData')->name('get_provider');
+            Route::get('/global-energy-setting', 'CommonController@globalEnergySetting')->name('global-energy-setting');
+            Route::post('/global-setting-store', 'CommonController@globalEnergySettingStore')->name('global-setting-store');
 
             //Energy
             Route::get('/fetch/energy', 'EnergyController@getenergyproducts')->name('get.energy');
@@ -320,6 +324,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::post('/doc-delete/{id}', 'EnergyController@energy_doc_delete')->name('doc_delete');
             Route::post('/energy-feature-update/{id}', 'EnergyController@energy_feature_update')->name('energy_feature_update');
             Route::post('/energy-price-update/{id}', 'EnergyController@energy_price_update')->name('energy.pricing');
+            Route::post('/energy-status-update/{id}', 'EnergyController@energyStatusUpdate')->name('energy-status-update');
             Route::get('/energy/{id}', 'EnergyController@default')->name('energy-default');
             Route::get('duplicate-energy/{id}', 'TvProductController@duplicate')->name('duplicate-energy');
             //Features

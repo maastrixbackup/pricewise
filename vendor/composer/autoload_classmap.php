@@ -194,6 +194,7 @@ return array(
     'App\\Models\\Feature' => $baseDir . '/app/Models/Feature.php',
     'App\\Models\\FeeSetting' => $baseDir . '/app/Models/FeeSetting.php',
     'App\\Models\\FeedInCost' => $baseDir . '/app/Models/FeedInCost.php',
+    'App\\Models\\GlobalEnergySetting' => $baseDir . '/app/Models/GlobalEnergySetting.php',
     'App\\Models\\HouseNumber' => $baseDir . '/app/Models/HouseNumber.php',
     'App\\Models\\HouseType' => $baseDir . '/app/Models/HouseType.php',
     'App\\Models\\InsuranceProduct' => $baseDir . '/app/Models/InsuranceProduct.php',

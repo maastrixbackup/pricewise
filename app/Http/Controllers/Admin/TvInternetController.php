@@ -305,7 +305,12 @@ class TvInternetController extends Controller
             //     $objTv->image = $imageName;
             // }
             if ($objTv->save()) {
-                return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                session()->flash('toastr', [
+                    'type' => 'success',
+                    'message' => 'TV Product Added Successfully',
+                    'title' => ''
+                ]);
+                return redirect()->route('admin.internet-tv.index');
                 //Toastr::success('Tv Product Added Successfully', '', ["positionClass" => "toast-top-right"]);
                 //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
             } else {
@@ -446,9 +451,14 @@ class TvInternetController extends Controller
         //     $objTv->image = $imageName;
         // }
         if ($objTv->save()) {
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Tv Product Updated Successfully',
+                'title' => ''
+            ]);
             //Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]);
             //return response()->json(["status" => true, "redirect_location" => route("admin.internet-tv.index")]);
-            return redirect()->route('admin.internet-tv.index')->with(Toastr::success('Tv Product Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            return redirect()->route('admin.internet-tv.index');
         } else {
             $message = array('message' => 'Something went wrong !! Please Try again later', 'title' => '');
             return response()->json(["status" => false, 'message' => $message]);
@@ -462,19 +472,27 @@ class TvInternetController extends Controller
      */
     public function destroy($id)
     {
-        $objTv = TvInternetProduct::find($id);
-        if ($objTv->delete()) {
-            return back()->with(Toastr::error(__('Tv Data deleted successfully!')));
-        } else {
-            $error_msg = Toastr::error(__('There is an error! Please try later!'));
-            return redirect()->route('admin.internet-tv.index')->with($error_msg);
+        try {
+            $objTv = TvInternetProduct::find($id)->delete();
+            session()->flash('toastr', [
+                'type' => 'success',
+                'message' => 'Data Deleted Successfully',
+                'title' => ''
+            ]);
+            return back();
+        } catch (\Exception $e) {
+            session()->flash('toastr', [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+                'title' => ''
+            ]);
+            return redirect()->route('admin.internet-tv.index');
         }
     }
     public function default(Request $request, $id)
     {
         //dd($id);
         $product = TvInternetProduct::find($id);
-        $default = DefaultProduct::latest()->get();
         $responseData = array();
         $data = DefaultProduct::where('product_id', $id)->where('product_type', 'tv')->where('is_default', '1')->pluck('default_product_id')->toArray();
         $manda_data = DefaultProduct::where('product_id', $id)->where('product_type', 'tv')->where('is_mandatory', '1')->pluck('default_product_id')->toArray();
@@ -495,7 +513,7 @@ class TvInternetController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
             // Log the error for further investigation
-            \Log::error($errorMessage);
+            // \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
@@ -514,7 +532,7 @@ class TvInternetController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update internet features: ' . $e->getMessage();
             // Log the error for further investigation
-            \Log::error($errorMessage);
+            // \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
@@ -534,7 +552,7 @@ class TvInternetController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
             // Log the error for further investigation
-            \Log::error($errorMessage);
+            // \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
@@ -559,7 +577,7 @@ class TvInternetController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to update telephone features: ' . $e->getMessage();
             // Log the error for further investigation
-            \Log::error($errorMessage);
+            // \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
