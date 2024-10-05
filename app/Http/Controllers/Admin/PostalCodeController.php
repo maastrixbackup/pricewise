@@ -52,19 +52,11 @@ class PostalCodeController extends Controller
         try {
             $postalCode->save();
             DB::commit();
-            session()->flash('toastr', [
-                'type' => 'success',  // success, error, info, warning
-                'message' => 'Post Code Added.',
-                'title' => ''
-            ]);
+            $this->sendToastResponse('success', 'Postal Code Added');
             return redirect()->back();
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('toastr', [
-                'type' => 'error',  // success, error, info, warning
-                'message' => $e->getMessage(),
-                'title' => ''
-            ]);
+            $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
     }
@@ -72,19 +64,15 @@ class PostalCodeController extends Controller
     public function destroy($id)
     {
         try {
-            PostalCode::find($id)->delete();
-            session()->flash('toastr', [
-                'type' => 'success',  // success, error, info, warning
-                'message' => 'Post Code Deleted.',
-                'title' => ''
-            ]);
+            $pCode = PostalCode::find($id)->delete();
+            if (!$pCode) {
+                $this->sendToastResponse('error', 'Postal Code not found');
+            }
+            HouseNumber::where('pc_id', $pCode)->delete();
+            $this->sendToastResponse('success', 'Postal Code Deleted');
             return redirect()->back();
         } catch (Exception $e) {
-            session()->flash('toastr', [
-                'type' => 'error',  // success, error, info, warning
-                'message' => $e->getMessage(),
-                'title' => ''
-            ]);
+            $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
     }
@@ -124,11 +112,7 @@ class PostalCodeController extends Controller
             ->where('house_number', json_encode(array_map('trim', explode(',', $request->house_no))))
             ->exists()
         ) {
-            session()->flash('toastr', [
-                'type' => 'error',  // success, error, info, warning
-                'message' => 'House Number Already Exists for this postal code.',
-                'title' => ''
-            ]);
+            $this->sendToastResponse('error', 'House Number Already Exists for this postal code.');
             return redirect()->back();
         }
 
@@ -141,19 +125,11 @@ class PostalCodeController extends Controller
         try {
             $houseNumber->save();
             DB::commit();
-            session()->flash('toastr', [
-                'type' => 'success',  // success, error, info, warning
-                'message' => 'House Data Added.',
-                'title' => ''
-            ]);
+            $this->sendToastResponse('success', 'House Data Added');
             return redirect()->back();
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('toastr', [
-                'type' => 'error',  // success, error, info, warning
-                'message' => $e->getMessage(),
-                'title' => ''
-            ]);
+            $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
     }
@@ -185,11 +161,7 @@ class PostalCodeController extends Controller
         // Fetch the existing house number record
         $houseNumberUpdate = HouseNumber::find($id);
         if (!$houseNumberUpdate) {
-            session()->flash('toastr', [
-                'type' => 'error',  // success, error, info, warning
-                'message' => 'House number record not found.',
-                'title' => ''
-            ]);
+            $this->sendToastResponse('error', 'house number not found');
             return redirect()->back();
         }
 
@@ -209,23 +181,11 @@ class PostalCodeController extends Controller
         try {
             $houseNumberUpdate->save();
             DB::commit();
-
-            session()->flash('toastr', [
-                'type' => 'success',  // success, error, info, warning
-                'message' => 'House Number updated successfully.',
-                'title' => ''
-            ]);
-
-            // toastr('success', 'House Number updated successfully.', 'Success');
+            $this->sendToastResponse('success', 'House number Updated Successfully');
             return redirect()->back();
         } catch (\Exception $e) {
             DB::rollBack();
-
-            session()->flash('toastr', [
-                'type' => 'error',  // success, error, info, warning
-                'message' => $e->getMessage(),
-                'title' => ''
-            ]);
+            $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
     }
@@ -234,19 +194,21 @@ class PostalCodeController extends Controller
     {
         try {
             HouseNumber::find($request->id)->delete();
-            session()->flash('toastr', [
-                'type' => 'success',  // success, error, info, warning
-                'message' => 'Data Deleted',
-                'title' => ''
-            ]);
+            $this->sendToastResponse('success', 'Data Deleted');
             return redirect()->back();
         } catch (\Exception $e) {
-            session()->flash('toastr', [
-                'type' => 'error',  // success, error, info, warning
-                'message' => $e->getMessage(),
-                'title' => ''
-            ]);
+            $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
+    }
+
+    public function sendToastResponse($type, $message, $title = '')
+    {
+        // Set up toast response with type, message, and optional title
+        return session()->flash('toastr', [
+            'type' => $type,
+            'message' => $message,
+            'title' => $title
+        ]);
     }
 }

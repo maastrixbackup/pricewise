@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.providers.index') }}">Providers</a></li>
+                            href="{{ route('admin.providers', config('constant.category.energy')) }}">Providers</a></li>
                 </ol>
             </nav>
         </div>
@@ -26,22 +26,27 @@
                     <h5 class="mb-0">Edit Provider</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form id="categoryFo" method="POST" action="{{ route('admin.providers.update', $provider->id) }}" enctype="multipart/form-data">
+                    <form id="categoryFo" method="POST" action="{{ route('admin.providers.update', $provider->id) }}"
+                        enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')                
+                        @method('PUT')
                         <div class="row mb-3">
                             <div class="col-md-4 mb-3">
                                 <label for="input35" class=" col-form-label">Name</label>
                                 <div class="">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name"
-                                        value="{{ $provider->name }}">
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="Name" value="{{ $provider->name }}">
                                 </div>
+                                <input type="hidden" name="category" id="category" class="form-control"
+                                    value="{{ $provider->category }}">
                             </div>
-                            <div class="col-md-4 mb-3">
+                            {{-- <div class="col-md-4 mb-3">
                                 <label for="input_type" class=" col-form-label">Category</label>
                                 <div class="">
+                                    <input type="text" class="form-control" readonly
+                                        value="{{ $provider->categoryDetail->name }}">
                                     <select class="form-control" id="category" name="category">
-                                        <option value="">Select</option>
+                                        <option value="" disabled selected>Select</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
                                                 @if ($provider->category == $category->id) selected @endif>{{ $category->name }}
@@ -49,6 +54,39 @@
                                         @endforeach
 
                                     </select>
+                                </div>
+                            </div> --}}
+                            <div class="col-md-4 mb-3">
+                                <label for="input35" class=" col-form-label">Fixed delivery Cost</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">€</span>
+                                    </div>
+                                    <input type="number" class="form-control" id="fix_delivery" name="fix_delivery"
+                                        placeholder="Fixed delivery Cost" step=".01"
+                                        value="{{ $provider->fixed_deliver_cost }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="input35" class=" col-form-label">Grid Management Cost</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">€</span>
+                                    </div>
+                                    <input type="number" class="form-control" id="grid_management" name="grid_management"
+                                        placeholder="Grid Management Cost" step=".01" required
+                                        value="{{ $provider->grid_management_cost }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="input35" class=" col-form-label">Feed In Tariff (Solar Buy Back)</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">€</span>
+                                    </div>
+                                    <input type="number" class="form-control" id="feed_in_tariff" name="feed_in_tariff"
+                                        placeholder="Solar Buy Back" step=".01" required
+                                        value="{{ $provider->feed_in_tariff }}">
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -64,8 +102,6 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
                             <div class="col-md-4 mb-3">
                                 <label for="input40" class="col col-form-label mb-1"><b>Provider Logo </b></label>
 
@@ -76,12 +112,14 @@
                                     <div class="overlay">
                                         <div>Click to Change Logo</div>
                                     </div>
-                                    <input type="file" name="image" class="image" id="upload_image"
+                                    <input type="file" name="image" class="image" id="upload_image" accept="image/*"
                                         style="display:none" />
                                     <input type="hidden" name="cropped_image" id="cropped_image">
 
                                 </label>
                             </div>
+                        </div>
+                        <div class="row mb-3">
                         </div>
 
                         <div class="row">
@@ -142,5 +180,45 @@
                 return false;
             }
         });
+
+        $(document).ready(function() {
+            function restrictDecimal(inputField) {
+                var value = inputField.val();
+                if (value.indexOf('.') !== -1) {
+                    var parts = value.split('.');
+                    if (parts[1].length > 2) {
+                        parts[1] = parts[1].substring(0, 2); // Restrict to two decimal places
+                        inputField.val(parts[0] + '.' + parts[1]);
+                    }
+                }
+            }
+
+            $('input[type="number"]').on('keyup', function() {
+                restrictDecimal($(this));
+            });
+
+        });
+
+        // $('#grid_management').on('keyup', function() {
+        //     var inputField = $('#grid_management');
+        //     var value = inputField.val();
+        //     // console.log(value);
+
+        //     // Check if there's a decimal point in the value
+        //     if (value.indexOf('.') !== -1) {
+        //         var parts = value.split('.');
+
+        //         // If the length of the decimal part is greater than 2, trim it
+        //         if (parts[1].length > 2) {
+        //             parts[1] = parts[1].substring(0, 2);
+        //             inputField.val(parts[0] + '.' + parts[1]);
+        //         }
+        //     }
+        // });
+        // $('#vat').on('input', function() {
+        //     if ($(this).val().length > 2) {
+        //         $(this).val($(this).val().substring(0, 2)); // Trim input to the first 2 characters
+        //     }
+        // });
     </script>
 @endpush

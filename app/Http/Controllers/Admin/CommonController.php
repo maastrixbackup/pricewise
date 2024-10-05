@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\EnergyProduct;
+use App\Models\GlobalEnergySetting;
 use App\Models\HouseType;
 use App\Models\LoanType;
+use App\Models\Provider;
 use App\Models\SpendingPurpose;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
@@ -71,10 +74,12 @@ class CommonController extends Controller
 
         try {
             if ($postPurpose->save()) {
-                return redirect()->back()->with(Toastr::success('Data Added Successfully', '', ["positionClass" => "toast-top-right"]));
+                $this->sendToastResponse('success', 'Data Added Successfully');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
         }
     }
 
@@ -106,18 +111,17 @@ class CommonController extends Controller
         // Trim hyphens from the beginning and end of the string
         $slug = trim($slug, '-');
 
-        $purose_update = SpendingPurpose::find($id);
-        $purose_update->name = $request->name;
-        $purose_update->slug = $slug;
-        $purose_update->description = $request->description;
-        $purose_update->status = $request->status;
+        $pUpdate = SpendingPurpose::find($id);
+        $pUpdate->name = $request->name;
+        $pUpdate->slug = $slug;
+        $pUpdate->description = $request->description;
+        $pUpdate->status = $request->status;
 
         if (isset($request->image)) {
             $filename = time() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path('storage/images/loans/'), $filename);
 
-
-            $existingFilePath = public_path('storage/images/loans/') . $purose_update->image;
+            $existingFilePath = public_path('storage/images/loans/') . $pUpdate->image;
 
             if (file_exists($existingFilePath)) {
                 // Delete the file
@@ -125,14 +129,16 @@ class CommonController extends Controller
             }
         }
 
-        $purose_update->image = $filename ?? $purose_update->image;
+        $pUpdate->image = $filename ?? $pUpdate->image;
 
         try {
-            if ($purose_update->save()) {
-                return redirect()->back()->with(Toastr::success('Data Updated Successfully', '', ["positionClass" => "toast-top-right"]));
+            if ($pUpdate->save()) {
+                $this->sendToastResponse('success', 'Data Updated Successfully');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
         }
     }
 
@@ -186,10 +192,12 @@ class CommonController extends Controller
 
         try {
             if ($loanType->save()) {
-                return redirect()->back()->with(Toastr::success('Loan Type Added Successfully.', '', ["positionClass" => "toast-bottom-right"]));
+                $this->sendToastResponse('success', 'Loan Data Added Successfully');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-bottom-right"]));
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
         }
     }
 
@@ -231,10 +239,12 @@ class CommonController extends Controller
 
         try {
             if ($loanType->save()) {
-                return redirect()->back()->with(Toastr::success('Loan Type Updated Successfully.', '', ["positionClass" => "toast-bottom-right"]));
+                $this->sendToastResponse('error', 'Data Updated Successfully');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-bottom-right"]));
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
         }
     }
 
@@ -243,9 +253,11 @@ class CommonController extends Controller
         $id = $request->input('id');
         try {
             LoanType::where('id', $id)->delete();
-            return redirect()->back()->with(Toastr::error('Data Deleted Successfully', '', ["positionClass" => "toast-bottom-right"]));
+            $this->sendToastResponse('success', 'Data Deleted Successfully');
+            return redirect()->back();
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-bottom-right"]));
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
         }
     }
 
@@ -293,11 +305,12 @@ class CommonController extends Controller
 
         try {
             if ($houseType->save()) {
-                return redirect()->route('admin.house-type.index')->with(Toastr::success('House Type Added Successfully', '', ["positionClass" => "toast-top-right"]));
-
+                $this->sendToastResponse('success', 'House type Added Successfully');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
         }
     }
     public function houseType_edit(Request $request, $id)
@@ -346,19 +359,94 @@ class CommonController extends Controller
 
         try {
             if ($houseType->save()) {
-                return redirect()->route('admin.house-type.index')->with(Toastr::success('House Updated Successfully', '', ["positionClass" => "toast-top-right"]));
-
+                $this->sendToastResponse('success', 'Data Updated Successfully');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with(Toastr::error($e->getMessage(), '', ["positionClass" => "toast-top-right"]));
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
         }
     }
-    public function houseType_destroy(Request $request)
+    public function houseType_destroy(Request $request) {}
+
+
+    public function getLoanData(Request $request) {}
+
+    public function getProviderData(Request $request)
     {
+        $provider = Provider::find($request->id);
+        // Check if provider exists
+        if (!$provider) {
+            return $this->jsonResponse(false, 'Provider not found');
+        }
+        // Return provider data as JSON
+        return  response()->json($provider);
+    }
+
+    public function globalEnergySetting(Request $request)
+    {
+        $globalEnergy = GlobalEnergySetting::find(1);
+        $c_id = config('constant.category.energy');
+        return view('admin.energy.global_setting', compact('globalEnergy', 'c_id'));
+    }
+
+    public function globalEnergySettingStore(Request $request)
+    {
+        try {
+            $geSetting = GlobalEnergySetting::updateOrCreate(
+                ['id' => 1],
+                [
+                    'tax_on_electric' => $request->tax_on_electric,
+                    'tax_on_gas' => $request->tax_on_gas,
+                    'ode_on_electric' => $request->ode_on_electric,
+                    'ode_on_gas' => $request->ode_on_gas,
+                    'vat' => $request->vat,
+                    'energy_tax_reduction' => $request->energy_tax_reduction,
+                ]
+            );
+            // If setting updated, update all EnergyProduct records
+            if ($geSetting) {
+                $energyProducts = EnergyProduct::all();
+
+                foreach ($energyProducts as $product) {
+                    $product->update([
+                        'tax_on_electric' => $geSetting->tax_on_electric,
+                        'tax_on_gas' => $geSetting->tax_on_gas,
+                        'ode_on_electric' => $geSetting->ode_on_electric,
+                        'ode_on_gas' => $geSetting->ode_on_gas,
+                        'vat' => $geSetting->vat,
+                        'energy_tax_reduction' => $geSetting->energy_tax_reduction,
+                    ]);
+                }
+            }
+            $this->sendToastResponse('success', 'Setting Updated Successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
     }
 
 
-    public function getLoanData(Request $request)
+    /**
+     * Helper function to return JSON responses
+     */
+    private function jsonResponse($status, $message, $data = null)
     {
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data
+        ]);
+    }
+
+    public function sendToastResponse($type, $message, $title = '')
+    {
+        // Set up toast response with type, message, and optional title
+        return session()->flash('toastr', [
+            'type' => $type,
+            'message' => $message,
+            'title' => $title
+        ]);
     }
 }

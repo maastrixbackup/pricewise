@@ -6,16 +6,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DateTime;
 use App\Models\Setting;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EnergyProduct extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $table = "energy_products";
+    protected $fillable = [
+        'tax_on_electric',
+        'tax_on_gas',
+        'ode_on_electric',
+        'ode_on_gas',
+        'vat',
+        'energy_tax_reduction',
+        'fixed_delivery',
+        'grid_management',
+        'feed_in_tariff'
+    ];
 
-    public function request()
-    {
-        return $this->morphOne(Request::class, 'service');
-    }
+    // public function request()
+    // {
+    //     return $this->morphOne(Request::class, 'service');
+    // }
 
     public function postFeatures()
     {
@@ -35,7 +47,7 @@ class EnergyProduct extends Model
     }
     public function providerDetails()
     {
-        return $this->hasOne(Provider::class, 'id', 'provider');
+        return $this->hasOne(Provider::class, 'id', 'provider_id');
     }
     public function documents()
     {
@@ -45,7 +57,7 @@ class EnergyProduct extends Model
     {
         // Convert the valid_till string to a DateTime object
         $dateTime = new DateTime($value);
-        
+
         // Format the DateTime object as desired
         return $dateTime->format('Y-m-d');
     }

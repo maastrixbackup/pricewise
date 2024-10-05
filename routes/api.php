@@ -52,7 +52,8 @@ Route::get('get-internet-tv-deals', [RequestController::class, 'getInternetTvDea
 Route::get('get-internet-tv-package', [RequestController::class, 'getInternetTvPackages']);
 Route::get('get-home-insurance-deals', [RequestController::class, 'getHomeInsuranceDeals']);
 
-// Personal Insurance
+// House Number Verification
+Route::post('verify-house-number', [SettingsController::class, 'getHouseNumber']);
 //Health Insurance
 Route::post('health-insurance', [HealthInsuranceController::class, 'index']);
 Route::post('health-insurance-compare', [HealthInsuranceController::class, 'healthInsuranceCompare']);

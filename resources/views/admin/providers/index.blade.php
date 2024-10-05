@@ -38,7 +38,7 @@
                                     <th>Sl</th>
                                     <th>Name</th>
                                     <th>Logo</th>
-                                    <th>Category</th>
+                                    {{-- <th>Category</th> --}}
                                     @if (Auth::guard('admin')->user()->can('providers-list'))
                                         <th>Action</th>
                                     @endif
@@ -58,7 +58,7 @@
                                                 @endif
                                             </td>
 
-                                            <td>{{ $val->categoryDetail ? $val->categoryDetail->name : 'NA' }}</td>
+                                            {{-- <td>{{ $val->categoryDetail ? $val->categoryDetail->name : 'NA' }}</td> --}}
                                             <td>
                                                 <div class="col">
                                                     @if (Auth::guard('admin')->user()->can('providers-edit'))

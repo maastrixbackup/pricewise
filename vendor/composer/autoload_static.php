@@ -771,6 +771,7 @@ class ComposerStaticInit0914323516fb57700e7bf5a9bae092ed
         'App\\Models\\Feature' => __DIR__ . '/../..' . '/app/Models/Feature.php',
         'App\\Models\\FeeSetting' => __DIR__ . '/../..' . '/app/Models/FeeSetting.php',
         'App\\Models\\FeedInCost' => __DIR__ . '/../..' . '/app/Models/FeedInCost.php',
+        'App\\Models\\GlobalEnergySetting' => __DIR__ . '/../..' . '/app/Models/GlobalEnergySetting.php',
         'App\\Models\\HouseNumber' => __DIR__ . '/../..' . '/app/Models/HouseNumber.php',
         'App\\Models\\HouseType' => __DIR__ . '/../..' . '/app/Models/HouseType.php',
         'App\\Models\\InsuranceProduct' => __DIR__ . '/../..' . '/app/Models/InsuranceProduct.php',

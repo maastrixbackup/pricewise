@@ -326,6 +326,7 @@
         $(document).ready(function() {
 
             fetchData(myParam);
+
             $("#category").on('change', function() {
                 var cat_val = $(this).val(); // Get the selected category value
 
@@ -354,7 +355,6 @@
             });
         });
 
-        // // Function to perform the AJAX request
         let myParam = 1;
 
         function fetchData(param) {
@@ -401,7 +401,7 @@
     {!! Toastr::message() !!}
     <script>
         toastr.options = {
-            "closeButton": true,
+            "closeButton": false,
             "progressBar": true,
             "positionClass": "toast-top-right",
             "showDuration": "300",

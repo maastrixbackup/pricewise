@@ -1,53 +1,7 @@
 @extends('admin.layouts.app')
 @section('title', 'PriceWise- Energy Create')
 @section('content')
-    <style type="text/css">
-        .form-check-box {
-            display: flex;
-            align-items: center;
-        }
 
-        .form-check-pr label {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .form-check-pr input {
-            padding: 0;
-            height: initial;
-            width: initial;
-            margin-bottom: 0;
-            display: none;
-            cursor: pointer;
-        }
-
-        .form-check-pr label:before {
-            content: '';
-            -webkit-appearance: none;
-            background-color: transparent;
-            border: 2px solid #fa9f1d;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
-            padding: 10px;
-            display: inline-block;
-            position: relative;
-            vertical-align: middle;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-
-        .form-check-pr input:checked+label:after {
-            content: '';
-            display: block;
-            position: absolute;
-            top: 7px;
-            left: 9px;
-            width: 6px;
-            height: 14px;
-            border: solid #0079bf;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-    </style>
     <!--breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
         <div class="ps-3">
@@ -67,160 +21,153 @@
     <form id="productForm" method="post" action="{{ route('admin.energy.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="row">
-            <div class="col-md-9 col-lg-9 col-12">
+            <div class=" col-12">
                 <div class="card">
                     <div class="card-header px-4 py-3">
                         <h5 class="mb-0">Add New Energy Product</h5>
                     </div>
                     <div class="card-body p-4">
-                        <div class=" mb-3">
-                            <label for="input35" class=" col-form-label">Title</label>
-                            <input type="text" class="form-control" id="title" name="title"
-                                placeholder="Product Title">
-                        </div>
-
-                        <div class=" mb-3">
-                            <label for="input37" class="col-form-label">URL</label>
-
-                            <!-- <div class="input-group mb-3"> <span class="input-group-text">/product/</span> -->
-                            <input type="text" class="form-control" id="link" name="link" readonly>
-                            <!-- </div> -->
-
-                        </div>
-
-                        <div class="">
-                            <label for="description" class=" col-form-label">Description</label>
-                            <textarea class="form-control" name="description" id="description" placeholder="Product Description"></textarea>
-                        </div>
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="provider" class="col-form-label"><b>Provider</b>
                                 </label>
 
-                                <select id="provider" name="provider" class="select2 form-select">
-                                    <option>Select</option>
+                                <select id="provider" name="provider" class="select2 form-select" required>
+                                    <option disabled selected>Select</option>
                                     @if ($providers)
                                         @foreach ($providers as $provider)
                                             <option value="{{ $provider->id }}">{{ $provider->name }}</option>
                                         @endforeach
                                     @endif
                                 </select>
+                                <span class="invalid-feedback">Please Select a valid value.</span>
+                                <input type="hidden" value="{{ $objCategory->id }}" class="form-control" name="category">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="provider" class="col-form-label"><b>Target Group</b>
+                                </label>
+                                <select id="target_group" name="target_group" class="select2 form-select" required>
+                                    <option disabled selected>Select</option>
+                                    <option value="personal">Personal</option>
+                                    <option value="commercial">Commercial</option>
+                                    <option value="large_business">Large Business</option>
+                                </select>
+                                <span class="invalid-feedback">Please Select a valid value.</span>
                             </div>
 
-
-                            <div class="col-md-4 col-12">
+                            <div class="col-md-3 col-12">
                                 <div class=" mb-3">
-                                    <label for="valid_till" class="col-form-label">Offer Valid Till</label>
-                                    <input type="date" class="form-control" id="valid_till" name="valid_till"
-                                        placeholder="Valid Till">
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-12">
-                                <div class=" mb-3">
-                                    <label for="avg_delivery_time" class=" col-form-label">Average delivery time</label>
-                                    <input type="number" class="form-control" id="avg_delivery_time"
-                                        name="avg_delivery_time" placeholder="Average Delivery Time" min="0">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class=" mb-3">
-                                    <label for="pin_codes" class="col-form-label">Area PIN Codes</label>
-                                    <select name="pin_codes[]" id="pin_codes" class="form-control" multiple>
-                                        <option value="" disabled >Select Pin Codes</option>
-                                        @foreach ($postalCodes as $code => $cod)
-                                            <option value="{{ $cod->post_code }}">{{ $cod->post_code }}</option>
-                                        @endforeach
-                                    </select>
-                                    {{-- <input type="text" class="form-control" id="pin_codes" name="pin_codes"
-                                        placeholder="PIN codes with coma separated"> --}}
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class=" mb-3">
-                                    <label for="input35" class=" col-form-label">Transfer Service</label>
-
-                                    <div class="mb-3 add-scroll">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="transfer_service"
-                                                value="1">
-                                            <label class="form-check-label" for="transfer_service">Available</label>
-                                        </div>
+                                    <label for="valid_till" class="col-form-label"> Power Origin</label>
+                                    <div>
+                                        <label><input type="checkbox" name="power_origin[]" value="wind"> Wind</label>
                                     </div>
-
+                                    <div>
+                                        <label><input type="checkbox" name="power_origin[]" value="water"> Water</label>
+                                    </div>
+                                    <div>
+                                        <label><input type="checkbox" name="power_origin[]" value="sun"> Sun</label>
+                                    </div>
+                                    <div>
+                                        <label><input type="checkbox" name="power_origin[]" value="thermal"> Thermal</label>
+                                    </div>
                                 </div>
                             </div>
-
-
-
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-3 col-12">
                                 <div class=" mb-3">
-                                    <label for="input40" class=" col-form-label">Contract Length
-                                    </label>
-                                    <input type="number" class="form-control" id="contract_length"
-                                        name="contract_length" min="0">
+                                    <label for="avg_delivery_time" class=" col-form-label">Type Of Gas</label>
+                                    <div>
+                                        <label><input type="checkbox" name="gas_type[]" value="co2"> Co2 Compensated
+                                            Gas</label>
+                                    </div>
+                                    <div>
+                                        <label><input type="checkbox" name="gas_type[]" value="partlt_green_gas"> Partly
+                                            Green Gas</label>
+                                    </div>
+                                    <div>
+                                        <label><input type="checkbox" name="gas_type[]" value="100_green_gas"> 100% Green
+                                            Gas</label>
+                                    </div>
+                                    <div>
+                                        <label><input type="checkbox" name="gas_type[]" value="gas_free"> Gas Free</label>
+                                    </div>
+                                    {{-- <input type="number" class="form-control" id="avg_delivery_time"
+                                        name="avg_delivery_time" placeholder="Average Delivery Time" min="0"> --}}
                                 </div>
                             </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mb-3">
-                                    <label for="input40" class="col-form-label">Contract Type</label>
-
-                                    <select id="contract_length_id" name="contract_type" class="select2 form-select">
-                                        <option value="month">Monthly</option>
-                                        <option value="year">Yearly</option>
-                                    </select>
+                            <div class="col-md-4 col-12">
+                                <div>
+                                    <label for="valid_till" class="col-form-label"> Fixed Delivery Cost:- €<span
+                                            id="delivery_cost">0</span></label>
+                                    <input type="hidden" class="form-control" name="fixed_delivery" id="fixed_delivery"
+                                        placeholder="Delivery Cost" value="" readonly>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class=" mb-3">
-                                    <label for="input40" class=" col-form-label">Commission
-                                    </label>
-                                    <input type="number" class="form-control" id="commission" name="commission"
+                                <div>
+                                    <label for="avg_delivery_time" class=" col-form-label">Grid Management Cost:- €<span
+                                            id="grid_cost">0</span></label>
+                                    <input type="hidden" readonly class="form-control" id="grid_management"
+                                        name="grid_management" placeholder="Grid Management Cost" value=""
+                                        min="0">
+                                </div>
+                                <div>
+                                    <label for="avg_delivery_time" class=" col-form-label">Feed In Tariff:- €<span
+                                            id="feed_in_tariffs">0</span></label>
+                                    <input type="hidden" readonly class="form-control" id="feed_in_tariff"
+                                        name="feed_in_tariff" placeholder="Solar Buy Back" value=""
                                         min="0">
                                 </div>
                             </div>
-                            <div class="col-md-6 col-12">
-                                <div class=" mb-3">
-                                    <label for="input40" class=" col-form-label">Commission Type
-                                    </label>
-                                    <select id="commission_type" name="commission_type" class="select2 form-select">
-                                        <option value="flat">Flat</option>
-                                        <option value="prct">Percentage</option>
-                                    </select>
+                            <div class="col-md-4 col-12">
+                                <div>
+                                    <label for="" class="col-form-label">Tax On Electric:-
+                                        {{ '€' . $globalEnergy->tax_on_electric }}</label>
+                                    <input type="hidden" readonly value="{{ $globalEnergy->tax_on_electric }}"
+                                        name="tax_on_electric" id="tax_on_electric" class="form-control">
                                 </div>
+                                <div>
+                                    <label for="" class="col-form-label">Tax on Gas:-
+                                        {{ '€' . $globalEnergy->tax_on_gas }}</label>
+                                    <input type="hidden" readonly value="{{ $globalEnergy->tax_on_gas }}"
+                                        name="tax_on_gas" id="tax_on_gas" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="" class="col-form-label">ODE On Electric:-
+                                        {{ '€' . $globalEnergy->ode_on_electric }}</label>
+                                    <input type="hidden" readonly value="{{ $globalEnergy->ode_on_electric }}"
+                                        name="ode_on_electric" id="ode_on_electric" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <div>
+                                    <label for="" class="col-form-label">ODE On Gas:-
+                                        {{ '€' . $globalEnergy->ode_on_gas }}</label>
+                                    <input type="hidden" readonly value="{{ $globalEnergy->ode_on_gas }}"
+                                        name="ode_on_gas" id="ode_on_gas" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="" class="col-form-label">VAT:-
+                                        {{ '€' . $globalEnergy->vat }}</label>
+                                    <input type="hidden" readonly value="{{ $globalEnergy->vat }}" name="vat"
+                                        id="vat" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="" class="col-form-label">Energy Tax Reduction/Year:-
+                                        {{ '€' . $globalEnergy->energy_tax_reduction }}</label>
+                                    <input type="hidden" readonly value="{{ $globalEnergy->energy_tax_reduction }}"
+                                        name="energy_tax_reduction" id="energy_tax_reduction" class="form-control">
+                                </div>
+
                             </div>
                         </div>
 
-
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-
-                                <div class="mb-3 add-scroll">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="is_featured"
-                                            value="1">
-                                        <label class="form-check-label" for="flexCheckDefault">Feature Product</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-
-                                <div class="mb-3 add-scroll">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="no_gas" value="1">
-                                        <label class="form-check-label" for="flexCheckDefault">No Gas</label>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="row mt-2">
+                            @include('admin.energy.contract_year')
                         </div>
 
                         <div class="">
                             <label class=" col-form-label"></label>
                             <div class="d-md-flex d-grid align-items-center gap-3">
-                                <button type="submit" class="btn btn-primary px-4" name="submit2">Submit</button>
+                                <button type="submit" class="btn btn-primary px-4" id="submitBtn"
+                                    name="submit2">Submit</button>
                                 <button type="reset" class="btn btn-light px-4">Reset</button>
                             </div>
                         </div>
@@ -228,113 +175,6 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-12 col-lg-3">
-                <div class="card">
-                    <div class="card-body p-4">
-                        <div class="mb-3 form-group">
-                            <label for="input40" class="col-form-label"><b>Publish Status</b>
-                            </label>
-                            <select id="status" name="status" class="select2 form-select">
-                                <option value="1">Publish</option>
-                                <option value="0" selected>Draft</option>
-
-                            </select>
-                        </div>
-                        <div class="mb-3 form-group">
-                            <label for="product_type" class="col-form-label"><b>Product Type</b>
-                            </label>
-                            <select id="product_type" name="product_type" class="select2 form-select">
-                                <option value="personal">Personal</option>
-                                <option value="business">Business</option>
-                                <option value="large-business">Large Business</option>
-
-                            </select>
-                        </div>
-                        <div class="mb-3 form-group">
-                            <label for="meter_type" class="col-form-label"><b>Meter Type</b>
-                            </label>
-                            <select id="meter_type" name="meter_type" class="select2 form-select">
-                                <option value="">Select</option>
-                                <option>Single Meter</option>
-                                <option>Double Meter</option>
-
-                            </select>
-                        </div>
-                        <div class="mb-3 form-group">
-                            <label for="no_of_person" class="col-form-label"><b>Number of Persons(Max)</b>
-                            </label>
-                            <input type="number" class="form-control" id="no_of_person" name="no_of_person"
-                                min="0">
-                        </div>
-                        <div class="mb-3">
-                            <label for="category" class="col-form-label"><b>Category</b>
-                            </label>
-
-                            <select id="category" name="category" class="select2 form-select">
-                                <option>Select</option>
-                                @if ($objCategory)
-                                    @foreach ($objCategory as $val)
-                                        <option value="{{ $val->id }}">{{ $val->name }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-                        <label for="input40" class="col-sm-6 col-form-label"><b>Energy Label </b></label>
-                        <div class="col-lg-12">
-                            <div class="form-check-box">
-                                <div class="form-group form-check-pr"><input type="checkbox" id="a"
-                                        name="energy_label[]" value="A"><label for="a">A</label></div>
-                                <div class="form-group form-check-pr"><input type="checkbox" id="b"
-                                        name="energy_label[]" value="B"><label for="b">B</label></div>
-                                <div class="form-group form-check-pr"><input type="checkbox" id="c"
-                                        name="energy_label[]" value="C"><label for="c">C</label></div>
-                                <div class="form-group form-check-pr"><input type="checkbox" id="d"
-                                        name="energy_label[]" value="D"><label for="d">D</label></div>
-                                <div class="form-group form-check-pr"><input type="checkbox" id="e"
-                                        name="energy_label[]" value="E"><label for="e">E</label></div>
-                                <div class="form-group form-check-pr"><input type="checkbox" id="f"
-                                        name="energy_label[]" value="F"><label for="f">F</label></div>
-                                <div class="form-group form-check-pr"><input type="checkbox" id="g"
-                                        name="energy_label[]" value="G"><label for="g">G</label></div>
-                            </div>
-                        </div>
-                        <label for="input40" class="col-sm-6 col-form-label"><b>Product Image </b></label>
-                        <div class="mb-3">
-
-
-                            <label for="upload_image">
-                                <img src="#" id="uploaded_image" class="img img-responsive img-circle"
-                                    width="100" alt="Select image" />
-
-                                <div class="overlay">
-                                    <div>Click to Change Image</div>
-                                </div>
-                                <input type="file" name="image" class="image" id="upload_image"
-                                    style="display:none" />
-                                <input type="hidden" name="cropped_image" id="cropped_image">
-
-                            </label>
-                        </div>
-
-                        <label for="input35" class="col-form-label"><b>Combo Offers</b></label>
-                        <div class="mb-3 add-scroll">
-                            @if ($combos)
-                                @foreach ($combos as $val)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="combos[]"
-                                            value="{{ $val->id }}">
-                                        <label class="form-check-label" for="flexCheckDefault">{{ $val->title }} -
-                                            €{{ $val->price }}</label>
-                                    </div>
-                                @endforeach
-                            @endif
-                        </div>
-
-
-
-                    </div>
-                </div>
-            </div>
         </div>
 
     </form>
@@ -343,10 +183,195 @@
     <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            new Choices(document.querySelector("#pin_codes"), {
-                removeItemButton: true
+            // $('#submitBtn').click(function(e) {
+            //     // Check if at least one "Power Origin" checkbox is checked
+            //     let isPowerOriginChecked = $('input[name="power_origin[]"]:checked').length > 0;
+            //     // Check if at least one "Type of Gas" checkbox is checked
+            //     let isGasTypeChecked = $('input[name="gas_type[]"]:checked').length > 0;
+            //     // Check if at least one "Contract Year" checkbox is checked
+            //     let isYearChecked = $('input[name="contract_year[]"]:checked').length > 0;
+
+            //     if (!isPowerOriginChecked || !isGasTypeChecked || !isYearChecked) {
+            //         e.preventDefault(); // Prevent form submission
+            //         let message = 'Please select at least one option for:\n';
+            //         if (!isPowerOriginChecked) message += '- Power Origin\n';
+            //         if (!isGasTypeChecked) message += '- Type of Gas\n';
+            //         if (!isYearChecked) message += '- Contract year';
+            //         alert(message);
+            //     }
+            // });
+
+            $('#submitBtn').click(function(e) {
+                // Initialize the validation flag
+                let isValid = true;
+
+                // Check if at least one "Power Origin" checkbox is checked
+                let isPowerOriginChecked = $('input[name="power_origin[]"]:checked').length > 0;
+                // Check if at least one "Type of Gas" checkbox is checked
+                let isGasTypeChecked = $('input[name="gas_type[]"]:checked').length > 0;
+                // Check if at least one "Contract Year" checkbox is checked
+                let isYearChecked = $('input[name="contract_year[]"]:checked').length > 0;
+
+                // If any checkbox group is not selected, show alert and prevent form submission
+                if (!isPowerOriginChecked || !isGasTypeChecked || !isYearChecked) {
+                    e.preventDefault(); // Prevent form submission
+                    let message = 'Please select at least one option for:\n';
+                    if (!isPowerOriginChecked) message += '- Power Origin\n';
+                    if (!isGasTypeChecked) message += '- Type of Gas\n';
+                    if (!isYearChecked) message += '- Contract Year\n';
+                    alert(message);
+                    isValid = false;
+                }
+
+                // Validate number inputs related to selected "Contract Year" checkboxes
+                $('input[name="contract_year[]"]:checked').each(function() {
+                    let year = $(this).val();
+
+                    // Validate each corresponding input based on the selected year
+                    let powerInput = $(`#power_year_${year}`);
+                    let gasInput = $(`#gas_year_${year}`);
+                    let discountInput = $(`#discount_year_${year}`);
+
+                    // Array of inputs to check
+                    let inputs = [powerInput, gasInput, discountInput];
+
+                    // Loop through inputs and check for validity
+                    inputs.forEach(function(input) {
+                        var value = input.val();
+                        if (value === "" || value < 0 || isNaN(value)) {
+                            isValid = false;
+                            input.addClass('is-invalid') // Add error class if invalid
+                        } else {
+                            input.removeClass('is-invalid'); // Add valid class if valid
+                        }
+                    });
+                });
+
+
+                // Validate provider select field
+                let provider = $('#provider').val();
+                if (!provider) {
+                    isValid = false;
+                    $('#provider').addClass('is-invalid');
+                } else {
+                    $('#provider').removeClass('is-invalid').addClass('is-valid');
+                }
+
+                // Validate target group select field
+                let targetGroup = $('#target_group').val();
+                if (!targetGroup) {
+                    isValid = false;
+                    $('#target_group').addClass('is-invalid');
+                } else {
+                    $('#target_group').removeClass('is-invalid').addClass('is-valid');
+                }
+
+                // Prevent form submission if any field is invalid
+                if (!isValid || $('.is-invalid').length > 0) {
+                    e.preventDefault(); // Prevent form submission
+                    alert("Please correct the invalid fields before submitting.");
+                }
+            });
+
+
+            // Optional: Apply the decimal restriction to all relevant input fields on keyup
+            $('input[type="number"]').on('keyup', function() {
+                restrictDecimal($(this));
+            });
+
+            // Function to handle decimal restriction (optional for later)
+            function restrictDecimal(inputField) {
+                var value = inputField.val();
+                if (value === '') {
+                    inputField.removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    inputField.removeClass('is-invalid').addClass('is-valid');
+                }
+                if (value.indexOf('.') !== -1) {
+                    var parts = value.split('.');
+                    if (parts[1].length > 2) {
+                        parts[1] = parts[1].substring(0, 2); // Restrict to two decimal places
+                        inputField.val(parts[0] + '.' + parts[1]);
+                    }
+                }
+            }
+
+
+            $('input[type="checkbox"]').on('change', function() {
+                // Get the parent row of the checkbox
+                var parentRow = $(this).closest('tr');
+
+                // Enable/disable all input fields in the same row based on the checkbox state
+                if ($(this).is(':checked')) {
+                    parentRow.find('input[type="number"]').prop('readonly', false);
+                    parentRow.find('input[type="number"]').prop('disabled',
+                        false); // Add valid class if valid
+                    // parentRow.find('input[type="number"]').attr('required', true);
+                    // parentRow.find('input[type="number"]').css('border', '1px solid gray');
+                } else {
+                    parentRow.find('input[type="number"]').prop('disabled', true);
+                    parentRow.find('input[type="number"]').prop('readonly', true);
+                    parentRow.find('input[type="number"]').removeClass('is-invalid');
+                    // parentRow.find('input[type="number"]').removeAttr('required');
+                    // parentRow.find('input[type="number"]').css('border', '1px solid #d1d8ea');
+                }
+            });
+
+        });
+
+        $('#target_group').on('change', function() {
+            validateSelectField($(this));
+        });
+
+        $('#provider').on('change', function() {
+            validateSelectField($(this));
+            var vals = $(this).val(); // Get the selected value
+            var action = "{{ route('admin.get_provider') }}"; // Get the route without ID
+
+            $.ajax({
+                url: action, // Use the dynamically constructed URL
+                type: 'Post',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: vals,
+                },
+                success: function(data) {
+                    if (data != '') {
+                        // For Input Data
+                        $('#fixed_delivery').val(data.fixed_deliver_cost);
+                        $('#grid_management').val(data.grid_management_cost);
+                        $('#feed_in_tariff').val(data.feed_in_tariff);
+                        // For Html Data
+                        $('#delivery_cost').html(data.fixed_deliver_cost);
+                        $('#grid_cost').html(data.grid_management_cost);
+                        $('#feed_in_tariffs').html(data.feed_in_tariff);
+                    }
+                    console.log('Provider Data:', data); // Log the provider data
+                    // toastr.error(data, 'Already Exists!');
+                },
+                error: function(xhr) {
+                    console.error('Error fetching provider:', xhr.responseText);
+                }
             });
         });
+
+        // Function to handle select field validation
+        function validateSelectField(selectField) {
+            if (selectField.val() == "") {
+                // Add 'is-invalid' class if no valid option is selected
+                selectField.addClass('is-invalid').removeClass('is-valid');
+            } else {
+                // Remove 'is-invalid' and add 'is-valid' class if valid option is selected
+                selectField.removeClass('is-invalid').addClass('is-valid');
+            }
+        }
+    </script>
+    <script>
+        // $(document).ready(function() {
+        //     new Choices(document.querySelector("#pin_codes"), {
+        //         removeItemButton: true
+        //     });
+        // });
         tinymce.init({
             selector: '#description',
             plugins: 'codesample code advlist autolink lists link image charmap print preview hr anchor pagebreak',
