@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
+use App\Models\Document;
 use App\Models\EnergyProduct;
 use App\Models\InsuranceProduct;
 use App\Models\Provider;
@@ -59,10 +60,28 @@ class ProviderController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
-            'name' => 'required|unique:providers,name'
+            'name' => 'required',
+            'category' => 'required',
+            'status' => 'required',
+            'fix_delivery' => 'required',
+            'grid_management' => 'required',
+            'feed_in_tariff' => 'required',
+            'about' => 'required',
+            'discount' => 'required',
+            'payment_options' => 'required',
+            'annual_accounts' => 'required',
+            'meter_readings' => 'required',
+            'adjust_installments' => 'required',
+            'view_consumption' => 'required',
+            // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
+
+        // Check for existing provider with the same name and category
+        if (Provider::where('name', $request->name)->where('category', $request->category)->exists()) {
+            $this->sendToastResponse('warning', 'Provider Name Already Exists');
+            return redirect()->back()->withInput();
+        }
 
         $objProvider = new Provider();
         $objProvider->name = $request->name;
@@ -71,15 +90,19 @@ class ProviderController extends Controller
         $objProvider->fixed_deliver_cost = $request->fix_delivery;
         $objProvider->grid_management_cost = $request->grid_management;
         $objProvider->feed_in_tariff = $request->feed_in_tariff;
+        $objProvider->about = $request->about;
+        $objProvider->discount = $request->discount;
+        $objProvider->payment_options = $request->payment_options;
+        $objProvider->annual_accounts = $request->annual_accounts;
+        $objProvider->meter_readings = $request->meter_readings;
+        $objProvider->adjust_installments = $request->adjust_installments;
+        $objProvider->view_consumption = $request->view_consumption;
 
-        $croppedImage = $request->image;
         if ($request->hasFile('image')) {
-            // Handle the image file upload
             $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path('storage/images/providers/'), $filename);
+            $objProvider->image = $filename;
         }
-        // Save the filename in the database
-        $objProvider->image = $filename ?? '';
 
         try {
             if ($objProvider->save()) {
@@ -88,9 +111,10 @@ class ProviderController extends Controller
             }
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());
-            return redirect()->route('admin.providers', config('constant.category.energy'));
+            return redirect()->route('admin.providers', config('constant.category.energy'))->withInput();
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -145,6 +169,13 @@ class ProviderController extends Controller
             $objProvider->fixed_deliver_cost = $request->fix_delivery;
             $objProvider->grid_management_cost = $request->grid_management;
             $objProvider->feed_in_tariff = $request->feed_in_tariff;
+            $objProvider->about = $request->about;
+            $objProvider->discount = $request->discount;
+            $objProvider->payment_options = $request->payment_options;
+            $objProvider->annual_accounts = $request->annual_accounts;
+            $objProvider->meter_readings = $request->meter_readings;
+            $objProvider->adjust_installments = $request->adjust_installments;
+            $objProvider->view_consumption = $request->view_consumption;
 
             if ($request->hasFile('image')) {
                 // Handle the image file upload
@@ -212,6 +243,7 @@ class ProviderController extends Controller
                 case config('constant.category.energy'):
                     // For Energy Products
                     EnergyProduct::where('provider_id', $provider->id)->delete();
+                    Document::where('post_id', $provider->id)->delete();
                     break;
 
                 case config('constant.category.Smartphones'):

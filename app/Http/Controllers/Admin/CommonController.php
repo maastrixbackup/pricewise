@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Models\EnergyProduct;
 use App\Models\GlobalEnergySetting;
 use App\Models\HouseType;
@@ -41,7 +42,6 @@ class CommonController extends Controller
 
     public function purposes_store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required|unique:spending_purposes,name',
             // 'image' => 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
@@ -92,7 +92,6 @@ class CommonController extends Controller
 
     public function purposes_update(Request $request, $id)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required',
             // 'image' => 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg',
@@ -266,6 +265,7 @@ class CommonController extends Controller
         $ObjHouses = HouseType::orderBy('title', 'asc')->get();
         return view('admin.house_type.index', compact('ObjHouses'));
     }
+    
     public function houseType_create(Request $request)
     {
         return view('admin.house_type.add');
@@ -428,6 +428,86 @@ class CommonController extends Controller
     }
 
 
+    public function uploadDocument($id)
+    {
+        $p = Provider::find($id);
+        $documents = Document::where(['post_id' => $p->id, 'category' => $p->category])->get();
+        // dd($documents);
+        return view('admin.partials.upload_documents', compact('p', 'documents'));
+    }
+
+
+    public function uploadDocumentStore(Request $request)
+    {
+        // Validate the request for multiple files
+        $request->validate([
+            'files.*' => 'required|file|mimes:pdf', // |max:1024 Validation rules for each file
+            'files' => 'required|array', // Ensure 'files' is an array
+        ]);
+
+        $files = $request->file('files');
+
+        $uploadResults = [];
+
+        try {
+            foreach ($files as $file) {
+                if ($file->isValid()) {
+                    $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+                    $fileName =  $file->getClientOriginalName();
+
+                    // Store the file in the 'public/documents' directory
+                    $filePath = $file->move(public_path('storage/documents/'), $fileName);
+
+                    // Insert file details into the database
+                    Document::create([
+                        'filename' => $fileName,
+                        'category' => $request->category,
+                        'post_id' => $request->p_id,
+                        'type' => $originalFileName,
+                        'path' => 'storage/documents/' . $fileName,
+                    ]);
+
+                    $uploadResults[] = ['file' => $fileName, 'status' => 'success', 'message' => 'File uploaded successfully'];
+                } else {
+                    $uploadResults[] = ['file' => $file->getClientOriginalName(), 'status' => 'error', 'message' => 'Invalid file'];
+                }
+            }
+
+            // Loop through the results and send a toast response for each file
+            foreach ($uploadResults as $result) {
+                $this->sendToastResponse($result['status'], $result['message']);
+            }
+
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            // Handle any exception that occurred during the process
+            $this->sendToastResponse('error', $th->getMessage());
+            return redirect()->back();
+        }
+    }
+
+
+    public function deleteUploadDocument(Request $request, $id)
+    {
+        try {
+            $d = Document::find($id);
+            if (!empty($d->filename)) {
+                $existingFilePath = public_path('storage/documents/') . $d->filename;
+                if (file_exists($existingFilePath)) {
+                    // Delete the file if it exists
+                    unlink($existingFilePath);
+                }
+            }
+            $d->delete();
+            $this->sendToastResponse('success', 'Document Deleted Successfully.');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            $this->sendToastResponse('error', $th->getMessage());
+            return redirect()->back();
+        }
+    }
+
     /**
      * Helper function to return JSON responses
      */
@@ -440,6 +520,9 @@ class CommonController extends Controller
         ]);
     }
 
+    /**
+     * Helper function to return Toastr responses
+     */
     public function sendToastResponse($type, $message, $title = '')
     {
         // Set up toast response with type, message, and optional title
