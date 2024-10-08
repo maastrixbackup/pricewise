@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Provider extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     public function categoryDetail(){
         return $this->hasOne(Category::class, 'id', 'category');

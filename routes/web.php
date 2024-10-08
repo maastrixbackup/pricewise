@@ -69,6 +69,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('users', 'UserController');
             Route::resource('providers', 'ProviderController');
             Route::get('providers/{id}', 'ProviderController@show')->name('providers');
+
             //Tv Product
             Route::get('/fetch/internet-tv', 'TvInternetController@gettvproducts')->name('get.internet-tv');
             Route::resource('internet-tv', 'TvInternetController');
@@ -108,6 +109,9 @@ Route::group(['prefix' => 'pricewise'], function () {
             //Bank
             Route::resource('banks', 'BankController');
 
+            Route::get('upload-documents/{id}', 'CommonController@uploadDocument')->name('upload-documents');
+            Route::post('upload-documents-store', 'CommonController@uploadDocumentStore')->name('upload-documents-store');
+            Route::post('/delete-document/{id}', 'CommonController@deleteUploadDocument')->name('delete-document');
             // Spending Purpose
             Route::prefix('purposes')->group(function () {
                 Route::get('/', 'CommonController@purposes_index')->name('purposes.index');

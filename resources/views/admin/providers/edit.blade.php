@@ -17,6 +17,17 @@
                 </ol>
             </nav>
         </div>
+
+        <div class="ms-auto">
+
+            <div class="btn-group">
+                @if (Auth::guard('admin')->user()->can('providers-edit'))
+                    <a href="{{ route('admin.upload-documents', $provider->id) }}" class="btn btn-primary">Document
+                        Upload</a>
+                @endif
+            </div>
+
+        </div>
     </div>
     <!--end breadcrumb-->
     <div class="row">
@@ -30,7 +41,7 @@
                         enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <div class="row mb-3">
+                        <div class="row mb-2">
                             <div class="col-md-4 mb-3">
                                 <label for="input35" class=" col-form-label">Name</label>
                                 <div class="">
@@ -104,22 +115,60 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="input40" class="col col-form-label mb-1"><b>Provider Logo </b></label>
+                                <br />
+                                <img src="{{ asset('storage/images/providers/' . $provider->image) }}" id="uploaded_image"
+                                    class="img img-responsive img-circle" width="100" alt="Select image" />
 
-                                <label for="upload_image">
-                                    <img src="{{ asset('storage/images/providers/' . $provider->image) }}"
-                                        id="uploaded_image" class="img img-responsive img-circle" width="100"
-                                        alt="Select image" />
+                                <input type="file" name="image" class="image" id="p_image" accept="image/*">
+                                {{-- <label for="upload_image">
                                     <div class="overlay">
                                         <div>Click to Change Logo</div>
                                     </div>
-                                    <input type="file" name="image" class="image" id="upload_image" accept="image/*"
-                                        style="display:none" />
                                     <input type="hidden" name="cropped_image" id="cropped_image">
 
-                                </label>
+                                </label> --}}
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <div class="col-md-6 ">
+                                <div class="">
+                                    <label for="input_type" class=" col-form-label">About</label>
+                                    <textarea name="about" id="about" class="form-control" placeholder="About Provider..." rows="5"
+                                        required>{{ $provider->about }}</textarea>
+                                </div>
+                                <div class="">
+                                    <label for="input_type" class=" col-form-label">Discount Term & Conditions</label>
+                                    <textarea name="discount" id="discount" class="form-control" placeholder="About Discount..." rows="6"
+                                        required>{{ $provider->discount }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="mt-1">
+                                    <label for="" class="form-label"> Payment Options</label>
+                                    <input type="text" name="payment_options" placeholder="Payment Option"
+                                        class="form-control" value="{{ $provider->payment_options }}">
+                                </div>
+                                <div class="mt-1">
+                                    <label for="" class="form-label"> Annual Acounts</label>
+                                    <input type="text" name="annual_accounts" placeholder="Annual Accounts"
+                                        class="form-control" value="{{ $provider->annual_accounts }}">
+                                </div>
+                                <div class="mt-1">
+                                    <label for="" class="form-label"> Meter Reading</label>
+                                    <input type="text" name="meter_readings" placeholder="Meter Readings"
+                                        class="form-control" value="{{ $provider->meter_readings }}">
+                                </div>
+                                <div class="mt-1">
+                                    <label for="" class="form-label"> Adjust Installments</label>
+                                    <input type="text" name="adjust_installments" placeholder="Adjust Installments"
+                                        class="form-control" value="{{ $provider->adjust_installments }}">
+                                </div>
+                                <div class="mt-1">
+                                    <label for="" class="form-label"> View consumption</label>
+                                    <input type="text" name="view_consumption" placeholder="View Consumtion"
+                                        class="form-control" value="{{ $provider->view_consumption }}">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
@@ -180,14 +229,44 @@
                 return false;
             }
         });
+        $('#p_image').on('change', function(event) {
+            const files = event.target.files;
+            // const previewContainer = $('#imagePreviewContainer');
 
+            // // Clear any previous previews
+            // previewContainer.empty();
+
+            $.each(files, function(index, file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $('#uploaded_image').attr('src', e.target.result);
+                        // const img = $('<img>').attr('src', e.target.result)
+                        //     .css('max-width', '150px')
+                        //     .css('margin', '10px');
+                        // previewContainer.append(img);
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    alert("Selected file is not an image.");
+                }
+            });
+        });
         $(document).ready(function() {
+            // Function to handle decimal restriction
             function restrictDecimal(inputField) {
                 var value = inputField.val();
+                if (value === '') {
+                    inputField.removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    inputField.removeClass('is-invalid');
+                }
                 if (value.indexOf('.') !== -1) {
                     var parts = value.split('.');
-                    if (parts[1].length > 2) {
-                        parts[1] = parts[1].substring(0, 2); // Restrict to two decimal places
+                    if (parts[1].length > 3) {
+                        parts[1] = parts[1].substring(0, 3); // Restrict to three decimal places
                         inputField.val(parts[0] + '.' + parts[1]);
                     }
                 }
@@ -198,27 +277,5 @@
             });
 
         });
-
-        // $('#grid_management').on('keyup', function() {
-        //     var inputField = $('#grid_management');
-        //     var value = inputField.val();
-        //     // console.log(value);
-
-        //     // Check if there's a decimal point in the value
-        //     if (value.indexOf('.') !== -1) {
-        //         var parts = value.split('.');
-
-        //         // If the length of the decimal part is greater than 2, trim it
-        //         if (parts[1].length > 2) {
-        //             parts[1] = parts[1].substring(0, 2);
-        //             inputField.val(parts[0] + '.' + parts[1]);
-        //         }
-        //     }
-        // });
-        // $('#vat').on('input', function() {
-        //     if ($(this).val().length > 2) {
-        //         $(this).val($(this).val().substring(0, 2)); // Trim input to the first 2 characters
-        //     }
-        // });
     </script>
 @endpush
