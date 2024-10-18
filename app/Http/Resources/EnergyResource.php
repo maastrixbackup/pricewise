@@ -8,6 +8,7 @@ use App\Models\PostFeature;
 use App\Models\EnergyRateChat;
 use App\Models\FeedInCost;
 use App\Http\Resources\PostFeatureResource;
+use App\Models\Document;
 use App\Models\Setting;
 
 class EnergyResource extends JsonResource
@@ -20,7 +21,18 @@ class EnergyResource extends JsonResource
      */
     public function toArray($request)
     {
-        $features = PostFeature::with(['postCategory:id,name', 'postFeature:id,features as name,is_preferred'])->where('post_id', $this->id)->where('category_id', $this->category)->get();
+        $features = PostFeature::with([
+            'postCategory:id,name',
+            'postFeature:id,features as name,is_preferred'
+        ])->where('post_id', $this->id)
+            ->where('category_id', $this->category)->get();
+
+        $docs = Document::where([
+            'post_id' => $this->provider_id,
+            'category' => config('constant.category.energy')
+        ])->get();
+
+
         return [
             'id' => $this->id,
             'target_group' => $this->target_group,
@@ -52,6 +64,7 @@ class EnergyResource extends JsonResource
                     'id' => $this->providerDetails->id,
                     'name' => $this->providerDetails->name,
                     'about' => $this->providerDetails->about,
+                    'rating' => $this->providerDetails->rating,
                     'payment_options' => $this->providerDetails->payment_options,
                     'annual_accounts' => $this->providerDetails->annual_accounts,
                     'meter_readings' => $this->providerDetails->meter_readings,
@@ -60,20 +73,28 @@ class EnergyResource extends JsonResource
                     'rose_scheme' => $this->providerDetails->rose_scheme,
                 ];
             }),
-            
-            'documents' => $this->whenLoaded('documents', function () {
-                return $this->documents->filter(function ($document) {
-                    return $this->category == $document->category;
-                })->map(function ($document) {
-                    return [
-                        'id' => $document->id,
-                        'filename' => $document->filename,
-                        'path' => $document->path,
-                    ];
-                });
-            }),
 
-            // 'features' => PostFeatureResource::collection($features),
+            'documents' => $docs->map(function ($document) {
+                return [
+                    'id' => $document->id,
+                    'filename' => asset('storage/documents/' .  $document->filename),
+                    'name' => $document->type,
+                ];
+            }),
+            // 'documents' => $this->whenLoaded('documents', function () {
+            //     return $this->documents->filter(function ($document) {
+            //         return $this->category == $document->category;
+            //     })->map(function ($document) {
+            //         return [
+            //             'id' => $document->id,
+            //             'filename' => $document->filename,
+            //             'path' => $document->path,
+            //             'name' => $document->type,
+            //         ];
+            //     });
+            // }),
+
+            'features' => PostFeatureResource::collection($features),
             // 'created_at' => $this->created_at->format('d/m/Y'),
             // 'updated_at' => $this->updated_at->format('d/m/Y'),
             // 'prices' => $this->whenLoaded('prices', function ()  use ($request) {

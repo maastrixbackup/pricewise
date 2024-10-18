@@ -22,6 +22,7 @@ class EnergyController extends BaseController
 
     public function index(Request $request)
     {
+        // return $request->input('power_origin');
         $pageNo = $request->input('pageNo', 1);
         $postsPerPage = $request->input('postsPerPage', 10);
         $toSkip = ($postsPerPage * $pageNo) - $postsPerPage;
@@ -44,23 +45,63 @@ class EnergyController extends BaseController
             $products->where('contract_length', '>=', $request->input('contract_length'));
         }
 
+        // Filter by Provider
+        if ($request->filled('provider')) {
+            $providers = $request->input('provider');
+            foreach ($providers as $p) {
+                $products->where('provider_id',  $p);
+            }
+        }
+
+        // // Filter by power origin
+        // if ($request->filled('power_origin')) {
+        //     $power_origin = json_encode($request->input('power_origin'));
+        //     $products->whereRaw('JSON_CONTAINS(power_origin, ?)', [$power_origin]);
+        // }
+
+        // // Filter by current type
+        // if ($request->filled('type_of_current')) {
+        //     $current_type = json_encode($request->input('type_of_current'));
+        //     $products->whereRaw('JSON_CONTAINS(type_of_current, ?)', [$current_type]);
+        // }
+
+        // // Filter by gas type
+        // if ($request->filled('type_of_gas')) {
+        //     $gas_type = json_encode($request->input('type_of_gas'));
+        //     $products->whereRaw('JSON_CONTAINS(type_of_gas, ?)', [$gas_type]);
+        // }
+
         // Filter by power origin
         if ($request->filled('power_origin')) {
-            $power_origin = json_encode($request->input('power_origin'));
-            $products->whereRaw('JSON_CONTAINS(power_origin, ?)', [$power_origin]);
+            // Decode JSON string into an array
+            $power_origin = $request->input('power_origin');
+            // $products->where(function ($query) use ($power_origin) {
+            foreach ($power_origin as $origin) {
+                $products->whereRaw('JSON_CONTAINS(power_origin, ?, "$")', [json_encode($origin)]);
+            }
+            // });
         }
 
         // Filter by current type
         if ($request->filled('type_of_current')) {
-            $current_type = json_encode($request->input('type_of_current'));
-            $products->whereRaw('JSON_CONTAINS(type_of_current, ?)', [$current_type]);
+            $currentTypes = $request->input('type_of_current');
+            // $products->where(function ($query) use ($currentTypes) {
+            foreach ($currentTypes as $type) {
+                $products->orWhereRaw('JSON_CONTAINS(type_of_current, ?)', [json_encode($type)]);
+            }
+            // });
         }
 
         // Filter by gas type
         if ($request->filled('type_of_gas')) {
-            $gas_type = json_encode($request->input('type_of_gas'));
-            $products->whereRaw('JSON_CONTAINS(type_of_gas, ?)', [$gas_type]);
+            $gasTypes = $request->input('type_of_gas');
+            // $products->where(function ($query) use ($gasTypes) {
+            foreach ($gasTypes as $type) {
+                $products->orWhereRaw('JSON_CONTAINS(type_of_gas, ?)', [json_encode($type)]);
+            }
+            // });
         }
+
 
         // Retrieve filtered products and count
         $filteredProducts = $products->skip($toSkip)->take($postsPerPage)->get();
@@ -112,12 +153,14 @@ class EnergyController extends BaseController
             $afterFeedInTariffCredit = $subTotal - $feedInTariffs;
 
             // total before vat
-            $totalBeforeVat = $afterFeedInTariffCredit + $product->fixed_delivery + $product->grid_management;
+            $totalBeforeVat = round($afterFeedInTariffCredit + $product->fixed_delivery + $product->grid_management, 2);
 
             $reductionOnTax = round(($product->energy_tax_reduction ?? $globalSetting->energy_tax_reduction) / 12, 2);
             $discountAmount = round($product->discount / 12, 2);
             // total After tax Reduction
             $totalAfterTaxReduction = round($totalBeforeVat - $reductionOnTax - $discountAmount, 2);
+            $totalAfterTaxReduction = $totalAfterTaxReduction === -0.0 ? 0.0 : $totalAfterTaxReduction;
+
             $vat = round(($totalAfterTaxReduction * ($product->vat ?? $globalSetting->vat)) / 100, 2);
             // total including tax
             $totalIncludingTax = round($totalAfterTaxReduction + $vat, 2);
@@ -145,7 +188,7 @@ class EnergyController extends BaseController
         }
 
         usort($mergedData, function ($a, $b) {
-            return $a['total'] <=> $b['total'];
+            return $b['total'] <=> $a['total'];
         });
 
         // if ($request->has('callFromExclusiveDeal')) {
@@ -164,140 +207,11 @@ class EnergyController extends BaseController
         ]);
     }
 
-    public function topEnergyDeals(Request $request)
-    {
-        $powerConsumption = $request->input('power_consumption', 0);
-        $gasConsumption = $request->input('gas_consumption', 0);
-        $feedInTariff = $request->input('feed_in_tariff', 0);
-        $products = EnergyProduct::with(
-            'postFeatures',
-            'prices',
-            'feedInCost',
-            'documents',
-            'providerDetails',
-            'govtTaxes'
-        );
-
-        // Filter by contract length
-        if ($request->filled('contract_length')) {
-            $products->where('contract_length', '>=', $request->input('contract_length'));
-        }
-
-        // Filter by power origin
-        if ($request->filled('power_origin')) {
-            $power_origin = json_encode($request->input('power_origin'));
-            $products->whereRaw('JSON_CONTAINS(power_origin, ?)', [$power_origin]);
-        }
-
-        // Filter by current type
-        if ($request->filled('type_of_current')) {
-            $current_type = json_encode($request->input('type_of_current'));
-            $products->whereRaw('JSON_CONTAINS(type_of_current, ?)', [$current_type]);
-        }
-
-        // Filter by gas type
-        if ($request->filled('type_of_gas')) {
-            $gas_type = json_encode($request->input('type_of_gas'));
-            $products->whereRaw('JSON_CONTAINS(type_of_gas, ?)', [$gas_type]);
-        }
-
-        // Retrieve filtered products
-        $filteredProducts = $products->get();
-
-        // Retrieve preferred energy features
-        $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
-            ->from('features as f1')
-            ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
-            ->where('f1.category', 16)
-            ->where('f1.is_preferred', 1)
-            ->get()
-            ->groupBy('parent');
-
-        $filters = [];
-        foreach ($objEnergyFeatures as $parent => $items) {
-            $filters[] = [
-                $parent => $items->map(function ($item) {
-                    return (object) $item->toArray();
-                })->toArray()
-            ];
-        }
-
-        $mergedData = [];
-        $businessGeneralSettings = getSettings('business_general');
-        $globalSetting = GlobalEnergySetting::find(1);
-        foreach ($filteredProducts as $product) {
-            $formattedProduct = (new EnergyResource($product))->toArray($request);
-
-            // Calculate power, gas, taxes, and tariffs
-            $powerCostPerUnit = $product->power_cost_per_unit * ($powerConsumption - $feedInTariff);
-            $gasCostPerUnit = $product->gas_cost_per_unit * $gasConsumption;
-            $taxOnElectric = ($powerConsumption - $feedInTariff) * ($product->tax_on_electric ?? $globalSetting->tax_on_electric);
-            $taxOnGas = $gasConsumption * ($product->tax_on_gas ?? $globalSetting->tax_on_gas);
-            $odeOnElectric = ($powerConsumption - $feedInTariff) * ($product->ode_on_electric ?? $globalSetting->ode_on_electric);
-            $odeOnGas = $gasConsumption * ($product->ode_on_gas ?? $globalSetting->ode_on_gas);
-            $feedInTariffs = $feedInTariff * $product->feed_in_tariff;
-
-            //Sub Total
-            $subTotal = $powerCostPerUnit
-                + $gasCostPerUnit
-                + $taxOnElectric
-                + $taxOnGas
-                + $odeOnElectric
-                + $odeOnGas;
-
-            // After Fee In credit
-            $afterFeedInTariffCredit = $subTotal - $feedInTariffs;
-
-            // total before vat
-            $totalBeforeVat = $afterFeedInTariffCredit + $product->fixed_delivery + $product->grid_management;
-
-            $reductionOnTax = round(($product->energy_tax_reduction ?? $globalSetting->energy_tax_reduction) / 12, 2);
-            $discountAmount = round($product->discount / 12, 2);
-            // total After tax Reduction
-            $totalAfterTaxReduction = round($totalBeforeVat - $reductionOnTax - $discountAmount, 2);
-            $vat = round(($totalAfterTaxReduction * ($product->vat ?? $globalSetting->vat)) / 100, 2);
-            // total including tax
-            $totalIncludingTax = round($totalAfterTaxReduction + $vat, 2);
-
-            // Populate formatted product data
-            $formattedProduct['power_cost'] = $powerCostPerUnit;
-            $formattedProduct['gas_cost'] = $gasCostPerUnit;
-            $formattedProduct['tax_electric'] = $taxOnElectric;
-            $formattedProduct['tax_gas'] = $taxOnGas;
-            $formattedProduct['ode_electric'] = $odeOnElectric;
-            $formattedProduct['ode_gas'] = $odeOnGas;
-            $formattedProduct['feed_in_cost'] = $feedInTariffs;
-            $formattedProduct['sub_total'] = $subTotal;
-            $formattedProduct['after_feed_in_tariff'] = $afterFeedInTariffCredit;
-            $formattedProduct['fixed_delivery'] = $product->fixed_delivery;
-            $formattedProduct['grid_manage'] = $product->grid_management;
-            $formattedProduct['total_before_vat'] = $totalBeforeVat;
-            $formattedProduct['tax_reduction'] = $reductionOnTax;
-            $formattedProduct['discount_amount'] = $discountAmount;
-            $formattedProduct['total_after_tax_reduction'] = $totalAfterTaxReduction;
-            $formattedProduct['vat_amount'] = $vat;
-            $formattedProduct['total'] = $totalIncludingTax;
-
-            $mergedData[] = $formattedProduct;
-        }
-
-        // Sort the merged data by total value
-        usort($mergedData, fn($a, $b) => $a['total'] <=> $b['total']);
-        $nominalFee = FeeSetting::where('category_id', config('constant.category.energy'))->first()->amount;
-        // Return the merged data
-        return response()->json([
-            'success' => true,
-            'data' => $mergedData,
-            'filters' => $filters,
-            'nominalFees' => $nominalFee,
-            'message' => 'Products retrieved successfully.'
-        ]);
-    }
 
     public function energyCompare(Request $request)
     {
         // $compareIds = $request->input('compare_ids');
-        $compareIds = ["6", "8"];
+        // $compareIds = ["6", "8"];
         $powerConsumption = $request->input('power_consumption', 0);
         $gasConsumption = $request->input('gas_consumption', 0);
         $feedInTariff = $request->input('feed_in_tariff', 0);
@@ -362,6 +276,7 @@ class EnergyController extends BaseController
 
             // Total after tax reduction
             $totalAfterTaxReduction = round($totalBeforeVat - $reductionOnTax - $discountAmount, 2);
+            $totalAfterTaxReduction = $totalAfterTaxReduction === -0.0 ? 0.0 : $totalAfterTaxReduction;
             $vat = round(($totalAfterTaxReduction * ($product->vat ?? $globalSetting->vat)) / 100, 2);
 
             // Total including tax
@@ -398,6 +313,167 @@ class EnergyController extends BaseController
     }
 
 
+    public function topEnergyDeals(Request $request)
+    {
+        $powerConsumption = $request->input('power_consumption', 0);
+        $gasConsumption = $request->input('gas_consumption', 0);
+        $feedInTariff = $request->input('feed_in_tariff', 0);
+        $products = EnergyProduct::with(
+            'postFeatures',
+            'prices',
+            'feedInCost',
+            'documents',
+            'providerDetails',
+            'govtTaxes'
+        );
+
+        // Filter by contract length
+        if ($request->filled('contract_length')) {
+            $products->where('contract_length', '>=', $request->input('contract_length'));
+        }
+
+        // // Filter by power origin
+        // if ($request->filled('power_origin')) {
+        //     $power_origin = json_encode($request->input('power_origin'));
+        //     $products->whereRaw('JSON_CONTAINS(power_origin, ?)', [$power_origin]);
+        // }
+
+        // // Filter by current type
+        // if ($request->filled('type_of_current')) {
+        //     $current_type = json_encode($request->input('type_of_current'));
+        //     $products->whereRaw('JSON_CONTAINS(type_of_current, ?)', [$current_type]);
+        // }
+
+        // // Filter by gas type
+        // if ($request->filled('type_of_gas')) {
+        //     $gas_type = json_encode($request->input('type_of_gas'));
+        //     $products->whereRaw('JSON_CONTAINS(type_of_gas, ?)', [$gas_type]);
+        // }
+
+        // Filter by power origin
+        if ($request->filled('power_origin')) {
+            // Decode JSON string into an array
+            $power_origin = $request->input('power_origin');
+            // $products->where(function ($query) use ($power_origin) {
+            foreach ($power_origin as $origin) {
+                $products->whereRaw('JSON_CONTAINS(power_origin, ?, "$")', [json_encode($origin)]);
+            }
+            // });
+        }
+
+        // Filter by current type
+        if ($request->filled('type_of_current')) {
+            $currentTypes = $request->input('type_of_current');
+            // $products->where(function ($query) use ($currentTypes) {
+            foreach ($currentTypes as $type) {
+                $products->orWhereRaw('JSON_CONTAINS(type_of_current, ?)', [json_encode($type)]);
+            }
+            // });
+        }
+
+        // Filter by gas type
+        if ($request->filled('type_of_gas')) {
+            $gasTypes = $request->input('type_of_gas');
+            // $products->where(function ($query) use ($gasTypes) {
+            foreach ($gasTypes as $type) {
+                $products->orWhereRaw('JSON_CONTAINS(type_of_gas, ?)', [json_encode($type)]);
+            }
+            // });
+        }
+
+        // Retrieve filtered products
+        $filteredProducts = $products->get();
+
+        // Retrieve preferred energy features
+        $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
+            ->from('features as f1')
+            ->leftJoin('features as f2', 'f1.parent', '=', 'f2.id')
+            ->where('f1.category', 16)
+            ->where('f1.is_preferred', 1)
+            ->get()
+            ->groupBy('parent');
+
+        $filters = [];
+        foreach ($objEnergyFeatures as $parent => $items) {
+            $filters[] = [
+                $parent => $items->map(function ($item) {
+                    return (object) $item->toArray();
+                })->toArray()
+            ];
+        }
+
+        $mergedData = [];
+        $businessGeneralSettings = getSettings('business_general');
+        $globalSetting = GlobalEnergySetting::find(1);
+        foreach ($filteredProducts as $product) {
+            $formattedProduct = (new EnergyResource($product))->toArray($request);
+
+            // Calculate power, gas, taxes, and tariffs
+            $powerCostPerUnit = $product->power_cost_per_unit * ($powerConsumption - $feedInTariff);
+            $gasCostPerUnit = $product->gas_cost_per_unit * $gasConsumption;
+            $taxOnElectric = ($powerConsumption - $feedInTariff) * ($product->tax_on_electric ?? $globalSetting->tax_on_electric);
+            $taxOnGas = $gasConsumption * ($product->tax_on_gas ?? $globalSetting->tax_on_gas);
+            $odeOnElectric = ($powerConsumption - $feedInTariff) * ($product->ode_on_electric ?? $globalSetting->ode_on_electric);
+            $odeOnGas = $gasConsumption * ($product->ode_on_gas ?? $globalSetting->ode_on_gas);
+            $feedInTariffs = $feedInTariff * $product->feed_in_tariff;
+
+            //Sub Total
+            $subTotal = $powerCostPerUnit
+                + $gasCostPerUnit
+                + $taxOnElectric
+                + $taxOnGas
+                + $odeOnElectric
+                + $odeOnGas;
+
+            // After Fee In credit
+            $afterFeedInTariffCredit = $subTotal - $feedInTariffs;
+
+            // total before vat
+            $totalBeforeVat = $afterFeedInTariffCredit + $product->fixed_delivery + $product->grid_management;
+
+            $reductionOnTax = round(($product->energy_tax_reduction ?? $globalSetting->energy_tax_reduction) / 12, 2);
+            $discountAmount = round($product->discount / 12, 2);
+            // total After tax Reduction
+            $totalAfterTaxReduction = round($totalBeforeVat - $reductionOnTax - $discountAmount, 2);
+            $totalAfterTaxReduction = $totalAfterTaxReduction === -0.0 ? 0.0 : $totalAfterTaxReduction;
+            $vat = round(($totalAfterTaxReduction * ($product->vat ?? $globalSetting->vat)) / 100, 2);
+            // total including tax
+            $totalIncludingTax = round($totalAfterTaxReduction + $vat, 2);
+
+            // Populate formatted product data
+            $formattedProduct['power_cost'] = $powerCostPerUnit;
+            $formattedProduct['gas_cost'] = $gasCostPerUnit;
+            $formattedProduct['tax_electric'] = $taxOnElectric;
+            $formattedProduct['tax_gas'] = $taxOnGas;
+            $formattedProduct['ode_electric'] = $odeOnElectric;
+            $formattedProduct['ode_gas'] = $odeOnGas;
+            $formattedProduct['feed_in_cost'] = $feedInTariffs;
+            $formattedProduct['sub_total'] = $subTotal;
+            $formattedProduct['after_feed_in_tariff'] = $afterFeedInTariffCredit;
+            $formattedProduct['fixed_delivery'] = $product->fixed_delivery;
+            $formattedProduct['grid_manage'] = $product->grid_management;
+            $formattedProduct['total_before_vat'] = $totalBeforeVat;
+            $formattedProduct['tax_reduction'] = $reductionOnTax;
+            $formattedProduct['discount_amount'] = $discountAmount;
+            $formattedProduct['total_after_tax_reduction'] = $totalAfterTaxReduction;
+            $formattedProduct['vat_amount'] = $vat;
+            $formattedProduct['total'] = $totalIncludingTax;
+
+            $mergedData[] = $formattedProduct;
+        }
+
+        // Sort the merged data by total value
+        usort($mergedData, fn($a, $b) => $b['total'] <=> $a['total']);
+        $nominalFee = FeeSetting::where('category_id', config('constant.category.energy'))->first()->amount;
+        // Return the merged data
+        return response()->json([
+            'success' => true,
+            'data' => $mergedData,
+            'filters' => $filters,
+            'nominalFees' => $nominalFee,
+            'message' => 'Products retrieved successfully.'
+        ]);
+    }
 
     // public function index(Request $request)
     // {
