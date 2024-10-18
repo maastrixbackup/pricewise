@@ -81,8 +81,8 @@
                                                 Gas</label>
                                         </div>
                                         <div>
-                                            <label><input type="checkbox" name="gas_type[]" value="partlt_green_gas"
-                                                    @if (is_array($typeOfGas) && in_array('partlt_green_gas', $typeOfGas)) checked @endif> Partly
+                                            <label><input type="checkbox" name="gas_type[]" value="partly_green_gas"
+                                                    @if (is_array($typeOfGas) && in_array('partly_green_gas', $typeOfGas)) checked @endif> Partly
                                                 Green Gas</label>
                                         </div>
                                         <div>
@@ -112,21 +112,24 @@
                             <div class="row mt-2">
                                 <div class="col-md-4 col-12">
                                     <div>
-                                        <label for="valid_till" class="col-form-label"> Fixed Delivery Cost:-<span
-                                                id="delivery_cost">{{'€'. $objEnergy->fixed_delivery }}</span></label>
+                                        <label for="valid_till" class="col-form-label"> Fixed Delivery Cost: <span
+                                                style="font-family: Robot Mono"
+                                                id="delivery_cost">{{ '€' . ' ' . $objEnergy->fixed_delivery }}</span></label>
                                         <input type="hidden" class="form-control" name="fixed_delivery" id="fixed_delivery"
                                             placeholder="Delivery Cost" value="{{ $objEnergy->fixed_delivery }}" readonly>
                                     </div>
                                     <div>
-                                        <label for="avg_delivery_time" class=" col-form-label">Grid Management Cost:-<span
-                                                id="grid_cost">{{'€'. $objEnergy->grid_management }}</span></label>
+                                        <label for="avg_delivery_time" class=" col-form-label">Grid Management Cost: <span
+                                                style="font-family: Robot Mono"
+                                                id="grid_cost">{{ '€' . ' ' . $objEnergy->grid_management }}</span></label>
                                         <input type="hidden" readonly class="form-control" id="grid_management"
                                             name="grid_management" placeholder="Grid Management Cost"
                                             value="{{ $objEnergy->grid_management }}" min="0">
                                     </div>
                                     <div>
-                                        <label for="avg_delivery_time" class=" col-form-label">Feed In Tariff:-<span
-                                                id="feed_in_tariffs">{{'€'. $objEnergy->feed_in_tariff }}</span></label>
+                                        <label for="avg_delivery_time" class=" col-form-label">Feed In Tariff: <span
+                                                style="font-family: Robot Mono"
+                                                id="feed_in_tariffs">{{ '€' . ' ' . $objEnergy->feed_in_tariff }}</span></label>
                                         <input type="hidden" readonly class="form-control" id="feed_in_tariff"
                                             name="feed_in_tariff" placeholder="Solar Buy Back"
                                             value="{{ $objEnergy->feed_in_tariff }}" min="0">
@@ -134,40 +137,49 @@
                                 </div>
                                 <div class="col-md-4 col-12">
                                     <div>
-                                        <label for="" class="col-form-label">Tax On Electric:-
-                                            {{'€'. $objEnergy->tax_on_electric }}</label>
+                                        <label for="" class="col-form-label">Tax On Electric:
+                                            <span
+                                                style="font-family: Robot Mono">{{ '€' . ' ' . $objEnergy->tax_on_electric }}
+                                                </spna></label>
                                         <input type="hidden" readonly value="{{ $objEnergy->tax_on_electric }}"
                                             name="tax_on_electric" id="tax_on_electric" class="form-control">
                                     </div>
                                     <div>
-                                        <label for="" class="col-form-label">Tax on Gas:-
-                                            {{'€'. $objEnergy->tax_on_gas }}</label>
+                                        <label for="" class="col-form-label">Tax on Gas:
+                                            <span style="font-family: Robot Mono">{{ '€' . ' ' . $objEnergy->tax_on_gas }}
+                                                </spna></label>
                                         <input type="hidden" readonly value="{{ $objEnergy->tax_on_gas }}"
                                             name="tax_on_gas" id="tax_on_gas" class="form-control">
                                     </div>
                                     <div>
-                                        <label for="" class="col-form-label">ODE On Electric:-
-                                            {{'€'. $objEnergy->ode_on_electric }}</label>
+                                        <label for="" class="col-form-label">ODE On Electric:
+                                            <span
+                                                style="font-family: Robot Mono">{{ '€' . ' ' . $objEnergy->ode_on_electric }}
+                                                </spna></label>
                                         <input type="hidden" readonly value="{{ $objEnergy->ode_on_electric }}"
                                             name="ode_on_electric" id="ode_on_electric" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-12">
                                     <div>
-                                        <label for="" class="col-form-label">ODE On Gas:-
-                                            {{'€'. $objEnergy->ode_on_gas }}</label>
+                                        <label for="" class="col-form-label">ODE On Gas:
+                                            <span style="font-family: Robot Mono">{{ '€' . ' ' . $objEnergy->ode_on_gas }}
+                                                </spna></label>
                                         <input type="hidden" readonly value="{{ $objEnergy->ode_on_gas }}"
                                             name="ode_on_gas" id="ode_on_gas" class="form-control">
                                     </div>
                                     <div>
-                                        <label for="" class="col-form-label">VAT:-
-                                            {{'€'. $objEnergy->vat }}</label>
+                                        <label for="" class="col-form-label">VAT:
+                                            <span style="font-family: Robot Mono">{{ '€' . ' ' . $objEnergy->vat }}</spna>
+                                        </label>
                                         <input type="hidden" readonly value="{{ $objEnergy->vat }}" name="vat"
                                             id="vat" class="form-control">
                                     </div>
                                     <div>
-                                        <label for="" class="col-form-label">Energy Tax Reduction/Year:-
-                                            {{'€'. $globalEnergy->energy_tax_reduction }}</label>
+                                        <label for="" class="col-form-label">Energy Tax Reduction/Year:
+                                            <span
+                                                style="font-family: Robot Mono">{{ '€' . ' ' . $globalEnergy->energy_tax_reduction }}
+                                                </spna></label>
                                         <input type="hidden" readonly value="{{ $globalEnergy->energy_tax_reduction }}"
                                             name="energy_tax_reduction" id="energy_tax_reduction" class="form-control">
                                     </div>
@@ -187,21 +199,21 @@
                                     <label for="provider" class="col-form-label"><b>Power Cost Per Unit (€)</b>
                                     </label>
                                     <input type="number" class="form-control" name="power_cost_per_unit" step=".01"
-                                        placeholder="Ex:-0.02" value="{{ $objEnergy->power_cost_per_unit }}">
+                                        placeholder="Ex: 0.02" value="{{ $objEnergy->power_cost_per_unit }}">
                                     <span class="invalid-feedback">Please enter a valid value.</span>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label for="provider" class="col-form-label"><b>Gas Cost Per Unit (€)</b>
                                     </label>
                                     <input type="number" class="form-control" name="gas_cost_per_unit" step=".01"
-                                        placeholder="Ex:-0.02" value="{{ $objEnergy->gas_cost_per_unit }}">
+                                        placeholder="Ex: 0.02" value="{{ $objEnergy->gas_cost_per_unit }}">
                                     <span class="invalid-feedback">Please enter a valid value.</span>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label for="provider" class="col-form-label"><b>Discount(%)</b>
                                     </label>
                                     <input type="number" class="form-control" name="discount" step=".01"
-                                        placeholder="Ex:-20" value="{{ $objEnergy->discount }}">
+                                        placeholder="Ex: 20" value="{{ $objEnergy->discount }}">
                                     <span class="invalid-feedback">Please enter a valid value.</span>
                                 </div>
                             </div>

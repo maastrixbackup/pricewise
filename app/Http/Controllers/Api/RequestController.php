@@ -62,9 +62,9 @@ class RequestController extends BaseController
             return $item;
         });
         if (!$userData->isEmpty()) {
-            return $this->sendResponse($userData, 'User requests retrieved successfully.');
+            return $this->jsonResponse(true,  'User requests retrieved successfully.', $userData);
         } else {
-            return response()->json(['success' => false, 'data' => [], 'message' => 'Failed to get user request.'], 404);
+            return response()->json(['status' => false, 'data' => [], 'message' => 'Failed to get user request.'], 404);
         }
     }
 
@@ -237,31 +237,31 @@ class RequestController extends BaseController
                 $body['action_link'] = url('/') . '/api/view-order/' . $orderNo;
                 // return $body;
                 Mail::to($email)->send(new CustomerRequestSubmit($body));
-                return response()->json(['success' => true, 'data' => ['name' => $name, 'email' => $email, 'order_no' => $orderNo], 'message' => 'User request saved successfully'], 200);
+                return response()->json(['status' => true, 'data' => ['name' => $name, 'email' => $email, 'order_no' => $orderNo], 'message' => 'User request saved successfully']);
             } else {
-                return response()->json(['success' => false, 'message' => 'Failed to save user request'], 422);
+                return response()->json(['status' => false, 'message' => 'Failed to save user request']);
             }
         } catch (ValidationException $e) {
             // Handle validation errors
-            \Log::error('Validation error: ' . $e->getMessage(), ['errors' => $e->errors()]);
-            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+            // \Log::error('Validation error: ' . $e->getMessage(), ['errors' => $e->errors()]);
+            return response()->json(['status' => false, 'errors' => $e->errors()]);
         } catch (QueryException $e) {
             // Handle other database errors
-            \Log::error('Database error: ' . $e->getMessage(), ['exception' => $e]);
-            return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
+            // \Log::error('Database error: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['status' => false, 'message' => 'Database error occurred']);
         } catch (\Exception $e) {
             // Handle all other errors
-            \Log::error('General error: ' . $e->getMessage(), ['exception' => $e]);
-            return response()->json(['success' => false, 'message' => 'An error occurred'], 500);
+            // \Log::error('General error: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['status' => false, 'message' => 'An error occurred']);
         }
 
 
         // catch (ValidationException $e) {
         //     // Handle validation errors
-        //     return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+        //     return response()->json(['status' => false, 'errors' => $e->errors()]);
         // } catch (QueryException $e) {
         //     // Handle other database errors
-        //     return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
+        //     return response()->json(['status' => false, 'message' => 'Database error occurred']);
         // }
     }
 
@@ -279,7 +279,7 @@ class RequestController extends BaseController
         // Change the format of the desired columns here
         $userRequest->shipping_address = json_decode($userRequest->shipping_address);
         $userRequest->advantages = json_decode($userRequest->advantages);
-        return $this->sendResponse($userRequest, 'User request retrieved successfully.');
+        return $this->jsonResponse(true, 'User request retrieved successfully.',  $userRequest);
     }
 
 
@@ -334,14 +334,14 @@ class RequestController extends BaseController
         // return $request->order_no;
         $order_data = UserRequest::where('order_no', $id)->first();
 
-        return $this->sendResponse($order_data, 'Order data retrieved successfully.');
+        return $this->jsonResponse(true,  'Order data retrieved successfully.', $order_data);
         // return view('admin.requests.edit', compact('user_request'));
     }
 
     public function getUserData(Request $request)
     {
         $userData = UserData::where('user_id', $request->user_id)->get();
-        return $this->sendResponse($userData, 'User data retrieved successfully.');
+        return $this->jsonResponse(true, 'User data retrieved successfully.', $userData);
     }
     public function saveUserData(Request $request)
     {
@@ -363,13 +363,13 @@ class RequestController extends BaseController
             }
 
             // Return a response indicating success
-            return response()->json(['success' => true, 'message' => 'User data saved successfully'], 200);
+            return response()->json(['status' => true, 'message' => 'User data saved successfully']);
         } catch (ValidationException $e) {
             // Handle validation errors
-            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+            return response()->json(['status' => false, 'errors' => $e->errors()]);
         } catch (QueryException $e) {
             // Handle other database errors
-            return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
+            return response()->json(['status' => false, 'message' => 'Database error occurred']);
         }
     }
     public function reviewList(Request $request)
@@ -382,7 +382,7 @@ class RequestController extends BaseController
 
         $userData = $query->latest()->get();
 
-        return $this->sendResponse($userData, 'Review data retrieved successfully.');
+        return $this->jsonResponse(true,  'Review data retrieved successfully.', $userData);
     }
 
 
@@ -406,23 +406,23 @@ class RequestController extends BaseController
 
 
 
-            return response()->json(['success' => true, 'message' => 'Review saved successfully'], 200);
+            return response()->json(['status' => true, 'message' => 'Review saved successfully']);
         } catch (ValidationException $e) {
 
-            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+            return response()->json(['status' => false, 'errors' => $e->errors()]);
         } catch (QueryException $e) {
 
-            return response()->json(['success' => false, 'message' => 'Database error occurred'], 500);
+            return response()->json(['status' => false, 'message' => 'Database error occurred']);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 
-            return response()->json(['error' => 'User request not found'], 422);
+            return response()->json(['error' => 'User request not found']);
         }
     }
 
     public function reviewShow(Request $request)
     {
         $review = Review::where('id', $request->review_id)->first();
-        return $this->sendResponse($review, 'User review retrieved successfully.');
+        return $this->jsonResponse(true,  'User review retrieved successfully.', $review);
     }
 
     public function getDealsData()
@@ -444,7 +444,7 @@ class RequestController extends BaseController
                 'category_details' => $deal->categoryDetails,
             ];
         });
-        return $this->sendResponse($deals, 'Deals retrieved successfully.');
+        return $this->jsonResponse(true,  'Deals retrieved successfully.', $deals);
     }
     private function getProductsCategoryWise($product_ids, $category_id)
     {
@@ -497,14 +497,14 @@ class RequestController extends BaseController
             $deal->categoryDetails;
             $dealData = $this->getProductsCategoryWise(json_decode($deal->products), $deal->category);
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $dealData[0],
                 'filters' => $dealData[1],
                 'message' => 'Deal retrieved successfully'
             ]);
         } else {
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'data' => [],
                 'filters' => [],
                 'message' => 'Deal not found in the requested id'
@@ -517,13 +517,13 @@ class RequestController extends BaseController
         $records = TvPackage::latest()->with('providerDetails')->get();
         if ($records) {
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $records,
                 'message' => 'Packages retrieved successfully'
             ]);
         } else {
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'data' => [],
                 'message' => 'Packages not found'
             ]);
@@ -561,13 +561,13 @@ class RequestController extends BaseController
                 return $record;
             });
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $records,
                 'message' => 'TvInternetOptions retrieved successfully'
             ]);
         } else {
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'data' => [],
                 'message' => 'TvInternetOptions not found'
             ]);
@@ -580,7 +580,7 @@ class RequestController extends BaseController
         // Fetch all event from the database
         $events = Event::where('status', 'active')->with('roomDetails', 'catererDetails', 'eventTypes');
         if ($request->has('postal_code')) {
-            $events->where('postal_code', $code);
+            $events->where('postal_code');
         }
         $dataEvent = $events->latest()->get();
 
@@ -601,14 +601,14 @@ class RequestController extends BaseController
         if ($data['events']) {
             // Return the data as a JSON response
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $data,
                 'message' => 'Event retrieved successfully'
             ]);
         } else {
             // Return the data as a JSON response
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => [],
                 'message' => 'Event retrieved successfully'
             ]);
@@ -628,7 +628,7 @@ class RequestController extends BaseController
             });
         }
 
-        return $this->sendResponse($deals, 'Deals retrieved successfully.');
+        return $this->jsonResponse(true, 'Deals retrieved successfully.', $deals);
     }
     public function getEnergyDeals(Request $request)
     {
@@ -640,10 +640,10 @@ class RequestController extends BaseController
                 $deal->products = json_decode($deal->products);
                 return $deal;
             });
-            return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            return $this->jsonResponse(true, 'Deals retrieved successfully.', $deals);
         }
 
-        return $this->sendError('Deals not found.');
+        return $this->jsonResponse(false, 'Deals not found.');
     }
 
     public function getEnergyData(Request $request)
@@ -674,9 +674,9 @@ class RequestController extends BaseController
                     'category' => $v->category,
                 ];
             }
-            return $this->sendResponse($filterData, 'Data retrieved successfully.');
+            return $this->jsonResponse(true, 'Data retrieved successfully.',  $filterData);
         }
-        return $this->sendError('Data not found.');
+        return $this->jsonResponse(false, 'Data not found.');
     }
 
     public function getInternetTvDeals(Request $request)
@@ -689,10 +689,10 @@ class RequestController extends BaseController
                 $deal->products = json_decode($deal->products);
                 return $deal;
             });
-            return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            return $this->jsonResponse(true, 'Deals retrieved successfully.',  $deals);
         }
 
-        return $this->sendError('Deals not found.');
+        return $this->jsonResponse(false, 'Deals not found.');
     }
 
     public function getInternetTvPackages(Request $request)
@@ -753,7 +753,7 @@ class RequestController extends BaseController
         $finalData['providers'] = $filterData;
         $finalData['packages'] = $filterPackages;
 
-        return $this->sendResponse($finalData, 'Data retrieved successfully.');
+        return $this->jsonResponse(true, 'Data retrieved successfully.', $finalData);
     }
     public function getHomeInsuranceDeals(Request $request)
     {
@@ -765,10 +765,10 @@ class RequestController extends BaseController
                 $deal->products = json_decode($deal->products);
                 return $deal;
             });
-            return $this->sendResponse($deals, 'Deals retrieved successfully.');
+            return $this->jsonResponse(true, 'Deals retrieved successfully.', $deals);
         }
 
-        return $this->sendError('Deals not found.');
+        return $this->jsonResponse(false, 'Deals not found.');
     }
 
     public function orderView(Request $request, $order_no)
@@ -782,13 +782,13 @@ class RequestController extends BaseController
         $sp_deal = SmartPhone::orderBy('id', 'desc')->where('status', 'active')->with('featuresDetails', 'discountsDetails', 'faqDetails')->get();
         if (!$sp_deal->isEmpty()) {
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $sp_deal,
                 'message' => 'SmartPhone Deals retrieved successfully.'
             ]);
         } else {
             return response()->json([
-                'error' => false,
+                'status' => false,
                 'data' => [],
                 'message' => 'SmartPhone Deals not found'
             ]);
@@ -803,7 +803,7 @@ class RequestController extends BaseController
 
         // Return the data as a JSON response
         return response()->json([
-            'success' => true,
+            'status' => true,
             'data' => $events,
             'message' => 'SearchData retrieved successfully'
         ]);
@@ -824,14 +824,14 @@ class RequestController extends BaseController
                 $mergedData[] = $formattedData;
             }
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $mergedData,
                 'message' => 'Data Retrieved Successfully.'
             ]);
         } else {
 
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'data' => [],
                 'message' => 'No Data Found!.'
             ]);
@@ -878,11 +878,11 @@ class RequestController extends BaseController
             $code = $loanTypes->count() > 0 ? 200 : 404;
 
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => [],
                 'recordsCount' => $recordsCount,
                 'message' => $message
-            ], $code);
+            ]);
         } else {
 
             $mergedData = [];
@@ -897,11 +897,11 @@ class RequestController extends BaseController
 
 
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $mergedData,
                 'recordsCount' => $recordsCount,
                 'message' => $message
-            ], $code);
+            ]);
         }
     }
 
@@ -977,11 +977,11 @@ class RequestController extends BaseController
             $code = $securities->count() > 0 ? 200 : 404;
 
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => [],
                 'recordsCount' => $recordsCount,
                 'message' => $message
-            ], $code);
+            ]);
         } else {
 
             $mergedData = [];
@@ -994,16 +994,28 @@ class RequestController extends BaseController
             $message = $securities->count() > 0 ? 'Products retrieved successfully.' : ' Products not found.';
             $code = $securities->count() > 0 ? 200 : 404;
 
-
+            // $this->jsonResponse(true, $message, $mergedData);
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'data' => $mergedData,
                 'recordsCount' => $recordsCount,
                 'insurance' => $coverages,
                 'message' => $message
-            ], $code);
+            ]);
         }
 
         // return $securities;
+    }
+
+    private function jsonResponse($status, $message, $data = null)
+    {
+        $response = [
+            'status' => $status,
+            'message' => $message,
+        ];
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+        return response()->json($response);
     }
 }

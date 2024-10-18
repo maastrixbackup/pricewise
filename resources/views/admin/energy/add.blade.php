@@ -80,7 +80,7 @@
                                             Gas</label>
                                     </div>
                                     <div>
-                                        <label><input type="checkbox" name="gas_type[]" value="partlt_green_gas"> Partly
+                                        <label><input type="checkbox" name="gas_type[]" value="partly_green_gas"> Partly
                                             Green Gas</label>
                                     </div>
                                     <div>
@@ -90,27 +90,26 @@
                                     <div>
                                         <label><input type="checkbox" name="gas_type[]" value="gas_free"> Gas Free</label>
                                     </div>
-                                    {{-- <input type="number" class="form-control" id="avg_delivery_time"
-                                        name="avg_delivery_time" placeholder="Average Delivery Time" min="0"> --}}
+                                    
                                 </div>
                             </div>
                             <div class="col-md-4 col-12">
                                 <div>
-                                    <label for="valid_till" class="col-form-label"> Fixed Delivery Cost:- €<span
-                                            id="delivery_cost">0</span></label>
+                                    <label for="valid_till" class="col-form-label"> Fixed Delivery Cost: € <span
+                                            style="font-family: Robot Mono" id="delivery_cost">0</span></label>
                                     <input type="hidden" class="form-control" name="fixed_delivery" id="fixed_delivery"
                                         placeholder="Delivery Cost" value="" readonly>
                                 </div>
                                 <div>
-                                    <label for="avg_delivery_time" class=" col-form-label">Grid Management Cost:- €<span
-                                            id="grid_cost">0</span></label>
+                                    <label for="avg_delivery_time" class=" col-form-label">Grid Management Cost: € <span
+                                            style="font-family: Robot Mono" id="grid_cost">0</span></label>
                                     <input type="hidden" readonly class="form-control" id="grid_management"
                                         name="grid_management" placeholder="Grid Management Cost" value=""
                                         min="0">
                                 </div>
                                 <div>
-                                    <label for="avg_delivery_time" class=" col-form-label">Feed In Tariff:- €<span
-                                            id="feed_in_tariffs">0</span></label>
+                                    <label for="avg_delivery_time" class=" col-form-label">Feed In Tariff: € <span
+                                            style="font-family: Robot Mono" id="feed_in_tariffs">0</span></label>
                                     <input type="hidden" readonly class="form-control" id="feed_in_tariff"
                                         name="feed_in_tariff" placeholder="Solar Buy Back" value=""
                                         min="0">
@@ -118,40 +117,45 @@
                             </div>
                             <div class="col-md-4 col-12">
                                 <div>
-                                    <label for="" class="col-form-label">Tax On Electric:-
-                                        {{ '€' . $globalEnergy->tax_on_electric }}</label>
+                                    <label for="" class="col-form-label">Tax On Electric:
+                                        € <span
+                                            style="font-family: Robot Mono">{{ $globalEnergy->tax_on_electric }}</span></label>
                                     <input type="hidden" readonly value="{{ $globalEnergy->tax_on_electric }}"
                                         name="tax_on_electric" id="tax_on_electric" class="form-control">
                                 </div>
                                 <div>
-                                    <label for="" class="col-form-label">Tax on Gas:-
-                                        {{ '€' . $globalEnergy->tax_on_gas }}</label>
+                                    <label for="" class="col-form-label">Tax on Gas:
+                                        € <span
+                                            style="font-family: Robot Mono">{{ $globalEnergy->tax_on_gas }}</span></label>
                                     <input type="hidden" readonly value="{{ $globalEnergy->tax_on_gas }}"
                                         name="tax_on_gas" id="tax_on_gas" class="form-control">
                                 </div>
                                 <div>
-                                    <label for="" class="col-form-label">ODE On Electric:-
-                                        {{ '€' . $globalEnergy->ode_on_electric }}</label>
+                                    <label for="" class="col-form-label">ODE On Electric:
+                                        € <span
+                                            style="font-family: Robot Mono">{{ $globalEnergy->ode_on_electric }}</span></label>
                                     <input type="hidden" readonly value="{{ $globalEnergy->ode_on_electric }}"
                                         name="ode_on_electric" id="ode_on_electric" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-4 col-12">
                                 <div>
-                                    <label for="" class="col-form-label">ODE On Gas:-
-                                        {{ '€' . $globalEnergy->ode_on_gas }}</label>
+                                    <label for="" class="col-form-label">ODE On Gas:
+                                        € <span
+                                            style="font-family: Robot Mono">{{ $globalEnergy->ode_on_gas }}</span></label>
                                     <input type="hidden" readonly value="{{ $globalEnergy->ode_on_gas }}"
                                         name="ode_on_gas" id="ode_on_gas" class="form-control">
                                 </div>
                                 <div>
-                                    <label for="" class="col-form-label">VAT:-
-                                        {{ '€' . $globalEnergy->vat }}</label>
+                                    <label for="" class="col-form-label">VAT:
+                                        € <span style="font-family: Robot Mono">{{ $globalEnergy->vat }}</span></label>
                                     <input type="hidden" readonly value="{{ $globalEnergy->vat }}" name="vat"
                                         id="vat" class="form-control">
                                 </div>
                                 <div>
-                                    <label for="" class="col-form-label">Energy Tax Reduction/Year:-
-                                        {{ '€' . $globalEnergy->energy_tax_reduction }}</label>
+                                    <label for="" class="col-form-label">Energy Tax Reduction/Year:
+                                        € <span
+                                            style="font-family: Robot Mono">{{ $globalEnergy->energy_tax_reduction }}</span></label>
                                     <input type="hidden" readonly value="{{ $globalEnergy->energy_tax_reduction }}"
                                         name="energy_tax_reduction" id="energy_tax_reduction" class="form-control">
                                 </div>
@@ -311,7 +315,9 @@
                 } else {
                     parentRow.find('input[type="number"]').prop('disabled', true);
                     parentRow.find('input[type="number"]').prop('readonly', true);
+                    parentRow.find('input[type="number"]').val('');
                     parentRow.find('input[type="number"]').removeClass('is-invalid');
+                    parentRow.find('input[type="number"]').removeClass('is-valid');
                     // parentRow.find('input[type="number"]').removeAttr('required');
                     // parentRow.find('input[type="number"]').css('border', '1px solid #d1d8ea');
                 }
