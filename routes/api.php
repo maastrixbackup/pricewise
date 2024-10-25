@@ -41,6 +41,7 @@ use Illuminate\Support\Facades\Auth;
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [RegisterController::class, 'login'])->name('customer-login');
 Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
+Route::post('/reset-password', [UserDetailController::class, 'resetpassword']);
 Route::post('/reset-password/{token}', [RegisterController::class, 'resetPassword'])->name('reset-password');
 Route::get('get-energy-deals', [RequestController::class, 'getEnergyDeals']);
 Route::get('get-energy-data', [RequestController::class, 'getEnergyData']);
@@ -168,7 +169,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/profile-details', [UserDetailController::class, 'index']);
     Route::post('/profile-update', [UserDetailController::class, 'update']);
     Route::post('/change-password', [UserDetailController::class, 'changepassword']);
-    Route::post('/reset-password', [UserDetailController::class, 'resetpassword']);
     Route::post('/email-update', [UserDetailController::class, 'emailUpdate']);
     //API route for user data
     Route::post('get-user-data', [RequestController::class, 'getUserData']);

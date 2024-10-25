@@ -69,7 +69,13 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('users', 'UserController');
             Route::resource('providers', 'ProviderController');
             Route::get('providers/{id}', 'ProviderController@show')->name('providers');
-
+            // Energy Consumption
+            Route::get('/consumptions/{id}', 'EnergyController@viewConsumptions')->name('consumptions');
+            Route::get('/consumptions-create', 'EnergyController@addConsumption')->name('consumptions.add');
+            Route::get('/consumptions-edit/{id}', 'EnergyController@editConsumption')->name('consumptions.edit');
+            Route::post('/consumptions-store', 'EnergyController@storeConsumption')->name('consumptions.store');
+            Route::post('/consumptions-update/{id}', 'EnergyController@updateConsumption')->name('consumptions.update');
+            
             //Tv Product
             Route::get('/fetch/internet-tv', 'TvInternetController@gettvproducts')->name('get.internet-tv');
             Route::resource('internet-tv', 'TvInternetController');

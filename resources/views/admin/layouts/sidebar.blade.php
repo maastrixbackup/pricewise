@@ -690,6 +690,13 @@
 
                          <li class="nav-main-item">
                              <a class="nav-main-link"
+                                 href="{{ route('admin.consumptions', config('constant.category.energy')) }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Manage Consumption</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link"
                                  href="{{ route('admin.providers', config('constant.category.energy')) }}">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                                  <span class="nav-main-link-name">Manage Provider</span>

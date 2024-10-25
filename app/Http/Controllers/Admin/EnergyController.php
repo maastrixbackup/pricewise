@@ -14,10 +14,12 @@ use App\Models\Combo;
 use App\Models\Document;
 use App\Models\PostFeature;
 use App\Models\Affiliate;
+use App\Models\EnergyConsumption;
 use App\Models\Feature;
 use App\Models\EnergyRateChat;
 use App\Models\FeedInCost;
 use App\Models\GlobalEnergySetting;
+use App\Models\HouseType;
 use App\Models\PostalCode;
 use Brian2694\Toastr\Facades\Toastr;
 use Exception;
@@ -400,6 +402,92 @@ class EnergyController extends Controller
         }
         $message = array('message' => 'Telephone Features Updated Successfully', 'title' => '');
         return response()->json(["status" => true, 'message' => $message]);
+    }
+
+    public function viewConsumptions($id)
+    {
+        $cData = EnergyConsumption::orderBy('house_type', 'asc')->get();
+        return view('admin.energy.view_consumption', compact('cData'));
+    }
+
+    public function addConsumption(Request $request)
+    {
+        $bArr = [];
+        $houseData = HouseType::orderBy('title', 'asc')->get();
+        $cData = EnergyConsumption::select('house_type')->groupBy('house_type')->get();
+        foreach ($cData as $k => $v) {
+            $bArr[$k] = $v->house_type;
+        }
+        // dd($bArr);
+        return view('admin.energy.add_consumption', compact('houseData', 'bArr'));
+    }
+
+    public function storeConsumption(Request $req)
+    {
+        // dd($req->all());
+        try {
+            $a = [];
+            $missingData = false;
+
+            foreach ($req->no_of_person as $k => $v) {
+                // Check if all required data for this contract year exists
+                if (
+                    isset($req->electric_supply[$v]) &&
+                    isset($req->electric_supply[$v]) 
+                ) {
+                    $newC = new EnergyConsumption();
+                    $newC->no_of_person = $v;
+                    $newC->gas_supply = $req->gas_supply[$v];
+                    $newC->electric_supply = $req->electric_supply[$v];
+                    $newC->cat_id = $req->category;
+                    $newC->house_type = $req->house_type;
+                    $newC->created_at = now();
+                    $newC->updated_at = now();
+                    $newC->save();
+
+                    // Optionally, store the values in array $a for debugging or other purposes
+                    $a[$v] = [
+                        'gas_supply' => $req->gas_supply[$v],
+                        'electric_supply' => $req->electric_supply[$v],
+                    ];
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing data for contract year: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+            $this->sendToastResponse('success', 'Counsumption Added successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function editConsumption($id)
+    {
+        $cData = EnergyConsumption::find($id);
+        return view('admin.energy.edit_consumption', compact('cData'));
+    }
+    public function updateConsumption(Request $req, $id)
+    {
+        // dd($req->all());
+        try {
+            $cData= EnergyConsumption::find($id);
+            $cData->gas_supply = $req->gas_supply;
+            $cData->electric_supply = $req->electric_supply;
+            $cData->save();
+
+            $this->sendToastResponse('success', 'Counsumption Updated successfully');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            $this->sendToastResponse('error', $th->getMessage());
+            return redirect()->back();
+        }
     }
 
     public function sendToastResponse($type, $message, $title = '')

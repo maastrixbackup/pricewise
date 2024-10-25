@@ -90,7 +90,7 @@
                                     <div>
                                         <label><input type="checkbox" name="gas_type[]" value="gas_free"> Gas Free</label>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                             <div class="col-md-4 col-12">
