@@ -13,6 +13,7 @@ use App\Models\Feature;
 use Dotenv\Validator;
 use App\Models\FeeSetting;
 use App\Http\Resources\EnergyResource;
+use App\Models\EnergyConsumption;
 use App\Models\GlobalEnergySetting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
@@ -87,7 +88,7 @@ class EnergyController extends BaseController
             $currentTypes = $request->input('type_of_current');
             // $products->where(function ($query) use ($currentTypes) {
             foreach ($currentTypes as $type) {
-                $products->orWhereRaw('JSON_CONTAINS(type_of_current, ?)', [json_encode($type)]);
+                $products->WhereRaw('JSON_CONTAINS(type_of_current, ?)', [json_encode($type)]);
             }
             // });
         }
@@ -97,7 +98,7 @@ class EnergyController extends BaseController
             $gasTypes = $request->input('type_of_gas');
             // $products->where(function ($query) use ($gasTypes) {
             foreach ($gasTypes as $type) {
-                $products->orWhereRaw('JSON_CONTAINS(type_of_gas, ?)', [json_encode($type)]);
+                $products->WhereRaw('JSON_CONTAINS(type_of_gas, ?)', [json_encode($type)]);
             }
             // });
         }
@@ -474,6 +475,66 @@ class EnergyController extends BaseController
             'message' => 'Products retrieved successfully.'
         ]);
     }
+
+    public function getEnergyConsumption(Request $request)
+    {
+        // Retrieve input values with validation
+        $noOfPerson = $request->input('no_of_person');
+        $houseType = $request->input('house_type');
+
+        // Validate the required inputs
+        if (is_null($noOfPerson)) {
+            return $this->jsonResponse(false, 'No. of Person is required.');
+        }
+
+        if (is_null($houseType)) {
+            return $this->jsonResponse(false, 'House Type is required.');
+        }
+
+        if ($noOfPerson > 5) {
+            return $this->jsonResponse(false, 'No. of persons can be a maximum of 5. Please enter a valid input.');
+        }
+
+        // Fetch the consumption data with error handling
+        try {
+            $consumeData = EnergyConsumption::where([
+                'house_type' => $houseType,
+                'no_of_person' => $noOfPerson,
+            ])->first();
+
+            if (!$consumeData) {
+                return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
+            }
+
+            $cData = [
+                'house_type' => $consumeData->house_type,
+                'no_of_person' => $consumeData->no_of_person,
+                'electric' => $consumeData->electric_supply,
+                'gas' => $consumeData->gas_supply,
+                'return' => '0',
+            ];
+
+            // Return the found consumption data
+            return $this->jsonResponse(true, 'Consumption Retrieved Successfully', $cData);
+        } catch (\Exception $e) {
+            return $this->jsonResponse(false, 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+
+    private function jsonResponse($status, $message, $data = null)
+    {
+        $response = [
+            'status' => $status,
+            'message' => $message,
+        ];
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+        return response()->json($response);
+    }
+
+
 
     // public function index(Request $request)
     // {

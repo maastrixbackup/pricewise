@@ -422,6 +422,19 @@ class EnergyController extends Controller
         return view('admin.energy.add_consumption', compact('houseData', 'bArr'));
     }
 
+    public function checkHouseType(Request $req)
+    {
+        $cData = EnergyConsumption::select('house_type')->groupBy('house_type')->get();
+        foreach ($cData as $k => $v) {
+            $bArr[$k] = $v->house_type;
+        }
+
+        if (in_array($req->id, $bArr)) {
+            return $this->jsonResponse(false, 'House Data Already Exists!');
+        }
+        return $this->jsonResponse(true, 'Proceed Selection..');
+    }
+
     public function storeConsumption(Request $req)
     {
         // dd($req->all());
@@ -433,7 +446,7 @@ class EnergyController extends Controller
                 // Check if all required data for this contract year exists
                 if (
                     isset($req->electric_supply[$v]) &&
-                    isset($req->electric_supply[$v]) 
+                    isset($req->electric_supply[$v])
                 ) {
                     $newC = new EnergyConsumption();
                     $newC->no_of_person = $v;
@@ -461,8 +474,8 @@ class EnergyController extends Controller
             if ($missingData) {
                 return redirect()->back();  // Redirect back if there was any missing data
             }
-            $this->sendToastResponse('success', 'Counsumption Added successfully');
-            return redirect()->back();
+            $this->sendToastResponse('success', 'Consumption Added successfully');
+            return redirect()->route('admin.consumptions', config('constant.category.energy'));
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
@@ -471,24 +484,169 @@ class EnergyController extends Controller
     public function editConsumption($id)
     {
         $cData = EnergyConsumption::find($id);
-        return view('admin.energy.edit_consumption', compact('cData'));
+        $cFinalData = EnergyConsumption::where('house_type', $cData->house_type)
+            ->orderBy('no_of_person', 'asc')
+            ->get();
+        $bArr = [];
+        foreach ($cFinalData as $k => $v) {
+            $bArr['id'][$v->no_of_person] = $v->id ?? '';
+            $bArr['gas'][$v->no_of_person] = $v->gas_supply;
+            $bArr['electric'][$v->no_of_person] = $v->electric_supply;
+        }
+        // dd($bArr);
+        return view('admin.energy.edit_consumption', compact('cData', 'bArr'));
     }
+
+    // public function updateConsumption(Request $req, $id)
+    // {
+    //     dd($req->all());
+    //     try {
+    //         $a = [];
+    //         $missingData = false;
+
+    //         foreach ($req->no_of_person as $k => $v) {
+    //             // Check if all required data for this contract year exists
+    //             if (
+    //                 isset($req->electric_supply[$v]) &&
+    //                 isset($req->electric_supply[$v])
+    //             ) {
+    //                 $newC = EnergyConsumption::where('no_of_person', $v)->first();
+    //                 if ($newC) {
+    //                     $newC->update([
+    //                         'no_of_person' => $v,
+    //                         'gas_supply' => $req->gas_supply[$v],
+    //                         'electric' => $req->electric_supply[$v],
+    //                         'house_type' => $req->house_type,
+    //                         'cat_id' => $req->category,
+    //                         'created_at' => now(),
+    //                         'updated_at' => now()
+    //                     ]);
+
+    //                 }
+    //                 // $newC = EnergyConsumption::updateOrCreate([
+    //                 //     'no_of_person' => $v,
+    //                 //     'gas_supply' => $req->gas_supply[$v],
+    //                 //     'electric' => $req->electric_supply[$v],
+    //                 //     'house_type' => $req->house_type,
+    //                 //     'cat_id' => $req->category,
+    //                 //     'created_at' => now(),
+    //                 //     'updated_at' => now()
+    //                 // ]);
+
+    //                 $newCc = new EnergyConsumption();
+
+    //                 $newCc->no_of_person = $v;
+    //                 $newCc->gas_supply = $req->gas_supply[$v];
+    //                 $newCc->electric_supply = $req->electric_supply[$v];
+    //                 $newCc->cat_id = $req->category;
+    //                 $newCc->house_type = $req->house_type;
+    //                 $newCc->created_at = now();
+    //                 $newCc->updated_at = now();
+    //                 $newCc->save();
+
+    //                 // Optionally, store the values in array $a for debugging or other purposes
+    //                 $a[$v] = [
+    //                     'gas_supply' => $req->gas_supply[$v],
+    //                     'electric_supply' => $req->electric_supply[$v],
+    //                 ];
+    //             } else {
+    //                 // Mark that some data is missing
+    //                 $missingData = true;
+    //                 $this->sendToastResponse('error', "Missing data for contract year: {$v}");
+    //             }
+    //         }
+
+    //         // Check if there was missing data and redirect accordingly
+    //         if ($missingData) {
+    //             return redirect()->back();  // Redirect back if there was any missing data
+    //         }
+    //         $this->sendToastResponse('success', 'Counsumption Updated successfully');
+    //         return redirect()->back();
+    //     } catch (\Exception $e) {
+    //         $this->sendToastResponse('error', $e->getMessage());
+    //         return redirect()->back();
+    //     }
+
+
+    //     // try {
+    //     //     $cData = EnergyConsumption::find($id);
+    //     //     $cData->gas_supply = $req->gas_supply;
+    //     //     $cData->electric_supply = $req->electric_supply;
+    //     //     $cData->save();
+
+    //     //     $this->sendToastResponse('success', 'Consumption Updated successfully');
+    //     //     return redirect()->back();
+    //     // } catch (\Throwable $th) {
+    //     //     $this->sendToastResponse('error', $th->getMessage());
+    //     //     return redirect()->back();
+    //     // }
+    // }
+
     public function updateConsumption(Request $req, $id)
     {
         // dd($req->all());
         try {
-            $cData= EnergyConsumption::find($id);
-            $cData->gas_supply = $req->gas_supply;
-            $cData->electric_supply = $req->electric_supply;
-            $cData->save();
+            $a = [];
+            $missingData = false;
 
-            $this->sendToastResponse('success', 'Counsumption Updated successfully');
-            return redirect()->back();
-        } catch (\Throwable $th) {
-            $this->sendToastResponse('error', $th->getMessage());
+            foreach ($req->no_of_person as $k => $v) {
+                // Check if all required data for this contract year exists
+                if (
+                    isset($req->gas_supply[$v]) &&
+                    isset($req->ids[$v]) &&
+                    isset($req->electric_supply[$v])
+                ) {
+                    // Find existing record based on `no_of_person`
+                    $existingConsumption = EnergyConsumption::where(['no_of_person' => $v, 'id' => $req->ids[$v]])->first();
+
+                    // Update or create the consumption record
+                    if ($existingConsumption) {
+                        $existingConsumption->update([
+                            'no_of_person' => $v,
+                            'gas_supply' => $req->gas_supply[$v],
+                            'electric_supply' => $req->electric_supply[$v],
+                            'house_type' => $req->house_type,
+                            'cat_id' => $req->category,
+                            'updated_at' => now()
+                        ]);
+                    } else {
+                        // Create new consumption entry if it does not exist
+                        EnergyConsumption::create([
+                            'no_of_person' => $v,
+                            'gas_supply' => $req->gas_supply[$v],
+                            'electric_supply' => $req->electric_supply[$v],
+                            'house_type' => $req->house_type,
+                            'cat_id' => $req->category,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+
+                    // Optionally, store the values in array $a for debugging or other purposes
+                    $a[$v] = [
+                        'gas_supply' => $req->gas_supply[$v],
+                        'electric_supply' => $req->electric_supply[$v],
+                    ];
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing data for no_of_person: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+
+            $this->sendToastResponse('success', 'Consumption updated successfully');
+            return redirect()->route('admin.consumptions', config('constant.category.energy'));
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
     }
+
 
     public function sendToastResponse($type, $message, $title = '')
     {
@@ -498,5 +656,18 @@ class EnergyController extends Controller
             'message' => $message,
             'title' => $title
         ]);
+    }
+
+    public function jsonResponse($status, $message, $data = null)
+    {
+        $response = [
+            'status' => $status,
+            'message' => $message,
+        ];
+
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+        return response()->json($response);
     }
 }
