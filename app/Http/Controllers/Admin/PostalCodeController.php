@@ -64,18 +64,24 @@ class PostalCodeController extends Controller
     public function destroy($id)
     {
         try {
-            $pCode = PostalCode::find($id)->delete();
+            $pCode = PostalCode::find($id);
+
             if (!$pCode) {
                 $this->sendToastResponse('error', 'Postal Code not found');
+                return redirect()->back();
             }
-            HouseNumber::where('pc_id', $pCode)->delete();
+
+            HouseNumber::where('pc_id', $pCode->id)->delete();
+            $pCode->delete();
+
             $this->sendToastResponse('success', 'Postal Code Deleted');
             return redirect()->back();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
     }
+
 
 
     public function houseNumberIndex()

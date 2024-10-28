@@ -37,8 +37,7 @@
                                     <option disabled selected>Select</option>
                                     @if ($houseData)
                                         @foreach ($houseData as $data)
-                                            <option value="{{ $data->id }}"
-                                                {{ in_array($data->id, $bArr) ? 'disabled' : '' }}>{{ $data->title }}
+                                            <option value="{{ $data->id }}">{{ $data->title }}
                                             </option>
                                         @endforeach
                                     @endif
@@ -162,16 +161,38 @@
             // Enable or disable input fields based on provider selection
             $('#provider').on('change', function() {
                 let providerSelected = $(this).val();
-                if (providerSelected) {
-                    // Enable input fields when a valid provider is selected
-                    $('input[type="number"]').prop('readonly', false).prop('disabled', false);
-                    $('#provider').removeClass('is-invalid').addClass('is-valid');
-                } else {
-                    // Disable and reset input fields if no provider is selected
-                    $('input[type="number"]').prop('readonly', true).prop('disabled', true).val('');
-                    $('#provider').removeClass('is-valid').addClass('is-invalid');
-                }
+                let action = "{{ route('admin.check_house_type') }}";
+
+                $.ajax({
+                    url: action,
+                    type: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: providerSelected,
+                    },
+                    success: function(data) {
+                        console.log(data);
+
+                        if (data.status) {
+                            // Enable input fields and set 'is-valid' class for provider
+                            $('input[type="number"]').prop('readonly', false).prop('disabled',
+                                false);
+                            $('#provider').removeClass('is-invalid').addClass('is-valid');
+                        } else {
+                            // Disable and clear input fields, add 'is-invalid' class for provider
+                            $('input[type="number"]').prop('readonly', true).prop('disabled',
+                                true).val('');
+                            $('#provider').removeClass('is-valid').addClass('is-invalid');
+                            toastr.error(data.message, '');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching provider:', xhr.responseText);
+                        toastr.error('There was an error processing your request.');
+                    }
+                });
             });
+
 
 
             // Validate inputs when the submit button is clicked

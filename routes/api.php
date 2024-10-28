@@ -161,6 +161,7 @@ Route::post('energy-compare', [EnergyController::class, 'energyCompare']);
 Route::get('suppliers', [SettingsController::class, 'getSupliers']);
 Route::get('house-type', [SettingsController::class, 'houseTypes']);
 Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
+Route::post('get-consumption-value', [EnergyController::class, 'getEnergyConsumption']);
 
 //Frontent === Auth
 Route::group(['middleware' => 'auth:sanctum'], function () {

@@ -42,7 +42,8 @@
                                 <span class="invalid-feedback">Please Select a valid value.</span>
                                 <input type="hidden" value="{{ $cData->cat_id }}" class="form-control" name="category">
                             </div>
-                            <div class="col-md-6 mb-3">
+
+                            {{-- <div class="col-md-6 mb-3">
                                 <label class="col-form-label">No. of Person</label>
                                 <input type="text" class="form-control" name="no_of_person" readonly
                                     value="{{ $cData->no_of_person }}">
@@ -60,7 +61,110 @@
                                     value="{{ $cData->electric_supply }}">
 
                                 <span class="invalid-feedback">Please Enter valid value.</span>
-                            </div>
+                            </div> --}}
+
+                        </div>
+
+                        <div class="row mt-2">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>No. of Person</th>
+                                        <th>Gas Supply</th>
+                                        <th>Electric Supply</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="year_one">
+                                                <input type="hidden" checked name="no_of_person[]" id="year_one"
+                                                    value="1">
+                                                1
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <input type="number" placeholder="" value="{{ $bArr['gas'][1] }}"
+                                                class="form-control" name="gas_supply[1]" id="gas_1">
+
+                                                <input type="hidden" placeholder="" value="{{ $bArr['id'][1] }}"
+                                                class="form-control" name="ids[1]" >
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['electric'][1] }}"
+                                                class="form-control" name="electric_supply[1]" id="electric_1">
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <label for="year_two">
+                                                <input type="hidden" name="no_of_person[]" id="year_two" value="2"> 2
+                                            </label>
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['gas'][2] }}"
+                                                class="form-control" name="gas_supply[2]" id="gas_2">
+
+                                                <input type="hidden" placeholder="" value="{{ $bArr['id'][2] }}"
+                                                class="form-control" name="ids[2]" >
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['electric'][2] }}"
+                                                class="form-control" name="electric_supply[2]" id="electric_2">
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <label for="year_three">
+                                                <input type="hidden" name="no_of_person[]" id="year_three" value="3">
+                                                3
+                                            </label>
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['gas'][3] }}"
+                                                class="form-control" name="gas_supply[3]" id="gas_3">
+                                                <input type="hidden" placeholder="" value="{{ $bArr['id'][3] }}"
+                                                class="form-control" name="ids[3]" >
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['electric'][3] }}"
+                                                class="form-control" name="electric_supply[3]" id="electric_3">
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <label for="year_four">
+                                                <input type="hidden" name="no_of_person[]" id="year_four" value="4"> 4
+                                            </label>
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['gas'][4] }}"
+                                                class="form-control" name="gas_supply[4]" id="gas_4">
+                                                <input type="hidden" placeholder="" value="{{ $bArr['id'][4] }}"
+                                                class="form-control" name="ids[4]" >
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['electric'][4] }}"
+                                                class="form-control" name="electric_supply[4]" id="electric_4">
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <label for="year_five">
+                                                <input type="hidden" name="no_of_person[]" id="year_five"
+                                                    value="5"> 5
+                                            </label>
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['gas'][5] }}"
+                                                class="form-control" name="gas_supply[5]" id="gas_5">
+
+                                                <input type="hidden" placeholder="" value="{{ $bArr['id'][5] }}"
+                                                class="form-control" name="ids[5]" >
+                                        </td>
+                                        <td><input type="number" placeholder="" value="{{ $bArr['electric'][5] }}"
+                                                class="form-control" name="electric_supply[5]" id="electric_5">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
                         </div>
 
@@ -102,7 +206,7 @@
                         isValid = false;
                         $(this).addClass('is-invalid');
                     } else {
-                        $(this).removeClass('is-invalid').addClass('is-valid');
+                        $(this).removeClass('is-invalid');
                     }
                 });
 

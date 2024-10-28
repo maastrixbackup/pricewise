@@ -75,12 +75,12 @@ class SettingsController extends BaseController
         $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
 
         if (!$postalCodeData) {
-            return $this->jsonResponse(false, 'Invalid Postal Code');
+            return $this->jsonResponse(false, 'Invalid Postal Code','1');
         }
 
         // Validate if house_no is provided
         if (!$request->filled('house_no')) {
-            return $this->jsonResponse(false, 'House Number is required');
+            return $this->jsonResponse(false, 'House Number is required','2');
         }
 
         // Retrieve and validate house number
@@ -90,7 +90,7 @@ class SettingsController extends BaseController
             ->first();
 
         if (!$houseData) {
-            return $this->jsonResponse(false, 'Invalid House Number for Postal Code');
+            return $this->jsonResponse(false, 'Invalid House Number for Postal Code',2);
         }
 
         $hData['id'] = $houseData->id;
