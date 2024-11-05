@@ -166,6 +166,11 @@ class EnergyController extends BaseController
             // total including tax
             $totalIncludingTax = round($totalAfterTaxReduction + $vat, 2);
 
+            $totalYearlyCostAfterDiscount = round($totalIncludingTax * 12, 2);
+            $totalYearlyCostBeforeDiscount = round($totalYearlyCostAfterDiscount + $reductionOnTax + $discountAmount, 2);
+            $totalSavedCashBack = round($reductionOnTax + $discountAmount, 2);
+            $deliveryCostPerYear = round($product->fixed_delivery * 12, 2);
+
             // Populate formatted product data
             $formattedProduct['power_cost'] = $powerCostPerUnit;
             $formattedProduct['gas_cost'] = $gasCostPerUnit;
@@ -183,6 +188,10 @@ class EnergyController extends BaseController
             $formattedProduct['discount_amount'] = $discountAmount;
             $formattedProduct['total_after_tax_reduction'] = $totalAfterTaxReduction;
             $formattedProduct['vat_amount'] = $vat;
+            $formattedProduct['delivery_cost_per_year'] = $deliveryCostPerYear;
+            $formattedProduct['yearly_before_discount_total'] = $totalYearlyCostBeforeDiscount;
+            $formattedProduct['saving_amount'] = $totalSavedCashBack;
+            $formattedProduct['yearly_after_discount_total'] = $totalYearlyCostAfterDiscount;
             $formattedProduct['total'] = $totalIncludingTax;
 
             $mergedData[] = $formattedProduct;
@@ -211,11 +220,11 @@ class EnergyController extends BaseController
 
     public function energyCompare(Request $request)
     {
-        // $compareIds = $request->input('compare_ids');
-        // $compareIds = ["6", "8"];
+        $compareIds = $request->input('compare_ids');
         $powerConsumption = $request->input('power_consumption', 0);
         $gasConsumption = $request->input('gas_consumption', 0);
         $feedInTariff = $request->input('feed_in_tariff', 0);
+
         $globalSetting = GlobalEnergySetting::find(1);
 
         // Early return if no comparison IDs are provided
@@ -223,11 +232,13 @@ class EnergyController extends BaseController
             return response()->json(['status' => false, 'message' => 'No comparison IDs provided.']);
         }
 
+        // return $compareIds;
         // Fetch products and related data in one query
         $filteredProducts = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails')
             ->whereIn('id', $compareIds)
             ->get();
 
+        // return $filteredProducts;
         // Fetch energy features and group by parent
         // $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
         //     ->from('features as f1')
@@ -283,6 +294,12 @@ class EnergyController extends BaseController
             // Total including tax
             $totalIncludingTax = round($totalAfterTaxReduction + $vat, 2);
 
+
+            $totalYearlyCostAfterDiscount = round($totalIncludingTax * 12, 2);
+            $totalYearlyCostBeforeDiscount = round($totalYearlyCostAfterDiscount + $reductionOnTax + $discountAmount, 2);
+            $totalSavedCashBack = round($reductionOnTax + $discountAmount, 2);
+            $deliveryCostPerYear = round($product->fixed_delivery * 12, 2);
+
             // Populate formatted product data
             $formattedProduct['power_cost'] = $powerCostPerUnit;
             $formattedProduct['gas_cost'] = $gasCostPerUnit;
@@ -300,6 +317,10 @@ class EnergyController extends BaseController
             $formattedProduct['discount_amount'] = $discountAmount;
             $formattedProduct['total_after_tax_reduction'] = $totalAfterTaxReduction;
             $formattedProduct['vat_amount'] = $vat;
+            $formattedProduct['delivery_cost_per_year'] = $deliveryCostPerYear;
+            $formattedProduct['yearly_before_discount_total'] = $totalYearlyCostBeforeDiscount;
+            $formattedProduct['saving_amount'] = $totalSavedCashBack;
+            $formattedProduct['yearly_after_discount_total'] = $totalYearlyCostAfterDiscount;
             $formattedProduct['total'] = $totalIncludingTax;
 
             return $formattedProduct;
@@ -491,27 +512,59 @@ class EnergyController extends BaseController
             return $this->jsonResponse(false, 'House Type is required.');
         }
 
-        if ($noOfPerson > 5) {
-            return $this->jsonResponse(false, 'No. of persons can be a maximum of 5. Please enter a valid input.');
-        }
+        $electricConsume = 0;
+        $gasConsume = 0;
+        $rValue = 0;
 
-        // Fetch the consumption data with error handling
         try {
-            $consumeData = EnergyConsumption::where([
-                'house_type' => $houseType,
-                'no_of_person' => $noOfPerson,
-            ])->first();
+            // Fetch consumption data based on conditions
+            if ($noOfPerson > 5) {
+                $consumeData = EnergyConsumption::where([
+                    'house_type' => $houseType,
+                    'no_of_person' => 1,
+                ])->first();
+                $electricConsume = $consumeData->electric_supply * $noOfPerson;
+                $gasConsume = $consumeData->gas_supply * $noOfPerson;
+            } else {
+                $consumeData = EnergyConsumption::where([
+                    'house_type' => $houseType,
+                    'no_of_person' => $noOfPerson,
+                ])->first();
+                $electricConsume = $consumeData->electric_supply;
+                $gasConsume = $consumeData->gas_supply;
+            }
 
+            // Check if data was retrieved successfully
             if (!$consumeData) {
                 return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
             }
 
+            $totalEnergyProduceYearly = 0;
+            // Calculate energy produced by solar panels if provided
+            if ($request->filled('sola_panels') && $request->filled('panel_capacity')) {
+                $solarPanels = $request->input('sola_panels');
+                $panelCapacity = $request->input('panel_capacity');
+                $totalEnergyProduceYearly = $solarPanels * $panelCapacity;
+            }
+
+            $monthlyEnergyProduce = $totalEnergyProduceYearly / 12;
+
+            // Calculate net consumption or surplus energy
+            if ($electricConsume > $monthlyEnergyProduce) {
+                $netConsumption = $electricConsume - $monthlyEnergyProduce;
+                $electricConsume = $netConsumption;
+            } elseif ($monthlyEnergyProduce >= $electricConsume) {
+                $rValue = $monthlyEnergyProduce - $electricConsume;
+                $electricConsume = 0;
+            }
+
+            // Prepare consumption data for response
             $cData = [
                 'house_type' => $consumeData->house_type,
-                'no_of_person' => $consumeData->no_of_person,
-                'electric' => $consumeData->electric_supply,
-                'gas' => $consumeData->gas_supply,
-                'return' => '0',
+                'no_of_person' => $noOfPerson,
+                'electric' => number_format($electricConsume, 2, '.', ''),
+                'gas' => number_format($gasConsume, 2, '.', ''),
+                'return' => number_format($rValue, 2, '.', ''),
             ];
 
             // Return the found consumption data
@@ -520,6 +573,7 @@ class EnergyController extends BaseController
             return $this->jsonResponse(false, 'An error occurred: ' . $e->getMessage());
         }
     }
+
 
 
     private function jsonResponse($status, $message, $data = null)

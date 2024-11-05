@@ -59,11 +59,13 @@ class EnergyResource extends JsonResource
             'contract_length' => $this->contract_length,
             'category' => config('constant.category.energy'),
             'provider' => $this->provider_id,
+
             'provider_details' => $this->whenLoaded('providerDetails', function () {
                 return [
                     'id' => $this->providerDetails->id,
                     'name' => $this->providerDetails->name,
                     'about' => $this->providerDetails->about,
+                    'discount_term ' => $this->providerDetails->discount,
                     'rating' => $this->providerDetails->rating,
                     'payment_options' => $this->providerDetails->payment_options,
                     'annual_accounts' => $this->providerDetails->annual_accounts,
@@ -74,6 +76,13 @@ class EnergyResource extends JsonResource
                 ];
             }),
 
+            'features' => [
+                'contact_duration' => $this->contract_length,
+                'rate' => 'Fixed',
+                'type_of_current' => json_decode($this->power_origin, true),
+                'type_of_gas' => json_decode($this->type_of_gas, true),
+            ],
+
             'documents' => $docs->map(function ($document) {
                 return [
                     'id' => $document->id,
@@ -81,20 +90,7 @@ class EnergyResource extends JsonResource
                     'name' => $document->type,
                 ];
             }),
-            // 'documents' => $this->whenLoaded('documents', function () {
-            //     return $this->documents->filter(function ($document) {
-            //         return $this->category == $document->category;
-            //     })->map(function ($document) {
-            //         return [
-            //             'id' => $document->id,
-            //             'filename' => $document->filename,
-            //             'path' => $document->path,
-            //             'name' => $document->type,
-            //         ];
-            //     });
-            // }),
 
-            'features' => PostFeatureResource::collection($features),
             // 'created_at' => $this->created_at->format('d/m/Y'),
             // 'updated_at' => $this->updated_at->format('d/m/Y'),
             // 'prices' => $this->whenLoaded('prices', function ()  use ($request) {

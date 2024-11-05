@@ -18,6 +18,7 @@ use App\Models\Feature;
 use App\Models\FeeSetting;
 use App\Models\PostRequest;
 use App\Models\InsuranceProduct;
+use App\Models\Post;
 use Validator;
 use App\Http\Resources\EnergyResource;
 use App\Http\Resources\LoanProductResource;
@@ -86,89 +87,18 @@ class RequestController extends BaseController
      */
     public function store(Request $request)
     {
-        $additional_questions = [];
-        $verification = [];
+        // return $request->all();
         $delivery = [];
         $contact_details = [];
-        $company_details = [];
-        $final_data = [];
 
-        $additional_questions = [
-            "living_start" => $request->input('living_start'),
-            "living_description" => $request->input('living_description'),
-            "home_feature_valid" => $request->input('home_feature_valid'),
-            "home_feature_description" => $request->input('home_feature_description'),
-            "garden_garage_valid" => $request->input('garden_garage_valid'),
-            "garden_garage_description" => $request->input('garden_garage_description'),
-            "fire_hazard_valid" => $request->input('fire_hazard_valid'),
-            "office_distance" => $request->input('office_distance'),
-            "fire_hazard_description" => $request->input('fire_hazard_description'),
-            "renovate_home" => $request->input('renovate_home'),
-            "deal_with" => $request->input('deal_with'),
-            "injury_validation" => $request->input('injury_validation'),
-            "damage_amount" => $request->input('damage_amount'),
-            "injury_damage_description" => $request->input('injury_damage_description'),
-            "previous_insurance_validation" => $request->input('previous_insurance_validation'),
-            "previous_insurance_description" => $request->input('previous_insurance_description'),
-            "punishment_validation" => $request->input('punishment_validation'),
-            "punishment_description" => $request->input('punishment_description'),
-
-        ];
-
-        $verification = [
-            "verification" => $request->input('verification'),
-            "get_notified" => $request->input('get_notified'),
-            "payment_method" => $request->input('payment_method'),
-            "verification_message" => $request->input('verification_message')
-        ];
-
-        $delivery = [
-            "postalAddressDifferent" => $request->input('postalAddressDifferent'),
-            "differ_postal_addrr" => $request->input('differ_postal_addrr'),
-            "starting_date" => $request->input('starting_date'),
-            "service_cancel" => $request->input('service_cancel'),
-            "house_tel" => $request->input('house_tel')
-
-        ];
-
-        $company_details = [
-            "company_name" => $request->input('company_name'),
-            "chamber_of_commerce" => $request->input('chamber_of_commerce'),
-            "function" => $request->input('function'),
-            "branch" => $request->input('branch')
-
-        ];
-
-        $contact_details = [
-            "sex" => $request->input('sex'),
-            "initials" => $request->input('initials'),
-            "first_name" => $request->input('first_name'),
-            "interjections" => $request->input('interjections'),
-            "surname" => $request->input('surname'),
-            "age" => $request->input('age'),
-            "dob" => $request->input('dob'),
-            "email" => $request->input('email'),
-            "account_number" => $request->input('account_number'),
-            "mobile_number" => $request->input('mobile_number'),
-            "landline_number" => $request->input('landline_number'),
-        ];
-
-        $final_data = [
-            "additional_questions" => $additional_questions,
-            "verification" => $verification,
-            "delivery" => $delivery,
-            "company_details" => $company_details,
-            "contact_details" => $contact_details
-        ];
-
-        $user_id = $request->input('user_id');
-        $user_type = $request->input('user_type');
-        $category_id = $request->input('category');
-        $sub_category_id = $request->input('sub_category');
-        $service_id = $request->input('service_id');
-        $postal_code = $request->input('postal_code');
-        $service_type = $request->input('service_type');
-        $combos = json_encode($request->input('combos'));
+        $userId = $request->input('user_id');
+        $providerID = $request->input('provider_id');
+        $userType = $request->input('user_type');
+        $categoryId = $request->input('category');
+        // $sub_category_id = $request->input('sub_category');
+        $serviceId = $request->input('service_id');
+        $postalCode = $request->input('postal_code');
+        $serviceType = $request->input('service_type');
         $total_price = $request->input('total_price');
         $discounted_price = $request->input('discounted_price');
         $discount_prct = $request->input('discount_prct');
@@ -176,41 +106,205 @@ class RequestController extends BaseController
         $commission_amt = $request->input('commission_amt');
         $request_status = $request->input('request_status');
         $advantages = $request->input('advantages');
-        $contact_details = $contact_details;
-        $company_details = $company_details;
-        $additional_information = $request->input('additionalInfo');
-        $additional_questions = $additional_questions;
-        $delivery = $delivery;
-        $verification = $verification;
+        $targetGroup = $request->input('target_group');
+
+        // $combos = json_encode($request->input('combos'));
+
+
+        // $additionalQuestions = [
+        //     "living_start" => $request->input('living_start'),
+        //     "living_description" => $request->input('living_description'),
+        //     "home_feature_valid" => $request->input('home_feature_valid'),
+        //     "home_feature_description" => $request->input('home_feature_description'),
+        //     "garden_garage_valid" => $request->input('garden_garage_valid'),
+        //     "garden_garage_description" => $request->input('garden_garage_description'),
+        //     "fire_hazard_valid" => $request->input('fire_hazard_valid'),
+        //     "office_distance" => $request->input('office_distance'),
+        //     "fire_hazard_description" => $request->input('fire_hazard_description'),
+        //     "renovate_home" => $request->input('renovate_home'),
+        //     "deal_with" => $request->input('deal_with'),
+        //     "injury_validation" => $request->input('injury_validation'),
+        //     "damage_amount" => $request->input('damage_amount'),
+        //     "injury_damage_description" => $request->input('injury_damage_description'),
+        //     "previous_insurance_validation" => $request->input('previous_insurance_validation'),
+        //     "previous_insurance_description" => $request->input('previous_insurance_description'),
+        //     "punishment_validation" => $request->input('punishment_validation'),
+        //     "punishment_description" => $request->input('punishment_description'),
+
+        // ];
+
+        $verification = [
+            "accept_term" => $request->input('accept_term'),
+            "get_notified" => $request->input('get_notified'),
+            "payment_method" => $request->input('payment_method'),
+            "verification_message" => $request->input('verification_message')
+        ];
 
         try {
             $data = new UserRequest();
-
-            $data->user_id = $user_id;
-            $data->user_type = $user_type;
-            $data->category = $category_id;
-            $data->sub_category = $sub_category_id;
-            $data->service_id = $service_id;
-            $data->service_type = $service_type;
-            $data->combos = $combos;
-            $data->postal_code = $postal_code;
-            $data->advantages = json_encode($advantages);
-            $data->total_price = $total_price;
-            $data->discounted_price = $discounted_price;
-            $data->discount_prct = $discount_prct;
-            $data->commission_prct = $commission_prct;
-            $data->commission_amt = $commission_amt;
+            $data->user_id = $userId;
+            $data->user_type = $userType;
+            $data->category = $categoryId;
+            $data->service_id = $serviceId;
+            $data->service_type = $serviceType;
+            $data->target_group = $targetGroup;
+            $data->postal_code = $postalCode;
             $data->request_status = $request_status;
-            $data->provider_id = $request->provider_id;
-            $data->solar_panels = $request->solar_panels;
-            $data->no_gas = $request->no_gas;
-            $data->shipping_address = json_encode($request->shipping_address);
-            $data->billing_address = json_encode($request->billing_address);
-            $data->contact_details = json_encode($contact_details);
-            $data->additional_information = json_encode($additional_information);
-            $data->additional_questions = json_encode($additional_questions);
-            $data->delivery = json_encode($delivery);
+            $data->provider_id = $providerID;
+            $data->total_price = $total_price;
+            // Contact Details
+            $data->sex = $request->input('sex');
+            $data->initials = $request->input('initials');
+            $data->first_name = $request->input('first_name');
+            $data->interjections = $request->input('interjections');
+            $data->surname = $request->input('surname');
+            $data->age = $request->input('dob');
+            $data->email = $request->input('email');
+            $data->account_number = $request->input('account_number');
+            $data->mobile_number = $request->input('mobile_number');
+            $data->landline_number = $request->input('landline_number');
+
+            switch ($targetGroup) {
+                case "personal":
+                    $delivery = [
+                        "is_moving" => $request->input('is_moving'),
+                        "live_or_work" => $request->input('live_or_work'),
+                        "isPostalCodeDiffer" => $request->input('isPostalCodeDiffer'),
+                        "differ_postal" => $request->input('differ_postal') ?? '',
+                        "house_number" => $request->input('houseNumber'),
+                    ];
+                    // Contact Details Json
+                    $contact_details = [
+                        "sex" => $request->input('sex'),
+                        "initials" => $request->input('initials'),
+                        "first_name" => $request->input('first_name'),
+                        "interjections" => $request->input('interjections'),
+                        "surname" => $request->input('surname'),
+                        "age" => $request->input('age'),
+                        "dob" => $request->input('dob'),
+                        "email" => $request->input('email'),
+                        "account_number" => $request->input('account_number'),
+                        "mobile_number" => $request->input('mobile_number'),
+                        "landline_number" => $request->input('landline_number'),
+                    ];
+                    break;
+                case "commercial":
+                    $delivery = [
+                        "live_or_work" => $request->input('live_or_work'),
+                        "is_moving" => $request->input('is_moving'),
+                        "isPostalCodeDiffer" => $request->input('isPostalCodeDiffer'),
+                        "differ_postal" => $request->input('differ_postal'),
+                        "preferred_date" => $request->input('starting_date'),
+                    ];
+                    // Contact Details Json
+                    $contact_details = [
+                        "sex" => $request->input('sex'),
+                        "initials" => $request->input('initials'),
+                        "first_name" => $request->input('first_name'),
+                        "interjections" => $request->input('interjections'),
+                        "surname" => $request->input('surname'),
+                        "age" => $request->input('age'),
+                        "dob" => $request->input('dob'),
+                        "email" => $request->input('email'),
+                        "account_number" => $request->input('account_number'),
+                        "mobile_number" => $request->input('mobile_number'),
+                        "landline_number" => $request->input('landline_number'),
+                        "post_code" => $request->input('post_code'),
+                        "house_number_add" => $request->input('house_number'),
+                    ];
+
+                    $data->post_code = $request->input('post_code');
+                    $data->house_number_add = $request->input('house_number');
+                    // Company Details
+                    $company_details = [
+                        "company_name" => $request->input('company_name'),
+                        "chamber_of_commerce" => $request->input('chamber_of_commerce'),
+                        "function" => $request->input('function'),
+                        "branch" => $request->input('branch')
+
+                    ];
+
+                    $data->company_name = $request->input('company_name');
+                    $data->chamber_of_commerce = $request->input('chamber_of_commerce');
+                    $data->function = $request->input('function');
+                    $data->branch = $request->input('branch');
+
+                    break;
+                case "large_business":
+                    $delivery = [
+                        "is_moving" => $request->input('is_moving'),
+                        "want_technician" => $request->input('want_technician'),
+                        "isPostalCodeDiffer" => $request->input('isPostalCodeDiffer'),
+                        "differ_postal" => $request->input('differ_postal') ?? '',
+                        "preferred_date" => $request->input('starting_date'),
+                        "additional_location" => json_encode($request->input('additional_location')),
+                        "keep_number" => json_encode($request->input('keep_number'))
+                    ];
+
+                    // Contact Details Json
+                    $contact_details = [
+                        "sex" => $request->input('sex'),
+                        "initials" => $request->input('initials'),
+                        "first_name" => $request->input('first_name'),
+                        "interjections" => $request->input('interjections'),
+                        "surname" => $request->input('surname'),
+                        "age" => $request->input('age'),
+                        "dob" => $request->input('dob'),
+                        "email" => $request->input('email'),
+                        "account_number" => $request->input('account_number'),
+                        "mobile_number" => $request->input('mobile_number'),
+                        "landline_number" => $request->input('landline_number'),
+                        "post_code" => $request->input('post_code'),
+                        "house_number_add" => $request->input('house_number'),
+                    ];
+                    $data->post_code = $request->input('post_code');
+                    $data->house_number_add = $request->input('house_number');
+                    // Company Details
+                    $company_details = [
+                        "company_name" => $request->input('company_name'),
+                        "chamber_of_commerce" => $request->input('chamber_of_commerce'),
+                        "function" => $request->input('function'),
+                        "branch" => $request->input('branch')
+
+                    ];
+                    $data->company_name = $request->input('company_name');
+                    $data->chamber_of_commerce = $request->input('chamber_of_commerce');
+                    $data->function = $request->input('function');
+                    $data->branch = $request->input('branch');
+
+                    break;
+                default:
+                    return response()->json(['status' => false, 'message' => 'Invalid target group']);
+                    break;
+            }
+
+            // $data->combos = $combos;
+            // $data->advantages = json_encode($advantages);
+
+            // Verification
             $data->verification = json_encode($verification);
+            $data->contact_details = json_encode($contact_details);
+            $data->delivery = json_encode($delivery);
+            $data->additional_details = json_encode($company_details);
+
+            // $data->discounted_price = $discounted_price;
+            // $data->discount_prct = $discount_prct;
+            // $data->commission_prct = $commission_prct;
+            // $data->commission_amt = $commission_amt;
+
+            $data->solar_panels = $request->input('solar_panels');
+            $data->fix_delivery = $request->input('fix_delivery');
+            $data->grid_management = $request->input('grid_management');
+            $data->power_cost_per_unit = $request->input('power_cost_per_unit');
+            $data->gas_cost_per_unit = $request->input('gas_cost_per_unit');
+            $data->tax_on_electric = $request->input('tax_on_electric');
+            $data->tax_on_gas = $request->input('tax_on_gas');
+            $data->ode_on_electric = $request->input('ode_on_electric');
+            $data->ode_on_gas = $request->input('ode_on_gas');
+            $data->vat = $request->input('vat');
+            $data->discount = $request->input('discount');
+            $data->feed_in_tariff = $request->input('feed_in_tariff');
+
             if ($data->save()) {
                 $data->load('userDetails');
                 $orderNo = $data->id + 1000;
@@ -219,50 +313,32 @@ class RequestController extends BaseController
                 $email = $data->userDetails ? $data->userDetails->email : '';
 
                 $data->save();
-                if ($request->has('advantages')) {
-                    foreach ($request->advantages as $key => $value) {
-                        PostRequest::updateOrCreate(
-                            ['request_id' => $data->id, 'key' => $key],
-                            [
-                                'value' => $value
-                            ]
-                        );
-                    }
-                }
+                // if ($request->has('advantages')) {
+                //     foreach ($request->advantages as $key => $value) {
+                //         PostRequest::updateOrCreate(
+                //             ['request_id' => $data->id, 'key' => $key],
+                //             [
+                //                 'value' => $value
+                //             ]
+                //         );
+                //     }
+                // }
 
-                $emailTemplate = EmailTemplate::where('email_of', '2')->first();
+                // $emailTemplate = EmailTemplate::where('email_of', '2')->first();
 
-                $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
-                $body['name'] = $name;
-                $body['action_link'] = url('/') . '/api/view-order/' . $orderNo;
-                // return $body;
-                Mail::to($email)->send(new CustomerRequestSubmit($body));
+                // $body['body'] = str_replace(['{{ $name }}', '{{ $orderNo }}'], [$name, $orderNo], $emailTemplate->mail_body);
+                // $body['name'] = $name;
+                // $body['action_link'] = url('/') . '/api/view-order/' . $orderNo;
+                // // return $body;
+                // Mail::to($email)->send(new CustomerRequestSubmit($body));
+
                 return response()->json(['status' => true, 'data' => ['name' => $name, 'email' => $email, 'order_no' => $orderNo], 'message' => 'User request saved successfully']);
             } else {
                 return response()->json(['status' => false, 'message' => 'Failed to save user request']);
             }
-        } catch (ValidationException $e) {
-            // Handle validation errors
-            // \Log::error('Validation error: ' . $e->getMessage(), ['errors' => $e->errors()]);
-            return response()->json(['status' => false, 'errors' => $e->errors()]);
-        } catch (QueryException $e) {
-            // Handle other database errors
-            // \Log::error('Database error: ' . $e->getMessage(), ['exception' => $e]);
-            return response()->json(['status' => false, 'message' => 'Database error occurred']);
         } catch (\Exception $e) {
-            // Handle all other errors
-            // \Log::error('General error: ' . $e->getMessage(), ['exception' => $e]);
-            return response()->json(['status' => false, 'message' => 'An error occurred']);
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
         }
-
-
-        // catch (ValidationException $e) {
-        //     // Handle validation errors
-        //     return response()->json(['status' => false, 'errors' => $e->errors()]);
-        // } catch (QueryException $e) {
-        //     // Handle other database errors
-        //     return response()->json(['status' => false, 'message' => 'Database error occurred']);
-        // }
     }
 
     /**
@@ -289,7 +365,7 @@ class RequestController extends BaseController
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(UserRequest $userRequest)
+    public function edit(UserRequest $userRequest, Post $post)
     {
 
 
@@ -366,7 +442,7 @@ class RequestController extends BaseController
             return response()->json(['status' => true, 'message' => 'User data saved successfully']);
         } catch (ValidationException $e) {
             // Handle validation errors
-            return response()->json(['status' => false, 'errors' => $e->errors()]);
+            return response()->json(['status' => false, 'errors' => $e->getMessage()]);
         } catch (QueryException $e) {
             // Handle other database errors
             return response()->json(['status' => false, 'message' => 'Database error occurred']);

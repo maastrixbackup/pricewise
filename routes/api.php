@@ -163,6 +163,7 @@ Route::get('house-type', [SettingsController::class, 'houseTypes']);
 Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
 Route::post('get-consumption-value', [EnergyController::class, 'getEnergyConsumption']);
 
+Route::post('save-energy-request', [RequestController::class, 'store']);
 //Frontent === Auth
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
@@ -178,7 +179,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/update-credentials', [UserDetailController::class, 'updateCredentials']);
     Route::get('/get-credentials', [UserDetailController::class, 'getCredentials']);
     //API route for user request
-    // Route::post('save-user-request', [RequestController::class, 'store']);
+    // Route::post('save-energy-request', [RequestController::class, 'store']);
     Route::post('get-user-request', [RequestController::class, 'index']);
 
     Route::get('show-user-request/{request_id}', [RequestController::class, 'show']);
