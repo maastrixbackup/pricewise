@@ -31,17 +31,17 @@ class RequestController extends Controller
     {
         $draw = $request->get('draw');
         $row = $request->get("start");
-        $rowperpage = $request->get("length"); // Rows display per page
+        $rowPerPage = $request->get("length"); // Rows display per page
         $columnIndex = $request['order'][0]['column']; // Column index
         $columnName = $request['columns'][$columnIndex]['data']; // Column name
         $columnSortOrder = $request['order'][0]['dir']; // asc or desc
         $searchValue = $request['search']['value']; // Search value
 
-        $totalRecords = UserRequest::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = UserRequest::select('count(*) as allcount');
+        $totalRecords = UserRequest::select('count(*) as allCount')->count();
+        $totalRecordsWithFilter = UserRequest::select('count(*) as allCount');
 
         if ($searchValue) {
-            $totalRecordswithFilter->where('id', 'like', '%' . $searchValue . '%')
+            $totalRecordsWithFilter->where('id', 'like', '%' . $searchValue . '%')
                 ->orWhere('user_id', 'like', '%' . $searchValue . '%')
                 ->orWhere('user_type', 'like', '%' . $searchValue . '%')
                 ->orWhere('category', 'like', '%' . $searchValue . '%')
@@ -64,7 +64,7 @@ class RequestController extends Controller
 
         if (isset($request->user_id)) {
             $usrDtl = $request->user_id;
-            $totalRecordswithFilter = $totalRecordswithFilter->orWhereHas('userDetails', function ($query) use ($usrDtl) {
+            $totalRecordsWithFilter = $totalRecordsWithFilter->orWhereHas('userDetails', function ($query) use ($usrDtl) {
                 $query->where('users.name', 'like', '%' . $usrDtl . '%')
                     ->orWhere('users.email', 'like', '%' . $usrDtl . '%')
                     ->orWhere('users.mobile', 'like', '%' . $usrDtl . '%');
@@ -72,14 +72,14 @@ class RequestController extends Controller
         }
 
         if (isset($request->user_type)) {
-            $totalRecordswithFilter = $totalRecordswithFilter->where('user_type', 'like', '%' . $request->user_type . '%');
+            $totalRecordswithFilter = $totalRecordsWithFilter->where('user_type', 'like', '%' . $request->user_type . '%');
         }
 
         if (isset($request->request_status)) {
-            $totalRecordswithFilter = $totalRecordswithFilter->where('request_status', 'like', '%' . $request->request_status . '%');
+            $totalRecordsWithFilter = $totalRecordsWithFilter->where('request_status', 'like', '%' . $request->request_status . '%');
         }
 
-        $totalRecordswithFilter = $totalRecordswithFilter->count();
+        $totalRecordsWithFilter = $totalRecordsWithFilter->count();
 
         $requestRecords = UserRequest::with('service', 'userDetails', 'categoryDetails')->select('user_requests.*', 'users.name as user_name')
             ->leftJoin('users', 'user_requests.user_id', '=', 'users.id')
@@ -120,7 +120,7 @@ class RequestController extends Controller
         }
 
         $requestRecords = $requestRecords->skip($row)
-            ->take($rowperpage)
+            ->take($rowPerPage)
             ->get();
 
         $data = [];
@@ -186,7 +186,7 @@ class RequestController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to Update Request Status: ' . $e->getMessage();
             // Log the error for further investigation
-            \Log::error($errorMessage);
+            // \Log::error($errorMessage);
             $message = ['message' =>  $errorMessage, 'title' => 'Error'];
             return response()->json(['status' => false, 'message' => $message]);
         }
