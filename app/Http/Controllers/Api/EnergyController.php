@@ -47,12 +47,18 @@ class EnergyController extends BaseController
         }
 
         // Filter by Provider
+        // if ($request->filled('provider')) {
+        //     $providers = $request->input('provider');
+        //     foreach ($providers as $p) {
+        //         $products->where('provider_id',  $p);
+        //     }
+        // }
+        
         if ($request->filled('provider')) {
             $providers = $request->input('provider');
-            foreach ($providers as $p) {
-                $products->where('provider_id',  $p);
-            }
+            $products->whereIn('provider_id', $providers);
         }
+
 
         // // Filter by power origin
         // if ($request->filled('power_origin')) {
@@ -523,6 +529,10 @@ class EnergyController extends BaseController
                     'house_type' => $houseType,
                     'no_of_person' => 1,
                 ])->first();
+                // Check if data was retrieved successfully
+                if (!$consumeData) {
+                    return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
+                }
                 $electricConsume = $consumeData->electric_supply * $noOfPerson;
                 $gasConsume = $consumeData->gas_supply * $noOfPerson;
             } else {
@@ -530,13 +540,12 @@ class EnergyController extends BaseController
                     'house_type' => $houseType,
                     'no_of_person' => $noOfPerson,
                 ])->first();
+                // Check if data was retrieved successfully
+                if (!$consumeData) {
+                    return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
+                }
                 $electricConsume = $consumeData->electric_supply;
                 $gasConsume = $consumeData->gas_supply;
-            }
-
-            // Check if data was retrieved successfully
-            if (!$consumeData) {
-                return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
             }
 
             $totalEnergyProduceYearly = 0;

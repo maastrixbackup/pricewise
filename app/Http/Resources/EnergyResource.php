@@ -76,7 +76,7 @@ class EnergyResource extends JsonResource
                 ];
             }),
 
-            'features' => [
+            'pFeatures' => [
                 'contact_duration' => $this->contract_length,
                 'rate' => 'Fixed',
                 'type_of_current' => json_decode($this->power_origin, true),
@@ -91,6 +91,7 @@ class EnergyResource extends JsonResource
                 ];
             }),
 
+            'features' => PostFeatureResource::collection($features),
             // 'created_at' => $this->created_at->format('d/m/Y'),
             // 'updated_at' => $this->updated_at->format('d/m/Y'),
             // 'prices' => $this->whenLoaded('prices', function ()  use ($request) {
