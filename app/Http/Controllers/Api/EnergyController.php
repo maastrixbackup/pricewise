@@ -12,6 +12,7 @@ use App\Models\Provider;
 use App\Models\Feature;
 use Dotenv\Validator;
 use App\Models\FeeSetting;
+use App\Models\GeneralFaq;
 use App\Http\Resources\EnergyResource;
 use App\Models\EnergyConsumption;
 use App\Models\GlobalEnergySetting;
@@ -53,7 +54,7 @@ class EnergyController extends BaseController
         //         $products->where('provider_id',  $p);
         //     }
         // }
-        
+
         if ($request->filled('provider')) {
             $providers = $request->input('provider');
             $products->whereIn('provider_id', $providers);
@@ -581,6 +582,22 @@ class EnergyController extends BaseController
         } catch (\Exception $e) {
             return $this->jsonResponse(false, 'An error occurred: ' . $e->getMessage());
         }
+    }
+
+    public function getEnergyGeneralFaqs()
+    {
+        $energyGeneralFaqs = GeneralFaq::where('cat_id', config('constant.category.energy'))->get();
+        if (!$energyGeneralFaqs) {
+            return $this->jsonResponse(false, 'Faqs are not Found.');
+        }
+        $energyGeneralFaqs = $energyGeneralFaqs->map(function ($faq) {
+            return [
+                'id' => $faq->id,
+                'title' => $faq->title,
+                'description' => $faq->description
+            ];
+        });
+        return $this->jsonResponse(true, 'General Faqs Retrieved Successfully ', $energyGeneralFaqs);
     }
 
 

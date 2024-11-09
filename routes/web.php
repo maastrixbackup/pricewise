@@ -342,7 +342,31 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::resource('features', 'FeatureController');
             //Route::resource('tv-contract-lengths', 'TvContractLengthController');
 
-            //FAQ
+            // General Faqs
+            Route::get('general-faqs/{c_id}', 'FAQController@generalFaqs')->name('general-faqs');
+            Route::get('add-faqs/{id}', 'FAQController@generalFaqsAdd')->name('add-faqs');
+            Route::post('store-faqs', 'FAQController@generalFaqsStore')->name('store-faqs');
+            Route::get('edit-faqs/{id}', 'FAQController@generalFaqsEdit')->name('edit-faqs');
+            Route::post('update-faqs', 'FAQController@generalFaqsUpdate')->name('update-faqs');
+            Route::get('delete-faqs/{id}', 'FAQController@generalFaqsDelete')->name('delete-faqs');
+
+            // Provider Faqs
+            Route::get('provider-faqs/{c_id}', 'FAQController@providerFaqs')->name('provider-faqs');
+            Route::get('add-provider-faqs/{id}', 'FAQController@providerFaqsAdd')->name('add-provider-faqs');
+            Route::post('store-provider-faqs', 'FAQController@providerFaqsStore')->name('store-provider-faqs');
+            Route::get('edit-provider-faqs/{id}', 'FAQController@providerFaqsEdit')->name('edit-provider-faqs');
+            Route::post('update-provider-faqs', 'FAQController@providerFaqsUpdate')->name('update-provider-faqs');
+            Route::get('delete-provider-faqs/{id}', 'FAQController@providerFaqsDelete')->name('delete-provider-faqs');
+
+            // Switching Plan Faqs
+            Route::get('switching-plan-faqs/{id}', 'ProviderController@switchingPlanFaqs')->name('switching-plan-faqs');
+            Route::get('add-switching-plan-faqs/{id}', 'ProviderController@switchingPlanFaqsAdd')->name('add-switching-plan-faqs');
+            Route::post('store-switching-plan-faqs', 'ProviderController@switchingPlanFaqsStore')->name('store-switching-plan-faqs');
+            Route::get('edit-switching-plan-faqs/{id}', 'ProviderController@switchingPlanFaqsEdit')->name('edit-switching-plan-faqs');
+            Route::post('update-switching-plan-faqs', 'ProviderController@switchingPlanFaqsUpdate')->name('update-switching-plan-faqs');
+            Route::get('delete-switching-plan-faqs/{id}', 'ProviderController@switchingPlanFaqsDelete')->name('delete-switching-plan-faqs');
+
+            // FAQ
             Route::get('FAQ-list', 'FAQController@FAQList')->name('FAQ-list');
             Route::get('FAQ-add', 'FAQController@FAQAdd')->name('FAQ-add');
             Route::post('FAQ-store', 'FAQController@FAQStore')->name('FAQ-store');

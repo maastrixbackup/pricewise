@@ -265,7 +265,7 @@ class CommonController extends Controller
         $ObjHouses = HouseType::orderBy('title', 'asc')->get();
         return view('admin.house_type.index', compact('ObjHouses'));
     }
-    
+
     public function houseType_create(Request $request)
     {
         return view('admin.house_type.add');
@@ -379,8 +379,20 @@ class CommonController extends Controller
         if (!$provider) {
             return $this->jsonResponse(false, 'Provider not found');
         }
+
+        // Retrieve contract lengths as an array
+        $cLengthArr = EnergyProduct::where('provider_id', $request->id)
+            ->pluck('contract_length')
+            ->toArray();
+
+        $response = [
+            'status' => true,
+            'data' => $provider,
+            'lengthData' => $cLengthArr,
+            'message' => 'Data Retrieved Successfully.'
+        ];
         // Return provider data as JSON
-        return  response()->json($provider);
+        return  response()->json($response);
     }
 
     public function globalEnergySetting(Request $request)

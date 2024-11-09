@@ -4,12 +4,14 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Provider;
+use App\Models\ProviderFaq;
 use App\Models\PostFeature;
 use App\Models\EnergyRateChat;
 use App\Models\FeedInCost;
 use App\Http\Resources\PostFeatureResource;
 use App\Models\Document;
 use App\Models\Setting;
+use App\Models\SwitchingPlanFaq;
 
 class EnergyResource extends JsonResource
 {
@@ -32,7 +34,32 @@ class EnergyResource extends JsonResource
             'category' => config('constant.category.energy')
         ])->get();
 
+        $pFaqs = ProviderFaq::where([
+            'provider_id' => $this->provider_id,
+            'cat_id' => config('constant.category.energy')
+        ])->get();
+        $pFaqs = $pFaqs->map(function ($pf) {
+            return [
+                'id' => $pf->id,
+                'title' => $pf->title,
+                'description' => $pf->description
+            ];
+        });
 
+        $planFaq = SwitchingPlanFaq::where([
+            'provider_id' => $this->provider_id,
+            'cat_id' => config('constant.category.energy')
+        ])->get();
+        $planFaq = $planFaq->map(function ($pf) {
+            return [
+                'id' => $pf->id,
+                'title' => $pf->title,
+                'description' => $pf->description,
+                'question' => $pf->question,
+                'answer' => $pf->answer,
+            ];
+        });
+        
         return [
             'id' => $this->id,
             'target_group' => $this->target_group,
@@ -90,7 +117,8 @@ class EnergyResource extends JsonResource
                     'name' => $document->type,
                 ];
             }),
-
+            'pFaqs' => $pFaqs,
+            'switching_plan' => $planFaq,
             'features' => PostFeatureResource::collection($features),
             // 'created_at' => $this->created_at->format('d/m/Y'),
             // 'updated_at' => $this->updated_at->format('d/m/Y'),

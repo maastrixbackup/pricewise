@@ -164,7 +164,9 @@
                         </div>
 
                         <div class="row mt-2">
-                            @include('admin.energy.contract_year')
+                            <span id="lenthY" style="display: none;">
+                                @include('admin.energy.contract_year')
+                            </span>
                         </div>
 
                         <div class="">
@@ -172,7 +174,7 @@
                             <div class="d-md-flex d-grid align-items-center gap-3">
                                 <button type="submit" class="btn btn-primary px-4" id="submitBtn"
                                     name="submit2">Submit</button>
-                                <button type="reset" class="btn btn-light px-4">Reset</button>
+                                <a href="{{ route('admin.energy.create') }}" class="btn btn-light px-4">Reset</a>
                             </div>
                         </div>
                     </div>
@@ -187,23 +189,9 @@
     <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            // $('#submitBtn').click(function(e) {
-            //     // Check if at least one "Power Origin" checkbox is checked
-            //     let isPowerOriginChecked = $('input[name="power_origin[]"]:checked').length > 0;
-            //     // Check if at least one "Type of Gas" checkbox is checked
-            //     let isGasTypeChecked = $('input[name="gas_type[]"]:checked').length > 0;
-            //     // Check if at least one "Contract Year" checkbox is checked
-            //     let isYearChecked = $('input[name="contract_year[]"]:checked').length > 0;
-
-            //     if (!isPowerOriginChecked || !isGasTypeChecked || !isYearChecked) {
-            //         e.preventDefault(); // Prevent form submission
-            //         let message = 'Please select at least one option for:\n';
-            //         if (!isPowerOriginChecked) message += '- Power Origin\n';
-            //         if (!isGasTypeChecked) message += '- Type of Gas\n';
-            //         if (!isYearChecked) message += '- Contract year';
-            //         alert(message);
-            //     }
-            // });
+            setTimeout(function() {
+                $('#lenthY').css('display', 'block');
+            }, 2000); // 2000 milliseconds = 2 seconds delay
 
             $('#submitBtn').click(function(e) {
                 // Initialize the validation flag
@@ -329,6 +317,7 @@
             validateSelectField($(this));
         });
 
+
         $('#provider').on('change', function() {
             validateSelectField($(this));
             var vals = $(this).val(); // Get the selected value
@@ -341,18 +330,52 @@
                     _token: "{{ csrf_token() }}",
                     id: vals,
                 },
-                success: function(data) {
-                    if (data != '') {
-                        // For Input Data
-                        $('#fixed_delivery').val(data.fixed_deliver_cost);
-                        $('#grid_management').val(data.grid_management_cost);
-                        $('#feed_in_tariff').val(data.feed_in_tariff);
-                        // For Html Data
-                        $('#delivery_cost').html(data.fixed_deliver_cost);
-                        $('#grid_cost').html(data.grid_management_cost);
-                        $('#feed_in_tariffs').html(data.feed_in_tariff);
+                success: function(resp) {
+                    console.log(resp);
+                    return false;
+                    if (resp.status) {
+                        if (resp.data != '') {
+                            // For Input Data
+                            $('#fixed_delivery').val(resp.data.fixed_deliver_cost);
+                            $('#grid_management').val(resp.data.grid_management_cost);
+                            $('#feed_in_tariff').val(resp.data.feed_in_tariff);
+                            // For Html Data
+                            $('#delivery_cost').html(resp.data.fixed_deliver_cost);
+                            $('#grid_cost').html(resp.data.grid_management_cost);
+                            $('#feed_in_tariffs').html(resp.data.feed_in_tariff);
+                        }
+                        // Check if lengthData is not null and is an array
+                        if (resp.lengthData && Array.isArray(resp.lengthData) && resp.lengthData
+                            .length > 0) {
+                            // Loop through each item in the lengthData array
+                            resp.lengthData.forEach(function(value) {
+                                // Disable the checkbox that matches the value
+                                $(`#doneData_${value}`).html(`Data Exists.`).css('color', 'red');
+                                $(`input[name="contract_year[]"][value="${value}"]`).prop(
+                                    'checked', false).css('display', 'none');
+                                $(`input[name="year_power[${value}]"]`).prop('disabled', true)
+                                    .removeClass('is-valid').removeClass('is-invalid').val('');
+                                $(`input[name="year_gas[${value}]"]`).prop('disabled', true)
+                                    .removeClass('is-valid').removeClass('is-invalid').val('');
+                                $(`input[name="discount[${value}]"]`).prop('disabled', true)
+                                    .removeClass('is-valid').removeClass('is-invalid').val('');
+                            });
+                        } else {
+                            // Revert checkboxes and fields to their normal state if lengthData is null or empty
+                            $('input[name="contract_year[]"]').css('display', 'inline').prop('checked',
+                                false);
+                            $('input[name^="year_power"]').prop('disabled', true).prop('readonly', true).removeClass(
+                                'is-valid').removeClass('is-invalid').val('');
+                            $('input[name^="year_gas"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
+                                .removeClass('is-invalid').val('');
+                            $('input[name^="discount"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
+                                .removeClass('is-invalid').val('');
+                            $('[id^="doneData_"]').html('');
+                        }
+
+                    } else {
+                        toastr.error(resp.message, '');
                     }
-                    console.log('Provider Data:', data); // Log the provider data
                     // toastr.error(data, 'Already Exists!');
                 },
                 error: function(xhr) {
@@ -360,7 +383,6 @@
                 }
             });
         });
-
         // Function to handle select field validation
         function validateSelectField(selectField) {
             if (selectField.val() == "") {
@@ -446,13 +468,6 @@
                     }
                 })
             }
-        });
-
-        $(document).ready(function() {
-            $('#affiliate_name').on('change', function() {
-                $("temp_old").hide();
-                $("#temp").show();
-            });
         });
     </script>
     <script type="text/javascript">
