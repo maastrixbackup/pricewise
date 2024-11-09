@@ -10,6 +10,8 @@ use App\Models\Document;
 use App\Models\EnergyProduct;
 use App\Models\InsuranceProduct;
 use App\Models\Provider;
+use App\Models\ProviderFaq;
+use App\Models\SwitchingPlanFaq;
 use App\Models\TvInternetProduct;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -242,6 +244,8 @@ class ProviderController extends Controller
             switch ($provider->category) {
                 case config('constant.category.energy'):
                     // For Energy Products
+                    SwitchingPlanFaq::where(['provider_id' => $provider->id, 'cat_id' => $provider->category])->delete();
+                    ProviderFaq::where(['provider_id' => $provider->id, 'cat_id' => $provider->category])->delete();
                     EnergyProduct::where('provider_id', $provider->id)->delete();
                     Document::where('post_id', $provider->id)->delete();
                     break;
@@ -279,6 +283,89 @@ class ProviderController extends Controller
             return redirect()->route('admin.providers', config('constant.category.energy'));
         }
     }
+
+    public function switchingPlanFaqs($id)
+    {
+        $pFaqs = SwitchingPlanFaq::where('provider_id', $id)->get();
+        return view('admin.switch_plan.list', compact('id', 'pFaqs'));
+    }
+
+    public function switchingPlanFaqsAdd($id)
+    {
+        $p = Provider::find($id);
+        return view('admin.switch_plan.add', compact('p'));
+    }
+
+    public function switchingPlanFaqsStore(Request $req)
+    {
+        // dd($req->all());
+        try {
+            $missingData = false;
+            foreach ($req->question as $k => $v) {
+                // Check if all required data for this contract year exists
+                if (isset($req->answer[$k])) {
+                    $newP = new SwitchingPlanFaq();
+                    $newP->provider_id = $req->p_id;
+                    $newP->cat_id = $req->c_id;
+                    $newP->title = $req->title;
+                    $newP->description = $req->desc;
+                    $newP->question = $v;
+                    $newP->answer = $req->answer[$k];
+                    $newP->created_at = now();
+                    $newP->updated_at = now();
+                    $newP->save();
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing data for: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+            $this->sendToastResponse('success', 'Plan Faq Added successfully');
+            return redirect()->route('admin.switching-plan-faqs', $req->p_id);
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function switchingPlanFaqsEdit(Request $req, $id)
+    {
+        $pFaq = SwitchingPlanFaq::find($id);
+        return view('admin.switch_plan.edit', compact('pFaq'));
+        // dd($id);
+    }
+    public function switchingPlanFaqsUpdate(Request $req)
+    {
+        // dd($req->all());
+        try {
+            $sP = SwitchingPlanFaq::find($req->id);
+            $sP->question = $req->question;
+            $sP->answer = $req->answer;
+            $sP->save();
+            $this->sendToastResponse('success', 'Plan Faq Updated successfully');
+            return redirect()->route('admin.switching-plan-faqs', $req->p_id);
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function switchingPlanFaqsDelete(Request $req, $id)
+    {
+        // dd($id);
+        try {
+            SwitchingPlanFaq::where('id', $id)->delete();
+            $this->sendToastResponse('success', 'Plan Faq Deleted Successfully');
+            return back();
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return back();
+        }
+    }
+
 
     public function sendToastResponse($type, $message, $title = '')
     {

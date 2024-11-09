@@ -36,17 +36,22 @@
                                 @error('files')
                                     <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
+                                <img src="{{ asset('storage/images/gif/Animation.gif') }}" width="80"
+                                    style="display: none" id="loadr" alt="Gif">
+                                <span id="uptext" style="display: none;"> Uploading Please Wait...</span>
                                 <input type="hidden" name="p_id" value="{{ $p->id }}">
                                 <input type="hidden" name="category" value="{{ $p->category }}">
                             </div>
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="btn-group mt-4 pt-1">
                                 <button type="submit" class="btn btn-primary">Upload</button>
                             </div>
                             <div class="btn-group mt-4 pt-1">
                                 <button type="reset" class="btn btn-light px-4">Reset</button>
                             </div>
+                        </div>
+                        <div class="col-md-2">
                         </div>
                     </div>
                 </div>
@@ -157,7 +162,7 @@
             const fileInput = document.getElementById('files');
             const files = fileInput.files;
             const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
-            console.log(maxSize);
+            // console.log(maxSize);
 
             // let valid = true;
             // Create a new DataTransfer object to store valid files
@@ -177,12 +182,24 @@
             fileInput.files = dataTransfer.files;
 
             if (dataTransfer.files.length === files.length) {
-                alert("All files are within the allowed size limit.");
+                // alert("All files are within the allowed size limit.");
+                console.log("All files are within the allowed size limit.");
+
             } else if (dataTransfer.files.length === 0) {
                 alert("All selected files exceeded the size limit.");
             } else {
                 alert("Files exceeding the size limit have been removed.");
             }
         }
+
+        $('button[type="submit"]').on('click', function() {
+            var files = $('#files').val();
+            if (files.length > 0) {
+                $('#loadr').css('display', 'block');
+                $('#uptext').css('display', 'block');
+            }
+            // $('#loadr').css('display', 'block');
+            // $('#uptext').css('display', 'block');
+        });
     </script>
 @endpush

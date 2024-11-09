@@ -33,11 +33,11 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>House Type</th>
+                                    <th>House Type <i class="fa-solid fa-house"></i></th>
                                     <th>No. of Persons <i class="fa fa-users me-0 fa-1"></i></th>
-                                    <th>Gas supply</th>
-                                    <th>Electric Supply</th>
-                                    <th>Action</th>
+                                    <th>Gas supply <i class="fa-solid fa-gas-pump"></i></th>
+                                    <th>Electric Supply <i class="fa-solid fa-bolt-lightning"></i></th>
+                                    <th>Action <i class="fa-solid fa-gears"></i></th>
                                 </tr>
                             </thead>
                             <tbody>

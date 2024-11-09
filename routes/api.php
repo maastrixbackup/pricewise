@@ -146,6 +146,8 @@ Route::post('save-product-requests', [ShopProductController::class, 'storeProduc
 Route::post('product-notification-request', [ShopProductController::class, 'saveProductNotifyRequest']);
 Route::post('send-email-notification', [ShopProductController::class, 'productNotifySend']);
 
+
+
 //Frontend Guest
 // SmartPhone Deals
 Route::any('get-smart-phone-deals', [RequestController::class, 'getSmartPhoneDeals']);
@@ -162,6 +164,7 @@ Route::get('suppliers', [SettingsController::class, 'getSupliers']);
 Route::get('house-type', [SettingsController::class, 'houseTypes']);
 Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
 Route::post('get-consumption-value', [EnergyController::class, 'getEnergyConsumption']);
+Route::get('get-energy-general-faqs', [EnergyController::class, 'getEnergyGeneralFaqs']);
 
 Route::post('save-energy-request', [RequestController::class, 'store']);
 //Frontent === Auth

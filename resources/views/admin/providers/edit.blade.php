@@ -26,6 +26,11 @@
                         Upload</a>
                 @endif
             </div>
+            <div class="btn-group">
+                @if (Auth::guard('admin')->user()->can('providers-edit'))
+                    <a href="{{ route('admin.switching-plan-faqs', $provider->id) }}" class="btn btn-primary">Switching Plan</a>
+                @endif
+            </div>
 
         </div>
     </div>
