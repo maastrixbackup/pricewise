@@ -16,6 +16,8 @@ use App\Models\GeneralFaq;
 use App\Http\Resources\EnergyResource;
 use App\Models\EnergyConsumption;
 use App\Models\GlobalEnergySetting;
+use App\Models\HouseNumber;
+use App\Models\PostalCode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 
@@ -32,6 +34,35 @@ class EnergyController extends BaseController
         $powerConsumption = $request->input('power_consumption', 0);
         $gasConsumption = $request->input('gas_consumption', 0);
         $feedInTariff = $request->input('feed_in_tariff', 0);
+
+
+        // Validate if postal_code is provided
+        if (!$request->filled('postal_code')) {
+            return $this->jsonResponse(false, 'Postal Code is required');
+        }
+
+        // Retrieve postal code data
+        $postalCode = trim($request->input('postal_code'));
+        $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
+
+        if (!$postalCodeData) {
+            return $this->jsonResponse(false, 'Invalid Postal Code', '1');
+        }
+
+        // Validate if house_no is provided
+        if (!$request->filled('house_no')) {
+            return $this->jsonResponse(false, 'House Number is required', '2');
+        }
+
+        // Retrieve and validate house number
+        $houseNumber = trim($request->input('house_no'));
+        $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
+            ->whereRaw('JSON_CONTAINS(house_number, ?)', [json_encode($houseNumber)])
+            ->first();
+
+        if (!$houseData) {
+            return $this->jsonResponse(false, 'Invalid House Number for Postal Code', 2);
+        }
 
         $products = EnergyProduct::with(
             'postFeatures',

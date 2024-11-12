@@ -34,18 +34,6 @@ class SettingsController extends BaseController
     public function houseTypes()
     {
         $housesTypeArray = HouseType::orderBy('title', 'asc')->get();
-        // return $housesTypeArray;
-        // $houses =   [
-        //     '1' => ['name' => 'appartment', 'image' => asset('storage/images/houses/appartment.png')],
-        //     '2' => ['name' => 'corner_house', 'image' => asset('storage/images/houses/corner_house.png')],
-        //     '3' => ['name' => 'mansion', 'image' => asset('storage/images/houses/mansion.png')],
-        //     '4' => ['name' => 'studio', 'image' => asset('storage/images/houses/studio.png')],
-        //     '5' => ['name' => 'terraced_house', 'image' => asset('storage/images/houses/terraced_house.png')],
-        //     '6' => ['name' => 'under_hood', 'image' => asset('storage/images/houses/under_hood.png')],
-        //     '7' => ['name' => 'villa', 'image' => asset('storage/images/houses/villa.png')],
-        //     '8' => ['name' => 'woonboederii', 'image' => asset('storage/images/houses/woonboederii.png')],
-        // ];
-
         $housesArray = [];
         foreach ($housesTypeArray as $val) {
             $housesArray[] = [
@@ -71,26 +59,26 @@ class SettingsController extends BaseController
         }
 
         // Retrieve postal code data
-        $postalCode = $request->input('postal_code');
+        $postalCode = trim($request->input('postal_code'));
         $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
 
         if (!$postalCodeData) {
-            return $this->jsonResponse(false, 'Invalid Postal Code','1');
+            return $this->jsonResponse(false, 'Invalid Postal Code', '1');
         }
 
         // Validate if house_no is provided
         if (!$request->filled('house_no')) {
-            return $this->jsonResponse(false, 'House Number is required','2');
+            return $this->jsonResponse(false, 'House Number is required', '2');
         }
 
         // Retrieve and validate house number
-        $houseNumber = $request->input('house_no');
+        $houseNumber = trim($request->input('house_no'));
         $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
             ->whereRaw('JSON_CONTAINS(house_number, ?)', [json_encode($houseNumber)])
             ->first();
 
         if (!$houseData) {
-            return $this->jsonResponse(false, 'Invalid House Number for Postal Code',2);
+            return $this->jsonResponse(false, 'Invalid House Number for Postal Code', 2);
         }
 
         $hData['id'] = $houseData->id;
