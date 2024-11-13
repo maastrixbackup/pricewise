@@ -36,6 +36,7 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
+                                    <th>Provider</th>
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Action</th>
@@ -44,19 +45,28 @@
                             <tbody>
                                 @if ($pFaqs)
                                     @foreach ($pFaqs as $faq)
+                                        @php
+                                            $p = \App\Models\Provider::find($faq->provider_id);
+                                        @endphp
+
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                                <img src="{{ asset('storage/images/providers/' . $p->image) }}"
+                                                    width="80" alt="Provider Image">
+                                                <p>{{ $p->name }}</p>
+                                            </td>
                                             <td>{{ $faq->title }}</td>
                                             <td>@php echo $faq->description  @endphp </td>
                                             <td>
                                                 <div class="col">
-
-                                                    <a title="Edit" href="{{ route('admin.edit-provider-faqs', $faq->id) }}"
+                                                    <a title="Edit"
+                                                        href="{{ route('admin.edit-provider-faqs', $faq->id) }}"
                                                         class="btn1 btn-outline-primary"><i
                                                             class="bx bx-pencil me-0"></i></a>
 
-
-                                                    <a title="Delete" href="{{ route('admin.delete-provider-faqs', $faq->id) }}"
+                                                    <a title="Delete"
+                                                        href="{{ route('admin.delete-provider-faqs', $faq->id) }}"
                                                         class="btn1 btn-outline-danger trash remove-faq"><i
                                                             class="bx bx-trash me-0"></i></a>
 
