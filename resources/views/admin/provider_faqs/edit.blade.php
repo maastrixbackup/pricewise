@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.general-faqs', $pFaq->cat_id) }}">General FAQs</a>
+                            href="{{ route('admin.provider-faqs', $pFaq->cat_id) }}">Provider FAQs</a>
                     </li>
                 </ol>
             </nav>
@@ -24,7 +24,7 @@
         <div class="col-12 col-lg-12">
             <div class="card">
                 <div class="card-header px-4 py-3">
-                    <h5 class="mb-0">Add New FAQ</h5>
+                    <h5 class="mb-0">Edit FAQ</h5>
                 </div>
                 <div class="card-body p-4">
                     <form method="post" action="{{ route('admin.update-provider-faqs') }}">

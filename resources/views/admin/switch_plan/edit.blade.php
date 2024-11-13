@@ -47,12 +47,12 @@
                             <tbody id="appData">
                                 <tr>
                                     <td>
-                                        <input type="text" class="form-control" name="title"
-                                            value="{{ $pFaq->question }}" placeholder="Title" required>
+                                        <input type="text" class="form-control" name="question"
+                                            value="{{ $pFaq->question }}" placeholder="Question" required>
                                     </td>
                                     <td>
-                                        <textarea name="description" id="description" class="form-control" cols="30" rows="5"
-                                            placeholder="Description" required>{{ $pFaq->answer }}</textarea>
+                                        <textarea name="answer" id="answer" class="form-control" cols="30" rows="5"
+                                            placeholder="Answer" required>{{ $pFaq->answer }}</textarea>
                                     </td>
                                     <td>
 

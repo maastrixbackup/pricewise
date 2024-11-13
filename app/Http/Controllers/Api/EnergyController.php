@@ -42,7 +42,7 @@ class EnergyController extends BaseController
         }
 
         // Retrieve postal code data
-        $postalCode = trim($request->input('postal_code'));
+        $postalCode = str_replace(' ', '', $request->input('postal_code'));
         $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
 
         if (!$postalCodeData) {
@@ -55,7 +55,7 @@ class EnergyController extends BaseController
         }
 
         // Retrieve and validate house number
-        $houseNumber = trim($request->input('house_no'));
+        $houseNumber = str_replace(' ', '', $request->input('house_no'));
         $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
             ->whereRaw('JSON_CONTAINS(house_number, ?)', [json_encode($houseNumber)])
             ->first();
