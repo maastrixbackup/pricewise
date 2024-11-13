@@ -90,6 +90,7 @@ class RequestController extends BaseController
         // return $request->all();
         $delivery = [];
         $contact_details = [];
+        $company_details = [];
 
         $userId = $request->input('user_id');
         $providerID = $request->input('provider_id');
