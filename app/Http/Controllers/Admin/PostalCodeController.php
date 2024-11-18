@@ -98,47 +98,48 @@ class PostalCodeController extends Controller
 
     public function houseNumberStore(Request $request)
     {
-        $request->validate([
-            'postal_code' => 'required|unique:house_numbers,pc_id', // Validate postal code exists in postal_codes table
-            'house_no' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    $houseNumbers = explode(',', $value);
-                    foreach ($houseNumbers as $houseNumber) {
-                        if (!ctype_digit(trim($houseNumber))) {
-                            $fail('The House Number must be a comma (,) separated numbers.');
-                        }
-                    }
-                }
-            ]
-        ]);
+
 
         // Ensure no duplicates for postal_code and house_number combined
-        if (HouseNumber::where('pc_id', $request->postal_code)
-            ->where('house_number', json_encode(array_map('trim', explode(',', $request->house_no))))
-            ->exists()
-        ) {
-            $this->sendToastResponse('error', 'House Number Already Exists for this postal code.');
+        if (HouseNumber::where('pc_id', $request->postal_code)->exists()) {
+            $this->sendToastResponse('error', 'House Data Already Exists for this postal code.');
             return redirect()->back();
         }
-
-        $houseNumber = new HouseNumber();
-        $houseNumber->pc_id = $request->postal_code;
-        $houseNumber->postal_codes = PostalCode::find($request->postal_code)->post_code;
-        $houseNumber->house_number = json_encode($request->house_no ? array_map('trim', explode(",", $request->house_no)) : []);
-
-        DB::beginTransaction();
         try {
+            $hNoAddress = [];
+            $missingData = false;
+
+            foreach ($request->house_no as $k => $v) {
+                // Check if there's an address corresponding to the current house number
+                if (isset($request->address[$k])) {
+                    // Store house number and corresponding address in $hNoAddress
+                    $hNoAddress[$v] = $request->address[$k];
+                } else {
+                    // Mark that some data is missing and send an error response
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing data for house number: {$v}");
+                }
+            }
+
+            // Check if there was missing data and handle accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+            $houseNumber = new HouseNumber();
+            $houseNumber->pc_id = $request->postal_code;
+            $houseNumber->postal_codes = PostalCode::find($request->postal_code)->post_code;
+            $houseNumber->house_number = json_encode($hNoAddress, true);
             $houseNumber->save();
-            DB::commit();
-            $this->sendToastResponse('success', 'House Data Added');
-            return redirect()->back();
+
+            // If no data is missing, send success response
+            $this->sendToastResponse('success', 'House Number & Address Added successfully');
+            return redirect()->route('admin.house-numbers.index');
         } catch (\Exception $e) {
-            DB::rollBack();
             $this->sendToastResponse('error', $e->getMessage());
             return redirect()->back();
         }
     }
+
 
     public function houseNumberEdit($id)
     {
@@ -208,6 +209,34 @@ class PostalCodeController extends Controller
         }
     }
 
+    public function postalCodeData(Request $req)
+    {
+        $pCodeData = HouseNumber::find($req->id);
+        // Check if data exists for the given ID
+        if (!$pCodeData) {
+            return response()->json(['status' => false, 'message' => 'Postal code data not found'], 404);
+        }
+
+        $hData = json_decode($pCodeData->house_number, true);
+        $cnt = 1;
+        $html = '';
+
+        // Accumulate HTML rows
+        foreach ($hData as $k => $v) {
+            $html .= '<tr>
+                    <td>' . $cnt++ . '</td>
+                    <td>' . htmlspecialchars($k) . '</td>
+                    <td>' . htmlspecialchars($v) . '</td>
+                  </tr>';
+        }
+
+        return response()->json([
+            'status' => true,
+            'html' => $html,
+            'message' => 'Data Retrieved.',
+        ]);
+    }
+
     public function sendToastResponse($type, $message, $title = '')
     {
         // Set up toast response with type, message, and optional title
@@ -217,4 +246,89 @@ class PostalCodeController extends Controller
             'title' => $title
         ]);
     }
+
+    // public function houseNumberStore(Request $request)
+    // {
+    //     // $request->validate([
+    //     //     'postal_code' => 'required|unique:house_numbers,pc_id', // Validate postal code exists in postal_codes table
+    //     //     'house_no' => [
+    //     //         'required',
+    //     //         function ($attribute, $value, $fail) {
+    //     //             $houseNumbers = explode(',', $value);
+    //     //             foreach ($houseNumbers as $houseNumber) {
+    //     //                 if (!ctype_digit(trim($houseNumber))) {
+    //     //                     $fail('The House Number must be a comma (,) separated numbers.');
+    //     //                 }
+    //     //             }
+    //     //         }
+    //     //     ]
+    //     // ]);
+
+    //     dd($request->all());
+
+    //     try {
+    //         $missingData = false;
+    //         foreach ($request->house_no as $k => $v) {
+    //             $hNoAddress = [];
+    //             // Check if all required data for this contract year exists
+    //             if (isset($req->address[$k])) {
+    //                 $hNoAddress[$v] = $request->address[$k];
+
+    //                 // $newP = new HouseNumber();
+    //                 // $newP->provider_id = $req->p_id;
+    //                 // $newP->cat_id = $req->c_id;
+    //                 // $newP->title = $req->title;
+    //                 // $newP->description = $req->desc;
+    //                 // $newP->question = $v;
+    //                 // $newP->answer = $req->answer[$k];
+    //                 // $newP->created_at = now();
+    //                 // $newP->updated_at = now();
+    //                 // $newP->save();
+    //             } else {
+    //                 // Mark that some data is missing
+    //                 $missingData = true;
+    //                 $this->sendToastResponse('error', "Missing data for: {$v}");
+    //             }
+    //         }
+    //         dd($hNoAddress);
+
+    //         // Check if there was missing data and redirect accordingly
+    //         if ($missingData) {
+    //             return redirect()->back();  // Redirect back if there was any missing data
+    //         }
+    //         $this->sendToastResponse('success', 'Plan Faq Added successfully');
+    //         return redirect()->route('admin.switching-plan-faqs', $request->p_id);
+    //     } catch (\Exception $e) {
+    //         $this->sendToastResponse('error', $e->getMessage());
+    //         return redirect()->back();
+    //     }
+
+
+
+    //     // Ensure no duplicates for postal_code and house_number combined
+    //     if (HouseNumber::where('pc_id', $request->postal_code)
+    //         ->where('house_number', json_encode(array_map('trim', explode(',', $request->house_no))))
+    //         ->exists()
+    //     ) {
+    //         $this->sendToastResponse('error', 'House Number Already Exists for this postal code.');
+    //         return redirect()->back();
+    //     }
+
+    //     $houseNumber = new HouseNumber();
+    //     $houseNumber->pc_id = $request->postal_code;
+    //     $houseNumber->postal_codes = PostalCode::find($request->postal_code)->post_code;
+    //     $houseNumber->house_number = json_encode($request->house_no ? array_map('trim', explode(",", $request->house_no)) : []);
+
+    //     DB::beginTransaction();
+    //     try {
+    //         $houseNumber->save();
+    //         DB::commit();
+    //         $this->sendToastResponse('success', 'House Data Added');
+    //         return redirect()->back();
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         $this->sendToastResponse('error', $e->getMessage());
+    //         return redirect()->back();
+    //     }
+    // }
 }

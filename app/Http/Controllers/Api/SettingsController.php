@@ -60,7 +60,6 @@ class SettingsController extends BaseController
 
         // Retrieve postal code data
         $postalCode = str_replace(' ', '', $request->input('postal_code'));
-        // return $postalCode;
         $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
 
         if (!$postalCodeData) {
@@ -75,20 +74,29 @@ class SettingsController extends BaseController
         // Retrieve and validate house number
         $houseNumber = str_replace(' ', '', $request->input('house_no'));
         $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
-            ->whereRaw('JSON_CONTAINS(house_number, ?)', [json_encode($houseNumber)])
             ->first();
 
         if (!$houseData) {
-            return $this->jsonResponse(false, 'Invalid House Number for Postal Code', 2);
+            return $this->jsonResponse(false, 'House Number Data Not Found', 2);
         }
+
+        $add = '';
+        $houseDt = json_decode($houseData->house_number, true);
+        if (is_array($houseDt) && array_key_exists($houseNumber, $houseDt)) {
+            $add = $houseDt[$houseNumber];
+        } else {
+            return $this->jsonResponse(false, 'House Number Not Found in this Combination', '2');
+        }
+
 
         $hData['id'] = $houseData->id;
         $hData['pc_id'] = $houseData->pc_id;
         $hData['postal_code'] = $houseData->postal_codes;
-        $hData['house_numbers'] = json_decode($houseData->house_number, true);
+        $hData['house_numbers'] = $houseNumber;
+        $hData['address'] = $add;
 
         // Return success response with house data
-        return $this->jsonResponse(true, 'House Number found in Postal Code', $hData);
+        return $this->jsonResponse(true, 'House Number and Address found in Postal Code', $hData);
     }
 
     /**

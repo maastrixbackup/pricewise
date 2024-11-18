@@ -42,7 +42,9 @@ use App\Models\insuranceCoverage;
 use App\Models\LoanProduct;
 use App\Models\LoanType;
 use App\Models\SecurityFeature;
+use Dotenv\Exception\ValidationException;
 use Facade\Ignition\Support\Packagist\Package;
+use Illuminate\Database\QueryException;
 
 class RequestController extends BaseController
 {
@@ -275,7 +277,7 @@ class RequestController extends BaseController
 
                     break;
                 default:
-                    return response()->json(['status' => false, 'message' => 'Invalid target group']);
+                    return response()->json(['status' => false, 'message' => 'Invalid target group'], 400);
                     break;
             }
 
@@ -314,6 +316,7 @@ class RequestController extends BaseController
                 $email = $data->userDetails ? $data->userDetails->email : '';
 
                 $data->save();
+
                 // if ($request->has('advantages')) {
                 //     foreach ($request->advantages as $key => $value) {
                 //         PostRequest::updateOrCreate(
@@ -333,12 +336,22 @@ class RequestController extends BaseController
                 // // return $body;
                 // Mail::to($email)->send(new CustomerRequestSubmit($body));
 
-                return response()->json(['status' => true, 'data' => ['name' => $name, 'email' => $email, 'order_no' => $orderNo], 'message' => 'User request saved successfully']);
+                $orderUrl = url('/') . '/api/view-order/' . $orderNo;
+                return response()->json([
+                    'status' => true,
+                    'data' => [
+                        'name' => $name,
+                        'email' => $email,
+                        'order_no' => $orderNo,
+                        'url' => $orderUrl
+                    ],
+                    'message' => 'User request saved successfully'
+                ], 201);
             } else {
-                return response()->json(['status' => false, 'message' => 'Failed to save user request']);
+                return response()->json(['status' => false, 'message' => 'Failed to save user request'], 500);
             }
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage()]);
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -486,7 +499,7 @@ class RequestController extends BaseController
             return response()->json(['status' => true, 'message' => 'Review saved successfully']);
         } catch (ValidationException $e) {
 
-            return response()->json(['status' => false, 'errors' => $e->errors()]);
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
         } catch (QueryException $e) {
 
             return response()->json(['status' => false, 'message' => 'Database error occurred']);

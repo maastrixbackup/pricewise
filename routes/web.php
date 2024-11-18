@@ -111,6 +111,8 @@ Route::group(['prefix' => 'pricewise'], function () {
                 Route::post('/update/{id}', 'PostalCodeController@houseNumberUpdate')->name('house-numbers.update');
                 Route::post('/destroy', 'PostalCodeController@houseNumberDestroy')->name('house-numbers.destroy');
             });
+            
+            Route::post('get-postal-code-data', 'PostalCodeController@postalCodeData')->name('get-postal-code-data');
 
 
             //Bank

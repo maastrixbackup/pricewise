@@ -93,7 +93,7 @@
                                         placeholder="Title" required>
                                 </td>
                                 <td>
-                                    <textarea name="description[]" id="description" class="form-control" cols="30" rows="5"
+                                    <textarea name="description[]" id="description" class="form-control" cols="30" rows="3"
                                         placeholder="Description" required></textarea>
                                 </td>
                                 <td>

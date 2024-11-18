@@ -22,15 +22,15 @@
 
         <form id="roleForm" method="post" action="{{ route('admin.house-numbers.store') }}">
             @csrf
-            <div class="col-12 col-lg-8">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header px-4 py-3">
                         <h5 class="mb-0">Add House Number</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="row mb-3">
-                            <label for="input35" class="col-sm-3 col-form-label">Post Code</label>
-                            <div class="col-sm-9 mb-3">
+                            <label for="input35" class="col-sm-2 col-form-label">Post Code</label>
+                            <div class="col-sm-6 mb-3">
                                 <select name="postal_code" class="form-select" id="postal_code">
                                     <option value="" selected disabled>Select a Post Code...</option>
                                     @foreach ($postalCodes as $code => $val)
@@ -43,14 +43,33 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <label for="input" class="col-sm-3 col-form-label">House Number</label>
-                            <div class="col-sm-9 mb-3">
-                                <textarea name="house_no" class="form-control" id="house_no" cols="30" rows=""
-                                    placeholder="Enter house number separate by coma (,)  Ex:- 166,533,266...">{{ old('house_no') }}</textarea>
-                                @error('house_no')
-                                    <span class="text-danger text-bold">{{ $message }}</span>
-                                @enderror
-                            </div>
+                        </div>
+
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>House No.</th>
+                                        <th>Address</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appData">
+                                    <tr>
+                                        <td>
+                                            <input type="text" class="form-control" name="house_no[]" value=""
+                                                placeholder="" required>
+                                        </td>
+                                        <td>
+                                            <textarea name="address[]" id="address" class="form-control" cols="30" rows="3" placeholder="" required></textarea>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:;" class="btn  btn-success Add"><i
+                                                    class="fa fa-plus-square-o" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="row">
                             <div class="col-sm-9">
@@ -72,6 +91,29 @@
             $(document).ready(function() {
                 new Choices(document.querySelector("#postal_code"), {
                     removeItemButton: true
+                });
+
+                $('.Add').on('click', function() {
+                    var htmlData = `
+                            <tr>
+                                <td>
+                                    <input type="text" class="form-control" name="house_no[]" value=""
+                                        placeholder="" required>
+                                </td>
+                                <td>
+                                    <textarea name="address[]" id="address" class="form-control" cols="30" rows="3"
+                                        placeholder="" required></textarea>
+                                </td>
+                                <td>
+                                    <a href="javascript:;" class="btn  btn-danger removeTr"><i
+                                                            class="fa fa-minus-square-o" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>`;
+                    $('#appData').append(htmlData);
+                });
+
+                $(document).on('click', '.removeTr', function() {
+                    $(this).closest('tr').remove();
                 });
             });
         </script>
