@@ -25,7 +25,7 @@
     <!--end breadcrumb-->
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">Roles</h6>
+            <h6 class="mb-0 text-uppercase">House Numbers</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
@@ -36,7 +36,7 @@
                                 <tr>
                                     <th>Sl</th>
                                     <th>Postal Code</th>
-                                    <th>House Numbers</th>
+                                    <th>House No & Address</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -47,15 +47,15 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $houseNumber->postal_codes }}</td>
                                             <td>
-                                                <div id="content" style="height: 20px; overflow: hidden;">
-                                                    {{ implode(',', json_decode($houseNumber->house_number, true) ?? []) }}
-                                                </div>
-                                                {{-- <a href="javascript:;" id="toggleButton">View More</a> --}}
+                                                <a href="javascript:;" class="btn text-success"
+                                                    onclick="viewHouseDetails('{{ $houseNumber->id }}')">View <i
+                                                        class="fa fa-eye" aria-hidden="true"></i>
+                                                </a>
                                             </td>
                                             <td>
-                                                <a title="Edit"
+                                                {{-- <a title="Edit"
                                                     href="{{ route('admin.house-numbers.edit', $houseNumber->id) }}"
-                                                    class="btn btn-outline-primary"><i class="bx bx-pencil me-0"></i></a>
+                                                    class="btn btn-outline-primary"><i class="bx bx-pencil me-0"></i></a> --}}
                                                 <a title="Delete" class="btn btn-outline-danger trash remove-role"
                                                     data-id="{{ $houseNumber->id }}"
                                                     data-action="{{ route('admin.house-numbers.destroy', $houseNumber->id) }}"><i
@@ -68,6 +68,30 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="postalCodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">House No & Address Details</h5>
+                </div>
+                <div class="modal-body">
+                    <table id="hDatas" class="table ">
+                        <thead>
+                            <tr>
+                                <th>Sl</th>
+                                <th>House No </th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fData">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -88,7 +112,7 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        text: '<i class="fal fa-file-pdf"></i>',
+                        text: '<i class="fa fa-file-pdf"></i>',
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
@@ -128,6 +152,44 @@
                 content.addClass('expanded'); // Add the expanded class
             }
         });
+
+        function viewHouseDetails(id) {
+            $.ajax({
+                url: '{{ route('admin.get-postal-code-data') }}',
+                method: "post",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    id: id,
+                },
+                cache: false,
+                success: function(data) {
+                    // console.log('AJAX Success:', data);
+
+                    $('#fData').html(''); // Insert the new data
+                    // Check if data contains the expected HTML
+                    if (data.status) {
+                        $('#fData').html(data.html); // Insert the new data
+
+                        // Open the modal
+                        $('#postalCodeModal').modal('show');
+                    } else {
+                        // console.error('Invalid response data:', data);
+                        toastr.error('', data.message, {
+                            "positionClass": "toast-top-right"
+                        });
+                    }
+                },
+                error: function(e) {
+                    console.error('AJAX Error:', e);
+                    toastr.error('Something went wrong. Please try again later!', '', {
+                        "positionClass": "toast-top-right"
+                    });
+                }
+            });
+            // $('#postalCodeModal').modal('show');
+        }
     </script>
 
     <script type="text/javascript">

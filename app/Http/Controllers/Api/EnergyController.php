@@ -57,11 +57,19 @@ class EnergyController extends BaseController
         // Retrieve and validate house number
         $houseNumber = str_replace(' ', '', $request->input('house_no'));
         $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
-            ->whereRaw('JSON_CONTAINS(house_number, ?)', [json_encode($houseNumber)])
             ->first();
 
         if (!$houseData) {
-            return $this->jsonResponse(false, 'Invalid House Number for Postal Code', 2);
+            return $this->jsonResponse(false, 'House Number Data Not Found', 3);
+        }
+
+        $add = '';
+        $hD = json_decode($houseData->house_number, true);
+        if (is_array($hD) && array_key_exists($houseNumber, $hD)) {
+            $add = $hD[$houseNumber];
+            // return $this->jsonResponse(true, 'House and Address Found in this Combination', '4');
+        } else {
+            return $this->jsonResponse(false, 'House Number Not Found in this Combination', '5');
         }
 
         $products = EnergyProduct::with(
@@ -585,7 +593,7 @@ class EnergyController extends BaseController
             if ($request->filled('sola_panels') && $request->filled('panel_capacity')) {
                 $solarPanels = $request->input('sola_panels');
                 $panelCapacity = $request->input('panel_capacity');
-                $totalEnergyProduceYearly = $solarPanels * $panelCapacity;
+                $totalEnergyProduceYearly = $panelCapacity;
             }
 
             $monthlyEnergyProduce = $totalEnergyProduceYearly / 12;
@@ -603,6 +611,8 @@ class EnergyController extends BaseController
             $cData = [
                 'house_type' => $consumeData->house_type,
                 'no_of_person' => $noOfPerson,
+                'solar_panel'=> $solarPanels,
+                'capacity'=>$panelCapacity,
                 'electric' => number_format($electricConsume, 2, '.', ''),
                 'gas' => number_format($gasConsume, 2, '.', ''),
                 'return' => number_format($rValue, 2, '.', ''),
