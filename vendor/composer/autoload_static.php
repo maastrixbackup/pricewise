@@ -763,6 +763,8 @@ class ComposerStaticInit0914323516fb57700e7bf5a9bae092ed
         'App\\Models\\EnergyConsumption' => __DIR__ . '/../..' . '/app/Models/EnergyConsumption.php',
         'App\\Models\\EnergyProduct' => __DIR__ . '/../..' . '/app/Models/EnergyProduct.php',
         'App\\Models\\EnergyRateChat' => __DIR__ . '/../..' . '/app/Models/EnergyRateChat.php',
+        'App\\Models\\EnergyRegulatory' => __DIR__ . '/../..' . '/app/Models/EnergyRegulatory.php',
+        'App\\Models\\EnergyStepPlan' => __DIR__ . '/../..' . '/app/Models/EnergyStepPlan.php',
         'App\\Models\\Event' => __DIR__ . '/../..' . '/app/Models/Event.php',
         'App\\Models\\EventRoom' => __DIR__ . '/../..' . '/app/Models/EventRoom.php',
         'App\\Models\\EventTheme' => __DIR__ . '/../..' . '/app/Models/EventTheme.php',
