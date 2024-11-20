@@ -111,7 +111,7 @@ Route::group(['prefix' => 'pricewise'], function () {
                 Route::post('/update/{id}', 'PostalCodeController@houseNumberUpdate')->name('house-numbers.update');
                 Route::post('/destroy', 'PostalCodeController@houseNumberDestroy')->name('house-numbers.destroy');
             });
-            
+
             Route::post('get-postal-code-data', 'PostalCodeController@postalCodeData')->name('get-postal-code-data');
 
 
@@ -351,6 +351,22 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('edit-faqs/{id}', 'FAQController@generalFaqsEdit')->name('edit-faqs');
             Route::post('update-faqs', 'FAQController@generalFaqsUpdate')->name('update-faqs');
             Route::get('delete-faqs/{id}', 'FAQController@generalFaqsDelete')->name('delete-faqs');
+
+            // Energy Regulatory Faqs
+            Route::get('energy-regulatory', 'FAQController@regulatoryFaqs')->name('energy-regulatory');
+            Route::get('add-regulatory', 'FAQController@regulatoryAdd')->name('add-regulatory');
+            Route::post('store-regulatory', 'FAQController@regulatoryStore')->name('store-regulatory');
+            Route::get('edit-regulatory/{id}', 'FAQController@regulatoryEdit')->name('edit-regulatory');
+            Route::post('update-regulatory', 'FAQController@regulatoryUpdate')->name('update-regulatory');
+            Route::get('delete-regulatory/{id}', 'FAQController@regulatoryDelete')->name('delete-regulatory');
+
+            // Energy Regulatory Faqs
+            Route::get('step-by-step-plans', 'FAQController@stepPlanFaqs')->name('step-by-step-plans');
+            Route::get('add-step-plans', 'FAQController@stepPlansAdd')->name('add-step-plans');
+            Route::post('store-step-plans', 'FAQController@stepPlansStore')->name('store-step-plans');
+            Route::get('edit-step-plans/{id}', 'FAQController@stepPlansEdit')->name('edit-step-plans');
+            Route::post('update-step-plans', 'FAQController@stepPlansUpdate')->name('update-step-plans');
+            Route::get('delete-step-plans/{id}', 'FAQController@stepPlansDelete')->name('delete-step-plans');
 
             // Provider Faqs
             Route::get('provider-faqs/{c_id}', 'FAQController@providerFaqs')->name('provider-faqs');

@@ -165,9 +165,11 @@ Route::get('house-type', [SettingsController::class, 'houseTypes']);
 Route::post('top-energy-deals', [EnergyController::class, 'topEnergyDeals']);
 Route::post('get-consumption-value', [EnergyController::class, 'getEnergyConsumption']);
 Route::get('get-energy-general-faqs', [EnergyController::class, 'getEnergyGeneralFaqs']);
+Route::get('get-regulatory-faqs', [EnergyController::class, 'getEnergyRegulatories']);
+Route::get('get-step-plan-faqs', [EnergyController::class, 'getEnergyStepPlans']);
 
 Route::post('save-energy-request', [RequestController::class, 'store']);
-//Frontent === Auth
+//Frontend === Auth
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [RegisterController::class, 'logout']);
     //API route for user profile

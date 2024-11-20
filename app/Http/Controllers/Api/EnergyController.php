@@ -15,6 +15,8 @@ use App\Models\FeeSetting;
 use App\Models\GeneralFaq;
 use App\Http\Resources\EnergyResource;
 use App\Models\EnergyConsumption;
+use App\Models\EnergyRegulatory;
+use App\Models\EnergyStepPlan;
 use App\Models\GlobalEnergySetting;
 use App\Models\HouseNumber;
 use App\Models\PostalCode;
@@ -37,40 +39,40 @@ class EnergyController extends BaseController
 
 
         // Validate if postal_code is provided
-        if (!$request->filled('postal_code')) {
-            return $this->jsonResponse(false, 'Postal Code is required');
-        }
+        // if (!$request->filled('postal_code')) {
+        //     return $this->jsonResponse(false, 'Postal Code is required');
+        // }
 
-        // Retrieve postal code data
-        $postalCode = str_replace(' ', '', $request->input('postal_code'));
-        $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
+        // // Retrieve postal code data
+        // $postalCode = str_replace(' ', '', $request->input('postal_code'));
+        // $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
 
-        if (!$postalCodeData) {
-            return $this->jsonResponse(false, 'Invalid Postal Code', '1');
-        }
+        // if (!$postalCodeData) {
+        //     return $this->jsonResponse(false, 'Invalid Postal Code', '1');
+        // }
 
-        // Validate if house_no is provided
-        if (!$request->filled('house_no')) {
-            return $this->jsonResponse(false, 'House Number is required', '2');
-        }
+        // // Validate if house_no is provided
+        // if (!$request->filled('house_no')) {
+        //     return $this->jsonResponse(false, 'House Number is required', '2');
+        // }
 
-        // Retrieve and validate house number
-        $houseNumber = str_replace(' ', '', $request->input('house_no'));
-        $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
-            ->first();
+        // // Retrieve and validate house number
+        // $houseNumber = str_replace(' ', '', $request->input('house_no'));
+        // $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
+        //     ->first();
 
-        if (!$houseData) {
-            return $this->jsonResponse(false, 'House Number Data Not Found', 3);
-        }
+        // if (!$houseData) {
+        //     return $this->jsonResponse(false, 'House Number Data Not Found', 3);
+        // }
 
-        $add = '';
-        $hD = json_decode($houseData->house_number, true);
-        if (is_array($hD) && array_key_exists($houseNumber, $hD)) {
-            $add = $hD[$houseNumber];
-            // return $this->jsonResponse(true, 'House and Address Found in this Combination', '4');
-        } else {
-            return $this->jsonResponse(false, 'House Number Not Found in this Combination', '5');
-        }
+        // $add = '';
+        // $hD = json_decode($houseData->house_number, true);
+        // if (is_array($hD) && array_key_exists($houseNumber, $hD)) {
+        //     $add = $hD[$houseNumber];
+        //     return $this->jsonResponse(true, 'House and Address Found in this Combination', '4');
+        // } else {
+        //     return $this->jsonResponse(false, 'House Number Not Found in this Combination', '5');
+        // }
 
         $products = EnergyProduct::with(
             'postFeatures',
@@ -589,6 +591,8 @@ class EnergyController extends BaseController
             }
 
             $totalEnergyProduceYearly = 0;
+            $solarPanels = '';
+            $panelCapacity = '';
             // Calculate energy produced by solar panels if provided
             if ($request->filled('sola_panels') && $request->filled('panel_capacity')) {
                 $solarPanels = $request->input('sola_panels');
@@ -611,11 +615,11 @@ class EnergyController extends BaseController
             $cData = [
                 'house_type' => $consumeData->house_type,
                 'no_of_person' => $noOfPerson,
-                'solar_panel'=> $solarPanels,
-                'capacity'=>$panelCapacity,
-                'electric' => number_format($electricConsume, 2, '.', ''),
-                'gas' => number_format($gasConsume, 2, '.', ''),
-                'return' => number_format($rValue, 2, '.', ''),
+                'solar_panel' => $solarPanels,
+                'capacity' => $panelCapacity,
+                'electric' => number_format($electricConsume, 0, '.', ''),
+                'gas' => number_format($gasConsume, 0, '.', ''),
+                'return' => number_format($rValue, 0, '.', ''),
             ];
 
             // Return the found consumption data
@@ -628,9 +632,9 @@ class EnergyController extends BaseController
     public function getEnergyGeneralFaqs()
     {
         $energyGeneralFaqs = GeneralFaq::where('cat_id', config('constant.category.energy'))->get();
-        if (!$energyGeneralFaqs) {
-            return $this->jsonResponse(false, 'Faqs are not Found.');
-        }
+        // if ($energyGeneralFaqs->isEmpty()) {
+        //     return $this->jsonResponse(false, 'Faqs are not Found.');
+        // }
         $energyGeneralFaqs = $energyGeneralFaqs->map(function ($faq) {
             return [
                 'id' => $faq->id,
@@ -638,7 +642,35 @@ class EnergyController extends BaseController
                 'description' => $faq->description
             ];
         });
-        return $this->jsonResponse(true, 'General Faqs Retrieved Successfully ', $energyGeneralFaqs);
+
+        $stepPlans = EnergyStepPlan::latest()->get();
+        $stepPlans = $stepPlans->map(function ($sPlan) {
+            return [
+                'id' => $sPlan->id,
+                'title' => $sPlan->title,
+                'description' => $sPlan->description
+            ];
+        });
+
+        $data['generalFaqs'] = $energyGeneralFaqs;
+        $data['stepPlans'] = $stepPlans;
+        return $this->jsonResponse(true, 'General Faqs Retrieved Successfully ', $data);
+    }
+
+    public function getEnergyRegulatories()
+    {
+        $regulatories = EnergyRegulatory::latest()->get();
+        if ($regulatories->isEmpty()) {
+            return $this->jsonResponse(false, 'Regulatories Not Found.');
+        }
+        $regulatories = $regulatories->map(function ($reg) {
+            return [
+                'id' => $reg->id,
+                'title' => $reg->title,
+                'description' => $reg->description,
+            ];
+        });
+        return $this->jsonResponse(true, 'Regulatories Retrieved Successfully.', $regulatories);
     }
 
 

@@ -712,9 +712,25 @@
                             </a>
                             <ul class="nav-main-submenu">
                                 <li class="nav-main-item">
+                                    <a class="nav-main-link" href="{{ route('admin.energy-regulatory') }}">
+                                        <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                        <span class="nav-main-link-name">Energy Regulatory FAQ</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav-main-submenu">
+                                <li class="nav-main-item">
                                     <a class="nav-main-link" href="{{ route('admin.general-faqs', config('constant.category.energy')) }}">
                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                                         <span class="nav-main-link-name">General FAQ</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav-main-submenu">
+                                <li class="nav-main-item">
+                                    <a class="nav-main-link" href="{{ route('admin.step-by-step-plans') }}">
+                                        <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                        <span class="nav-main-link-name">Step By Step Plans</span>
                                     </a>
                                 </li>
                             </ul>

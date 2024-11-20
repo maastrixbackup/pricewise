@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\EnergyRegulatory;
+use App\Models\EnergyStepPlan;
 use App\Models\FAQ;
 use App\Models\GeneralFaq;
 use App\Models\ProviderFaq;
@@ -245,6 +247,152 @@ class FAQController extends Controller
         try {
             ProviderFaq::where('id', $req->id)->delete();
             $this->sendToastResponse('success', 'Faq Deleted Successfully');
+            return back();
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return back();
+        }
+    }
+
+    public function regulatoryFaqs()
+    {
+        $regulatory = EnergyRegulatory::latest()->get();
+        return view('admin.energy_regulatory.list', compact('regulatory'));
+    }
+
+    public function regulatoryAdd(Request $req)
+    {
+        return view('admin.energy_regulatory.add');
+    }
+    public function regulatoryStore(Request $req)
+    {
+        // dd($req->all());
+        try {
+
+            $missingData = false;
+            foreach ($req->title as $k => $v) {
+                if (isset($req->description[$k])) {
+                    $addReg = new EnergyRegulatory();
+                    $addReg->cat_id = $req->cat;
+                    $addReg->title = $v;
+                    $addReg->description = $req->description[$k];
+                    $addReg->created_at = now();
+                    $addReg->updated_at = now();
+                    $addReg->save();
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing description for: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+            $this->sendToastResponse('success', 'Regulatory Added successfully');
+            return redirect()->route('admin.energy-regulatory');
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function regulatoryEdit(Request $req, $id)
+    {
+        $regEdit = EnergyRegulatory::find($id);
+        return view('admin.energy_regulatory.edit', compact('regEdit'));
+    }
+    public function regulatoryUpdate(Request $req)
+    {
+        // dd($req->all());
+        try {
+            $regEdit = EnergyRegulatory::find($req->id);
+            $regEdit->title = $req->title;
+            $regEdit->description = $req->description;
+            $regEdit->save();
+            $this->sendToastResponse('success', 'Regulatory Updated successfully');
+            return redirect()->route('admin.energy-regulatory');
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function regulatoryDelete(Request $req)
+    {
+        try {
+            EnergyRegulatory::where('id', $req->id)->delete();
+            $this->sendToastResponse('success', 'Regulatory Deleted Successfully');
+            return back();
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return back();
+        }
+    }
+
+    public function stepPlanFaqs(Request $req)
+    {
+        $sPlans = EnergyStepPlan::latest()->get();
+        return view('admin.step_plans.list', compact('sPlans'));
+    }
+    public function stepPlansAdd(Request $req)
+    {
+        return view('admin.step_plans.add');
+    }
+    public function stepPlansStore(Request $req)
+    {
+        try {
+            $missingData = false;
+            foreach ($req->title as $k => $v) {
+                if (isset($req->description[$k])) {
+                    $addReg = new EnergyStepPlan();
+                    $addReg->cat_id = $req->cat;
+                    $addReg->title = $v;
+                    $addReg->description = $req->description[$k];
+                    $addReg->created_at = now();
+                    $addReg->updated_at = now();
+                    $addReg->save();
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing description for: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+            $this->sendToastResponse('success', 'Steps Added successfully');
+            return redirect()->route('admin.step-by-step-plans');
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function stepPlansEdit(Request $req, $id)
+    {
+        $sPlan = EnergyStepPlan::find($id);
+        return view('admin.step_plans.edit', compact('sPlan'));
+    }
+    public function stepPlansUpdate(Request $req)
+    {
+        try {
+            $regEdit = EnergyStepPlan::find($req->id);
+            $regEdit->title = $req->title;
+            $regEdit->description = $req->description;
+            $regEdit->save();
+            $this->sendToastResponse('success', 'Steps Updated successfully');
+            return redirect()->route('admin.step-by-step-plans');
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+    public function stepPlansDelete(Request $req)
+    {
+        try {
+            EnergyStepPlan::where('id', $req->id)->delete();
+            $this->sendToastResponse('success', 'Step Deleted Successfully');
             return back();
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());

@@ -186,6 +186,8 @@ return array(
     'App\\Models\\EnergyConsumption' => $baseDir . '/app/Models/EnergyConsumption.php',
     'App\\Models\\EnergyProduct' => $baseDir . '/app/Models/EnergyProduct.php',
     'App\\Models\\EnergyRateChat' => $baseDir . '/app/Models/EnergyRateChat.php',
+    'App\\Models\\EnergyRegulatory' => $baseDir . '/app/Models/EnergyRegulatory.php',
+    'App\\Models\\EnergyStepPlan' => $baseDir . '/app/Models/EnergyStepPlan.php',
     'App\\Models\\Event' => $baseDir . '/app/Models/Event.php',
     'App\\Models\\EventRoom' => $baseDir . '/app/Models/EventRoom.php',
     'App\\Models\\EventTheme' => $baseDir . '/app/Models/EventTheme.php',
