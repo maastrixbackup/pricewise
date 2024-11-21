@@ -102,6 +102,7 @@
                                     <th>ODE On Gas</th>
                                     <th>VAT</th>
                                     <th>Discount(%)</th>
+                                    <th>Vlid Till</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -124,6 +125,7 @@
                                             <td>{{ $energy->ode_on_gas }}</td>
                                             <td>{{ $energy->vat }}</td>
                                             <td>{{ $energy->discount ?? 'NA' }}</td>
+                                            <td>{{ $energy->valid_till ?? 'N/A'}}</td>
                                             <td>
                                                 @php
                                                     $color = $energy->status == '0' ? 'warning' : 'success';
@@ -171,7 +173,7 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        text: '<i class="fa fa-file-pdf"></i>', 
+                        text: '<i class="fa fa-file-pdf"></i>',
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {

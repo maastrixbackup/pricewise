@@ -33,6 +33,7 @@ class CreateEnergyProductsTable extends Migration
             $table->double('feed_in_tariff', 10, 2)->nullable();
             $table->double('vat', 10, 2)->nullable();
             $table->double('discount', 10, 2)->nullable();
+            $table->date('valid_till')->nullable();
             $table->enum('status', ['1', '0'])->default('0');
             $table->timestamps();
             $table->softDeletes();
