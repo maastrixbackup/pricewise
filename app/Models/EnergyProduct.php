@@ -13,15 +13,28 @@ class EnergyProduct extends Model
     use HasFactory, SoftDeletes;
     protected $table = "energy_products";
     protected $fillable = [
+        'provider_id',
+        'contract_length',
+        'power_cost_per_unit',
+        'gas_cost_per_unit',
         'tax_on_electric',
         'tax_on_gas',
         'ode_on_electric',
         'ode_on_gas',
-        'vat',
-        'energy_tax_reduction',
+        'power_origin',
+        'type_of_current',
+        'type_of_gas',
         'fixed_delivery',
         'grid_management',
-        'feed_in_tariff'
+        'feed_in_tariff',
+        'vat',
+        'energy_tax_reduction',
+        'target_group',
+        'discount',
+        'status',
+        'valid_till',
+        'created_at',
+        'updated_at'
     ];
 
     // public function request()

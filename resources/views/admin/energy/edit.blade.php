@@ -37,9 +37,11 @@
                                     </label>
                                     <input type="text" class="form-control" readonly
                                         value="{{ $objEnergy->providerDetails->name }}">
+                                    <input type="hidden" class="form-control" name="provider"
+                                        value="{{ $objEnergy->provider_id }}">
                                 </div>
 
-                                <div class="col-md-3 col-12">
+                                <div class="col-md-2 col-12">
                                     <div class=" mb-3">
                                         @php
                                             $powerOrigin = $objEnergy->power_origin
@@ -98,7 +100,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-2 mb-3">
                                     <label for="provider" class="col-form-label"><b>Status</b>
                                     </label>
                                     <select name="status" id="status" class="form-select">
@@ -107,6 +109,23 @@
                                         <option value="1"{{ $objEnergy->status == 1 ? 'selected' : '' }}>Published
                                         </option>
                                     </select>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label for="provider" class="col-form-label"><b>Target Group</b>
+                                    </label>
+                                    <select id="target_group" name="target_group" class="select2 form-select" required>
+                                        <option disabled selected>Select</option>
+                                        <option
+                                            value="personal"{{ $objEnergy->target_group == 'personal' ? 'selected' : '' }}>
+                                            Personal</option>
+                                        <option
+                                            value="commercial"{{ $objEnergy->target_group == 'commercial' ? 'selected' : '' }}>
+                                            Commercial</option>
+                                        <option
+                                            value="large_business"{{ $objEnergy->target_group == 'large_business' ? 'selected' : '' }}>
+                                            Large Business</option>
+                                    </select>
+                                    <span class="invalid-feedback">Please Select a valid value.</span>
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -188,34 +207,7 @@
                             </div>
 
                             <div class="row mt-2">
-
-                                <div class="col-md-3 mb-3">
-                                    <label for="provider" class="col-form-label"><b>Contact Year</b>
-                                    </label>
-                                    <input type="text" class="form-control" readonly placeholder="Contract Year"
-                                        value="{{ $objEnergy->contract_length }}">
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="provider" class="col-form-label"><b>Power Cost Per Unit (€)</b>
-                                    </label>
-                                    <input type="number" class="form-control" name="power_cost_per_unit" step=".01"
-                                        placeholder="Ex: 0.02" value="{{ $objEnergy->power_cost_per_unit }}">
-                                    <span class="invalid-feedback">Please enter a valid value.</span>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="provider" class="col-form-label"><b>Gas Cost Per Unit (€)</b>
-                                    </label>
-                                    <input type="number" class="form-control" name="gas_cost_per_unit" step=".01"
-                                        placeholder="Ex: 0.02" value="{{ $objEnergy->gas_cost_per_unit }}">
-                                    <span class="invalid-feedback">Please enter a valid value.</span>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="provider" class="col-form-label"><b>Discount(%)</b>
-                                    </label>
-                                    <input type="number" class="form-control" name="discount" step=".01"
-                                        placeholder="Ex: 20" value="{{ $objEnergy->discount }}">
-                                    <span class="invalid-feedback">Please enter a valid value.</span>
-                                </div>
+                                @include('admin.energy.contract_year')
                             </div>
 
                             <div class="">
@@ -240,9 +232,76 @@
     <script src="{{ asset('assets/plugins/tinymce/tinymce.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            // $('#submitBtn').click(function(e) {
+            //     // Initialize the validation flag
+            //     let isValid = true;
+
+            //     // Check if at least one "Power Origin" checkbox is checked
+            //     let isPowerOriginChecked = $('input[name="power_origin[]"]:checked').length > 0;
+            //     // Check if at least one "Type of Gas" checkbox is checked
+            //     let isGasTypeChecked = $('input[name="gas_type[]"]:checked').length > 0;
+
+            //     // If any checkbox group is not selected, show alert and prevent form submission
+            //     if (!isPowerOriginChecked || !isGasTypeChecked) {
+            //         e.preventDefault(); // Prevent form submission
+            //         let message = 'Please select at least one option for:\n';
+            //         if (!isPowerOriginChecked) message += '- Power Origin\n';
+            //         if (!isGasTypeChecked) message += '- Type of Gas\n';
+            //         alert(message);
+            //         isValid = false;
+            //     }
+
+            //     //Iterate through all input[type="number"] fields and check for empty values
+            //     $('input[type="number"]').each(function() {
+            //         if ($(this).val() === '' || isNaN($(this).val())) {
+            //             // If the field is empty, mark it as invalid and apply red border
+            //             $(this).addClass('is-invalid').removeClass('is-valid');
+            //             isValid = false; // Mark form as invalid
+            //         } else {
+            //             // If the field has a valid value, mark it as valid
+            //             $(this).removeClass('is-invalid');
+            //         }
+            //     });
+
+
+            //     // Validate number inputs related to selected "Contract Year" checkboxes
+            //     $('input[name="contract_year[]"]:checked').each(function() {
+            //         let year = $(this).val();
+
+            //         // Validate each corresponding input based on the selected year
+            //         let powerInput = $(`#power_year_${year}`);
+            //         let gasInput = $(`#gas_year_${year}`);
+            //         let discountInput = $(`#discount_year_${year}`);
+            //         let validTill = $(`#valid_till_${year}`);
+
+            //         // Array of inputs to check
+            //         let inputs = [powerInput, gasInput, discountInput, validTill];
+
+            //         // Loop through inputs and check for validity
+            //         inputs.forEach(function(input) {
+            //             var value = input.val();
+            //             if (value === "" || value < 0 || isNaN(value)) {
+            //                 isValid = false;
+            //                 input.addClass('is-invalid') // Add error class if invalid
+            //             } else {
+            //                 input.removeClass('is-invalid'); // Add valid class if valid
+            //             }
+            //         });
+            //     });
+            //     // Prevent form submission if any field is invalid
+            //     if (!isValid || $('.is-invalid').length > 0) {
+            //         e.preventDefault(); // Prevent form submission
+            //         alert("Please correct the invalid fields before submitting.");
+            //     }
+
+            // });
+
             $('#submitBtn').click(function(e) {
                 // Initialize the validation flag
                 let isValid = true;
+
+                // Reset all validation errors before checking
+                $('.is-invalid').removeClass('is-invalid');
 
                 // Check if at least one "Power Origin" checkbox is checked
                 let isPowerOriginChecked = $('input[name="power_origin[]"]:checked').length > 0;
@@ -259,24 +318,45 @@
                     isValid = false;
                 }
 
-                // Iterate through all input[type="number"] fields and check for empty values
-                $('input[type="number"]').each(function() {
-                    if ($(this).val() === '' || isNaN($(this).val())) {
-                        // If the field is empty, mark it as invalid and apply red border
-                        $(this).addClass('is-invalid').removeClass('is-valid');
-                        isValid = false; // Mark form as invalid
-                    } else {
-                        // If the field has a valid value, mark it as valid
-                        $(this).removeClass('is-invalid');
-                    }
-                });
+                // Validate number inputs only if "Contract Year" checkboxes are checked
+                if ($('input[name="contract_year[]"]:checked').length > 0) {
+                    $('input[name="contract_year[]"]:checked').each(function() {
+                        let year = $(this).val();
+                        // Validate each corresponding input based on the selected year
+                        let powerInput = $(`#power_year_${year}`);
+                        let gasInput = $(`#gas_year_${year}`);
+                        let discountInput = $(`#discount_year_${year}`);
+                        let validTillInput = $(`#valid_till_${year}`);
+
+                        // Array of inputs to check
+                        let inputs = [powerInput, gasInput, discountInput];
+
+                        // Loop through inputs and check for validity
+                        inputs.forEach(function(input) {
+                            var value = input.val();
+                            if (value === "" || value < 0 || isNaN(value)) {
+                                isValid = false;
+                                input.addClass('is-invalid'); // Add error class if invalid
+                            } else {
+                                input.removeClass(
+                                'is-invalid'); // Remove error class if valid
+                            }
+                        });
+                    });
+                }
 
                 // Prevent form submission if any field is invalid
-                if (!isValid || $('.is-invalid').length > 0) {
+                if (!isValid) {
                     e.preventDefault(); // Prevent form submission
                     alert("Please correct the invalid fields before submitting.");
                 }
             });
+
+            // Ensure "is-invalid" class is removed on input change
+            $(document).on('input change', '.is-invalid', function() {
+                $(this).removeClass('is-invalid');
+            });
+
 
 
             $('input[type="number"]').on('keyup', function() {
@@ -299,6 +379,32 @@
                     }
                 }
             }
+
+
+
+            $('input[type="checkbox"]').on('change', function() {
+                // Get the parent row of the checkbox
+                var parentRow = $(this).closest('tr');
+
+                // Enable/disable all input fields in the same row based on the checkbox state
+                if ($(this).is(':checked')) {
+                    parentRow.find('input[type="number"]').prop('readonly', false);
+                    parentRow.find('input[type="number"]').prop('disabled',
+                        false); // Add valid class if valid
+                    parentRow.find('input[type="date"]').prop('readonly', false).prop('disabled', false);
+                    // parentRow.find('input[type="number"]').attr('required', true);
+                    // parentRow.find('input[type="number"]').css('border', '1px solid gray');
+                } else {
+                    parentRow.find('input[type="number"]').prop('disabled', true);
+                    parentRow.find('input[type="number"]').prop('readonly', true);
+                    parentRow.find('input[type="date"]').prop('readonly', true).prop('disabled', true);
+                    parentRow.find('input[type="number"]').val('');
+                    parentRow.find('input[type="number"]').removeClass('is-invalid');
+                    parentRow.find('input[type="number"]').removeClass('is-valid');
+                    // parentRow.find('input[type="number"]').removeAttr('required');
+                    // parentRow.find('input[type="number"]').css('border', '1px solid #d1d8ea');
+                }
+            });
         });
     </script>
 @endpush

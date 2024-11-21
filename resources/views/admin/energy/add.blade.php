@@ -298,11 +298,13 @@
                     parentRow.find('input[type="number"]').prop('readonly', false);
                     parentRow.find('input[type="number"]').prop('disabled',
                         false); // Add valid class if valid
+                        parentRow.find('input[type="date"]').prop('readonly', false).prop('disabled', false);
                     // parentRow.find('input[type="number"]').attr('required', true);
                     // parentRow.find('input[type="number"]').css('border', '1px solid gray');
                 } else {
                     parentRow.find('input[type="number"]').prop('disabled', true);
                     parentRow.find('input[type="number"]').prop('readonly', true);
+                    parentRow.find('input[type="date"]').prop('readonly', true).prop('disabled', true);
                     parentRow.find('input[type="number"]').val('');
                     parentRow.find('input[type="number"]').removeClass('is-invalid');
                     parentRow.find('input[type="number"]').removeClass('is-valid');
@@ -332,7 +334,7 @@
                 },
                 success: function(resp) {
                     console.log(resp);
-                    return false;
+                    // return false;
                     if (resp.status) {
                         if (resp.data != '') {
                             // For Input Data
@@ -359,6 +361,8 @@
                                     .removeClass('is-valid').removeClass('is-invalid').val('');
                                 $(`input[name="discount[${value}]"]`).prop('disabled', true)
                                     .removeClass('is-valid').removeClass('is-invalid').val('');
+                                $(`input[name="valid_till[${value}]"]`).prop('disabled', true)
+                                    .removeClass('is-valid').removeClass('is-invalid').val('');
                             });
                         } else {
                             // Revert checkboxes and fields to their normal state if lengthData is null or empty
@@ -369,6 +373,8 @@
                             $('input[name^="year_gas"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
                                 .removeClass('is-invalid').val('');
                             $('input[name^="discount"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
+                                .removeClass('is-invalid').val('');
+                            $('input[name^="valid_till"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
                                 .removeClass('is-invalid').val('');
                             $('[id^="doneData_"]').html('');
                         }

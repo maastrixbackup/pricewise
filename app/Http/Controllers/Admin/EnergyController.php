@@ -23,6 +23,7 @@ use App\Models\HouseType;
 use App\Models\PostalCode;
 use Brian2694\Toastr\Facades\Toastr;
 use Exception;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -99,13 +100,15 @@ class EnergyController extends Controller
                 if (
                     isset($request->year_power[$v]) &&
                     isset($request->year_gas[$v]) &&
-                    isset($request->discount[$v])
+                    isset($request->discount[$v]) &&
+                    isset($request->valid_till[$v])
                 ) {
                     $newP = new EnergyProduct();
                     $newP->contract_length = $v;
                     $newP->power_cost_per_unit = $request->year_power[$v];
                     $newP->gas_cost_per_unit = $request->year_gas[$v];
                     $newP->discount = $request->discount[$v];
+                    $newP->valid_till = $request->valid_till[$v];
                     $newP->provider_id = $request->provider;
                     $newP->tax_on_electric = $request->tax_on_electric;
                     $newP->tax_on_gas = $request->tax_on_gas;
@@ -128,6 +131,7 @@ class EnergyController extends Controller
                         'year_power' => $request->year_power[$v],
                         'year_gas' => $request->year_gas[$v],
                         'discount' => $request->discount[$v],
+                        'valid_till' => $request->valid_till[$v],
                     ];
                 } else {
                     // Mark that some data is missing
@@ -155,12 +159,7 @@ class EnergyController extends Controller
      */
     public function show($id) {}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         $postalCodes = PostalCode::latest()->get();
@@ -168,6 +167,19 @@ class EnergyController extends Controller
 
         $globalEnergy = GlobalEnergySetting::find(1);
         $objEnergy = EnergyProduct::with('providerDetails')->find($id);
+        $objC = EnergyProduct::where('provider_id', $objEnergy->provider_id)
+            ->orderBy('contract_length', 'asc')
+            ->get();
+        $bArr = [];
+        foreach ($objC as $k => $v) {
+            $bArr['id'][$v->contract_length] = $v->id ?? '';
+            $bArr['contract_length'][$v->contract_length] = $v->contract_length;
+            $bArr['power_cost_per_unit'][$v->contract_length] = $v->power_cost_per_unit;
+            $bArr['gas_cost_per_unit'][$v->contract_length] = $v->gas_cost_per_unit;
+            $bArr['discount'][$v->contract_length] = $v->discount;
+            $bArr['valid_till'][$v->contract_length] = $v->valid_till;
+        }
+        // dd($bArr);
         $providers = Provider::where('category', config('constant.category.energy'))->get();
         $documents = Document::where('post_id', $id)->where('category', $objEnergy->category)->get();
         $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No Parent") as parent'))
@@ -189,7 +201,7 @@ class EnergyController extends Controller
         $serviceInfo = PostFeature::where('post_id', $id)->where('category_id', $objEnergy->category)->where('type', 'info')->get();
         $objRelatedProducts = EnergyProduct::orderBy('id', 'asc')->get();
         $objCategory = Category::whereNull('parent')->latest()->get();
-        return view('admin.energy.edit', compact('globalEnergy', 'objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents', 'combos', 'postalCodes'));
+        return view('admin.energy.edit', compact('bArr', 'globalEnergy', 'objEnergy', 'objRelatedProducts', 'objCategory', 'providers', 'objEnergyFeatures', 'postEnergyFeatures',  'serviceInfo', 'documents', 'combos', 'postalCodes'));
     }
 
     /**
@@ -204,27 +216,75 @@ class EnergyController extends Controller
     {
         // dd($request->all());
         try {
-            $objEnergy = EnergyProduct::where('id', $id)->first();
-            $objEnergy->power_origin = json_encode($request->power_origin, true);
-            $objEnergy->type_of_gas = json_encode($request->gas_type, true);
-            $objEnergy->power_cost_per_unit = $request->power_cost_per_unit;
-            $objEnergy->gas_cost_per_unit = $request->gas_cost_per_unit;
-            $objEnergy->discount = $request->discount;
-            $objEnergy->status = $request->status;
+            $missingData = false;
 
-            $objEnergy->tax_on_electric = $request->tax_on_electric;
-            $objEnergy->tax_on_gas = $request->tax_on_gas;
-            $objEnergy->ode_on_electric = $request->ode_on_electric;
-            $objEnergy->ode_on_gas = $request->ode_on_gas;
-            $objEnergy->fixed_delivery = $request->fixed_delivery;
-            $objEnergy->grid_management = $request->grid_management;
-            $objEnergy->feed_in_tariff = $request->feed_in_tariff;
-            $objEnergy->energy_tax_reduction = $request->energy_tax_reduction;
+            foreach ($request->contract_year as $k => $v) {
+                // Ensure that the keys exist in the request arrays
+                $yearPower = $request->year_power[$v] ?? null;
+                $yearGas = $request->year_gas[$v] ?? null;
+                $discount = $request->discount[$v] ?? null;
+                $validTill = $request->valid_till[$v] ?? null;
 
-            $objEnergy->target_group = $request->target_group;
-            // $objEnergy->energy_label = json_encode($request->energy_label);
+                // Check if all required data for this contract year exists
+                if ($yearPower && $yearGas && $discount && $validTill) {
+                    // Find existing record based on `contract_length`
+                    $existingData = EnergyProduct::where([
+                        'contract_length' => $v,
+                        'id' => $request->ids[$v] ?? null,
+                    ])->first();
 
-            $objEnergy->save();
+                    // Update or create the consumption record
+                    if ($existingData) {
+                        $existingData->update([
+                            'contract_length' => $v,
+                            'power_cost_per_unit' => $yearPower,
+                            'gas_cost_per_unit' => $yearGas,
+                            'discount' => $discount,
+                            'valid_till' => $validTill,
+                            'power_origin' => json_encode($request->power_origin, true),
+                            'type_of_gas' => json_encode($request->gas_type, true),
+                            'status' => $request->status,
+                            'updated_at' => now(),
+                        ]);
+                    } else {
+                        // Create new consumption entry if it does not exist
+                        EnergyProduct::create([
+                            'provider_id' => $request->provider,
+                            'contract_length' => $v,
+                            'power_cost_per_unit' => $yearPower,
+                            'gas_cost_per_unit' => $yearGas,
+                            'tax_on_electric' => $request->tax_on_electric,
+                            'tax_on_gas' => $request->tax_on_gas,
+                            'ode_on_electric' => $request->ode_on_electric,
+                            'ode_on_gas' => $request->ode_on_gas,
+                            'fixed_delivery' => $request->fixed_delivery,
+                            'grid_management' => $request->grid_management,
+                            'feed_in_tariff' => $request->feed_in_tariff,
+                            'energy_tax_reduction' => $request->energy_tax_reduction,
+                            'target_group' => $request->target_group,
+                            'vat' => $request->vat,
+                            'power_origin' => json_encode($request->power_origin, true),
+                            'type_of_gas' => json_encode($request->gas_type, true),
+                            'discount' => $discount,
+                            'valid_till' => $validTill,
+                            'target_group' => $request->target_group,
+                            'status' => $request->status,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing data for contract year: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+
             $this->sendToastResponse('success', 'Energy Updated Successfully');
             return redirect()->route('admin.energy.index');
         } catch (\Exception $e) {
@@ -232,6 +292,7 @@ class EnergyController extends Controller
             return redirect()->back();
         }
     }
+
     /**
      * Remove the specified resource from storage.
      *

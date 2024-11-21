@@ -59,7 +59,7 @@ class EnergyResource extends JsonResource
                 'answer' => $pf->answer,
             ];
         });
-        
+
         return [
             'id' => $this->id,
             'target_group' => $this->target_group,
@@ -118,6 +118,7 @@ class EnergyResource extends JsonResource
                 ];
             }),
             'pFaqs' => $pFaqs,
+            'valid_till' => $this->valid_till,
             'switching_plan' => $planFaq,
             'features' => PostFeatureResource::collection($features),
             // 'created_at' => $this->created_at->format('d/m/Y'),

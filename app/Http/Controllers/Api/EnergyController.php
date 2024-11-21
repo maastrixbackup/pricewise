@@ -81,7 +81,7 @@ class EnergyController extends BaseController
             'documents',
             'providerDetails',
             'govtTaxes'
-        );
+        )->where('status', 1);
 
         // Filter by contract length
         if ($request->filled('contract_length')) {
