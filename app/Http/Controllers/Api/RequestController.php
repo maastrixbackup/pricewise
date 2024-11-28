@@ -174,7 +174,8 @@ class RequestController extends BaseController
                         "live_or_work" => $request->input('live_or_work'),
                         "isPostalCodeDiffer" => $request->input('isPostalCodeDiffer'),
                         "differ_postal" => $request->input('differ_postal') ?? '',
-                        "house_number" => $request->input('houseNumber'),
+                        "house_number" => $request->input('houseNumber') ?? '',
+                        "preferred_date" => $request->input('starting_date'),
                     ];
                     // Contact Details Json
                     $contact_details = [
@@ -190,6 +191,9 @@ class RequestController extends BaseController
                         "mobile_number" => $request->input('mobile_number'),
                         "landline_number" => $request->input('landline_number'),
                     ];
+
+                    $data->post_code = $request->input('post_code');
+                    $data->house_number_add = $request->input('house_number');
                     break;
                 case "commercial":
                     $delivery = [

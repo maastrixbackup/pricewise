@@ -33,7 +33,18 @@ class EnergyController extends BaseController
         $postsPerPage = $request->input('postsPerPage', 10);
         $toSkip = ($postsPerPage * $pageNo) - $postsPerPage;
 
-        $powerConsumption = $request->input('power_consumption', 0);
+        $normalElectric = $request->input('normal_electric_consume');
+        $peakElectric = $request->input('peak_electric_consume');
+
+        if (
+            $normalElectric !== null &&
+            $peakElectric !== null
+        ) {
+            $powerConsumption = $normalElectric + $peakElectric;
+        } else {
+            $powerConsumption = $request->input('power_consumption', 0);
+        }
+
         $gasConsumption = $request->input('gas_consumption', 0);
         $feedInTariff = $request->input('feed_in_tariff', 0);
 
@@ -100,25 +111,6 @@ class EnergyController extends BaseController
             $providers = $request->input('provider');
             $products->whereIn('provider_id', $providers);
         }
-
-
-        // // Filter by power origin
-        // if ($request->filled('power_origin')) {
-        //     $power_origin = json_encode($request->input('power_origin'));
-        //     $products->whereRaw('JSON_CONTAINS(power_origin, ?)', [$power_origin]);
-        // }
-
-        // // Filter by current type
-        // if ($request->filled('type_of_current')) {
-        //     $current_type = json_encode($request->input('type_of_current'));
-        //     $products->whereRaw('JSON_CONTAINS(type_of_current, ?)', [$current_type]);
-        // }
-
-        // // Filter by gas type
-        // if ($request->filled('type_of_gas')) {
-        //     $gas_type = json_encode($request->input('type_of_gas'));
-        //     $products->whereRaw('JSON_CONTAINS(type_of_gas, ?)', [$gas_type]);
-        // }
 
         // Filter by power origin
         if ($request->filled('power_origin')) {
@@ -220,15 +212,15 @@ class EnergyController extends BaseController
             $deliveryCostPerYear = round($product->fixed_delivery * 12, 2);
 
             // Populate formatted product data
-            $formattedProduct['power_cost'] = $powerCostPerUnit;
-            $formattedProduct['gas_cost'] = $gasCostPerUnit;
-            $formattedProduct['tax_electric'] = $taxOnElectric;
-            $formattedProduct['tax_gas'] = $taxOnGas;
-            $formattedProduct['ode_electric'] = $odeOnElectric;
-            $formattedProduct['ode_gas'] = $odeOnGas;
-            $formattedProduct['feed_in_cost'] = $feedInTariffs;
-            $formattedProduct['sub_total'] = $subTotal;
-            $formattedProduct['after_feed_in_tariff'] = $afterFeedInTariffCredit;
+            $formattedProduct['power_cost'] = number_format($powerCostPerUnit, 2);
+            $formattedProduct['gas_cost'] = number_format($gasCostPerUnit, 2);
+            $formattedProduct['tax_electric'] = number_format($taxOnElectric, 2);
+            $formattedProduct['tax_gas'] = number_format($taxOnGas, 2);
+            $formattedProduct['ode_electric'] = number_format($odeOnElectric, 2);
+            $formattedProduct['ode_gas'] = number_format($odeOnGas, 2);
+            $formattedProduct['feed_in_cost'] = number_format($feedInTariffs, 2);
+            $formattedProduct['sub_total'] = number_format($subTotal, 2);
+            $formattedProduct['after_feed_in_tariff'] = number_format($afterFeedInTariffCredit, 2);
             $formattedProduct['fixed_delivery'] = $product->fixed_delivery;
             $formattedProduct['grid_manage'] = $product->grid_management;
             $formattedProduct['total_before_vat'] = $totalBeforeVat;
@@ -556,28 +548,26 @@ class EnergyController extends BaseController
             return $this->jsonResponse(false, 'No. of Person is required.');
         }
 
-        if (is_null($houseType)) {
-            return $this->jsonResponse(false, 'House Type is required.');
-        }
-
         $electricConsume = 0;
         $gasConsume = 0;
         $rValue = 0;
 
         try {
             // Fetch consumption data based on conditions
-            if ($noOfPerson > 5) {
-                $consumeData = EnergyConsumption::where([
-                    'house_type' => $houseType,
-                    'no_of_person' => 1,
-                ])->first();
+            if (isset($noOfPerson) && $noOfPerson > 5) {
+                $consumeData = GlobalEnergySetting::where('no_of_person', 1)->first();
                 // Check if data was retrieved successfully
                 if (!$consumeData) {
-                    return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
+                    return $this->jsonResponse(false, 'Consumption data not found.');
                 }
-                $electricConsume = $consumeData->electric_supply * $noOfPerson;
-                $gasConsume = $consumeData->gas_supply * $noOfPerson;
-            } else {
+                $electricConsume = $consumeData->electric_consume * $noOfPerson;
+                $gasConsume = $consumeData->gas_consume * $noOfPerson;
+            } else if ($noOfPerson <= 5) {
+
+                if (is_null($houseType)) {
+                    return $this->jsonResponse(false, 'House Type is required.');
+                }
+
                 $consumeData = EnergyConsumption::where([
                     'house_type' => $houseType,
                     'no_of_person' => $noOfPerson,
@@ -594,7 +584,7 @@ class EnergyController extends BaseController
             $solarPanels = '';
             $panelCapacity = '';
             // Calculate energy produced by solar panels if provided
-            if ($request->filled('sola_panels') && $request->filled('panel_capacity')) {
+            if ($request->filled('panel_capacity')) {
                 $solarPanels = $request->input('sola_panels');
                 $panelCapacity = $request->input('panel_capacity');
                 $totalEnergyProduceYearly = $panelCapacity;
@@ -615,6 +605,7 @@ class EnergyController extends BaseController
             $cData = [
                 'house_type' => $consumeData->house_type,
                 'no_of_person' => $noOfPerson,
+                'monthly_energy_produce' => $monthlyEnergyProduce,
                 'solar_panel' => $solarPanels,
                 'capacity' => $panelCapacity,
                 'electric' => number_format($electricConsume, 0, '.', ''),

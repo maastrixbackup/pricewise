@@ -293,7 +293,8 @@ class ProviderController extends Controller
     public function switchingPlanFaqsAdd($id)
     {
         $p = Provider::find($id);
-        return view('admin.switch_plan.add', compact('p'));
+        $sP = SwitchingPlanFaq::where('provider_id',$id)->first();
+        return view('admin.switch_plan.add', compact('p', 'sP'));
     }
 
     public function switchingPlanFaqsStore(Request $req)

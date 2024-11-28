@@ -31,17 +31,33 @@
                         @csrf
                         <input type="hidden" name="p_id" value="{{ $p->id }}">
                         <input type="hidden" name="c_id" value="{{ $p->category }}">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Sample Title</label>
-                                <input type="text" class="form-control" name="title" id="title" placeholder="Title"
-                                    required>
+                        @if (!empty($sP))
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Sample Title</label>
+                                    <input type="text" class="form-control" name="title" id="title"
+                                        placeholder="Title" value="{{ $sP->title }}" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Description</label>
+                                    <textarea name="desc" id="desc" cols="30" rows="3" class="form-control" placeholder="Description"
+                                        readonly>{{ $sP->description }}</textarea>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Description</label>
-                                <textarea name="desc" id="desc" cols="30" rows="3" class="form-control" placeholder="Description" required></textarea>
+                        @else
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Sample Title</label>
+                                    <input type="text" class="form-control" name="title" id="title"
+                                        placeholder="Title" value="" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Description</label>
+                                    <textarea name="desc" id="desc" cols="30" rows="3" class="form-control" placeholder="Description"
+                                        required></textarea>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         <table class="table">
                             <thead>
                                 <tr>

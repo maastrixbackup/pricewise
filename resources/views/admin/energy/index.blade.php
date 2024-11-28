@@ -18,7 +18,7 @@
             {{-- @if (Auth::guard('admin')->user()->can('energy-add')) --}}
             <div class="btn-group">
                 {{-- <a href="{{route('admin.energy.create')}}" class="btn btn-secondary">Import</a> --}}
-                <a href="{{ route('admin.energy.create') }}" class="btn btn-primary">Create New Energy Product</a>
+                <a href="{{ route('admin.energy.create') }}" class="btn btn-primary">Create</a>
             </div>
             {{-- @endif --}}
         </div>

@@ -158,6 +158,36 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-4 col-12">
+                                <div class="mb-3">
+                                    <label for="vat" class="col-form-label">Electric Consumption</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1" style="padding: 11px 11px;"><i
+                                                    class="fa-solid fa-bolt-lightning"></i></span>
+                                        </div>
+                                        <input type="number" step="0.001" required class="form-control"
+                                            id="electric_consume" name="electric_consume" placeholder="Electric Consume"
+                                            value="{{ $globalEnergy->electric_consume ?? '' }}" >
+                                        <span class="invalid-feedback">Please enter a valid value.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <div class="mb-3">
+                                    <label for="vat" class="col-form-label">Gas Consumption</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1" style="padding: 11px 11px;"><i
+                                                    class="fa-solid fa-gas-pump"></i></span>
+                                        </div>
+                                        <input type="number" step="0.001" required class="form-control"
+                                            id="gas_consume" name="gas_consume" placeholder="Gas Consume"
+                                            value="{{ $globalEnergy->gas_consume ?? '' }}">
+                                        <span class="invalid-feedback">Please enter a valid value.</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="">
