@@ -412,8 +412,11 @@ class CommonController extends Controller
                     'tax_on_gas' => $request->tax_on_gas,
                     'ode_on_electric' => $request->ode_on_electric,
                     'ode_on_gas' => $request->ode_on_gas,
-                    'vat' => $request->vat,
                     'energy_tax_reduction' => $request->energy_tax_reduction,
+                    'vat' => $request->vat,
+                    'no_of_person' => 1,
+                    'electric_consume' => $request->electric_consume,
+                    'gas_consume' => $request->gas_consume,
                 ]
             );
             // If setting updated, update all EnergyProduct records

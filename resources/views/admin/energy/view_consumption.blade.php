@@ -16,7 +16,7 @@
         </div>
         <div class="ms-auto">
             <div class="btn-group">
-                <a href="{{ route('admin.consumptions.add') }}" class="btn btn-primary">Add Consumption</a>
+                <a href="{{ route('admin.consumptions.add') }}" class="btn btn-primary">Add</a>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">Consumptions </h6>
+            <h6 class="mb-0 text-uppercase">Sample Data </h6>
             <hr />
             <div class="card">
                 <div class="card-body">

@@ -442,12 +442,6 @@
                              </a>
                          </li> --}}
                          <li class="nav-main-item">
-                             <a class="nav-main-link" href="{{ route('admin.house-type.index') }}">
-                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                 <span class="nav-main-link-name">House Types</span>
-                             </a>
-                         </li>
-                         <li class="nav-main-item">
                              <a class="nav-main-link" href="#">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                                  <span class="nav-main-link-name">Options</span>
@@ -648,21 +642,6 @@
                  </li>
 
                  <li class="nav-main-item">
-                     <a class="nav-main-link" href="{{ route('admin.post-codes.index') }}">
-                         <i class="nav-main-link-icon fa-solid fa-list"></i>
-                         <span class="nav-main-link-name">Manage Postcode</span>
-                     </a>
-                 </li>
-
-                 <li class="nav-main-item">
-                     <a class="nav-main-link" href="{{ route('admin.house-numbers.index') }}">
-                         <i class="nav-main-link-icon fa-solid fa-list"></i>
-                         <span class="nav-main-link-name">Manage House Number</span>
-                     </a>
-                 </li>
-
-
-                 <li class="nav-main-item">
                      <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
                          aria-expanded="false" href="#">
                          <i class="nav-main-link-icon fa fa-briefcase"></i>
@@ -673,6 +652,25 @@
                              <a class="nav-main-link" href="{{ route('admin.energy.index') }}">
                                  <i class="nav-main-link-icon fa-solid fa-bolt-lightning"></i>
                                  <span class="nav-main-link-name">Energy Products</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.house-type.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">House Types</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.post-codes.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                 <span class="nav-main-link-name">Manage Postcode</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.house-numbers.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                 <span class="nav-main-link-name">Manage House Number</span>
                              </a>
                          </li>
                          {{-- <li class="nav-main-item">
@@ -688,12 +686,11 @@
                              </a>
                          </li> --}}
 
-
                          <li class="nav-main-item">
                              <a class="nav-main-link"
                                  href="{{ route('admin.consumptions', config('constant.category.energy')) }}">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                 <span class="nav-main-link-name">Manage Consumption</span>
+                                 <span class="nav-main-link-name">Sample Data</span>
                              </a>
                          </li>
                          <li class="nav-main-item">
