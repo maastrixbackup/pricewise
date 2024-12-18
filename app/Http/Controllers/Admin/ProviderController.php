@@ -287,14 +287,16 @@ class ProviderController extends Controller
     public function switchingPlanFaqs($id)
     {
         $pFaqs = SwitchingPlanFaq::where('provider_id', $id)->get();
-        return view('admin.switch_plan.list', compact('id', 'pFaqs'));
+        $p = Provider::find($id);
+        return view('admin.switch_plan.list', compact('id', 'pFaqs', 'p'));
     }
 
     public function switchingPlanFaqsAdd($id)
     {
         $p = Provider::find($id);
-        $sP = SwitchingPlanFaq::where('provider_id',$id)->first();
-        return view('admin.switch_plan.add', compact('p', 'sP'));
+        $sP = SwitchingPlanFaq::where('provider_id', $id)->first();
+        $sPlans = SwitchingPlanFaq::where('provider_id', $id)->get();
+        return view('admin.switch_plan.add', compact('p', 'sP', 'sPlans'));
     }
 
     public function switchingPlanFaqsStore(Request $req)
@@ -336,18 +338,51 @@ class ProviderController extends Controller
     public function switchingPlanFaqsEdit(Request $req, $id)
     {
         $pFaq = SwitchingPlanFaq::find($id);
-        return view('admin.switch_plan.edit', compact('pFaq'));
-        // dd($id);
+        $pFaqs = SwitchingPlanFaq::where('provider_id', $pFaq->provider_id)->get();
+        return view('admin.switch_plan.edit', compact('pFaq', 'pFaqs'));
     }
     public function switchingPlanFaqsUpdate(Request $req)
     {
         // dd($req->all());
         try {
-            $sP = SwitchingPlanFaq::find($req->id);
-            $sP->question = $req->question;
-            $sP->answer = $req->answer;
-            $sP->save();
-            $this->sendToastResponse('success', 'Plan Faq Updated successfully');
+            $missingData = false;
+            foreach ($req->question as $k => $v) {
+                // Ensure that the keys exist in the req arrays
+                $answer = $req->answer[$k] ?? null;
+                $id = $req->ids[$k] ?? null;
+                $pId = $req->p_ids[$k] ?? null;
+
+                // Check if all required data for this provider exists
+                if ($answer && $id && $pId) {
+                    // Find existing record based on `provider_id`
+                    $existingData = SwitchingPlanFaq::where([
+                        'provider_id' => $pId,
+                        'id' => $id,
+                    ])->first();
+
+                    // Update record
+                    if ($existingData) {
+                        $existingData->update([
+                            'question' => $v,
+                            'answer' => $answer,
+                            'title' => $req->title,
+                            'description' => $req->desc,
+                            'updated_at' => now(),
+                        ]);
+                    }
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing data for Questions: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+
+            $this->sendToastResponse('success', 'Faqs Updated Successfully');
             return redirect()->route('admin.switching-plan-faqs', $req->p_id);
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());

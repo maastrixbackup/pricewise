@@ -49,6 +49,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
+                            <tbody id="dynamicData"></tbody>
                             <tbody id="appData">
                                 <tr>
                                     <td>
@@ -110,6 +111,33 @@
         });
 
         $('#provider').on('change', function() {
+            var pValue = $(this).val();
+            var action = "{{ route('admin.check-existing-p-data') }}"; // Get the route without ID
+            $.ajax({
+                url: action, // Use the dynamically constructed URL
+                type: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: pValue,
+                },
+                success: function(resp) {
+                    // console.log(resp);
+                    // return false;
+                    $('#dynamicData').html('');
+                    if (resp.status) {
+                        if (resp.data != '') {
+                            // For Input Data
+                            $('#dynamicData').html(resp.data);
+                        }
+                    } else {
+                        toastr.error(resp.message, '');
+                    }
+                    // toastr.error(data, 'Already Exists!');
+                },
+                error: function(xhr) {
+                    console.error('Error fetching provider:', xhr.responseText);
+                }
+            });
             $('.Add').prop('disabled', false).removeClass('btn-light').addClass('btn-success');
             $('#description').prop('disabled', false);
             $('input[type="text"]').prop('disabled', false);

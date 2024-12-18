@@ -67,13 +67,27 @@
                                 </tr>
                             </thead>
                             <tbody id="appData">
+
+                                @if (!empty($sPlans))
+                                    @foreach ($sPlans as $k => $v)
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" value="{{ $v->question }}"
+                                                    placeholder="Queston" readonly>
+                                            </td>
+                                            <td>
+                                                <textarea id="description" readonly class="form-control" cols="30" rows="3" placeholder="Answer" required>{{ $v->answer }}</textarea>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 <tr>
                                     <td>
                                         <input type="text" class="form-control" name="question[]" value=""
                                             placeholder="Queston" required>
                                     </td>
                                     <td>
-                                        <textarea name="answer[]" id="description" class="form-control" cols="30" rows="5" placeholder="Answer"
+                                        <textarea name="answer[]" id="description" class="form-control" cols="30" rows="3" placeholder="Answer"
                                             required></textarea>
                                     </td>
                                     <td>
@@ -110,7 +124,7 @@
                                         placeholder="Question" required>
                                 </td>
                                 <td>
-                                    <textarea name="answer[]" id="description" class="form-control" cols="30" rows="5"
+                                    <textarea name="answer[]" id="description" class="form-control" cols="30" rows="3"
                                         placeholder="Answer" required></textarea>
                                 </td>
                                 <td>

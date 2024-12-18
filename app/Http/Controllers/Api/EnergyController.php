@@ -14,14 +14,18 @@ use Dotenv\Validator;
 use App\Models\FeeSetting;
 use App\Models\GeneralFaq;
 use App\Http\Resources\EnergyResource;
+use App\Mail\DealSavedMail;
+use App\Models\EmailMyDeal;
 use App\Models\EnergyConsumption;
 use App\Models\EnergyRegulatory;
 use App\Models\EnergyStepPlan;
 use App\Models\GlobalEnergySetting;
 use App\Models\HouseNumber;
 use App\Models\PostalCode;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class EnergyController extends BaseController
 {
@@ -85,6 +89,8 @@ class EnergyController extends BaseController
         //     return $this->jsonResponse(false, 'House Number Not Found in this Combination', '5');
         // }
 
+
+        $fDate = Carbon::now()->format('Y-m-d');
         $products = EnergyProduct::with(
             'postFeatures',
             'prices',
@@ -93,19 +99,12 @@ class EnergyController extends BaseController
             'providerDetails',
             'govtTaxes'
         )->where('status', 1);
+        // ->where('valid_till', '>=', $fDate);
 
         // Filter by contract length
         if ($request->filled('contract_length')) {
             $products->where('contract_length', '>=', $request->input('contract_length'));
         }
-
-        // Filter by Provider
-        // if ($request->filled('provider')) {
-        //     $providers = $request->input('provider');
-        //     foreach ($providers as $p) {
-        //         $products->where('provider_id',  $p);
-        //     }
-        // }
 
         if ($request->filled('provider')) {
             $providers = $request->input('provider');
@@ -272,13 +271,20 @@ class EnergyController extends BaseController
             return response()->json(['status' => false, 'message' => 'No comparison IDs provided.']);
         }
 
-        // return $compareIds;
-        // Fetch products and related data in one query
-        $filteredProducts = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails')
-            ->whereIn('id', $compareIds)
-            ->get();
+        $query = EnergyProduct::with('postFeatures', 'prices', 'feedInCost', 'documents', 'providerDetails')
+            ->whereIn('id', $compareIds);
 
-        // return $filteredProducts;
+        if ($request->filled('search_keyword')) {
+            $searchKey = $request->input('search_keyword');
+            $query->where(function ($subQuery) use ($searchKey) {
+                $subQuery->whereRaw("JSON_SEARCH(power_origin, 'all', ?) IS NOT NULL", ["%$searchKey%"])
+                    ->orWhereRaw("JSON_SEARCH(type_of_gas, 'all', ?) IS NOT NULL", ["%$searchKey%"]);
+            });
+        }
+
+        // Fetch products with applied filters
+        $filteredProducts = $query->get();
+
         // Fetch energy features and group by parent
         // $objEnergyFeatures = Feature::select('f1.id', 'f1.features', 'f1.input_type', DB::raw('COALESCE(f2.features, "No_Parent") as parent'))
         //     ->from('features as f1')
@@ -302,12 +308,30 @@ class EnergyController extends BaseController
 
             // Calculate power, gas, taxes, and tariffs
             $powerCostPerUnit = $product->power_cost_per_unit * ($powerConsumption - $feedInTariff);
+            // return $powerCostPerUnit;
             $gasCostPerUnit = $product->gas_cost_per_unit * $gasConsumption;
             $taxOnElectric = ($powerConsumption - $feedInTariff) * ($product->tax_on_electric ?? $globalSetting->tax_on_electric);
             $taxOnGas = $gasConsumption * ($product->tax_on_gas ?? $globalSetting->tax_on_gas);
             $odeOnElectric = ($powerConsumption - $feedInTariff) * ($product->ode_on_electric ?? $globalSetting->ode_on_electric);
             $odeOnGas = $gasConsumption * ($product->ode_on_gas ?? $globalSetting->ode_on_gas);
             $feedInTariffs = $feedInTariff * $product->feed_in_tariff;
+
+            // $fialEletricConsume = 0;
+            // if ($powerConsumption <= $feedInTariff) {
+            //     $fialEletricConsume = 0;
+            // } elseif ($powerConsumption > $feedInTariff) {
+            //     $fialEletricConsume = $powerConsumption - $feedInTariff;
+            // }
+            // $powerCostPerUnit = $product->power_cost_per_unit * $fialEletricConsume;
+            // // return $powerCostPerUnit;
+            // $gasCostPerUnit = $product->gas_cost_per_unit * $gasConsumption;
+
+            // $taxOnElectric = $fialEletricConsume * ($product->tax_on_electric ?? $globalSetting->tax_on_electric);
+
+            // $taxOnGas = $gasConsumption * ($product->tax_on_gas ?? $globalSetting->tax_on_gas);
+            // $odeOnElectric = $fialEletricConsume * ($product->ode_on_electric ?? $globalSetting->ode_on_electric);
+            // $odeOnGas = $gasConsumption * ($product->ode_on_gas ?? $globalSetting->ode_on_gas);
+            // $feedInTariffs = $feedInTariff * $product->feed_in_tariff;
 
             // Sub Total
             $subTotal = $powerCostPerUnit
@@ -393,24 +417,6 @@ class EnergyController extends BaseController
         if ($request->filled('contract_length')) {
             $products->where('contract_length', '>=', $request->input('contract_length'));
         }
-
-        // // Filter by power origin
-        // if ($request->filled('power_origin')) {
-        //     $power_origin = json_encode($request->input('power_origin'));
-        //     $products->whereRaw('JSON_CONTAINS(power_origin, ?)', [$power_origin]);
-        // }
-
-        // // Filter by current type
-        // if ($request->filled('type_of_current')) {
-        //     $current_type = json_encode($request->input('type_of_current'));
-        //     $products->whereRaw('JSON_CONTAINS(type_of_current, ?)', [$current_type]);
-        // }
-
-        // // Filter by gas type
-        // if ($request->filled('type_of_gas')) {
-        //     $gas_type = json_encode($request->input('type_of_gas'));
-        //     $products->whereRaw('JSON_CONTAINS(type_of_gas, ?)', [$gas_type]);
-        // }
 
         // Filter by power origin
         if ($request->filled('power_origin')) {
@@ -560,8 +566,8 @@ class EnergyController extends BaseController
                 if (!$consumeData) {
                     return $this->jsonResponse(false, 'Consumption data not found.');
                 }
-                $electricConsume = $consumeData->electric_consume * $noOfPerson;
-                $gasConsume = $consumeData->gas_consume * $noOfPerson;
+                $electricConsume = ($consumeData->electric_consume * $noOfPerson) / 12;
+                $gasConsume = ($consumeData->gas_consume * $noOfPerson) / 12;
             } else if ($noOfPerson <= 5) {
 
                 if (is_null($houseType)) {
@@ -576,8 +582,8 @@ class EnergyController extends BaseController
                 if (!$consumeData) {
                     return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
                 }
-                $electricConsume = $consumeData->electric_supply;
-                $gasConsume = $consumeData->gas_supply;
+                $electricConsume = ($consumeData->electric_supply) / 12;
+                $gasConsume = ($consumeData->gas_supply) / 12;
             }
 
             $totalEnergyProduceYearly = 0;
@@ -662,6 +668,55 @@ class EnergyController extends BaseController
             ];
         });
         return $this->jsonResponse(true, 'Regulatories Retrieved Successfully.', $regulatories);
+    }
+
+    public function saveExclusiveDeals(Request $req)
+    {
+        $expDate = Carbon::now()->addDays(3)->format('Y-m-d');
+        $frontedUrl = config('frontend.url');
+        $dealView = $frontedUrl . 'view-exclusive-deals/';
+        $sIds = implode(',', $req->service_ids);
+        // $eIds = explode(',', $sIds);
+        // $d = decrypt('eyJpdiI6InhQZjRhdXRBeUlXZEZKLy81bmVaUkE9PSIsInZhbHVlIjoiSEVFY1RGaDB6Q25Db1FndW5FaS9Pdz09IiwibWFjIjoiODZkMWEwNTBmNDg1ZjMzYzVjZDA0YzE1NTI1Y2NhMTNlMjc2OWU2ZWQ2YjA5YWM2MDRjOGRlYTBjYmI3ZTRjZiIsInRhZyI6IiJ9');
+        // return $d;
+        try {
+            $newDeals = new EmailMyDeal();
+            $newDeals->email_id = $req->email_id;
+            $newDeals->postal_code = $req->postal_code;
+            $newDeals->house_no = $req->house_no;
+            $newDeals->address = $req->address;
+            $newDeals->electric_consume = $req->electric_consume;
+            $newDeals->gas_consume = $req->gas_consume;
+            $newDeals->return = $req->return ?? 0;
+            $newDeals->service_ids = $sIds;
+            $newDeals->email_send = 0;
+            $newDeals->valid_till = $expDate;
+            $newDeals->save();
+            $encId = encrypt($newDeals->id);
+            $dealsUrl = $dealView . $encId;
+
+            // Prepare deal details for the email
+            $dealDetails = [
+                'email_id' => $newDeals->email_id,
+                'postal_code' => $newDeals->postal_code,
+                'house_no' => $newDeals->house_no,
+                'address' => $newDeals->address,
+                'valid_till' => $newDeals->valid_till,
+                'deal_url' => $dealsUrl,
+            ];
+
+            // Send the email
+            Mail::to($req->email_id)->send(new DealSavedMail($req->email_id, $req->postal_code, $req->house_no, $req->address, $expDate, $dealsUrl));
+
+            return $this->jsonResponse(true, 'Deals Sent Successfully', $dealDetails);
+        } catch (\Exception $e) {
+            return $this->jsonResponse(false, 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    public function viewExclusiveDeals($id)
+    {
+        return $id;
     }
 
 

@@ -21,7 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Http\Middleware\CorsMiddleware::class,
+        // \App\Http\Middleware\CorsMiddleware::class,
     ];
 
     /**
@@ -45,6 +45,7 @@ class Kernel extends HttpKernel
             // 'throttle:api',
             // \App\Http\Middleware\CorsMiddleware::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Fruitcake\Cors\HandleCors::class
         ],
         // 'api' => [
         //     \Tymon\JWTAuth\Http\Middleware\Authenticate::class,

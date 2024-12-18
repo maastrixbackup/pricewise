@@ -182,6 +182,7 @@ return array(
     'App\\Models\\Deal' => $baseDir . '/app/Models/Deal.php',
     'App\\Models\\DealProduct' => $baseDir . '/app/Models/DealProduct.php',
     'App\\Models\\Document' => $baseDir . '/app/Models/Document.php',
+    'App\\Models\\EmailMyDeal' => $baseDir . '/app/Models/EmailMyDeal.php',
     'App\\Models\\EmailTemplate' => $baseDir . '/app/Models/EmailTemplate.php',
     'App\\Models\\EnergyConsumption' => $baseDir . '/app/Models/EnergyConsumption.php',
     'App\\Models\\EnergyProduct' => $baseDir . '/app/Models/EnergyProduct.php',

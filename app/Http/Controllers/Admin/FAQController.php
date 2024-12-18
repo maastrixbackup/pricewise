@@ -175,7 +175,7 @@ class FAQController extends Controller
 
     public function providerFaqs($id)
     {
-        $pFaqs = ProviderFaq::where('cat_id', $id)->orderBy('id', 'desc')->get();
+        $pFaqs = ProviderFaq::where('cat_id', $id)->orderBy('provider_id', 'desc')->get();
         return view('admin.provider_faqs.list', compact('pFaqs', 'id'));
         // dd($provider);
     }
@@ -186,6 +186,30 @@ class FAQController extends Controller
         return view('admin.provider_faqs.add', compact('provider', 'id'));
     }
 
+    public function pFaqsExitingData(Request $req)
+    {
+        try {
+            $pFaqs = ProviderFaq::where('provider_id', $req->id)->get();
+            $htmlData = '';
+            foreach ($pFaqs as $p) {
+                $htmlData .= "
+                            <tr>
+                                <td>
+                                    <input type=\"text\" class=\"form-control\" readonly  value=\"{$p->title}\"
+                                        placeholder=\"Title\" required>
+                                </td>
+                                <td>
+                                    <textarea  readonly id=\"description\" class=\"form-control\" cols=\"30\" rows=\"3\"
+                                        placeholder=\"Description\" required>{$p->description}</textarea>
+                                </td>
+                            </tr>";
+            }
+
+            return response()->json(['status' => true, 'data' => $htmlData, 'message' => 'Data Retrieved.']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false,  'message' => $e->getMessage()]);
+        }
+    }
     public function providerFaqsStore(Request $req)
     {
         try {
@@ -224,17 +248,50 @@ class FAQController extends Controller
     {
         $pFaq = ProviderFaq::find($id);
         $provider = Provider::find($pFaq->provider_id);
-        return view('admin.provider_faqs.edit', compact('provider', 'pFaq'));
+        $pFaqs = ProviderFaq::where('provider_id', $pFaq->provider_id)->get();
+        return view('admin.provider_faqs.edit', compact('provider', 'pFaq', 'pFaqs'));
     }
 
     public function providerFaqsUpdate(Request $req)
     {
         try {
             $faq = ProviderFaq::find($req->id);
-            $faq->title = $req->title;
-            $faq->description = $req->description;
-            $faq->save();
-            $this->sendToastResponse('success', 'Provider Faq Updated Successfully.');
+            $missingData = false;
+            foreach ($req->title as $k => $v) {
+                // Ensure that the keys exist in the req arrays
+                $desc = $req->description[$k] ?? null;
+                $id = $req->ids[$k] ?? null;
+                $pId = $req->p_ids[$k] ?? null;
+
+                // Check if all required data for this provider exists
+                if ($desc && $id && $pId) {
+                    // Find existing record based on `provider_id`
+                    $existingData = ProviderFaq::where([
+                        'provider_id' => $pId,
+                        'id' => $id,
+                    ])->first();
+
+                    // Update record
+                    if ($existingData) {
+                        $existingData->update([
+                            'title' => $v,
+                            'description' => $desc,
+                            'updated_at' => now(),
+                        ]);
+                    }
+                } else {
+                    // Mark that some data is missing
+                    $missingData = true;
+                    $this->sendToastResponse('error', "Missing data for Questions: {$v}");
+                }
+            }
+
+            // Check if there was missing data and redirect accordingly
+            if ($missingData) {
+                return redirect()->back();  // Redirect back if there was any missing data
+            }
+
+            $this->sendToastResponse('success', 'Provider Faqs Updated Successfully');
             return redirect()->route('admin.provider-faqs', $faq->cat_id);
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());
