@@ -167,6 +167,8 @@ Route::post('get-consumption-value', [EnergyController::class, 'getEnergyConsump
 Route::get('get-energy-general-faqs', [EnergyController::class, 'getEnergyGeneralFaqs']);
 Route::get('get-regulatory-faqs', [EnergyController::class, 'getEnergyRegulatories']);
 Route::get('get-step-plan-faqs', [EnergyController::class, 'getEnergyStepPlans']);
+Route::get('view-exclusive-deals/{id}', [EnergyController::class, 'viewExclusiveDeals']);
+Route::post('save-exclusive-deals-email', [EnergyController::class, 'saveExclusiveDeals']);
 
 Route::post('save-energy-request', [RequestController::class, 'store']);
 //Frontend === Auth

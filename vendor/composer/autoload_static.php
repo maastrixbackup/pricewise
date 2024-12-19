@@ -759,6 +759,7 @@ class ComposerStaticInit0914323516fb57700e7bf5a9bae092ed
         'App\\Models\\Deal' => __DIR__ . '/../..' . '/app/Models/Deal.php',
         'App\\Models\\DealProduct' => __DIR__ . '/../..' . '/app/Models/DealProduct.php',
         'App\\Models\\Document' => __DIR__ . '/../..' . '/app/Models/Document.php',
+        'App\\Models\\EmailMyDeal' => __DIR__ . '/../..' . '/app/Models/EmailMyDeal.php',
         'App\\Models\\EmailTemplate' => __DIR__ . '/../..' . '/app/Models/EmailTemplate.php',
         'App\\Models\\EnergyConsumption' => __DIR__ . '/../..' . '/app/Models/EnergyConsumption.php',
         'App\\Models\\EnergyProduct' => __DIR__ . '/../..' . '/app/Models/EnergyProduct.php',

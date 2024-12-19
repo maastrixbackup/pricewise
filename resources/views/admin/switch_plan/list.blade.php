@@ -28,7 +28,7 @@
 
     <div class="row">
         <div class="col-12 col-lg-12">
-            <h6 class="mb-0 text-uppercase">Switchin Plans</h6>
+            <h6 class="mb-0 text-uppercase">{{ $p->name }} Switching Plans</h6>
             <hr />
             <div class="card">
                 <div class="card-body">

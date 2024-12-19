@@ -33,7 +33,7 @@
                         <input type="hidden" name="p_id" value="{{ $pFaq->provider_id }}">
                         <div class="row">
                             <div class="col-md-6">
-                                <input type="text" class="form-control" readonly value="{{$provider->name}}">
+                                <input type="text" class="form-control" readonly value="{{ $provider->name }}">
                             </div>
                         </div>
                         <table class="table">
@@ -45,26 +45,29 @@
                                 </tr>
                             </thead>
                             <tbody id="appData">
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control" name="title"
-                                            value="{{ $pFaq->title }}" placeholder="Title" required>
-                                    </td>
-                                    <td>
-                                        <textarea name="description" id="description" class="form-control" cols="30" rows="5"
-                                            placeholder="Description" required>{{ $pFaq->description }}</textarea>
-                                    </td>
-                                    <td>
-
-                                        <button type="submit" class="btn btn-primary px-4" name="submit2">Update</button>
-                                    </td>
-                                </tr>
+                                @if (!empty($pFaqs))
+                                    @foreach ($pFaqs as $k => $v)
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" name="title[]"
+                                                    value="{{ $v->title }}" placeholder="Question" required>
+                                                <input type="hidden" name="ids[]" value="{{ $v->id }}">
+                                                <input type="hidden" name="p_ids[]" value="{{ $v->provider_id }}">
+                                            </td>
+                                            <td>
+                                                <textarea name="description[]" id="description" class="form-control" cols="30" rows="3" placeholder="Answer"
+                                                    required>{{ $v->description }}</textarea>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                         <div class="row">
                             <label class=" col-form-label"></label>
                             <div class="">
                                 <div class="d-md-flex d-grid align-items-center gap-3">
+                                    <button type="submit" class="btn btn-primary px-4" name="submit2">Update</button>
                                 </div>
                             </div>
                         </div>

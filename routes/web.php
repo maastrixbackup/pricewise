@@ -374,6 +374,7 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::post('store-provider-faqs', 'FAQController@providerFaqsStore')->name('store-provider-faqs');
             Route::get('edit-provider-faqs/{id}', 'FAQController@providerFaqsEdit')->name('edit-provider-faqs');
             Route::post('update-provider-faqs', 'FAQController@providerFaqsUpdate')->name('update-provider-faqs');
+            Route::post('check-existing-p-data', 'FAQController@pFaqsExitingData')->name('check-existing-p-data');
             Route::get('delete-provider-faqs/{id}', 'FAQController@providerFaqsDelete')->name('delete-provider-faqs');
 
             // Switching Plan Faqs
