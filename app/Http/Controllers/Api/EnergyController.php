@@ -705,6 +705,7 @@ class EnergyController extends BaseController
                 'deal_url' => $dealsUrl,
             ];
 
+            
             // Send the email
             Mail::to($req->email_id)->send(new DealSavedMail($req->email_id, $req->postal_code, $req->house_no, $req->address, $expDate, $dealsUrl));
 
