@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Provider extends Model
 {
     use HasFactory;
+    protected $table = "providers";
+    protected $fillable = [
+        'ratings',
+        'created_at',
+        'updated_at'
+    ];
 
     public function categoryDetail(){
         return $this->hasOne(Category::class, 'id', 'category');

@@ -223,13 +223,18 @@
                     let powerInput = $(`#power_year_${year}`);
                     let gasInput = $(`#gas_year_${year}`);
                     let discountInput = $(`#discount_year_${year}`);
+                    let boilerInput = $(`#bolier_${year}`);
 
                     // Array of inputs to check
-                    let inputs = [powerInput, gasInput, discountInput];
+                    let inputs = [powerInput, gasInput, discountInput, boilerInput];
 
                     // Loop through inputs and check for validity
                     inputs.forEach(function(input) {
                         var value = input.val();
+                        // Skip validation for the field named 'feed_in_tariff'
+                        if (input.attr('name') === `bolier[${year}]`) {
+                            return true; // Continue to the next iteration
+                        }
                         if (value === "" || value < 0 || isNaN(value)) {
                             isValid = false;
                             input.addClass('is-invalid') // Add error class if invalid
@@ -298,7 +303,7 @@
                     parentRow.find('input[type="number"]').prop('readonly', false);
                     parentRow.find('input[type="number"]').prop('disabled',
                         false); // Add valid class if valid
-                        parentRow.find('input[type="date"]').prop('readonly', false).prop('disabled', false);
+                    parentRow.find('input[type="date"]').prop('readonly', false).prop('disabled', false);
                     // parentRow.find('input[type="number"]').attr('required', true);
                     // parentRow.find('input[type="number"]').css('border', '1px solid gray');
                 } else {
@@ -352,10 +357,13 @@
                             // Loop through each item in the lengthData array
                             resp.lengthData.forEach(function(value) {
                                 // Disable the checkbox that matches the value
-                                $(`#doneData_${value}`).html(`Data Exists.`).css('color', 'red');
+                                $(`#doneData_${value}`).html(`Data Exists.`).css('color',
+                                'red');
                                 $(`input[name="contract_year[]"][value="${value}"]`).prop(
                                     'checked', false).css('display', 'none');
                                 $(`input[name="year_power[${value}]"]`).prop('disabled', true)
+                                    .removeClass('is-valid').removeClass('is-invalid').val('');
+                                $(`input[name="boiler[${value}]"]`).prop('disabled', true)
                                     .removeClass('is-valid').removeClass('is-invalid').val('');
                                 $(`input[name="year_gas[${value}]"]`).prop('disabled', true)
                                     .removeClass('is-valid').removeClass('is-invalid').val('');
@@ -368,13 +376,17 @@
                             // Revert checkboxes and fields to their normal state if lengthData is null or empty
                             $('input[name="contract_year[]"]').css('display', 'inline').prop('checked',
                                 false);
-                            $('input[name^="year_power"]').prop('disabled', true).prop('readonly', true).removeClass(
-                                'is-valid').removeClass('is-invalid').val('');
-                            $('input[name^="year_gas"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
+                            $('input[name^="year_power"]').prop('disabled', true).prop('readonly', true)
+                                .removeClass(
+                                    'is-valid').removeClass('is-invalid').val('');
+                            $('input[name^="year_gas"]').prop('disabled', true).prop('readonly', true)
+                                .removeClass('is-valid')
                                 .removeClass('is-invalid').val('');
-                            $('input[name^="discount"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
+                            $('input[name^="discount"]').prop('disabled', true).prop('readonly', true)
+                                .removeClass('is-valid')
                                 .removeClass('is-invalid').val('');
-                            $('input[name^="valid_till"]').prop('disabled', true).prop('readonly', true).removeClass('is-valid')
+                            $('input[name^="valid_till"]').prop('disabled', true).prop('readonly', true)
+                                .removeClass('is-valid')
                                 .removeClass('is-invalid').val('');
                             $('[id^="doneData_"]').html('');
                         }

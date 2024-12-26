@@ -28,7 +28,8 @@
             </div>
             <div class="btn-group">
                 @if (Auth::guard('admin')->user()->can('providers-edit'))
-                    <a href="{{ route('admin.switching-plan-faqs', $provider->id) }}" class="btn btn-primary">Switching Plan</a>
+                    <a href="{{ route('admin.switching-plan-faqs', $provider->id) }}" class="btn btn-primary">Switching
+                        Plan</a>
                 @endif
             </div>
 
@@ -101,8 +102,7 @@
                                         <span class="input-group-text" id="basic-addon1">€</span>
                                     </div>
                                     <input type="number" class="form-control" id="feed_in_tariff" name="feed_in_tariff"
-                                        placeholder="Solar Buy Back" step=".01" required
-                                        value="{{ $provider->feed_in_tariff }}">
+                                        placeholder="Solar Buy Back" step=".01" value="{{ $provider->feed_in_tariff }}">
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -121,8 +121,9 @@
                             <div class="col-md-4 mb-3">
                                 <label for="input40" class="col col-form-label mb-1"><b>Provider Logo </b></label>
                                 <br />
-                                <img src="{{ asset('storage/images/providers/' . $provider->image) }}" id="uploaded_image"
-                                    class="img img-responsive img-circle" width="100" alt="Select image" />
+                                <img src="{{ asset('storage/images/providers/' . $provider->image) }}"
+                                    id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                    alt="Select image" />
 
                                 <input type="file" name="image" class="image" id="p_image" accept="image/*">
                                 {{-- <label for="upload_image">
@@ -145,6 +146,14 @@
                                     <label for="input_type" class=" col-form-label">Discount Term & Conditions</label>
                                     <textarea name="discount" id="discount" class="form-control" placeholder="About Discount..." rows="6"
                                         required>{{ $provider->discount }}</textarea>
+                                </div>
+
+                                <div class="mt-3">
+                                    <label>
+                                        <input type="checkbox" name="insight_app"
+                                            @if ($provider->insight_app == 1) checked @endif value="1"> Usage Insight
+                                        App
+                                    </label>
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">

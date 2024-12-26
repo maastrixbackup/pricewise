@@ -101,6 +101,7 @@ class EnergyController extends Controller
                     isset($request->year_power[$v]) &&
                     isset($request->year_gas[$v]) &&
                     isset($request->discount[$v]) &&
+                    isset($request->boiler[$v]) &&
                     isset($request->valid_till[$v])
                 ) {
                     $newP = new EnergyProduct();
@@ -108,6 +109,7 @@ class EnergyController extends Controller
                     $newP->power_cost_per_unit = $request->year_power[$v];
                     $newP->gas_cost_per_unit = $request->year_gas[$v];
                     $newP->discount = $request->discount[$v];
+                    $newP->boiler = $request->boiler[$v];
                     $newP->valid_till = $request->valid_till[$v];
                     $newP->provider_id = $request->provider;
                     $newP->tax_on_electric = $request->tax_on_electric;
@@ -131,6 +133,7 @@ class EnergyController extends Controller
                         'year_power' => $request->year_power[$v],
                         'year_gas' => $request->year_gas[$v],
                         'discount' => $request->discount[$v],
+                        'boiler' => $request->boiler[$v],
                         'valid_till' => $request->valid_till[$v],
                     ];
                 } else {
@@ -177,6 +180,7 @@ class EnergyController extends Controller
             $bArr['power_cost_per_unit'][$v->contract_length] = $v->power_cost_per_unit;
             $bArr['gas_cost_per_unit'][$v->contract_length] = $v->gas_cost_per_unit;
             $bArr['discount'][$v->contract_length] = $v->discount;
+            $bArr['boiler'][$v->contract_length] = $v->boiler;
             $bArr['valid_till'][$v->contract_length] = $v->valid_till;
         }
         // dd($bArr);
@@ -223,6 +227,7 @@ class EnergyController extends Controller
                 $yearPower = $request->year_power[$v] ?? null;
                 $yearGas = $request->year_gas[$v] ?? null;
                 $discount = $request->discount[$v] ?? null;
+                $boiler = $request->boiler[$v] ?? null;
                 $validTill = $request->valid_till[$v] ?? null;
 
                 // Check if all required data for this contract year exists
@@ -240,6 +245,7 @@ class EnergyController extends Controller
                             'power_cost_per_unit' => $yearPower,
                             'gas_cost_per_unit' => $yearGas,
                             'discount' => $discount,
+                            'boiler' => $boiler,
                             'valid_till' => $validTill,
                             'power_origin' => json_encode($request->power_origin, true),
                             'type_of_gas' => json_encode($request->gas_type, true),
@@ -266,6 +272,7 @@ class EnergyController extends Controller
                             'power_origin' => json_encode($request->power_origin, true),
                             'type_of_gas' => json_encode($request->gas_type, true),
                             'discount' => $discount,
+                            'boiler' => $boiler,
                             'valid_till' => $validTill,
                             'target_group' => $request->target_group,
                             'status' => $request->status,

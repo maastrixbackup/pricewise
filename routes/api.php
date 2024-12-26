@@ -169,6 +169,7 @@ Route::get('get-regulatory-faqs', [EnergyController::class, 'getEnergyRegulatori
 Route::get('get-step-plan-faqs', [EnergyController::class, 'getEnergyStepPlans']);
 Route::get('view-exclusive-deals/{id}', [EnergyController::class, 'viewExclusiveDeals']);
 Route::post('save-exclusive-deals-email', [EnergyController::class, 'saveExclusiveDeals']);
+Route::post('rate-energy-product', [EnergyController::class, 'rateEnergyProducts']);
 
 Route::post('save-energy-request', [RequestController::class, 'store']);
 //Frontend === Auth

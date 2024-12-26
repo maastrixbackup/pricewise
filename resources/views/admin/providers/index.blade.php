@@ -38,7 +38,7 @@
                                     <th>Sl</th>
                                     <th>Name</th>
                                     <th>Logo</th>
-                                    {{-- <th>Category</th> --}}
+                                    <th>Ratings</th>
                                     @if (Auth::guard('admin')->user()->can('providers-list'))
                                         <th>Action</th>
                                     @endif
@@ -52,13 +52,15 @@
                                             <td>{{ $val->name ? $val->name : 'NA' }}</td>
                                             <td>
                                                 @if (!empty($val->image))
-                                                    <img src="{{ asset('storage/images/providers/' . $val->image) }}" alt="provider image" width="100">
+                                                    <img src="{{ asset('storage/images/providers/' . $val->image) }}"
+                                                        alt="provider image" width="100">
                                                 @else
-                                                    <img src="{{ asset('storage/images/no_image/no_image.png') }}" alt="no image available" width="100">
+                                                    <img src="{{ asset('storage/images/no_image/no_image.png') }}"
+                                                        alt="no image available" width="100">
                                                 @endif
                                             </td>
 
-                                            {{-- <td>{{ $val->categoryDetail ? $val->categoryDetail->name : 'NA' }}</td> --}}
+                                            <td>{{ $val->ratings ?? 'NA' }}</td>
                                             <td>
                                                 <div class="col">
                                                     @if (Auth::guard('admin')->user()->can('providers-edit'))
