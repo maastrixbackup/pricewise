@@ -22,9 +22,12 @@ class CreateEmailMyDealsTable extends Migration
             $table->string('electric_consume')->nullable();
             $table->string('gas_consume')->nullable();
             $table->string('return')->nullable();
+            $table->string('no_of_person')->nullable();
+            $table->string('url')->nullable();
             $table->text('service_ids')->nullable();
             $table->date('valid_till')->nullable();
             $table->integer('email_send');
+            $table->string('page_type')->nullable();
             $table->enum('status', ['1', '0'])->default('0');
             $table->timestamps();
         });

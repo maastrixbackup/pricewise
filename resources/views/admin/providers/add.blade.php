@@ -92,8 +92,7 @@
                                         <div class="input-group-text" id="basic-addon1">€</div>
                                     </div>
                                     <input type="number" class="form-control" id="feed_in_tariff" name="feed_in_tariff"
-                                        placeholder="Solar Buy Back" step=".01" required
-                                        value="{{ old('feed_in_tariff') }}">
+                                        placeholder="Solar Buy Back" step=".01" value="{{ old('feed_in_tariff') }}">
                                 </div>
                                 @error('feed_in_tariff')
                                     <div class="alert py-1 alert-danger">{{ $message }}</div>
@@ -148,6 +147,12 @@
                                 @error('discount')
                                     <div class="alert py-1 alert-danger">{{ $message }}</div>
                                 @enderror
+
+                                <div class="mt-3">
+                                    <label>
+                                        <input type="checkbox" name="insight_app" value="1"> Usage Insight App
+                                    </label>
+                                </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="mt-1">
@@ -320,7 +325,10 @@
                 // Check each input field for validity
                 $('input[type="number"]').each(function() {
                     var value = $(this).val();
-
+                    // Skip validation for the field named 'feed_in_tariff'
+                    if ($(this).attr('name') === 'feed_in_tariff') {
+                        return true; // Continue to the next iteration
+                    }
                     if (value === "" || value < 0 || isNaN(value)) {
                         isValid = false;
                         $(this).addClass('is-invalid');

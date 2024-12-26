@@ -68,7 +68,7 @@ class ProviderController extends Controller
             'status' => 'required',
             'fix_delivery' => 'required',
             'grid_management' => 'required',
-            'feed_in_tariff' => 'required',
+            // 'feed_in_tariff' => 'required',
             'about' => 'required',
             'discount' => 'required',
             'payment_options' => 'required',
@@ -94,6 +94,7 @@ class ProviderController extends Controller
         $objProvider->feed_in_tariff = $request->feed_in_tariff;
         $objProvider->about = $request->about;
         $objProvider->discount = $request->discount;
+        $objProvider->insight_app = $request->insight_app ?? 0;
         $objProvider->payment_options = $request->payment_options;
         $objProvider->annual_accounts = $request->annual_accounts;
         $objProvider->meter_readings = $request->meter_readings;
@@ -173,6 +174,7 @@ class ProviderController extends Controller
             $objProvider->feed_in_tariff = $request->feed_in_tariff;
             $objProvider->about = $request->about;
             $objProvider->discount = $request->discount;
+            $objProvider->insight_app = $request->insight_app ?? 0;
             $objProvider->payment_options = $request->payment_options;
             $objProvider->annual_accounts = $request->annual_accounts;
             $objProvider->meter_readings = $request->meter_readings;
@@ -202,7 +204,9 @@ class ProviderController extends Controller
             EnergyProduct::where('provider_id', $objProvider->id)->update([
                 'fixed_delivery' => $request->fix_delivery,
                 'grid_management' => $request->grid_management,
-                'feed_in_tariff' => $request->feed_in_tariff
+                'feed_in_tariff' => $request->feed_in_tariff,
+                'ratings' => $objProvider->ratings,
+                'insight_app' => $request->insight_app,
             ]);
             $objProvider->save();
             $this->sendToastResponse('success', 'Provider Updated Successfully!');

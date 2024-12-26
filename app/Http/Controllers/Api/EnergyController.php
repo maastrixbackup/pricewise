@@ -17,6 +17,7 @@ use App\Http\Resources\EnergyResource;
 use App\Mail\DealSavedMail;
 use App\Models\EmailMyDeal;
 use App\Models\EnergyConsumption;
+use App\Models\EnergyProductRating;
 use App\Models\EnergyRegulatory;
 use App\Models\EnergyStepPlan;
 use App\Models\GlobalEnergySetting;
@@ -32,13 +33,14 @@ class EnergyController extends BaseController
 
     public function index(Request $request)
     {
-        // return $request->input('power_origin');
+        // return $request->all();
         $pageNo = $request->input('pageNo', 1);
         $postsPerPage = $request->input('postsPerPage', 10);
         $toSkip = ($postsPerPage * $pageNo) - $postsPerPage;
 
         $normalElectric = $request->input('normal_electric_consume');
         $peakElectric = $request->input('peak_electric_consume');
+        $currentSupplier = $request->input('current_supplier');
 
         if (
             $normalElectric !== null &&
@@ -51,44 +53,6 @@ class EnergyController extends BaseController
 
         $gasConsumption = $request->input('gas_consumption', 0);
         $feedInTariff = $request->input('feed_in_tariff', 0);
-
-
-        // Validate if postal_code is provided
-        // if (!$request->filled('postal_code')) {
-        //     return $this->jsonResponse(false, 'Postal Code is required');
-        // }
-
-        // // Retrieve postal code data
-        // $postalCode = str_replace(' ', '', $request->input('postal_code'));
-        // $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
-
-        // if (!$postalCodeData) {
-        //     return $this->jsonResponse(false, 'Invalid Postal Code', '1');
-        // }
-
-        // // Validate if house_no is provided
-        // if (!$request->filled('house_no')) {
-        //     return $this->jsonResponse(false, 'House Number is required', '2');
-        // }
-
-        // // Retrieve and validate house number
-        // $houseNumber = str_replace(' ', '', $request->input('house_no'));
-        // $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
-        //     ->first();
-
-        // if (!$houseData) {
-        //     return $this->jsonResponse(false, 'House Number Data Not Found', 3);
-        // }
-
-        // $add = '';
-        // $hD = json_decode($houseData->house_number, true);
-        // if (is_array($hD) && array_key_exists($houseNumber, $hD)) {
-        //     $add = $hD[$houseNumber];
-        //     return $this->jsonResponse(true, 'House and Address Found in this Combination', '4');
-        // } else {
-        //     return $this->jsonResponse(false, 'House Number Not Found in this Combination', '5');
-        // }
-
 
         $fDate = Carbon::now()->format('Y-m-d');
         $products = EnergyProduct::with(
@@ -104,6 +68,22 @@ class EnergyController extends BaseController
         // Filter by contract length
         if ($request->filled('contract_length')) {
             $products->where('contract_length', '>=', $request->input('contract_length'));
+        }
+
+        if ($request->filled('buy_back') && $request->input('buy_back') == '0') {
+            $products->where('feed_in_tariff', '!=', '');
+        }
+
+        if ($request->filled('boiler') && $request->input('boiler') == '0') {
+            $products->where('boiler', '!=', '');
+        }
+
+        if ($request->filled('ratings')) {
+            $products->where('ratings', '>=', $request->input('ratings'));
+        }
+
+        if ($request->filled('insight_app')) {
+            $products->where('insight_app', $request->input('insight_app'));
         }
 
         if ($request->filled('provider')) {
@@ -243,13 +223,22 @@ class EnergyController extends BaseController
         // if ($request->has('callFromExclusiveDeal')) {
         //     return [$mergedData, $filters];
         // }
-
+        $basePrice = '';
+        foreach ($mergedData as $k => $val) {
+            if ($val['provider'] == $currentSupplier && $val['contract_length'] == '1') {
+                $basePrice = $val['total'];
+            }
+        }
+        $currentSupplier = Provider::find($currentSupplier);
+        // return $currentSupplier;
         $nominalFee = FeeSetting::where('category_id', config('constant.category.energy'))->first()->amount;
 
         return response()->json([
             'success' => true,
             'data' => $mergedData,
             // 'filters' => $filters,
+            'currentSupplier' => $currentSupplier->name,
+            'basePrice' => $basePrice,
             'recordsCount' => $recordsCount,
             'nominalFees' => $nominalFee,
             'message' => 'Products retrieved successfully.'
@@ -566,8 +555,8 @@ class EnergyController extends BaseController
                 if (!$consumeData) {
                     return $this->jsonResponse(false, 'Consumption data not found.');
                 }
-                $electricConsume = ($consumeData->electric_consume * $noOfPerson) / 12;
-                $gasConsume = ($consumeData->gas_consume * $noOfPerson) / 12;
+                $electricConsume = ($consumeData->electric_consume * $noOfPerson);
+                $gasConsume = ($consumeData->gas_consume * $noOfPerson);
             } else if ($noOfPerson <= 5) {
 
                 if (is_null($houseType)) {
@@ -582,8 +571,8 @@ class EnergyController extends BaseController
                 if (!$consumeData) {
                     return $this->jsonResponse(false, 'Consumption data not found for the given combination.');
                 }
-                $electricConsume = ($consumeData->electric_supply) / 12;
-                $gasConsume = ($consumeData->gas_supply) / 12;
+                $electricConsume = ($consumeData->electric_supply);
+                $gasConsume = ($consumeData->gas_supply);
             }
 
             $totalEnergyProduceYearly = 0;
@@ -596,27 +585,27 @@ class EnergyController extends BaseController
                 $totalEnergyProduceYearly = $panelCapacity;
             }
 
-            $monthlyEnergyProduce = $totalEnergyProduceYearly / 12;
+            // $monthlyEnergyProduce = $totalEnergyProduceYearly / 12;
 
-            // Calculate net consumption or surplus energy
-            if ($electricConsume > $monthlyEnergyProduce) {
-                $netConsumption = $electricConsume - $monthlyEnergyProduce;
-                $electricConsume = $netConsumption;
-            } elseif ($monthlyEnergyProduce >= $electricConsume) {
-                $rValue = $monthlyEnergyProduce - $electricConsume;
-                $electricConsume = 0;
-            }
+            // // Calculate net consumption or surplus energy
+            // if ($electricConsume > $monthlyEnergyProduce) {
+            //     $netConsumption = $electricConsume - $monthlyEnergyProduce;
+            //     $electricConsume = $netConsumption;
+            // } elseif ($monthlyEnergyProduce >= $electricConsume) {
+            //     $rValue = $monthlyEnergyProduce - $electricConsume;
+            //     $electricConsume = 0;
+            // }
 
             // Prepare consumption data for response
             $cData = [
                 'house_type' => $consumeData->house_type,
                 'no_of_person' => $noOfPerson,
-                'monthly_energy_produce' => $monthlyEnergyProduce,
+                'monthly_energy_produce' => 0,
                 'solar_panel' => $solarPanels,
                 'capacity' => $panelCapacity,
                 'electric' => number_format($electricConsume, 0, '.', ''),
                 'gas' => number_format($gasConsume, 0, '.', ''),
-                'return' => number_format($rValue, 0, '.', ''),
+                'return' => number_format($totalEnergyProduceYearly, 0, '.', ''),
             ];
 
             // Return the found consumption data
@@ -673,27 +662,31 @@ class EnergyController extends BaseController
     public function saveExclusiveDeals(Request $req)
     {
         $expDate = Carbon::now()->addDays(3)->format('Y-m-d');
-        $frontedUrl = config('frontend.url');
-        $dealView = $frontedUrl . 'view-exclusive-deals/';
+        // $frontedUrl = config('frontend.url');
+        $frontedUrl = 'http://localhost:3000/';
+        // $dealView = $frontedUrl . 'view-exclusive-deals/';
+        $dealView = $frontedUrl . 'double-meter';
         $sIds = implode(',', $req->service_ids);
-        // $eIds = explode(',', $sIds);
-        // $d = decrypt('eyJpdiI6InhQZjRhdXRBeUlXZEZKLy81bmVaUkE9PSIsInZhbHVlIjoiSEVFY1RGaDB6Q25Db1FndW5FaS9Pdz09IiwibWFjIjoiODZkMWEwNTBmNDg1ZjMzYzVjZDA0YzE1NTI1Y2NhMTNlMjc2OWU2ZWQ2YjA5YWM2MDRjOGRlYTBjYmI3ZTRjZiIsInRhZyI6IiJ9');
-        // return $d;
         try {
             $newDeals = new EmailMyDeal();
             $newDeals->email_id = $req->email_id;
             $newDeals->postal_code = $req->postal_code;
             $newDeals->house_no = $req->house_no;
             $newDeals->address = $req->address;
+            $newDeals->no_of_person = $req->no_of_person;
+            $newDeals->url = $req->url;
             $newDeals->electric_consume = $req->electric_consume;
             $newDeals->gas_consume = $req->gas_consume;
+            $newDeals->page_type = $req->page_type;
             $newDeals->return = $req->return ?? 0;
             $newDeals->service_ids = $sIds;
             $newDeals->email_send = 0;
             $newDeals->valid_till = $expDate;
             $newDeals->save();
             $encId = encrypt($newDeals->id);
-            $dealsUrl = $dealView . $encId;
+            // $dealsUrl = $dealView . $encId . '?step=' . $req->page_type;
+            $dealsUrl = $dealView . '?link=' . $encId;
+
 
             // Prepare deal details for the email
             $dealDetails = [
@@ -701,6 +694,7 @@ class EnergyController extends BaseController
                 'postal_code' => $newDeals->postal_code,
                 'house_no' => $newDeals->house_no,
                 'address' => $newDeals->address,
+                'no_of_person' => $newDeals->no_of_person,
                 'valid_till' => $newDeals->valid_till,
                 'deal_url' => $dealsUrl,
             ];
@@ -714,9 +708,94 @@ class EnergyController extends BaseController
         }
     }
 
-    public function viewExclusiveDeals($id)
+    public function viewExclusiveDeals(Request $req, $id)
     {
-        return $id;
+        $id = decrypt($id);
+        $chkDate = Carbon::now()->format('Y-m-d');
+        $deals = EmailMyDeal::where('id', $id)
+            ->where('valid_till', '>=', $chkDate)
+            ->first();
+        if ($deals) {
+            $serviceIds = explode(',', $deals->service_ids);
+            $datas = [
+                'postal_code' => $deals->postal_code,
+                'house_no' => $deals->house_no,
+                'address' => $deals->address,
+                'house_type' => $deals->house_type,
+                'no_of_person' => $deals->no_of_person,
+                'electric_consume' => $deals->electric_consume,
+                'gas_consume' => $deals->gas_consume,
+                'return' => $deals->return,
+                'service_ids' => $serviceIds
+            ];
+            return $this->jsonResponse(true, 'Deals Retrieved Successfully', $datas);
+        }
+        return $this->jsonResponse(false, 'Your Deals Expired');
+    }
+
+    public function rateEnergyProducts(Request $request)
+    {
+        $generalRate = $request->general;
+        $onlineRate = $request->online;
+        $sustainRate = $request->sunstainable;
+        $transferRate = $request->transfer;
+        $priceQRate = $request->price_quality;
+        $infoRate = $request->info_provision;
+        $recommendRate = $request->recommend;
+        $billRate = $request->billing;
+
+        // Truncate total average rating to one decimal place
+        $totalRatings = round(($generalRate + $onlineRate + $sustainRate + $transferRate + $priceQRate + $infoRate + $recommendRate + $billRate) / 8, 1);
+
+        $provider = Provider::find($request->provider_id);
+
+        if (!$provider) {
+            return $this->jsonResponse(false, 'Provider not found.');
+        }
+
+        try {
+            // Start a transaction
+            DB::beginTransaction();
+
+            // Create new energy product rating
+            $rateProducts = new EnergyProductRating();
+            $rateProducts->user_id = $request->user_id;
+            $rateProducts->provider_id = $request->provider_id;
+            $rateProducts->service_id = $request->service_id;
+            $rateProducts->general = $generalRate;
+            $rateProducts->online = $onlineRate;
+            $rateProducts->sunstainable = $sustainRate;
+            $rateProducts->transfer = $transferRate;
+            $rateProducts->price_quality = $priceQRate;
+            $rateProducts->info_provision = $infoRate;
+            $rateProducts->recommend = $recommendRate;
+            $rateProducts->billing = $billRate;
+            $rateProducts->ratings = $totalRatings;
+            if ($rateProducts->save()) {
+                $beforeCount = EnergyProductRating::where('provider_id', $request->provider_id)->count();
+                $afterCount = $beforeCount + 1;
+                // return $beforeCount;
+
+                // Update provider's final rating
+                $finalRating = round((((int)$beforeCount * (int)$provider->ratings) + $totalRatings) / $afterCount, 1);
+                $provider->ratings = $finalRating;
+                $provider->save();
+
+                // Update related energy product ratings
+                EnergyProduct::where('provider_id', $provider->id)->update([
+                    'ratings' => $finalRating,
+                    'updated_at' => now(),
+                ]);
+            }
+
+            // Commit transaction
+            DB::commit();
+            return $this->jsonResponse(true, 'Rating added successfully.', $finalRating);
+        } catch (\Exception $e) {
+            // Rollback transaction in case of error
+            DB::rollBack();
+            return $this->jsonResponse(false, 'An error occurred: ' . $e->getMessage());
+        }
     }
 
 

@@ -33,6 +33,9 @@ class EnergyProduct extends Model
         'discount',
         'status',
         'valid_till',
+        'boiler',
+        'insight_app',
+        'ratings',
         'created_at',
         'updated_at'
     ];

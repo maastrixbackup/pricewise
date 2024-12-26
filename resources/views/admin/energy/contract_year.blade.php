@@ -6,6 +6,7 @@
             <th>Gas Per Unit (€)</th>
             <th>Discount(%)</th>
             <th>Valid Till</th>
+            <th>Boiler</th>
         </tr>
     </thead>
     <tbody>
@@ -15,9 +16,9 @@
                     <td>
                         @if (is_array($bArr['contract_length']) && array_key_exists($year, $bArr['contract_length']))
                             <input type="text" class="form-control" readonly placeholder="Contract Year"
-                                 value="{{ $bArr['contract_length'][$year] }}">
-                                <input type="checkbox" style="display: none;" name="contract_year[]" checked id="year_{{ $year }}"
-                                    value="{{ $year }}">
+                                value="{{ $bArr['contract_length'][$year] }}">
+                            <input type="checkbox" style="display: none;" name="contract_year[]" checked
+                                id="year_{{ $year }}" value="{{ $year }}">
                             <input type="hidden" class="form-control" placeholder="Id" name="ids[{{ $year }}]"
                                 value="{{ $bArr['id'][$year] }}">
                         @else
@@ -54,6 +55,12 @@
                             value="{{ $bArr['valid_till'][$year] ?? '' }}"
                             {{ !(is_array($bArr['valid_till']) && array_key_exists($year, $bArr['valid_till'])) ? 'disabled readonly' : '' }}>
                     </td>
+                    <td>
+                        <input type="number" class="form-control @if (!(is_array($bArr['boiler']) && array_key_exists($year, $bArr['boiler']))) disabled @endif"
+                            name="boiler[{{ $year }}]" id="bolier_{{ $year }}"
+                            value="{{ $bArr['boiler'][$year] ?? '' }}" placeholder="Boiler"
+                            {{ !(is_array($bArr['boiler']) && array_key_exists($year, $bArr['boiler'])) ? 'disabled readonly' : '' }}>
+                    </td>
                 </tr>
             @endforeach
         @else
@@ -77,6 +84,9 @@
                             placeholder="Ex:-21"></td>
                     <td><input type="date" disabled name="valid_till[{{ $year }}]"
                             id="valid_till_{{ $year }}" class="form-control" value="" readonly></td>
+                    <td><input type="number" disabled name="boiler[{{ $year }}]"
+                            id="boiler_{{ $year }}" class="form-control" value="" placeholder="Boiler"
+                            readonly></td>
                 </tr>
             @endforeach
         @endif
