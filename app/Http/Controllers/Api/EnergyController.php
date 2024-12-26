@@ -663,9 +663,11 @@ class EnergyController extends BaseController
     {
         $expDate = Carbon::now()->addDays(3)->format('Y-m-d');
         // $frontedUrl = config('frontend.url');
-        $frontedUrl = 'http://localhost:3000/';
+        // $frontedUrl = 'http://localhost:3000/';
         // $dealView = $frontedUrl . 'view-exclusive-deals/';
-        $dealView = $frontedUrl . 'double-meter';
+        // $dealView = $frontedUrl . 'double-meter';
+        $frontedUrl = $req->url;
+        $dealView = $frontedUrl;
         $sIds = implode(',', $req->service_ids);
         try {
             $newDeals = new EmailMyDeal();
@@ -799,7 +801,7 @@ class EnergyController extends BaseController
     }
 
 
-
+    // Private function for json Response In API
     private function jsonResponse($status, $message, $data = null)
     {
         $response = [
@@ -814,6 +816,8 @@ class EnergyController extends BaseController
 
 
 
+    // Old Backup Code
+    
     // public function index(Request $request)
     // {
     //     $pageno = $request->pageNo ?? 1;
