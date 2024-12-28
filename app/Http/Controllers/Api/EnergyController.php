@@ -687,9 +687,12 @@ class EnergyController extends BaseController
             $newDeals->save();
             $encId = encrypt($newDeals->id);
             // $dealsUrl = $dealView . $encId . '?step=' . $req->page_type;
-            $dealsUrl = $dealView . '?link=' . $encId;
 
-
+            if ($req->page_type == 1) {
+                $dealsUrl = $dealView . '?params=' . $encId;
+            } else {
+                $dealsUrl = $dealView . '?links=' . $encId;
+            }
             // Prepare deal details for the email
             $dealDetails = [
                 'email_id' => $newDeals->email_id,
@@ -817,7 +820,7 @@ class EnergyController extends BaseController
 
 
     // Old Backup Code
-    
+
     // public function index(Request $request)
     // {
     //     $pageno = $request->pageNo ?? 1;
