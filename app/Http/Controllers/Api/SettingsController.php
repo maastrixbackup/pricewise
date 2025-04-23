@@ -51,53 +51,116 @@ class SettingsController extends BaseController
         ]);
     }
 
+
     public function getHouseNumber(Request $request)
     {
-        // Validate if postal_code is provided
-        if (!$request->filled('postal_code')) {
-            return $this->jsonResponse(false, 'Postal Code is required');
-        }
+        // Validate request input
+        $validatedData = $request->validate([
+            'postal_code' => 'required|string',
+            'house_no' => 'required|string',
+        ], [
+            'postal_code.required' => 'Postal Code is required.',
+            'house_no.required' => 'House Number is required.',
+        ]);
+
+        // Normalize postal code and house number
+        $postalCode = str_replace(' ', '', $validatedData['postal_code']);
+        $houseNumber = str_replace(' ', '', $validatedData['house_no']);
 
         // Retrieve postal code data
-        $postalCode = str_replace(' ', '', $request->input('postal_code'));
         $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
 
         if (!$postalCodeData) {
             return $this->jsonResponse(false, 'Invalid Postal Code', '1');
         }
 
-        // Validate if house_no is provided
-        if (!$request->filled('house_no')) {
-            return $this->jsonResponse(false, 'House Number is required', '2');
+        // Retrieve house number data associated with postal code
+        $houseData = HouseNumber::where('pc_id', $postalCodeData->id)->get();
+
+        if ($houseData->isEmpty()) {
+            return $this->jsonResponse(false, 'House Number Data Not Found', '2');
         }
 
-        // Retrieve and validate house number
-        $houseNumber = str_replace(' ', '', $request->input('house_no'));
-        $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
-            ->first();
+        // Parse house number data
+        $address = '';
+        foreach ($houseData as $houseNumberRecord) {
+            $decodedData = json_decode($houseNumberRecord->house_number, true);
 
-        if (!$houseData) {
-            return $this->jsonResponse(false, 'House Number Data Not Found', 2);
+            if (isset($decodedData[$houseNumber])) {
+                $address = $decodedData[$houseNumber];
+                break;
+            }
         }
 
-        $add = '';
-        $houseDt = json_decode($houseData->house_number, true);
-        if (is_array($houseDt) && array_key_exists($houseNumber, $houseDt)) {
-            $add = $houseDt[$houseNumber];
-        } else {
-            return $this->jsonResponse(false, 'House Number Not Found in this Combination', '2');
+        if (empty($address)) {
+            return $this->jsonResponse(false, 'House Number not found in records', '3');
         }
 
+        // Prepare response data
+        $response = [
+            'postal_code' => $postalCode,
+            'house_no' => $houseNumber,
+            'address' => $address,
+        ];
 
-        $hData['id'] = $houseData->id;
-        $hData['pc_id'] = $houseData->pc_id;
-        $hData['postal_code'] = $houseData->postal_codes;
-        $hData['house_numbers'] = $houseNumber;
-        $hData['address'] = $add;
-
-        // Return success response with house data
-        return $this->jsonResponse(true, 'House Number and Address found in Postal Code', $hData);
+        // Return success response
+        return $this->jsonResponse(true, 'Address found in Postal Code and House No', $response);
     }
+
+    // public function getHouseNumber(Request $request)
+    // {
+    //     // Validate if postal_code is provided
+    //     if (!$request->filled('postal_code')) {
+    //         return $this->jsonResponse(false, 'Postal Code is required');
+    //     }
+
+    //     // Retrieve postal code data
+    //     $postalCode = str_replace(' ', '', $request->input('postal_code'));
+    //     $postalCodeData = PostalCode::where('post_code', $postalCode)->first();
+
+    //     if (!$postalCodeData) {
+    //         return $this->jsonResponse(false, 'Invalid Postal Code', '1');
+    //     }
+
+    //     // Validate if house_no is provided
+    //     if (!$request->filled('house_no')) {
+    //         return $this->jsonResponse(false, 'House Number is required', '2');
+    //     }
+
+    //     // Retrieve and validate house number
+    //     $house_number = str_replace(' ', '', $request->input('house_no'));
+    //     $houseData = HouseNumber::where('pc_id', $postalCodeData->id)
+    //         ->get();
+
+    //     if (!$houseData) {
+    //         return $this->jsonResponse(false, 'House Number Data Not Found', 2);
+    //     }
+
+    //     $arrData = [];
+    //     foreach ($houseData as $houseNumber) {
+    //         $arrData[] = json_decode($houseNumber->house_number, true);
+    //     }
+
+
+    //     $decodedData = [];
+    //     $add = '';
+    //     foreach ($arrData as $houseNumber) {
+    //         foreach ($houseNumber as $key => $value) {
+    //             $decodedData[$key] = $value;
+    //             if ($key == $house_number) {
+    //                 $add = $value;
+    //             }
+    //         }
+    //     }
+
+    //     $hData['postal_code'] = $postalCode;
+    //     $hData['house_numbers'] = $house_number;
+    //     $hData['address'] = $add;
+
+    //     // Return success response with house data
+    //     return $this->jsonResponse(true, 'Address found in Postal Code and House No', $hData);
+    // }
+
 
     /**
      * Helper function to return JSON responses

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\EnergyFeedInChargeImport;
 use Illuminate\Http\Request;
 use App\Models\EnergyProduct;
 use App\Models\Provider;
@@ -15,6 +16,7 @@ use App\Models\Document;
 use App\Models\PostFeature;
 use App\Models\Affiliate;
 use App\Models\EnergyConsumption;
+use App\Models\EnergyFeedInCharge;
 use App\Models\Feature;
 use App\Models\EnergyRateChat;
 use App\Models\FeedInCost;
@@ -27,6 +29,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EnergyController extends Controller
 {
@@ -315,6 +318,234 @@ class EnergyController extends Controller
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());
             return redirect()->route('admin.energy.index');
+        }
+    }
+
+
+    public function supplierFeedIn($id)
+    {
+        $provider = Provider::find($id);
+        $feedsIn = EnergyFeedInCharge::where('provider_id', $id)->get();
+        return view('admin.feed_in_charges.list', compact('provider', 'feedsIn', 'id'));
+    }
+    public function feedInCharges()
+    {
+        $feedIn = EnergyFeedInCharge::orderBy('id', 'asc')->get();
+        return view('admin.feed_in_charges.list', compact('feedIn'));
+    }
+
+    public function feedInChargeAdd($id)
+    {
+        return view('admin.feed_in_charges.add', compact('id'));
+    }
+
+    public function feedInChargeStore(Request $r)
+    {
+        // dd('Received Request:', $r->all());
+
+        DB::beginTransaction();
+        try {
+            $a = [];
+
+            // Ensure all required arrays have the same count
+            $expectedCount = count($r->range_from);
+            if (
+                count($r->range_to) !== $expectedCount ||
+                count($r->scale) !== $expectedCount ||
+                count($r->cost_per_day) !== $expectedCount ||
+                count($r->cost_per_year) !== $expectedCount
+            ) {
+                $this->sendToastResponse('error', 'Mismatched array lengths. Ensure all inputs are filled.');
+                return redirect()->back();
+            }
+
+            foreach ($r->range_from as $k => $v) {
+                // Use array_key_exists to avoid false negatives with isset()
+                if (
+                    !array_key_exists($k, $r->scale) ||
+                    !array_key_exists($k, $r->range_to) ||
+                    !array_key_exists($k, $r->cost_per_day) ||
+                    !array_key_exists($k, $r->cost_per_year)
+                ) {
+                    $this->sendToastResponse('error', "Missing data for Range From: {$v}");
+                    return redirect()->back();
+                }
+
+
+                $newP = EnergyFeedInCharge::where([
+                    'provider_id' => $r->provider_id,
+                    'scale' => $r->scale[$k],
+                    'range_from' => $v,
+                    'range_to' => $r->range_to[$k]
+                ])->first() ?? new EnergyFeedInCharge();
+
+                $newP->range_from = $v;
+                $newP->scale = $r->scale[$k];
+                $newP->range_to = $r->range_to[$k];
+                $newP->provider_id = $r->provider_id;
+                $newP->cost_per_day = $r->cost_per_day[$k];
+                $newP->cost_per_year = $r->cost_per_year[$k];
+                if (!$newP->exists) {
+                    $newP->created_at = now();
+                }
+                $newP->updated_at = now();
+                $newP->save();
+
+                $a[$k] = [
+                    'scale' => $r->scale[$k],
+                    'range_to' => $r->range_to[$k],
+                    'range_from' => $r->range_from[$k],
+                    'cost_per_day' => $r->cost_per_day[$k],
+                    'cost_per_year' => $r->cost_per_year[$k],
+                ];
+            }
+            // dd($a);
+
+            DB::commit();
+            $this->sendToastResponse('success', 'Feed In Charges Added');
+            return redirect()->route('admin.feed-in-charge', $r->provider_id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+
+
+    public function importFeedInCharges(Request $r)
+    {
+        // dd($r->all());
+        $r->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        // Get the uploaded file
+        $file = $r->file('file');
+        // Load the Excel file and convert it to an array
+        $data = Excel::toArray([], $file);
+        try {
+
+            EnergyFeedInCharge::truncate();
+
+            // Initialize an array to store processed rows
+            $insertData = [];
+
+            // Process each sheet in the file
+            foreach ($data as $sheet) {
+                // Skip the header row and iterate through the rows
+                foreach (array_slice($sheet, 1) as $row) {
+
+                    $newP = new EnergyFeedInCharge();
+                    $newP->range_from = $row[0];
+                    $newP->range_to = $row[1];
+                    $newP->cost_per_day = $row[2];
+                    $newP->cost_per_month = $row[3];
+                    $newP->created_at = now();
+                    $newP->updated_at = now();
+                    $newP->save();
+
+                    // Map data from the row to your database columns
+                    $insertData[] = [
+                        'range_from' => $row[0], // Replace with actual column name
+                        'range_to' => $row[1], // Replace with actual column name
+                        'cost_per_day' => $row[2], // Replace with actual column name
+                        'cost_per_month' => $row[3], // Replace with actual column name
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+            // dd($insertData);
+            // Excel::import(new EnergyFeedInChargeImport, $r->file('file'));
+            $this->sendToastResponse('success', 'Excel Imported Successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+
+    public function feedInChargeEdit($id)
+    {
+        $feedIn = EnergyFeedInCharge::where('provider_id', $id)->get();
+        return view('admin.feed_in_charges.edit', compact('feedIn', 'id'));
+    }
+
+    public function feedInChargeUpdate(Request $r)
+    {
+        // dd($r->all());
+        DB::beginTransaction();
+        try {
+            $a = [];
+
+            // Ensure all required arrays have the same count
+            $expectedCount = count($r->range_from);
+            if (
+                count($r->ids) !== $expectedCount ||
+                count($r->scale) !== $expectedCount ||
+                count($r->range_to) !== $expectedCount ||
+                count($r->cost_per_day) !== $expectedCount ||
+                count($r->cost_per_year) !== $expectedCount
+            ) {
+                $this->sendToastResponse('error', 'Mismatched array lengths. Ensure all inputs are filled.');
+                return redirect()->back();
+            }
+
+            foreach ($r->range_from as $k => $v) {
+                // Use array_key_exists to avoid false negatives with isset()
+                if (
+                    !array_key_exists($k, $r->ids) ||
+                    !array_key_exists($k, $r->scale) ||
+                    !array_key_exists($k, $r->range_to) ||
+                    !array_key_exists($k, $r->cost_per_day) ||
+                    !array_key_exists($k, $r->cost_per_year)
+                ) {
+                    $this->sendToastResponse('error', "Missing data for Range From: {$v}");
+                    return redirect()->back();
+                }
+
+
+                $newP = EnergyFeedInCharge::find($r->ids[$k]);
+
+                $newP->range_from = $v;
+                $newP->scale = $r->scale[$k];
+                $newP->range_to = $r->range_to[$k];
+                $newP->provider_id = $r->provider_id;
+                $newP->cost_per_day = $r->cost_per_day[$k];
+                $newP->cost_per_year = $r->cost_per_year[$k];
+                $newP->updated_at = now();
+                $newP->save();
+
+                $a[$k] = [
+                    'id' => $r->ids[$k],
+                    'scale' => $r->scale[$k],
+                    'range_to' => $r->range_to[$k],
+                    'range_from' => $r->range_from[$k],
+                    'cost_per_day' => $r->cost_per_day[$k],
+                    'cost_per_year' => $r->cost_per_year[$k],
+                ];
+            }
+
+            DB::commit();
+            $this->sendToastResponse('success', 'Feed In Charges Updated');
+            return redirect()->route('admin.feed-in-charge', $r->provider_id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->sendToastResponse('error', $e->getMessage());
+            return redirect()->back();
+        }
+    }
+
+    public function feedInChargeDelete(Request $r)
+    {
+        try {
+            EnergyFeedInCharge::where('id', $r->id)->delete();
+            $this->sendToastResponse('success', 'Data Deleted');
+            return back();
+        } catch (\Exception $e) {
+            $this->sendToastResponse('error', $e->getMessage());
+            return back();
         }
     }
 

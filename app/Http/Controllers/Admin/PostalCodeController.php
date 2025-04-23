@@ -86,7 +86,7 @@ class PostalCodeController extends Controller
 
     public function houseNumberIndex()
     {
-        $houseNumbers = HouseNumber::latest()->get();
+        $houseNumbers = HouseNumber::select('pc_id')->with('postalCodeDetails')->groupBy('pc_id')->get();
         return view('admin.common.houseNumber_index', compact('houseNumbers'));
     }
 
@@ -101,10 +101,10 @@ class PostalCodeController extends Controller
 
 
         // Ensure no duplicates for postal_code and house_number combined
-        if (HouseNumber::where('pc_id', $request->postal_code)->exists()) {
-            $this->sendToastResponse('error', 'House Data Already Exists for this postal code.');
-            return redirect()->back();
-        }
+        // if (HouseNumber::where('pc_id', $request->postal_code)->exists()) {
+        //     $this->sendToastResponse('error', 'House Data Already Exists for this postal code.');
+        //     return redirect()->back();
+        // }
         try {
             $hNoAddress = [];
             $missingData = false;
@@ -200,7 +200,7 @@ class PostalCodeController extends Controller
     public function houseNumberDestroy(Request $request)
     {
         try {
-            HouseNumber::find($request->id)->delete();
+            HouseNumber::where('pc_id', $request->id)->delete();
             $this->sendToastResponse('success', 'Data Deleted');
             return redirect()->back();
         } catch (\Exception $e) {
@@ -211,23 +211,37 @@ class PostalCodeController extends Controller
 
     public function postalCodeData(Request $req)
     {
-        $pCodeData = HouseNumber::find($req->id);
+        // Retrieve data based on pc_id
+        $pCodeData = HouseNumber::where('pc_id', $req->id)->get();
+
         // Check if data exists for the given ID
-        if (!$pCodeData) {
-            return response()->json(['status' => false, 'message' => 'Postal code data not found'], 404);
+        if ($pCodeData->isEmpty()) {
+            return response()->json(['status' => false, 'message' => 'House data not found'], 404);
         }
 
-        $hData = json_decode($pCodeData->house_number, true);
+        // Handle JSON decoding properly if the data is stored as JSON in the database
+        $arrData = [];
+        foreach ($pCodeData as $houseNumber) {
+            $arrData[] = json_decode($houseNumber->house_number, true);
+        }
+
+        $decodedData = [];
+        foreach ($arrData as $houseNumber) {
+            foreach ($houseNumber as $key => $value) {
+                $decodedData[$key] = $value;
+            }
+        }
+
         $cnt = 1;
         $html = '';
 
         // Accumulate HTML rows
-        foreach ($hData as $k => $v) {
+        foreach ($decodedData as $key => $value) {
             $html .= '<tr>
                     <td>' . $cnt++ . '</td>
-                    <td>' . htmlspecialchars($k) . '</td>
-                    <td>' . htmlspecialchars($v) . '</td>
-                  </tr>';
+                    <td>' . htmlspecialchars($key) . '</td>
+                    <td>' . htmlspecialchars($value) . '</td>
+                    </tr>';
         }
 
         return response()->json([

@@ -17,7 +17,7 @@
         <div class="ms-auto">
             <div class="btn-group">
                 <a type="button" href="{{ route('admin.house-numbers.create') }}" class="btn btn-primary">
-                    Add New PostalCode
+                    Add New
                 </a>
             </div>
         </div>
@@ -45,19 +45,19 @@
                                     @foreach ($houseNumbers as $houseNumber)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $houseNumber->postal_codes }}</td>
+                                            <td>{{ $houseNumber->postalCodeDetails->post_code ?? 'N/A' }}</td>
                                             <td>
                                                 <a href="javascript:;" class="btn text-success"
-                                                    onclick="viewHouseDetails('{{ $houseNumber->id }}')">View <i
+                                                    onclick="viewHouseDetails('{{ $houseNumber->pc_id }}')">View <i
                                                         class="fa fa-eye" aria-hidden="true"></i>
                                                 </a>
                                             </td>
                                             <td>
                                                 {{-- <a title="Edit"
-                                                    href="{{ route('admin.house-numbers.edit', $houseNumber->id) }}"
+                                                    href="{{ route('admin.house-numbers.edit', $houseNumber->pc_id) }}"
                                                     class="btn btn-outline-primary"><i class="bx bx-pencil me-0"></i></a> --}}
                                                 <a title="Delete" class="btn btn-outline-danger trash remove-role"
-                                                    data-id="{{ $houseNumber->id }}"
+                                                    data-id="{{ $houseNumber->pc_id }}"
                                                     data-action="{{ route('admin.house-numbers.destroy', $houseNumber->id) }}"><i
                                                         class="bx bx-trash me-0"></i></a>
                                             </td>
@@ -81,12 +81,12 @@
                     <h5 class="modal-title" id="exampleModalLabel">House No & Address Details</h5>
                 </div>
                 <div class="modal-body">
-                    <table id="hDatas" class="table ">
+                    <table id="hDatas" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Sl</th>
                                 <th>House No </th>
-                                <th>Address</th>
+                                <th>Address Details</th>
                             </tr>
                         </thead>
                         <tbody id="fData">

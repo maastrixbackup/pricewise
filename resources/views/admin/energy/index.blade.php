@@ -116,7 +116,7 @@
                                             <td>{{ $energy->contract_length }}</td>
                                             <td>{{ $energy->fixed_delivery }}</td>
                                             <td>{{ $energy->grid_management }}</td>
-                                            <td>{{ $energy->feed_in_tariff }}</td>
+                                            <td>{{ $energy->feed_in_tariff ?? 'N/A'}}</td>
                                             <td>{{ $energy->power_cost_per_unit }}</td>
                                             <td>{{ $energy->gas_cost_per_unit }}</td>
                                             <td>{{ $energy->tax_on_electric }}</td>

@@ -140,6 +140,7 @@ class VacancyController extends Controller
             return redirect()->back()->with('success', 'Data Submitted Successfully!');
         }
     }
+
     public function destroy(Request $request, $id)
     {
 
@@ -256,13 +257,11 @@ class VacancyController extends Controller
             DB::table('job_location')->insert([
                 'job_location' => $new_entry
             ]);
-            return redirect()->back()->with(Toastr::success('Data added successfully.', '', ["positionClass" => "toast-top-right"]));
-
+            return redirect()->back();
         } else {
             // Handle the case where the pph already exists (e.g., show an error message)
             // return redirect()->back()->with('error', 'Value already exists');
-            return redirect()->back()->with(Toastr::error('Value already exists', '', ["positionClass" => "toast-top-right"]));
-
+            return redirect()->back();
         }
     }
 

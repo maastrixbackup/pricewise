@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Category;
 use App\Models\Document;
+use App\Models\EnergyFeedInCharge;
 use App\Models\EnergyProduct;
 use App\Models\InsuranceProduct;
 use App\Models\Provider;
@@ -62,61 +63,144 @@ class ProviderController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'category' => 'required',
-            'status' => 'required',
-            'fix_delivery' => 'required',
-            'grid_management' => 'required',
-            // 'feed_in_tariff' => 'required',
-            'about' => 'required',
-            'discount' => 'required',
-            'payment_options' => 'required',
-            'annual_accounts' => 'required',
-            'meter_readings' => 'required',
-            'adjust_installments' => 'required',
-            'view_consumption' => 'required',
-            // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
-        ]);
-
-        // Check for existing provider with the same name and category
-        if (Provider::where('name', $request->name)->where('category', $request->category)->exists()) {
-            $this->sendToastResponse('warning', 'Provider Name Already Exists');
-            return redirect()->back()->withInput();
-        }
-
-        $objProvider = new Provider();
-        $objProvider->name = $request->name;
-        $objProvider->category = $request->category;
-        $objProvider->status = $request->status;
-        $objProvider->fixed_deliver_cost = $request->fix_delivery;
-        $objProvider->grid_management_cost = $request->grid_management;
-        $objProvider->feed_in_tariff = $request->feed_in_tariff;
-        $objProvider->about = $request->about;
-        $objProvider->discount = $request->discount;
-        $objProvider->insight_app = $request->insight_app ?? 0;
-        $objProvider->payment_options = $request->payment_options;
-        $objProvider->annual_accounts = $request->annual_accounts;
-        $objProvider->meter_readings = $request->meter_readings;
-        $objProvider->adjust_installments = $request->adjust_installments;
-        $objProvider->view_consumption = $request->view_consumption;
-
-        if ($request->hasFile('image')) {
-            $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
-            $request->image->move(public_path('storage/images/providers/'), $filename);
-            $objProvider->image = $filename;
-        }
-
         try {
-            if ($objProvider->save()) {
-                $this->sendToastResponse('success', 'Provider Added Successfully!');
-                return redirect()->route('admin.providers', config('constant.category.energy'));
+            $category = $request->category;
+            $cat = null;
+
+            switch ($category) {
+                case config('constant.category.energy'):
+                    $cat = config('constant.category.energy');
+
+                    $request->validate([
+                        'name' => 'required',
+                        'category' => 'required',
+                        'status' => 'required',
+                        'fix_delivery' => 'required',
+                        'grid_management' => 'required',
+                        'about' => 'required',
+                        'discount' => 'required',
+                        'payment_options' => 'required',
+                        'annual_accounts' => 'required',
+                        'meter_readings' => 'required',
+                        'adjust_installments' => 'required',
+                        'view_consumption' => 'required',
+                        // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+                    ]);
+
+                    // Check for existing provider with the same name and category
+                    if (Provider::where('name', $request->name)->where('category', $category)->exists()) {
+                        $this->sendToastResponse('warning', 'Provider Name Already Exists');
+                        return redirect()->back()->withInput();
+                    }
+
+                    $objProvider = new Provider();
+                    $objProvider->name = $request->name;
+                    $objProvider->category = $request->category;
+                    $objProvider->status = $request->status;
+                    $objProvider->fixed_deliver_cost = $request->fix_delivery;
+                    $objProvider->grid_management_cost = $request->grid_management;
+                    $objProvider->feed_in_tariff = $request->feed_in_tariff;
+                    $objProvider->about = $request->about;
+                    $objProvider->discount = $request->discount;
+                    $objProvider->insight_app = $request->insight_app ?? 0;
+                    $objProvider->payment_options = $request->payment_options;
+                    $objProvider->annual_accounts = $request->annual_accounts;
+                    $objProvider->meter_readings = $request->meter_readings;
+                    $objProvider->adjust_installments = $request->adjust_installments;
+                    $objProvider->view_consumption = $request->view_consumption;
+
+                    if ($request->hasFile('image')) {
+                        $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
+                        $request->image->move(public_path('storage/images/providers/'), $filename);
+                        $objProvider->image = $filename;
+                    }
+
+                    if ($objProvider->save()) {
+                        $this->sendToastResponse('success', 'Provider Added Successfully!');
+                        return redirect()->route('admin.providers', $cat);
+                    }
+                    break;
+
+                case config('constant.category.Internet & Tv'):
+                    $cat = config('constant.category.Internet & Tv');
+
+                    $request->validate([
+                        'name' => 'required',
+                        'category' => 'required',
+                        'status' => 'required',
+                        'about' => 'required',
+                        // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+                    ]);
+
+                    // Check for existing provider with the same name and category
+                    if (Provider::where('name', $request->name)->where('category', $category)->exists()) {
+                        $this->sendToastResponse('warning', 'Provider Name Already Exists');
+                        return redirect()->back()->withInput();
+                    }
+
+                    $objProvider = new Provider();
+                    $objProvider->name = $request->name;
+                    $objProvider->category = $request->category;
+                    $objProvider->status = $request->status;
+                    $objProvider->about = $request->about;
+
+                    if ($request->hasFile('image')) {
+                        $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
+                        $request->image->move(public_path('storage/images/providers/'), $filename);
+                        $objProvider->image = $filename;
+                    }
+
+                    if ($objProvider->save()) {
+                        $this->sendToastResponse('success', 'Provider Added Successfully!');
+                        return redirect()->route('admin.providers', $cat);
+                    }
+                    break;
+
+                case config('constant.category.Insurance'):
+                    $cat = config('constant.category.Insurance');
+
+                    $request->validate([
+                        'name' => 'required',
+                        'category' => 'required',
+                        'status' => 'required',
+                        'about' => 'required',
+                        // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+                    ]);
+
+                    // Check for existing provider with the same name and category
+                    if (Provider::where('name', $request->name)->where('category', $category)->exists()) {
+                        $this->sendToastResponse('warning', 'Provider Name Already Exists');
+                        return redirect()->back()->withInput();
+                    }
+
+                    $objProvider = new Provider();
+                    $objProvider->name = $request->name;
+                    $objProvider->category = $request->category;
+                    $objProvider->status = $request->status;
+                    $objProvider->about = $request->about;
+
+                    if ($request->hasFile('image')) {
+                        $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
+                        $request->image->move(public_path('storage/images/providers/'), $filename);
+                        $objProvider->image = $filename;
+                    }
+
+                    if ($objProvider->save()) {
+                        $this->sendToastResponse('success', 'Provider Added Successfully!');
+                        return redirect()->route('admin.providers', $cat);
+                    }
+                    break;
+
+                default:
+                    $this->sendToastResponse('error', 'Invalid Category');
+                    return redirect()->back()->withInput();
             }
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());
-            return redirect()->route('admin.providers', config('constant.category.energy'))->withInput();
+            return redirect()->route('admin.providers', $category)->withInput();
         }
     }
+
 
 
     /**
@@ -155,65 +239,112 @@ class ProviderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $request->validate([
-        //     'name' => 'required',
-        //     'status' => 'required',
-        //     'category' => 'required',
-        //     'fix_delivery' => 'required',
-        //     'grid_management' => 'required',
-        //     'feed_in_tariff' => 'required'
-        // ]);
-
+        $category = $request->category;
         try {
-            $objProvider = Provider::find($id);
-            $objProvider->name = $request->name;
-            $objProvider->status = $request->status;
-            $objProvider->category = $request->category;
-            $objProvider->fixed_deliver_cost = $request->fix_delivery;
-            $objProvider->grid_management_cost = $request->grid_management;
-            $objProvider->feed_in_tariff = $request->feed_in_tariff;
-            $objProvider->about = $request->about;
-            $objProvider->discount = $request->discount;
-            $objProvider->insight_app = $request->insight_app ?? 0;
-            $objProvider->payment_options = $request->payment_options;
-            $objProvider->annual_accounts = $request->annual_accounts;
-            $objProvider->meter_readings = $request->meter_readings;
-            $objProvider->adjust_installments = $request->adjust_installments;
-            $objProvider->view_consumption = $request->view_consumption;
 
-            if ($request->hasFile('image')) {
-                // Handle the image file upload
-                $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
-                $request->image->move(public_path('storage/images/providers/'), $filename);
+            $cat = null;
+            switch ($category) {
+                case config('constant.category.energy'):
+                    $cat = config('constant.category.energy');
 
-                // Check if the provider has an existing image
-                if (!empty($objProvider->image)) {
-                    $existingFilePath = public_path('storage/images/providers/') . $objProvider->image;
-                    if (file_exists($existingFilePath)) {
-                        // Delete the file if it exists
-                        unlink($existingFilePath);
+                    // Find the provider
+                    $objProvider = Provider::find($id);
+                    $objProvider->name = $request->name;
+                    $objProvider->status = $request->status;
+                    $objProvider->category = $request->category;
+                    $objProvider->fixed_deliver_cost = $request->fix_delivery;
+                    $objProvider->grid_management_cost = $request->grid_management;
+                    $objProvider->feed_in_tariff = $request->feed_in_tariff;
+                    $objProvider->about = $request->about;
+                    $objProvider->discount = $request->discount;
+                    $objProvider->insight_app = $request->insight_app ?? 0;
+                    $objProvider->payment_options = $request->payment_options;
+                    $objProvider->annual_accounts = $request->annual_accounts;
+                    $objProvider->meter_readings = $request->meter_readings;
+                    $objProvider->adjust_installments = $request->adjust_installments;
+                    $objProvider->view_consumption = $request->view_consumption;
+
+                    if ($request->hasFile('image')) {
+                        // Handle the image file upload
+                        $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
+                        $request->image->move(public_path('storage/images/providers/'), $filename);
+
+                        // Check if the provider has an existing image
+                        if (!empty($objProvider->image)) {
+                            $existingFilePath = public_path('storage/images/providers/') . $objProvider->image;
+                            if (file_exists($existingFilePath)) {
+                                // Delete the file if it exists
+                                unlink($existingFilePath);
+                            }
+                        }
+
+                        // Save the new filename in the database
+                        $objProvider->image = $filename;
+                    } else {
+                        // If no new image is uploaded, retain the existing image
+                        $filename = $objProvider->image;
                     }
-                }
+                    EnergyProduct::where('provider_id', $objProvider->id)->update([
+                        'fixed_delivery' => $request->fix_delivery,
+                        'grid_management' => $request->grid_management,
+                        'feed_in_tariff' => $request->feed_in_tariff,
+                        'ratings' => $objProvider->ratings,
+                        'insight_app' => $request->insight_app,
+                    ]);
+                    $objProvider->save();
+                    $this->sendToastResponse('success', 'Provider Updated Successfully!');
+                    return redirect()->route('admin.providers', config('constant.category.energy'));
 
-                // Save the new filename in the database
-                $objProvider->image = $filename;
-            } else {
-                // If no new image is uploaded, retain the existing image
-                $filename = $objProvider->image;
+                    break;
+
+                case config('constant.category.Internet & Tv'):
+                    $cat = config('constant.category.Internet & Tv');
+
+                    // Find the provider
+                    $objProvider = Provider::find($id);
+                    $objProvider->name = $request->name;
+                    $objProvider->status = $request->status;
+                    $objProvider->category = $cat;
+                    $objProvider->about = $request->about;
+
+                    if ($request->hasFile('image')) {
+                        // Handle the image file upload
+                        $filename = 'provider_' . time() . '.' . $request->image->getClientOriginalExtension();
+                        $request->image->move(public_path('storage/images/providers/'), $filename);
+
+                        // Check if the provider has an existing image
+                        if (!empty($objProvider->image)) {
+                            $existingFilePath = public_path('storage/images/providers/') . $objProvider->image;
+                            if (file_exists($existingFilePath)) {
+                                // Delete the file if it exists
+                                unlink($existingFilePath);
+                            }
+                        }
+                        // Save the new filename in the database
+                        $objProvider->image = $filename;
+                    } else {
+                        // If no new image is uploaded, retain the existing image
+                        $filename = $objProvider->image;
+                    }
+
+                    $objProvider->save();
+                    $this->sendToastResponse('success', 'Provider Updated Successfully!');
+                    return redirect()->route('admin.providers', $cat);
+
+                    break;
+
+                case config('constant.category.Insurance'):
+                    $cat = config('constant.category.Insurance');
+                    // Add specific logic for Insurance category here if needed
+                    break;
+
+                default:
+                    $this->sendToastResponse('error', 'Invalid Category');
+                    return redirect()->back()->withInput();
             }
-            EnergyProduct::where('provider_id', $objProvider->id)->update([
-                'fixed_delivery' => $request->fix_delivery,
-                'grid_management' => $request->grid_management,
-                'feed_in_tariff' => $request->feed_in_tariff,
-                'ratings' => $objProvider->ratings,
-                'insight_app' => $request->insight_app,
-            ]);
-            $objProvider->save();
-            $this->sendToastResponse('success', 'Provider Updated Successfully!');
-            return redirect()->route('admin.providers', config('constant.category.energy'));
         } catch (\Exception $e) {
             $this->sendToastResponse('error', $e->getMessage());
-            return redirect()->route('admin.providers', config('constant.category.energy'));
+            return redirect()->route('admin.providers', $category);
         }
     }
 
@@ -248,6 +379,7 @@ class ProviderController extends Controller
             switch ($provider->category) {
                 case config('constant.category.energy'):
                     // For Energy Products
+                    EnergyFeedInCharge::where('provider_id', $id)->delete();
                     SwitchingPlanFaq::where(['provider_id' => $provider->id, 'cat_id' => $provider->category])->delete();
                     ProviderFaq::where(['provider_id' => $provider->id, 'cat_id' => $provider->category])->delete();
                     EnergyProduct::where('provider_id', $provider->id)->delete();

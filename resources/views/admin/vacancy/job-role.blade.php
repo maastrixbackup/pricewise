@@ -33,10 +33,10 @@
 
                     <div class="row">
                         @if (session('deleted'))
-                                <div class="alert alert-success">
-                                    {{ session('deleted') }}
-                                </div>
-                            @endif
+                            <div class="alert alert-success">
+                                {{ session('deleted') }}
+                            </div>
+                        @endif
                         <div class="col-lg-12">
                             <table class="table table-striped table-bordered">
                                 <thead>
@@ -54,10 +54,11 @@
                                             <td>{{ $jobType->id }}</td>
                                             <td>{{ $jobType->job_industry }}</td>
                                             <td>{{ $jobType->job_role }}</td>
-                                            <td><a href="#"><button type="button" class="btn btn-danger" data-toggle="modal"
-                                                    data-target="#deleteModal" data-id="{{ $jobType->id }}">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </button>
+                                            <td><a href="javascript:;"><button type="button" class="btn btn-danger"
+                                                        data-toggle="modal" data-target="#deleteModal"
+                                                        data-id="{{ $jobType->id }}">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -165,7 +166,7 @@
         $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var id = button.data('id'); // Extract the id from data-* attributes
-            console.log("Button ID:", id); // Log the ID to see if it's correctly retrieved
+            // console.log("Button ID:", id); // Log the ID to see if it's correctly retrieved
             var modal = $(this);
             modal.find('.modal-body #delete-id').val(id);
         });

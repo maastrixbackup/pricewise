@@ -62,12 +62,13 @@ class EnergyController extends BaseController
             'documents',
             'providerDetails',
             'govtTaxes'
-        )->where('status', 1);
-        // ->where('valid_till', '>=', $fDate);
+        )->where('status', 1)
+            ->where('valid_till', '>=', $fDate);
 
         // Filter by contract length
         if ($request->filled('contract_length')) {
             $products->where('contract_length', '>=', $request->input('contract_length'));
+            // $products->where('contract_length',  $request->input('contract_length'));
         }
 
         if ($request->filled('buy_back') && $request->input('buy_back') == '0') {

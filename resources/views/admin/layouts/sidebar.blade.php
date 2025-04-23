@@ -65,45 +65,6 @@
                              <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
                                  aria-expanded="false" href="#">
                                  <i class="nav-main-link-icon fa fa-briefcase"></i>
-                                 <span class="nav-main-link-name">Internet, Tv & Telephone</span>
-                             </a>
-                             <ul class="nav-main-submenu">
-                                 <li class="nav-main-item">
-                                     <a class="nav-main-link" href="{{ route('admin.internet-tv.index') }}">
-                                         <i class="nav-main-link-icon fa-solid fa-bolt-lightning"></i>
-                                         <span class="nav-main-link-name">Internet & Tv Products</span>
-                                     </a>
-                                 </li>
-                                 <li class="nav-main-item">
-                                     <a class="nav-main-link" href="{{ route('admin.tv-channel.index') }}">
-                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                         <span class="nav-main-link-name">Tv Channels</span>
-                                     </a>
-                                 </li>
-                                 <li class="nav-main-item">
-                                     <a class="nav-main-link" href="{{ route('admin.tv-packages.index') }}">
-                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                         <span class="nav-main-link-name">Tv Packages</span>
-                                     </a>
-                                 </li>
-                                 <li class="nav-main-item">
-                                     <a class="nav-main-link" href="{{ route('admin.tv-options.index') }}">
-                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                         <span class="nav-main-link-name">Tv Options</span>
-                                     </a>
-                                 </li>
-                                 <li class="nav-main-item">
-                                     <a class="nav-main-link" href="{{ route('admin.tv-options.index') }}">
-                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                         <span class="nav-main-link-name">Phone Options</span>
-                                     </a>
-                                 </li>
-                             </ul>
-                         </li>
-                         <li class="nav-main-item">
-                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
-                                 aria-expanded="false" href="#">
-                                 <i class="nav-main-link-icon fa fa-briefcase"></i>
                                  <span class="nav-main-link-name">Insurance</span>
                              </a>
                              <ul class="nav-main-submenu">
@@ -701,51 +662,149 @@
                              </a>
                          </li>
 
-                        <li class="nav-main-item">
-                            <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
-                                aria-expanded="false" href="#">
-                                <i class="nav-main-link-icon fa fa-briefcase"></i>
-                                <span class="nav-main-link-name">FAQs</span>
-                            </a>
-                            <ul class="nav-main-submenu">
-                                <li class="nav-main-item">
-                                    <a class="nav-main-link" href="{{ route('admin.energy-regulatory') }}">
-                                        <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                        <span class="nav-main-link-name">Energy Regulatory FAQ</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav-main-submenu">
-                                <li class="nav-main-item">
-                                    <a class="nav-main-link" href="{{ route('admin.general-faqs', config('constant.category.energy')) }}">
-                                        <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                        <span class="nav-main-link-name">General FAQ</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav-main-submenu">
-                                <li class="nav-main-item">
-                                    <a class="nav-main-link" href="{{ route('admin.step-by-step-plans') }}">
-                                        <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                        <span class="nav-main-link-name">Step By Step Plans</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav-main-submenu">
-                                <li class="nav-main-item">
-                                    <a class="nav-main-link" href="{{ route('admin.provider-faqs', config('constant.category.energy')) }}">
-                                        <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
-                                        <span class="nav-main-link-name">Provider FAQ</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.grid-operater.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Grid Operaters</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.current-slab') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Current Slab</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.gas-slab') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Gas Slab</span>
+                             </a>
+                         </li>
+
+                         {{-- <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.feed-in-charges') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Feed In Charges</span>
+                             </a>
+                         </li> --}}
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu"
+                                 aria-haspopup="true" aria-expanded="false" href="#">
+                                 <i class="nav-main-link-icon fa fa-briefcase"></i>
+                                 <span class="nav-main-link-name">FAQs</span>
+                             </a>
+                             <ul class="nav-main-submenu">
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.energy-regulatory') }}">
+                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                         <span class="nav-main-link-name">Energy Regulatory FAQ</span>
+                                     </a>
+                                 </li>
+                             </ul>
+                             <ul class="nav-main-submenu">
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link"
+                                         href="{{ route('admin.general-faqs', config('constant.category.energy')) }}">
+                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                         <span class="nav-main-link-name">General FAQ</span>
+                                     </a>
+                                 </li>
+                             </ul>
+                             <ul class="nav-main-submenu">
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link" href="{{ route('admin.step-by-step-plans') }}">
+                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                         <span class="nav-main-link-name">Step By Step Plans</span>
+                                     </a>
+                                 </li>
+                             </ul>
+                             <ul class="nav-main-submenu">
+                                 <li class="nav-main-item">
+                                     <a class="nav-main-link"
+                                         href="{{ route('admin.provider-faqs', config('constant.category.energy')) }}">
+                                         <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                         <span class="nav-main-link-name">Provider FAQ</span>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
                          <li class="nav-main-item">
                              <a class="nav-main-link" href="{{ route('admin.global-energy-setting') }}">
                                  <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
                                  <span class="nav-main-link-name">Global Setting</span>
                              </a>
                          </li>
+                     </ul>
+                 </li>
+
+                 <li class="nav-main-item">
+                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
+                         aria-expanded="false" href="#">
+                         <i class="nav-main-link-icon fa fa-briefcase"></i>
+                         <span class="nav-main-link-name">Internet, Tv</span>
+                     </a>
+                     <ul class="nav-main-submenu">
+                         {{-- <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.internet-tv.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-bolt-lightning"></i>
+                                 <span class="nav-main-link-name">Internet & Tv Products</span>
+                             </a>
+                         </li> --}}
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.house-type.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">House Types</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.post-codes.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                 <span class="nav-main-link-name">Manage Postcode</span>
+                             </a>
+                         </li>
+
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.house-numbers.index') }}">
+                                 <i class="nav-main-link-icon fa-solid fa-list"></i>
+                                 <span class="nav-main-link-name">Manage House Number</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link"
+                                 href="{{ route('admin.providers', config('constant.category.Internet & Tv')) }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Manage Provider</span>
+                             </a>
+                         </li>
+
+
+                         {{-- <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.tv-channel.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Tv Channels</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.tv-packages.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Tv Packages</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.tv-options.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Tv Options</span>
+                             </a>
+                         </li>
+                         <li class="nav-main-item">
+                             <a class="nav-main-link" href="{{ route('admin.tv-options.index') }}">
+                                 <i class="nav-main-link-icon fa-regular fa-file-lines"></i>
+                                 <span class="nav-main-link-name">Phone Options</span>
+                             </a>
+                         </li> --}}
                      </ul>
                  </li>
 

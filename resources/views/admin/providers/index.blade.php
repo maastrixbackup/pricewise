@@ -18,7 +18,7 @@
 
             <div class="btn-group">
                 @if (Auth::guard('admin')->user()->can('providers-list'))
-                    <a href="{{ route('admin.providers.create') }}" class="btn btn-primary">Create a New Provider</a>
+                    <a href="{{ route('admin.providers.create') }}" class="btn btn-primary">Create</a>
                 @endif
             </div>
 
@@ -38,6 +38,7 @@
                                     <th>Sl</th>
                                     <th>Name</th>
                                     <th>Logo</th>
+                                    <th>Manage</th>
                                     <th>Ratings</th>
                                     @if (Auth::guard('admin')->user()->can('providers-list'))
                                         <th>Action</th>
@@ -59,7 +60,8 @@
                                                         alt="no image available" width="100">
                                                 @endif
                                             </td>
-
+                                            <td><a href="{{ route('admin.feed-in-charge', $val->id) }}"
+                                                    class="btn btn-sm btn-alt-primary">Feed In Charge</a></td>
                                             <td>{{ $val->ratings ?? 'NA' }}</td>
                                             <td>
                                                 <div class="col">
@@ -96,30 +98,30 @@
         $(document).ready(function() {
             var table = $('#userTable').DataTable({
                 lengthChange: false,
-                buttons: [{
-                        extend: 'excelHtml5',
-                        text: '<i class="far fa-file-excel"></i>',
-                        exportOptions: {
-                            columns: [0, 1]
-                        }
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        text: '<i class="fal fa-file-pdf"></i>',
-                        orientation: 'landscape',
-                        pageSize: 'LEGAL',
-                        exportOptions: {
-                            columns: [0, 1]
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        text: '<i class="far fa-print"></i>',
-                        exportOptions: {
-                            columns: [0, 1]
-                        }
-                    },
-                ],
+                // buttons: [{
+                //         extend: 'excelHtml5',
+                //         text: '<i class="far fa-file-excel"></i>',
+                //         exportOptions: {
+                //             columns: [0, 1]
+                //         }
+                //     },
+                //     {
+                //         extend: 'pdfHtml5',
+                //         text: '<i class="fal fa-file-pdf"></i>',
+                //         orientation: 'landscape',
+                //         pageSize: 'LEGAL',
+                //         exportOptions: {
+                //             columns: [0, 1]
+                //         }
+                //     },
+                //     {
+                //         extend: 'print',
+                //         text: '<i class="far fa-print"></i>',
+                //         exportOptions: {
+                //             columns: [0, 1]
+                //         }
+                //     },
+                // ],
                 'columnDefs': [{
                     'targets': [2], // column index (start from 0)
                     'orderable': false, // set orderable false for selected columns

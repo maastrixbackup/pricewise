@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.providers', config('constant.category.energy')) }}">Provider</a></li>
+                            href="{{ route('admin.providers', $c_id) }}">Provider</a></li>
                 </ol>
             </nav>
         </div>
@@ -29,22 +29,23 @@
                     $catDetails = \App\Models\Category::find($c_id);
                 @endphp
                 <div class="card-body p-4">
-                    <form id="featureFm" method="post" action="{{ route('admin.providers.store') }}"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <div class="row mb-3">
-                            <div class="col-md-4 mb-3">
-                                <label for="input35" class=" col-form-label">Name</label>
-                                <div class="">
-                                    <input type="text" class="form-control" id="name" name="name"
-                                        placeholder="Name" required value="{{ old('name') }}">
+                    @if ($c_id == config('constant.category.energy'))
+                        <form id="featureFm" method="post" action="{{ route('admin.providers.store') }}"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label for="input35" class=" col-form-label">Name</label>
+                                    <div class="">
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            placeholder="Name" required value="{{ old('name') }}">
+                                    </div>
+                                    @error('name')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    <input type="hidden" name="category" class="form-control" value="{{ $c_id }}">
                                 </div>
-                                @error('name')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                                <input type="hidden" name="category" class="form-control" value="{{ $c_id }}">
-                            </div>
-                            {{-- <div class="col-md-4 mb-3">
+                                {{-- <div class="col-md-4 mb-3">
                                 <label for="input_type" class=" col-form-label">Category</label>
                                 <div class="">
                                     <select class="form-control" id="category" name="category">
@@ -57,66 +58,68 @@
                                 </div>
                             </div> --}}
 
-                            <div class="col-md-4 mb-3">
-                                <label for="input35" class=" col-form-label">Fixed delivery Cost</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text" id="basic-addon1">€</div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="input35" class=" col-form-label">Fixed delivery Cost</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text" id="basic-addon1">€</div>
+                                        </div>
+                                        <input type="number" class="form-control" id="fix_delivery" name="fix_delivery"
+                                            placeholder="Fixed delivery Cost" step=".01" required
+                                            value="{{ old('fix_delivery') }}">
                                     </div>
-                                    <input type="number" class="form-control" id="fix_delivery" name="fix_delivery"
-                                        placeholder="Fixed delivery Cost" step=".01" required
-                                        value="{{ old('fix_delivery') }}">
+                                    @error('fix_delivery')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('fix_delivery')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="input35" class=" col-form-label">Grid Management Cost</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text" id="basic-addon1">€</div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="input35" class=" col-form-label">Grid Management Cost</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text" id="basic-addon1">€</div>
+                                        </div>
+                                        <input type="number" class="form-control" step=".01" id="grid_management"
+                                            name="grid_management" placeholder="Grid Management Cost"
+                                            value="{{ old('grid_management') }}" required>
                                     </div>
-                                    <input type="number" class="form-control" step=".01" id="grid_management"
-                                        name="grid_management" placeholder="Grid Management Cost"
-                                        value="{{ old('grid_management') }}" required>
+                                    @error('grid_management')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('grid_management')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="input35" class=" col-form-label">Feed In Tariff (Solar Buy Back)</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text" id="basic-addon1">€</div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="input35" class=" col-form-label">Feed In Tariff (Solar Buy Back)</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text" id="basic-addon1">€</div>
+                                        </div>
+                                        <input type="number" class="form-control" id="feed_in_tariff" name="feed_in_tariff"
+                                            placeholder="Solar Buy Back" step=".01"
+                                            value="{{ old('feed_in_tariff') }}">
                                     </div>
-                                    <input type="number" class="form-control" id="feed_in_tariff" name="feed_in_tariff"
-                                        placeholder="Solar Buy Back" step=".01" value="{{ old('feed_in_tariff') }}">
+                                    @error('feed_in_tariff')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('feed_in_tariff')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="input_type" class=" col-form-label">Status</label>
-                                <div class="">
-                                    <select class="form-control" id="input_type" name="status">
-                                        <option value="" disabled>Select</option>
-                                        <option value="1">Active</option>
-                                        <option value="0" selected>Inactive</option>
+                                <div class="col-md-4 mb-3">
+                                    <label for="input_type" class=" col-form-label">Status</label>
+                                    <div class="">
+                                        <select class="form-control" id="input_type" name="status">
+                                            <option value="" disabled>Select</option>
+                                            <option value="1">Active</option>
+                                            <option value="0" selected>Inactive</option>
 
-                                    </select>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="input40" class="col col-form-label"><b>Provider Image </b></label>
+                                <div class="col-md-4 mb-3">
+                                    <label for="input40" class="col col-form-label"><b>Provider Image </b></label>
 
-                                <div id="imagePreviewContainer"></div>
-                                <img src="#" id="uploaded_image" class="img img-responsive img-circle"
-                                    width="100" alt="Select image" />
-                                <input type="file" name="image" class="image" id="p_image" accept="image/*" />
-                                {{-- <label for="upload_image">
+                                    <div id="imagePreviewContainer"></div>
+                                    <img src="#" id="uploaded_image" class="img img-responsive img-circle"
+                                        width="100" alt="Select image" />
+                                    <input type="file" name="image" class="image" id="p_image"
+                                        accept="image/*" />
+                                    {{-- <label for="upload_image">
                                     <img src="#" id="uploaded_image" class="img img-responsive img-circle"
                                         width="100" alt="Select image" />
 
@@ -127,87 +130,149 @@
                                     <input type="hidden" name="cropped_image" id="cropped_image">
 
                                 </label> --}}
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6 mb-3">
-                                <div class="">
-                                    <label for="input_type" class=" col-form-label">About</label>
-                                    <textarea name="about" id="about" class="form-control" placeholder="About Provider..." rows="5"
-                                        required>{{ old('about') }}</textarea>
-                                </div>
-                                @error('about')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                                <div class="">
-                                    <label for="input_type" class=" col-form-label">Discount Term & Conditions</label>
-                                    <textarea name="discount" id="discount" class="form-control" placeholder="About Discount..." rows="5"
-                                        required>{{ old('discount') }}</textarea>
-                                </div>
-                                @error('discount')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <div class="">
+                                        <label for="input_type" class=" col-form-label">About</label>
+                                        <textarea name="about" id="about" class="form-control" placeholder="About Provider..." rows="5"
+                                            required>{{ old('about') }}</textarea>
+                                    </div>
+                                    @error('about')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    <div class="">
+                                        <label for="input_type" class=" col-form-label">Discount Term & Conditions</label>
+                                        <textarea name="discount" id="discount" class="form-control" placeholder="About Discount..." rows="5"
+                                            required>{{ old('discount') }}</textarea>
+                                    </div>
+                                    @error('discount')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
 
-                                <div class="mt-3">
-                                    <label>
-                                        <input type="checkbox" name="insight_app" value="1"> Usage Insight App
-                                    </label>
+                                    <div class="mt-3">
+                                        <label>
+                                            <input type="checkbox" name="insight_app" value="1"> Usage Insight App
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mt-1">
+                                        <label for="" class="form-label"> Payment Options</label>
+                                        <input type="text" name="payment_options" placeholder="Payment Option"
+                                            class="form-control" value="{{ old('payment_options') }}">
+                                    </div>
+                                    @error('payment_options')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    <div class="mt-1">
+                                        <label for="" class="form-label"> Annual Acounts</label>
+                                        <input type="text" name="annual_accounts" placeholder="Annual Accounts"
+                                            class="form-control" value="{{ old('annual_accounts') }}">
+                                    </div>
+                                    @error('annual_accounts')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    <div class="mt-1">
+                                        <label for="" class="form-label"> Meter Reading</label>
+                                        <input type="text" name="meter_readings" placeholder="Meter Readings"
+                                            class="form-control" value="{{ old('meter_readings') }}">
+                                    </div>
+                                    @error('meter_readings')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    <div class="mt-1">
+                                        <label for="" class="form-label"> Adjust Installments</label>
+                                        <input type="text" name="adjust_installments"
+                                            placeholder="Adjust Installments" class="form-control"
+                                            value="{{ old('adjust_installments') }}">
+                                    </div>
+                                    @error('adjust_installments')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    <div class="mt-1">
+                                        <label for="" class="form-label"> View consumption</label>
+                                        <input type="text" name="view_consumption" placeholder="View Consumtion"
+                                            class="form-control" value="{{ old('view_consumption') }}">
+                                    </div>
+                                    @error('view_consumption')
+                                        <div class="alert py-1 alert-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mt-1">
-                                    <label for="" class="form-label"> Payment Options</label>
-                                    <input type="text" name="payment_options" placeholder="Payment Option"
-                                        class="form-control" value="{{ old('payment_options') }}">
+                            <div class="row">
+                                <label class=" col-form-label"></label>
+                                <div class="">
+                                    <div class="d-md-flex d-grid align-items-center gap-3">
+                                        <button type="submit" id="submitBtn" class="btn btn-primary px-4"
+                                            name="submit2">Submit</button>
+                                        <button type="reset" class="btn btn-light px-4">Reset</button>
+                                    </div>
                                 </div>
-                                @error('payment_options')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                                <div class="mt-1">
-                                    <label for="" class="form-label"> Annual Acounts</label>
-                                    <input type="text" name="annual_accounts" placeholder="Annual Accounts"
-                                        class="form-control" value="{{ old('annual_accounts') }}">
-                                </div>
-                                @error('annual_accounts')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                                <div class="mt-1">
-                                    <label for="" class="form-label"> Meter Reading</label>
-                                    <input type="text" name="meter_readings" placeholder="Meter Readings"
-                                        class="form-control" value="{{ old('meter_readings') }}">
-                                </div>
-                                @error('meter_readings')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                                <div class="mt-1">
-                                    <label for="" class="form-label"> Adjust Installments</label>
-                                    <input type="text" name="adjust_installments" placeholder="Adjust Installments"
-                                        class="form-control" value="{{ old('adjust_installments') }}">
-                                </div>
-                                @error('adjust_installments')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
-                                <div class="mt-1">
-                                    <label for="" class="form-label"> View consumption</label>
-                                    <input type="text" name="view_consumption" placeholder="View Consumtion"
-                                        class="form-control" value="{{ old('view_consumption') }}">
-                                </div>
-                                @error('view_consumption')
-                                    <div class="alert py-1 alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
-                        </div>
-                        <div class="row">
-                            <label class=" col-form-label"></label>
+                        </form>
+                    @elseif ($c_id == config('constant.category.Internet & Tv'))
+                    <form id="featureFmI" method="post" action="{{ route('admin.providers.store') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="input35" class=" col-form-label">Name</label>
                             <div class="">
-                                <div class="d-md-flex d-grid align-items-center gap-3">
-                                    <button type="submit" id="submitBtn" class="btn btn-primary px-4"
-                                        name="submit2">Submit</button>
-                                    <button type="reset" class="btn btn-light px-4">Reset</button>
-                                </div>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="Name" required value="{{ old('name') }}">
+                            </div>
+                            @error('name')
+                                <div class="alert py-1 alert-danger">{{ $message }}</div>
+                            @enderror
+                            <input type="hidden" name="category" class="form-control" value="{{ $c_id }}">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="input_type" class=" col-form-label">Status</label>
+                            <div class="">
+                                <select class="form-control" id="input_type" name="status">
+                                    <option value="" disabled>Select</option>
+                                    <option value="1">Active</option>
+                                    <option value="0" selected>Inactive</option>
+
+                                </select>
                             </div>
                         </div>
-                    </form>
+                        <div class="col-md-4 mb-3">
+                            <label for="input40" class="col col-form-label"><b>Provider Image </b></label>
+
+                            <div id="imagePreviewContainer"></div>
+                            <img src="#" id="uploaded_image" class="img img-responsive img-circle"
+                                width="100" alt="Select image" />
+                            <input type="file" name="image" class="image" id="p_image" accept="image/*" />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="">
+                                <label for="input_type" class=" col-form-label">About</label>
+                                <textarea name="about" id="about" class="form-control" placeholder="About Provider..." rows="5"
+                                    required>{{ old('about') }}</textarea>
+                            </div>
+                            @error('about')
+                                <div class="alert py-1 alert-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class=" col-form-label"></label>
+                        <div class="">
+                            <div class="d-md-flex d-grid align-items-center gap-3">
+                                <button type="submit" id="submitBtn1" class="btn btn-primary px-4"
+                                    name="submit2">Submit</button>
+                                <button type="reset" class="btn btn-light px-4">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                    @endif
                 </div>
             </div>
         </div>

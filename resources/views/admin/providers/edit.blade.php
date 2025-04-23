@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active" aria-current="page"><a
                             href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{{ route('admin.providers', config('constant.category.energy')) }}">Providers</a></li>
+                            href="{{ route('admin.providers', $provider->category) }}">Providers</a></li>
                 </ol>
             </nav>
         </div>
@@ -43,6 +43,7 @@
                     <h5 class="mb-0">Edit Provider</h5>
                 </div>
                 <div class="card-body p-4">
+                    @if ($provider->category == config('constant.category.energy'))
                     <form id="categoryFo" method="POST" action="{{ route('admin.providers.update', $provider->id) }}"
                         enctype="multipart/form-data">
                         @csrf
@@ -195,6 +196,67 @@
                             </div>
                         </div>
                     </form>
+                    @elseif ($provider->category == config('constant.category.Internet & Tv'))
+
+                    <form id="categoryFo" method="POST" action="{{ route('admin.providers.update', $provider->id) }}"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="row mb-2">
+                            <div class="col-md-4 mb-3">
+                                <label for="input35" class=" col-form-label">Name</label>
+                                <div class="">
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="Name" value="{{ $provider->name }}">
+                                </div>
+                                <input type="hidden" name="category" id="category" class="form-control"
+                                    value="{{ $provider->category }}">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="status" class=" col-form-label">Status</label>
+                                <div class="">
+                                    <select class="form-control" id="status" name="status">
+                                        <option value="" disabled>Select</option>
+                                        <option value="1" @if ($provider->status == 1) selected @endif>Active
+                                        </option>
+                                        <option value="0" @if ($provider->status == 0) selected @endif>Inactive
+                                        </option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="input40" class="col col-form-label mb-1"><b>Provider Logo </b></label>
+                                <br />
+                                <img src="{{ asset('storage/images/providers/' . $provider->image) }}"
+                                    id="uploaded_image" class="img img-responsive img-circle" width="100"
+                                    alt="Select image" />
+
+                                <input type="file" name="image" class="image" id="p_image" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6 ">
+                                <div class="">
+                                    <label for="input_type" class=" col-form-label">About</label>
+                                    <textarea name="about" id="about" class="form-control" placeholder="About Provider..." rows="5"
+                                        required>{{ $provider->about }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class=" col-form-label"></label>
+                            <div class="">
+                                <div class="d-md-flex d-grid align-items-center gap-3">
+                                    <button type="submit" class="btn btn-primary px-4" name="submit2">Update</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    @endif
                 </div>
             </div>
         </div>

@@ -19,6 +19,14 @@ use App\Http\Controllers\Admin\VacancyController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::get('/', function () {
+    return redirect('/pricewise/admin/login');
+});
+Route::get('/pricewise', function () {
+    return redirect('/pricewise/admin/login');
+});
+
+
 Route::namespace('Admin')->name('admin.')->middleware('admin')->group(function () {
     Route::get('file-manager', 'FileManagerController@index');
 });
@@ -29,6 +37,12 @@ Route::group(['prefix' => 'pricewise'], function () {
         //Artisan::call('config:cache');
         Artisan::call('permission:cache-reset');
         return 'Command executed successfully!';
+    });
+
+
+    // Redirect `/pricewise/login` to `/pricewise/admin/login`
+    Route::get('/login', function () {
+        return redirect('/pricewise/admin/login');
     });
     Route::get('/', function () {
         return view('welcome');
@@ -58,6 +72,7 @@ Route::group(['prefix' => 'pricewise'], function () {
         });
         Route::post('/upload', 'RequestController@imageUploads');
         Route::middleware('admin')->group(function () {
+            Route::get('download-excel', 'FileManagerController@downloadExcel');
             Route::get('file-manager', 'FileManagerController@index');
             Route::post('/upload-image', 'RequestController@imageUpload')->name('upload_image');
             Route::resource('email-templates', 'EmailTemplateController');
@@ -296,13 +311,6 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('/edit-job/{id}', [VacancyController::class, 'edit'])->name('edit');
             Route::post('/update-job/{id}', [VacancyController::class, 'update'])->name('vacancy.update');
 
-
-
-
-
-
-
-
             //Requests
             Route::get('/fetch/requests', 'RequestController@getRequests')->name('get.requests');
             Route::post('/update_status/{id}', 'RequestController@updateStatus')->name('request.update_status');
@@ -367,6 +375,40 @@ Route::group(['prefix' => 'pricewise'], function () {
             Route::get('edit-step-plans/{id}', 'FAQController@stepPlansEdit')->name('edit-step-plans');
             Route::post('update-step-plans', 'FAQController@stepPlansUpdate')->name('update-step-plans');
             Route::get('delete-step-plans/{id}', 'FAQController@stepPlansDelete')->name('delete-step-plans');
+
+            // Feed In Charegs
+            Route::get('feed-in-charges', 'EnergyController@feedInCharges')->name('feed-in-charges');
+            Route::get('feed-in-charge/{id}', 'EnergyController@supplierFeedIn')->name('feed-in-charge');
+            Route::get('add-feed-in-charges/{id}', 'EnergyController@feedInChargeAdd')->name('add-feed-in-charges');
+            Route::post('store-feed-in-charges', 'EnergyController@feedInChargeStore')->name('store-feed-in-charges');
+            Route::get('edit-feed-in-charges/{id}', 'EnergyController@feedInChargeEdit')->name('edit-feed-in-charges');
+            Route::post('update-feed-in-charges', 'EnergyController@feedInChargeUpdate')->name('update-feed-in-charges');
+            Route::any('delete-feed-in-charges/{id}', 'EnergyController@feedInChargeDelete')->name('delete-feed-in-charges');
+            Route::post('import-feed-in-charges', 'EnergyController@importFeedInCharges')->name('import-feed-in-charges');
+
+            // Grid Operaters
+            Route::resource('grid-operater', 'GridOperaterController');
+            Route::get('manage-operater-annual-costs/{id}', 'GridOperaterController@manageAllCosts')->name('manage-operater-annual-costs');
+            Route::get('edit-gas-measurment-tariffs', 'GridOperaterController@measurementCostEdit')->name('edit-gas-measurment-tariffs');
+            Route::post('store-gas-measurment-tariffs', 'GridOperaterController@measurementCostStore')->name('store-gas-measurment-tariffs');
+            Route::get('edit-usage-rate', 'GridOperaterController@usageRateEdit')->name('edit-usage-rate');
+            Route::post('store-usage-rate', 'GridOperaterController@usageRateStore')->name('store-usage-rate');
+            Route::get('edit-capacity-transport-tariffs', 'GridOperaterController@transportTariffEdit')->name('edit-capacity-transport-tariffs');
+            Route::post('store-capacity-transport-tariffs', 'GridOperaterController@transportTariffStore')->name('store-capacity-transport-tariffs');
+
+            //  Current Slab
+            Route::get('current-slab', 'GridOperaterController@currentSlabIndex')->name('current-slab');
+            Route::post('current-slab-store', 'GridOperaterController@currentSlabStore')->name('current-slab-store');
+            Route::get('current-slab-edit/{id}', 'GridOperaterController@currentSlabEdit')->name('current-slab-edit');
+            Route::post('current-slab-update', 'GridOperaterController@currentSlabUpdate')->name('current-slab-update');
+            Route::post('current-slab-delete/{id}', 'GridOperaterController@currentSlabUpdate')->name('current-slab-delete');
+
+            // Gas slab
+            Route::get('gas-slab', 'GridOperaterController@gasSlabIndex')->name('gas-slab');
+            Route::post('gas-slab-store', 'GridOperaterController@gasSlabStore')->name('gas-slab-store');
+            Route::get('gas-slab-edit/{id}', 'GridOperaterController@gasSlabEdit')->name('gas-slab-edit');
+            Route::post('gas-slab-update', 'GridOperaterController@gasSlabUpdate')->name('gas-slab-update');
+            Route::post('gas-slab-delete/{id}', 'GridOperaterController@gasSlabDelete')->name('gas-slab-delete');
 
             // Provider Faqs
             Route::get('provider-faqs/{c_id}', 'FAQController@providerFaqs')->name('provider-faqs');
